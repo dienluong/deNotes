@@ -1,6 +1,7 @@
 import React from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
+import './Editor.css';
 
 class Editor extends React.Component {
   constructor(props) {
@@ -8,15 +9,17 @@ class Editor extends React.Component {
   }
 
   componentDidMount() {
-    this.quill = new Quill('#editor', {
+    this.quill = new Quill('#quill', {
       theme: 'snow',
     });
   }
 
   render() {
     return (
-      <div id={'editor'}>
-        <p>Hello, this is <strong>Quill</strong>!</p>
+      <div className='editor'>
+          <div id={'quill'}>
+              <p>Hello, this is <strong>Quill</strong>!</p>
+          </div>
       </div>
     );
   }

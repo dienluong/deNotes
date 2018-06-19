@@ -122,8 +122,8 @@ class NotesList extends React.Component {
     return (
       <Note
         active={ this.state.activeNote === node }
-        clickHandler={this.onClickNode}
-        node={node}
+        clickHandler={ this.onClickNode }
+        node={ node }
       />
     );
   }
@@ -136,7 +136,8 @@ class NotesList extends React.Component {
   }
 
   render() {
-    return (<div>
+    console.log(`rendering NoteLists...`);
+    return (<div className='tree'>
       <Tree
         tree={ this.state.notesTree }
         onChange={ this.handleChange }
