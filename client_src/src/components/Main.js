@@ -1,7 +1,7 @@
 import React from 'react';
 // import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Editor from './Editor';
-import NotesList from 'NotesList';
+import NotesList from './NotesList';
 
 class Main extends React.Component {
   constructor(props) {
@@ -10,7 +10,10 @@ class Main extends React.Component {
 
   render() {
     return (
-      <Editor />
+      <div>
+        <NotesList />
+        <Editor />
+      </div>
     );
   }
 }
