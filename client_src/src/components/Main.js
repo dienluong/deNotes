@@ -1,20 +1,19 @@
-import React from 'react';
 // import { BrowserRouter as Router, Route } from 'react-router-dom';
+import React, { Fragment } from 'react';
+import './Main.css';
 import Editor from './Editor';
 import NotesList from './NotesList';
-import './Main.css';
+import SplitPane from 'react-split-pane';
 
 class Main extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
-      <div>
-        <NotesList />
-        <Editor />
-      </div>
+      <Fragment>
+        <SplitPane split="vertical" defaultSize="30%" >
+          <NotesList />
+          <Editor />
+        </SplitPane>
+      </Fragment>
     );
   }
 }

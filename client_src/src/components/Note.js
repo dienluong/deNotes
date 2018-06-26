@@ -13,9 +13,11 @@ class Note extends React.Component {
   }
 
   render() {
+    // console.log(`rendering node ${this.props.node.module}`);
+    const className = classnames('node', { 'is-active': this.props.active });
     return (
       <span
-        className={ classnames('node', { 'is-active': this.props.active }) }
+        className={ className }
         onClick={ this.handleClick }
       >
         { this.props.node.module }

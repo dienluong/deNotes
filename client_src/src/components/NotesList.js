@@ -1,124 +1,40 @@
-import 'react-ui-tree/dist/react-ui-tree.css';
-import './NotesList.css';
-import React from 'react';
-import Tree from 'react-ui-tree';
-import Note from './Note';
+/* TODO: Revisit this component and react-ui-tree code to see if rendering can be optimized
+   https://reactjs.org/docs/optimizing-performance.html
+*/
+// import 'react-ui-tree/dist/react-ui-tree.css';
+// import Tree from 'react-ui-tree';
+// TODO: Delete Note.js
+// import Note from './Note';
 
-const sampleNotes = {
-  'module': 'react-ui-tree',
-  'children': [
-    {
-      'module': 'dist',
-      'collapsed': true,
-      'children': [
-        {
-          'module': 'node.js',
-          'leaf': true,
-        },
-        {
-          'module': 'react-ui-tree.css',
-          'leaf': true,
-        },
-        {
-          'module': 'react-ui-tree.js',
-          'leaf': true,
-        },
-        {
-          'module': 'tree.js',
-          'leaf': true,
-        },
-      ],
-    },
-    {
-      'module': 'example',
-      'children': [
-        {
-          'module': 'app.js',
-          'leaf': true,
-        },
-        {
-          'module': 'app.less',
-          'leaf': true,
-        },
-        {
-          'module': 'index.html',
-          'leaf': true,
-        },
-      ],
-    },
-    {
-      'module': 'lib',
-      'children': [
-        {
-          'module': 'node.js',
-          'leaf': true,
-        },
-        {
-          'module': 'react-ui-tree.js',
-          'leaf': true,
-        },
-        {
-          'module': 'react-ui-tree.less',
-          'leaf': true,
-        },
-        {
-          'module': 'tree.js',
-          'leaf': true,
-        },
-      ],
-    },
-    {
-      'module': '.gitiignore',
-      'leaf': true,
-    },
-    {
-      'module': 'index.js',
-      'leaf': true,
-    },
-    {
-      'module': 'LICENSE',
-      'leaf': true,
-    },
-    {
-      'module': 'Makefile',
-      'leaf': true,
-    },
-    {
-      'module': 'package.json',
-      'leaf': true,
-    },
-    {
-      'module': 'README.md',
-      'leaf': true,
-    },
-    {
-      'module': 'webpack.config.js',
-      'leaf': true,
-    },
-  ],
-};
+import Tree from 'react-sortable-tree';
+import 'react-sortable-tree/style.css';
+// TODO: Delete NotesList.css
+// import './NotesList.css';
+import React from 'react';
+
+import sampleNotes from '../test/sample-tree';
 
 class NotesList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeNote: null,
       notesTree: sampleNotes,
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.renderNode = this.renderNode.bind(this);
-    this.onClickNode = this.onClickNode.bind(this);
+    // this.renderNode = this.renderNode.bind(this);
+    // this.onClickNode = this.onClickNode.bind(this);
   }
 
-  handleChange(tree) {
+  handleChange(notesTree) {
     this.setState({
-      tree: tree,
+      notesTree,
     });
   }
 
+  /* TODO: Remove, formerly for react-ui-tree
   renderNode(node) {
-    // console.log(`renderNode called ${node.module}`);
+    // console.log(`renderNode ${node.module}`);
     return (
       <Note
         active={ this.state.activeNote === node }
@@ -129,22 +45,19 @@ class NotesList extends React.Component {
   }
 
   onClickNode(node) {
-    console.log(`Active Note: ${node.module}`);
+    // console.log(`Active Note: ${node.module}`);
     this.setState({
       activeNote: node,
     });
   }
+  */
 
   render() {
-    console.log(`rendering NoteLists...`);
-    return (<div className='tree'>
-      <Tree
-        tree={ this.state.notesTree }
-        onChange={ this.handleChange }
-        isNodeCollapsed={ this.isNodeCollapsed }
-        renderNode={ this.renderNode }
-      />
-    </div>);
+    console.log('rendering NoteLists........................');
+    return <Tree className='tree'
+      treeData={ this.state.notesTree }
+      onChange={ this.handleChange }
+    />;
   };
 }
 
