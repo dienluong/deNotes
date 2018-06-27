@@ -1,8 +1,3 @@
-/* TODO: Revisit this component and react-ui-tree code to see if rendering can be optimized
-   https://reactjs.org/docs/optimizing-performance.html
-*/
-// import 'react-ui-tree/dist/react-ui-tree.css';
-// import Tree from 'react-ui-tree';
 // TODO: Delete Note.js
 // import Note from './Note';
 
@@ -22,8 +17,6 @@ class NotesList extends React.Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
-    // this.renderNode = this.renderNode.bind(this);
-    // this.onClickNode = this.onClickNode.bind(this);
     this.deleteNote = this.deleteNote.bind(this);
   }
 
@@ -32,26 +25,6 @@ class NotesList extends React.Component {
       notesTree,
     });
   }
-
-  /* TODO: Remove, formerly for react-ui-tree
-  renderNode(node) {
-    // console.log(`renderNode ${node.module}`);
-    return (
-      <Note
-        active={ this.state.activeNote === node }
-        clickHandler={ this.onClickNode }
-        node={ node }
-      />
-    );
-  }
-
-  onClickNode(node) {
-    // console.log(`Active Note: ${node.module}`);
-    this.setState({
-      activeNote: node,
-    });
-  }
-  */
 
   deleteNote({ path }) {
     return ({
