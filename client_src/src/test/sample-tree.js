@@ -10,6 +10,7 @@ export default [
   {
     'title': 'react-ui-tree',
     'subtitle': randomDateString(start, end),
+    'expanded': true,
     'children': [
       {
         'title': 'dist',

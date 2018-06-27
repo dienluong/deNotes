@@ -6,7 +6,7 @@
 // TODO: Delete Note.js
 // import Note from './Note';
 
-import Tree from 'react-sortable-tree';
+import Tree, { removeNode } from 'react-sortable-tree';
 import 'react-sortable-tree/style.css';
 // TODO: Delete NotesList.css
 // import './NotesList.css';
@@ -24,6 +24,7 @@ class NotesList extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     // this.renderNode = this.renderNode.bind(this);
     // this.onClickNode = this.onClickNode.bind(this);
+    this.deleteNote = this.deleteNote.bind(this);
   }
 
   handleChange(notesTree) {
@@ -52,12 +53,38 @@ class NotesList extends React.Component {
   }
   */
 
+  deleteNote({ path }) {
+    return ({
+      buttons: [
+        <button
+          style={{ verticalAlign: 'middle' }}
+          onClick={() => {
+            const { treeData } = removeNode({
+              treeData: this.state.notesTree,
+              getNodeKey: ({ treeIndex }) => treeIndex,
+              path,
+            });
+            this.setState({
+              notesTree: treeData,
+            });
+          }}
+        >
+          x
+        </button>,
+      ],
+    });
+  }
+
   render() {
     console.log('rendering NoteLists........................');
-    return <Tree className='tree'
-      treeData={ this.state.notesTree }
-      onChange={ this.handleChange }
-    />;
+    return (
+      <Tree
+        className='tree'
+        treeData={ this.state.notesTree }
+        onChange={ this.handleChange }
+        generateNodeProps={ this.deleteNote }
+      />
+    );
   };
 }
 
