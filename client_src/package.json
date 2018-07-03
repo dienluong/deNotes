@@ -10,6 +10,7 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4",
     "react-sortable-tree": "^2.2.0",
+    "react-sortable-tree-theme-minimal": "0.0.13",
     "react-split-pane": "^0.1.77",
     "uniqid": "^5.0.3"
   },
