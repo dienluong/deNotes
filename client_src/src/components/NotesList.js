@@ -7,8 +7,7 @@ import Tree, {
   removeNode,
   changeNodeAtPath,
   addNodeUnderParent,
-  find,
-  insertNode } from 'react-sortable-tree';
+} from 'react-sortable-tree';
 import 'react-sortable-tree/style.css';
 import Toolbar from './Toolbar';
 import './NotesList.css';
@@ -18,6 +17,7 @@ import sampleNotes from '../test/sample-tree';
 
 // const getNodeKey = ({ treeIndex }) => treeIndex;
 const getNodeKey = ({ node }) => node.id;
+const _idDelimiter = '~^~';
 
 class NotesList extends React.Component {
   constructor(props) {
@@ -47,7 +47,7 @@ class NotesList extends React.Component {
     this.setState({
       activeNode: {
         id: node.id,
-        path: path,
+        path: path || [],
       },
     });
   }
@@ -63,7 +63,7 @@ class NotesList extends React.Component {
       type,
       uniqid: uniqid(),
       get id() {
-        return `${this.title}~^~${this.type}~^~${this.uniqid}`;
+        return `${this.title}${_idDelimiter}${this.type}${_idDelimiter}${this.uniqid}`;
       },
     };
 
@@ -88,12 +88,21 @@ class NotesList extends React.Component {
             path,
           });
 
-          // clear active note
-          if (node.id === this.state.activeNode.id) {
-            activeNode = {
-              id: null,
-              path: [],
-            };
+          // if deleted node is part of the active path, re-adjust the active node
+          const deletedNodeIdx = this.state.activeNode.path.lastIndexOf(node.id);
+          if (deletedNodeIdx >= 0) {
+            const newActivePath = this.state.activeNode.path.slice(0, deletedNodeIdx);
+            if (!newActivePath.length) {
+              activeNode = {
+                id: null,
+                path: [],
+              };
+            } else {
+              activeNode = {
+                id: newActivePath[newActivePath.length - 1],
+                path: newActivePath,
+              };
+            }
           }
 
           this.setState({
@@ -113,15 +122,20 @@ class NotesList extends React.Component {
           style={{ verticalAlign: 'middle' }}
           onClick={ (event) => {
             event.stopPropagation();
+            const newNode = this._createNode({});
             const { treeData } = addNodeUnderParent({
               treeData: this.state.notesTree,
               getNodeKey,
               parentKey: path[path.length - 1],
-              newNode: this._createNode({}),
+              newNode,
               expandParent: true,
             });
             this.setState({
               notesTree: treeData,
+              activeNode: {
+                id: newNode.id,
+                path: [...(path || []), newNode.id],
+              },
             });
           }}
         >
@@ -156,43 +170,62 @@ class NotesList extends React.Component {
     });
   }
 
-  newFolder() {
-    const { matches } = find({
-      getNodeKey,
-      treeData: this.state.notesTree,
-      searchQuery: this.state.activeNode.id,
-      searchMethod: ({ node, searchQuery }) => node.id === searchQuery,
-    });
-
-    // TODO: TO BE CONTINUED...
-    if (Array.isArray(matches) && matches.length) {
-      // If the current active (i.e. selected) node is not a folder and it has no parent
-      if ((typeof matches[0].children === 'undefined') && (matches[0].path.length === 1)) {
-        const newNode = this._createNode({
-          type: 'folder',
-        });
-        // treeIndex + 1 to insert after the active node.
-        this.setState({
-          notesTree: insertNode({
-            treeData: this.state.notesTree,
-            depth: 0,
-            minimumTreeIndex: matches[0].treeIndex + 1,
-            newNode,
-            getNodeKey,
-            expandParent: true,
-          }).treeData,
-          activeNode: {
-            id: newNode.id,
-            path: [],
-          },
-        });
-      }
+  /**
+   * Returns the index of the deepest node of type 'folder' in path.
+   * Returns null if none found.
+   * @param path
+   * @return {*}
+   * @private
+   */
+  static _findFarthestParent(path) {
+    if (!Array.isArray(path)) {
+      return null;
     }
+
+    const lastStep = path[path.length - 1] || '';
+    if (path.length <= 1) {
+      return (lastStep.includes(`${_idDelimiter}folder${_idDelimiter}`) ? path.length - 1 : null);
+    } else {
+      // If last step in path is not a folder, then the previous to last one must be.
+      return (lastStep.includes(`${_idDelimiter}folder${_idDelimiter}`)) ? path.length - 1 : path.length - 2;
+    }
+  }
+
+  newFolder() {
+    // TODO: TO BE CONTINUED...
+    const newNode = this._createNode({ type: 'folder' });
+    const workingPath = this.state.activeNode.path;
+    const parentIdx = NotesList._findFarthestParent(workingPath);
+    let activeNodePath = [];
+    let parentKey = null;
+
+    // if parent found
+    if (parentIdx !== null) {
+      parentKey = workingPath[parentIdx];
+      activeNodePath = [...workingPath.slice(0, parentIdx + 1), newNode.id];
+    } else {
+      parentKey = null;
+      activeNodePath = [newNode.id];
+    }
+
+    this.setState({
+      notesTree: addNodeUnderParent({
+        treeData: this.state.notesTree,
+        newNode,
+        parentKey,
+        getNodeKey,
+        expandParent: true,
+      }).treeData,
+      activeNode: {
+        id: newNode.id,
+        path: activeNodePath,
+      },
+    });
   }
 
   render() {
     // TODO: remove
-    console.log(`Active ID: ${this.state.activeNode.id}`);
+    console.log(`Active ID: ${this.state.activeNode.id}  //  Active Path: ${this.state.activeNode.path}`);
     return (
       <Fragment>
         <Toolbar newFolderBtnClickHandler={ this.newFolder } newNoteBtnClickHandler={ this.newFolder } />
