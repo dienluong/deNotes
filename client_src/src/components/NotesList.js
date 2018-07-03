@@ -178,15 +178,15 @@ class NotesList extends React.Component {
    * @private
    */
   static _findFarthestParent(path) {
-    if (!Array.isArray(path)) {
+    if (!Array.isArray(path) || (path.length === 0)) {
       return null;
     }
 
-    const lastStep = path[path.length - 1] || '';
-    if (path.length <= 1) {
-      return (lastStep.includes(`${_idDelimiter}folder${_idDelimiter}`) ? path.length - 1 : null);
+    const lastStep = path[path.length - 1];
+    if (path.length === 1) {
+      return (lastStep.includes(`${_idDelimiter}folder${_idDelimiter}`) ? 0 : null);
     } else {
-      // If last step in path is not a folder, then the previous to last one must be.
+      // If last step in path is not a folder, then the step previous to last must be a folder.
       return (lastStep.includes(`${_idDelimiter}folder${_idDelimiter}`)) ? path.length - 1 : path.length - 2;
     }
   }
