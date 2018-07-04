@@ -10,6 +10,7 @@ import Tree, {
 } from 'react-sortable-tree';
 import 'react-sortable-tree/style.css';
 import Toolbar from './Toolbar';
+import PathNavigator from './PathNavigator';
 import './NotesList.css';
 import uniqid from 'uniqid';
 
@@ -43,7 +44,7 @@ class NotesList extends React.Component {
 
   handleNodeClick(node, path) {
     // TODO: remove
-    console.log(`Active ID: ${node.id} // PATH: ${path}`);
+    console.log(`Active ID: ${node.id} // PATH: ${ path }`);
     this.setState({
       activeNode: {
         id: node.id,
@@ -52,7 +53,7 @@ class NotesList extends React.Component {
     });
   }
 
-  _createNode({
+  static _createNode({
     title = 'New Note',
     subtitle = new Date().toLocaleString(),
     type = 'item',
@@ -122,7 +123,7 @@ class NotesList extends React.Component {
           style={{ verticalAlign: 'middle' }}
           onClick={ (event) => {
             event.stopPropagation();
-            const newNode = this._createNode({});
+            const newNode = NotesList._createNode({});
             const { treeData } = addNodeUnderParent({
               treeData: this.state.notesTree,
               getNodeKey,
@@ -193,7 +194,7 @@ class NotesList extends React.Component {
 
   newFolder() {
     // TODO: TO BE CONTINUED...
-    const newNode = this._createNode({ type: 'folder' });
+    const newNode = NotesList._createNode({ type: 'folder' });
     const workingPath = this.state.activeNode.path;
     const parentIdx = NotesList._findFarthestParent(workingPath);
     let activeNodePath = [];
@@ -223,12 +224,21 @@ class NotesList extends React.Component {
     });
   }
 
+  static _prettyingPath(path) {
+    if (!Array.isArray(path)) {
+      return null;
+    }
+
+    return path.map((step) => String(step).split(_idDelimiter)[0]);
+  }
+
   render() {
     // TODO: remove
-    console.log(`Active ID: ${this.state.activeNode.id}  //  Active Path: ${this.state.activeNode.path}`);
+    console.log(`Active ID: ${this.state.activeNode.id}  //  Path: ${NotesList._prettyingPath(this.state.activeNode.path) }`);
     return (
       <Fragment>
         <Toolbar newFolderBtnClickHandler={ this.newFolder } newNoteBtnClickHandler={ this.newFolder } />
+        <PathNavigator path={ NotesList._prettyingPath(this.state.activeNode.path) } />
         <Tree
           className='tree'
           treeData={ this.state.notesTree }
