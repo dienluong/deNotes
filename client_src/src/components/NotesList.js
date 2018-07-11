@@ -1,6 +1,6 @@
 // TODO: Delete Note.js
 // import Note from './Note';
-import minimalTheme from 'react-sortable-tree-theme-minimal';
+// import minimalTheme from 'react-sortable-tree-theme-minimal';
 
 import React, { Fragment } from 'react';
 import Tree, {
@@ -18,7 +18,7 @@ import sampleNotes from '../test/sample-tree';
 
 // const getNodeKey = ({ treeIndex }) => treeIndex;
 const getNodeKey = ({ node }) => node.id;
-const _idDelimiter = '~^~';
+const ID_DELIMITER = '|^|';
 
 class NotesList extends React.Component {
   constructor(props) {
@@ -64,7 +64,7 @@ class NotesList extends React.Component {
       type,
       uniqid: uniqid(),
       get id() {
-        return `${this.title}${_idDelimiter}${this.type}${_idDelimiter}${this.uniqid}`;
+        return `${this.title}${ID_DELIMITER}${this.type}${ID_DELIMITER}${this.uniqid}`;
       },
     };
 
@@ -185,10 +185,10 @@ class NotesList extends React.Component {
 
     const lastStep = path[path.length - 1];
     if (path.length === 1) {
-      return (lastStep.includes(`${_idDelimiter}folder${_idDelimiter}`) ? 0 : null);
+      return (lastStep.includes(`${ID_DELIMITER}folder${ID_DELIMITER}`) ? 0 : null);
     } else {
       // If last step in path is not a folder, then the step previous to last must be a folder.
-      return (lastStep.includes(`${_idDelimiter}folder${_idDelimiter}`)) ? path.length - 1 : path.length - 2;
+      return (lastStep.includes(`${ID_DELIMITER}folder${ID_DELIMITER}`)) ? path.length - 1 : path.length - 2;
     }
   }
 
@@ -224,21 +224,41 @@ class NotesList extends React.Component {
     });
   }
 
-  static _prettyingPath(path) {
-    if (!Array.isArray(path)) {
-      return null;
+  /**
+   * Extracts the specified kind info from the path and returns it in a array.
+   * @param path
+   * @param kind
+   * @return {*}
+   * @private
+   */
+  static _extractInfoFromPath({ path = [], kind = 'title' }) {
+    if (!Array.isArray(path) || !path.length) {
+      return [];
     }
 
-    return path.map((step) => String(step).split(_idDelimiter)[0]);
+    switch (kind) {
+      case 'title':
+        return path.map((step) => String(step).split(ID_DELIMITER)[0]);
+      case 'type':
+        return path.map((step) => String(step).split(ID_DELIMITER)[1]);
+      case 'uniqid':
+        return path.map((step) => String(step).split(ID_DELIMITER)[2]);
+      default:
+        return [];
+    }
   }
 
   render() {
     // TODO: remove
-    console.log(`Active ID: ${this.state.activeNode.id}  //  Path: ${NotesList._prettyingPath(this.state.activeNode.path) }`);
+    console.log(`Active ID: ${this.state.activeNode.id}  //  Path: ${NotesList._extractInfoFromPath({ path: this.state.activeNode.path, kind: 'title' }) }`);
     return (
       <Fragment>
         <Toolbar newFolderBtnClickHandler={ this.newFolder } newNoteBtnClickHandler={ this.newFolder } />
-        <PathNavigator path={ NotesList._prettyingPath(this.state.activeNode.path) } />
+        <PathNavigator path={
+          NotesList._extractInfoFromPath({
+            path: this.state.activeNode.path,
+            kind: 'title' })
+        }/>
         <Tree
           className='tree'
           treeData={ this.state.notesTree }

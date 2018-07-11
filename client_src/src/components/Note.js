@@ -1,5 +1,6 @@
 import React from 'react';
-import classnames from 'classnames';
+// TODO: to remove
+// import classnames from 'classnames';
 
 class Note extends React.Component {
   constructor(props) {
@@ -14,7 +15,8 @@ class Note extends React.Component {
 
   render() {
     // console.log(`rendering node ${this.props.node.module}`);
-    const className = classnames('node', { 'is-active': this.props.active });
+    // const className = classnames('node', { 'is-active': this.props.active });
+    const className = 'node' + (this.props.active ? ' is-active' : '');
     return (
       <span
         className={ className }
