@@ -115,7 +115,7 @@ class NotesListWidget extends React.Component {
   _buildNodeButtons({ node, path }) {
     let buttons = [
       <button
-        style={{ verticalAlign: 'middle' }}
+        className='tree-node-btn'
         onClick={ (event) => {
           event.stopPropagation();
           const { treeData } = removeNode({
@@ -158,7 +158,7 @@ class NotesListWidget extends React.Component {
     if (typeof node.children !== 'undefined') {
       buttons.unshift(
         <button
-          style={{ verticalAlign: 'middle' }}
+          className='tree-node-btn'
           onClick={ (event) => {
             event.stopPropagation();
             const newNode = NotesListWidget._createNode({});
