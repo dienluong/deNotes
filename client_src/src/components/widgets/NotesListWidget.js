@@ -71,11 +71,14 @@ class NotesListWidget extends React.Component {
   buildNodeProps({ node, path }) {
     return ({
       title: (
-        <input
-          type="text"
-          value={ node.title }
-          onChange={ event => {
+        <form
+          onSubmit={ event => {
+            event.preventDefault();
             const title = event.target.value;
+            // TODO: TO BE CONTINUED 7/15
+            // 1) submit on eventBlur
+            // 2) To solve: retrieve the correct title
+            console.log(`>>>>> Submitted title: ${ title }`);
             // this.setState({
             //   notesTree: changeNodeAtPath({
             //     treeData: this.state.notesTree,
@@ -88,13 +91,20 @@ class NotesListWidget extends React.Component {
             const changedTree = changeNodeAtPath({
               treeData: this.props.notesTree,
               path,
-              newNode: { ...node, title },
+              // newNode: { ...node, title },
+              newNode: NotesListWidget._createNode({ title, type: node.type }),
               getNodeKey,
             });
 
+            console.log('-->Tree changed on node title change\n');
             this.props.nodeChangeHandler(changedTree);
           }}
-        />
+        >
+          <input
+            type="text"
+            defaultValue={ node.title }
+          />
+        </form>
       ),
       className: (node.id === this.props.activeNode.id) ? 'active-tree-node' : '',
       buttons: this._buildNodeButtons({ node, path }),
@@ -152,7 +162,6 @@ class NotesListWidget extends React.Component {
           onClick={ (event) => {
             event.stopPropagation();
             const newNode = NotesListWidget._createNode({});
-            // TODO: TO BE CONTINUED 7/15
             const { treeData } = addNodeUnderParent({
               treeData: this.props.notesTree,
               getNodeKey,
