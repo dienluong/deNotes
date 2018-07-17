@@ -25,7 +25,7 @@ import { changeActiveNodeAction, changeNotesTreeAction } from '../redux/actions/
 // }
 // }
 
-function dispatchActions({ dispatch, notesTree, activeNode = null }) {
+function dispatchChangeActions({ dispatch, notesTree, activeNode = null }) {
   dispatch(changeNotesTreeAction(notesTree));
   // if activeNode null, then the active node did not change
   if (activeNode !== null) {
@@ -55,8 +55,8 @@ function mapDispatchToProps(dispatch) {
       // });
       dispatch(changeNotesTreeAction(notesTree));
     },
-    nodeChangeHandler: function nodeChangeHandler(changedTree) {
-      dispatch(changeNotesTreeAction(changedTree));
+    nodeChangeHandler: function nodeChangeHandler(notesTree, activeNode) {
+      dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
     nodeClickHandler: function nodeClickHandler({ node, path }) {
       // TODO: remove console.log
@@ -70,16 +70,16 @@ function mapDispatchToProps(dispatch) {
       dispatch(changeActiveNodeAction({ id: 'id' in node && node.id, path }));
     },
     deleteNodeBtnHandler: function deleteNodeBtnHandler({ notesTree, activeNode = null }) {
-      dispatchActions({ dispatch, notesTree, activeNode });
+      dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
     addNodeBtnHandler: function deleteNodeBtnHandler({ notesTree, activeNode = null }) {
-      dispatchActions({ dispatch, notesTree, activeNode });
+      dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
     toolbarNewFolderBtnClickHandler: function toolbarNewFolderBtnClickHandler({ notesTree, activeNode = null }) {
-      dispatchActions({ dispatch, notesTree, activeNode });
+      dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
     toolbarNewNoteBtnClickHandler: function toolbarNewNoteBtnClickHandler({ notesTree, activeNode = null }) {
-      dispatchActions({ dispatch, notesTree, activeNode });
+      dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
   };
 }

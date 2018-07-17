@@ -9,6 +9,7 @@ import Tree, {
 import 'react-sortable-tree/style.css';
 import uniqid from 'uniqid';
 import './NotesListWidget.css';
+import NoteTitle from './NoteTitle';
 
 // TODO: Define these in a env config file.
 const ID_DELIMITER = '|^|';
@@ -19,6 +20,7 @@ class NotesListWidget extends React.Component {
     super(props);
     this.buildNodeProps = this.buildNodeProps.bind(this);
     this.newFolder = this.newFolder.bind(this);
+    this.noteTitleSubmitHandler = this.noteTitleSubmitHandler.bind(this);
   }
 
   /**
@@ -62,49 +64,46 @@ class NotesListWidget extends React.Component {
 
     if (type === 'folder') {
       newNode.children = [];
-      newNode.title = 'New Folder';
+      newNode.title = title === 'New Note' ? 'New Folder' : title;
     }
 
     return newNode;
   }
 
+  noteTitleSubmitHandler(title, node, path) {
+    // TODO: TO BE CONTINUED 7/15
+    // 1) submit on eventBlur
+    // 2) To solve: retrieve the correct title
+    console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
+    // this.setState({
+    //   notesTree: changeNodeAtPath({
+    //     treeData: this.state.notesTree,
+    //     path,
+    //     newNode: { ...node, title },
+    //     getNodeKey,
+    //   }),
+    // });
+
+    // TODO: Must use a map structure to map the ID to the corresponding node title
+    // By creating an entirely new node (with a new title, thus a new ID), it is breaking the tree
+    // because react-sortable-tree consider it as a standalone new node since its ID is new (not reusing the ID of the old node)
+    const newNode = NotesListWidget._createNode({ title, type: node.type });
+    const changedTree = changeNodeAtPath({
+      treeData: this.props.notesTree,
+      path,
+      // newNode: { ...node, title },
+      newNode,
+      getNodeKey,
+    });
+
+    console.log('-->Tree changed on node title change\n');
+    this.props.nodeChangeHandler(changedTree, newNode);
+  }
+
   buildNodeProps({ node, path }) {
     return ({
       title: (
-        <form
-          onSubmit={ event => {
-            event.preventDefault();
-            const title = event.target.value;
-            // TODO: TO BE CONTINUED 7/15
-            // 1) submit on eventBlur
-            // 2) To solve: retrieve the correct title
-            console.log(`>>>>> Submitted title: ${ title }`);
-            // this.setState({
-            //   notesTree: changeNodeAtPath({
-            //     treeData: this.state.notesTree,
-            //     path,
-            //     newNode: { ...node, title },
-            //     getNodeKey,
-            //   }),
-            // });
-
-            const changedTree = changeNodeAtPath({
-              treeData: this.props.notesTree,
-              path,
-              // newNode: { ...node, title },
-              newNode: NotesListWidget._createNode({ title, type: node.type }),
-              getNodeKey,
-            });
-
-            console.log('-->Tree changed on node title change\n');
-            this.props.nodeChangeHandler(changedTree);
-          }}
-        >
-          <input
-            type="text"
-            defaultValue={ node.title }
-          />
-        </form>
+        <NoteTitle node={ node } path={ path } submitHandler={ this.noteTitleSubmitHandler } />
       ),
       className: (node.id === this.props.activeNode.id) ? 'active-tree-node' : '',
       buttons: this._buildNodeButtons({ node, path }),
