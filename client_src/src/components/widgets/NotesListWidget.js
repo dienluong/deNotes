@@ -85,8 +85,6 @@ class NotesListWidget extends React.Component {
   }
 
   noteTitleSubmitHandler({ title, node, path }) {
-    // TODO: TO BE CONTINUED 7/15
-    // 1) submit on eventBlur
     console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
     // this.setState({
     //   notesTree: changeNodeAtPath({
@@ -292,8 +290,11 @@ class NotesListWidget extends React.Component {
 
   render() {
     // TODO: remove
-    console.log(`Active ID: ${this.props.activeNode.id} \n
-      Path: ${this.props.activeNode.path} ${this._extractInfoFromPath({ path: this.props.activeNode.path, kind: 'title' }) }`);
+    console.log(`
+    Active ID: ${this.props.activeNode.id} \n
+    Path: ${this.props.activeNode.path} \n
+    ${this._extractInfoFromPath({ path: this.props.activeNode.path, kind: 'title' }) }
+    `);
 
     return (
       <Fragment>
