@@ -1,6 +1,4 @@
 import React from 'react';
-// TODO: to remove
-// import classnames from 'classnames';
 
 class Note extends React.Component {
   constructor(props) {

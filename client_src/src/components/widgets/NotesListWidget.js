@@ -40,7 +40,6 @@ class NotesListWidget extends React.Component {
 
     switch (kind) {
       case 'title':
-      //   return path.map((step) => String(step).split(ID_DELIMITER)[0]);
         return path.map((id) => {
           const matches = find({
             getNodeKey,
@@ -86,16 +85,8 @@ class NotesListWidget extends React.Component {
 
   noteTitleSubmitHandler({ title, node, path }) {
     console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
-    // this.setState({
-    //   notesTree: changeNodeAtPath({
-    //     treeData: this.state.notesTree,
-    //     path,
-    //     newNode: { ...node, title },
-    //     getNodeKey,
-    //   }),
-    // });
 
-    // TODO: Must use a map structure to map the ID to the corresponding node title
+    // TODO? Must use a map structure to map the ID to the corresponding node title
     // Cannot use _createNode for creating a new node (with a new ID) as it is breaking the tree.
     // This is because react-sortable-tree treats it as a new standalone node due to new ID (not reusing the ID of the old node)
     // So using { ...node, title } to keep the ID intact and only change the title
@@ -167,11 +158,6 @@ class NotesListWidget extends React.Component {
             }
           }
 
-          // this.setState({
-          //   notesTree: treeData,
-          //   activeNode,
-          // });
-
           this.props.deleteNodeBtnHandler({ notesTree: treeData, activeNode });
         }}
       >
@@ -199,13 +185,7 @@ class NotesListWidget extends React.Component {
               id: newNode.id,
               path: [...(path || []), newNode.id],
             };
-            // this.setState({
-            //   notesTree: treeData,
-            //   activeNode: {
-            //     id: newNode.id,
-            //     path: [...(path || []), newNode.id],
-            //   },
-            // });
+
             this.props.addNodeBtnHandler({ notesTree: treeData, activeNode });
           }}
         >
@@ -215,9 +195,6 @@ class NotesListWidget extends React.Component {
 
     return buttons;
   }
-
-
-
 
   /**
    * Returns the index of the deepest node of type 'folder' in path.
@@ -269,24 +246,8 @@ class NotesListWidget extends React.Component {
       path: activeNodePath,
     };
 
-    // this.setState({
-    //   notesTree: addNodeUnderParent({
-    //     treeData: this.state.notesTree,
-    //     newNode,
-    //     parentKey,
-    //     getNodeKey,
-    //     expandParent: true,
-    //   }).treeData,
-    //   activeNode: {
-    //     id: newNode.id,
-    //     path: activeNodePath,
-    //   },
-    // });
     this.props.toolbarNewFolderBtnClickHandler({ notesTree, activeNode });
   }
-
-
-
 
   render() {
     // TODO: remove

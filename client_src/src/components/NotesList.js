@@ -1,13 +1,8 @@
-// TODO: Delete Note.js
-// import Note from './Note';
-// import minimalTheme from 'react-sortable-tree-theme-minimal';
-
 import { connect } from 'react-redux';
 import NotesListWidget from './widgets/NotesListWidget';
 import { changeActiveNodeAction, changeNotesTreeAction } from '../redux/actions/notesListActions';
 
 // const getNodeKey = ({ treeIndex }) => treeIndex;
-
 // class NotesList extends React.Component {
 //   constructor(props) {
 //     super(props);
@@ -46,32 +41,18 @@ function mapStateToProps(state) {
   return {
     notesTree: state.notesTree,
     activeNode: state.activeNode,
-    // path: NotesList._extractInfoFromPath({
-    //   path: state.activeNode.path,
-    //   kind: 'title' }),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     treeChangeHandler: function treeChangeHandler(notesTree) {
-      // this.setState({
-      //   notesTree,
-      // });
       dispatch(changeNotesTreeAction(notesTree));
     },
     nodeChangeHandler: function nodeChangeHandler({ notesTree, activeNode }) {
       dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
     nodeClickHandler: function nodeClickHandler({ id = null, path = [] }) {
-      // TODO: remove console.log
-      // console.log(`Active ID: ${node.id} // PATH: ${ path }`);
-      // this.setState({
-      //   activeNode: {
-      //     id: node.id,
-      //     path: path || [],
-      //   },
-      // });
       dispatch(changeActiveNodeAction({ id, path }));
     },
     deleteNodeBtnHandler: function deleteNodeBtnHandler({ notesTree, activeNode = null }) {
