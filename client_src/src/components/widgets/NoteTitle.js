@@ -10,7 +10,11 @@ class NoteTitle extends React.Component {
     return (
       <form
         onSubmit={ event => {
-          this.props.submitHandler(this.input.current.value, this.props.node, this.props.path);
+          this.props.submitHandler({
+            title: this.input.current.value,
+            node: this.props.node,
+            path: this.props.path,
+          });
           event.preventDefault();
         }}
       >

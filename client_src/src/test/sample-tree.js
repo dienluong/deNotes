@@ -15,7 +15,7 @@ export default [
     subtitle: randomDateString(start, end),
     uniqid: uniqid(),
     get id() {
-      return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+      return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
     type: 'folder',
     expanded: true,
@@ -25,7 +25,7 @@ export default [
         subtitle: randomDateString(start, end),
         uniqid: uniqid(),
         get id() {
-          return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+          return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
         type: 'folder',
         children: [
@@ -34,7 +34,7 @@ export default [
             subtitle: randomDateString(start, end),
             uniqid: uniqid(),
             get id() {
-              return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+              return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
             type: 'item',
           },
@@ -43,7 +43,7 @@ export default [
             subtitle: randomDateString(start, end),
             uniqid: uniqid(),
             get id() {
-              return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+              return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
             type: 'item',
           },
@@ -52,7 +52,7 @@ export default [
             subtitle: randomDateString(start, end),
             uniqid: uniqid(),
             get id() {
-              return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+              return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
             type: 'item',
           },
@@ -61,7 +61,7 @@ export default [
             subtitle: randomDateString(start, end),
             uniqid: uniqid(),
             get id() {
-              return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+              return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
             type: 'item',
           },
@@ -72,7 +72,7 @@ export default [
         subtitle: randomDateString(start, end),
         uniqid: uniqid(),
         get id() {
-          return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+          return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
         type: 'folder',
         children: [
@@ -81,7 +81,7 @@ export default [
             subtitle: randomDateString(start, end),
             uniqid: uniqid(),
             get id() {
-              return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+              return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
             type: 'item',
           },
@@ -90,7 +90,7 @@ export default [
             subtitle: randomDateString(start, end),
             uniqid: uniqid(),
             get id() {
-              return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+              return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
             type: 'item',
           },
@@ -99,7 +99,7 @@ export default [
             subtitle: randomDateString(start, end),
             uniqid: uniqid(),
             get id() {
-              return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+              return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
             type: 'item',
           },
@@ -110,7 +110,7 @@ export default [
         subtitle: randomDateString(start, end),
         uniqid: uniqid(),
         get id() {
-          return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+          return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
         type: 'folder',
         children: [
@@ -119,7 +119,7 @@ export default [
             subtitle: randomDateString(start, end),
             uniqid: uniqid(),
             get id() {
-              return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+              return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
             type: 'item',
           },
@@ -128,7 +128,7 @@ export default [
             subtitle: randomDateString(start, end),
             uniqid: uniqid(),
             get id() {
-              return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+              return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
             type: 'item',
           },
@@ -137,7 +137,7 @@ export default [
             subtitle: randomDateString(start, end),
             uniqid: uniqid(),
             get id() {
-              return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+              return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
             type: 'item',
           },
@@ -146,7 +146,7 @@ export default [
             subtitle: randomDateString(start, end),
             uniqid: uniqid(),
             get id() {
-              return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+              return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
             type: 'item',
           },
@@ -157,7 +157,7 @@ export default [
         subtitle: randomDateString(start, end),
         uniqid: uniqid(),
         get id() {
-          return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+          return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
         type: 'item',
       },
@@ -166,7 +166,7 @@ export default [
         subtitle: randomDateString(start, end),
         uniqid: uniqid(),
         get id() {
-          return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+          return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
         type: 'item',
       },
@@ -175,7 +175,7 @@ export default [
         subtitle: randomDateString(start, end),
         uniqid: uniqid(),
         get id() {
-          return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+          return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
         type: 'item',
       },
@@ -184,7 +184,7 @@ export default [
         subtitle: randomDateString(start, end),
         uniqid: uniqid(),
         get id() {
-          return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+          return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
         type: 'item',
       },
@@ -193,7 +193,7 @@ export default [
         subtitle: randomDateString(start, end),
         uniqid: uniqid(),
         get id() {
-          return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+          return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
         type: 'item',
       },
@@ -202,7 +202,7 @@ export default [
         subtitle: randomDateString(start, end),
         uniqid: uniqid(),
         get id() {
-          return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+          return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
         type: 'item',
       },
@@ -211,7 +211,7 @@ export default [
         subtitle: randomDateString(start, end),
         uniqid: uniqid(),
         get id() {
-          return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+          return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
         type: 'item',
       },
@@ -222,7 +222,7 @@ export default [
     subtitle: randomDateString(start, end),
     uniqid: uniqid(),
     get id() {
-      return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+      return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
     type: 'folder',
     children: [],
@@ -232,7 +232,7 @@ export default [
     subtitle: randomDateString(start, end),
     uniqid: uniqid(),
     get id() {
-      return `${this.title}${_ID_DELIMITER}${this.type}${_ID_DELIMITER}${this.uniqid}`;
+      return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
     type: 'item',
   },

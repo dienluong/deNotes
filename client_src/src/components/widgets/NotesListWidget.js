@@ -4,7 +4,8 @@ import PathNavigator from './PathNavigator';
 import Tree, {
   addNodeUnderParent,
   changeNodeAtPath,
-  removeNode } from 'react-sortable-tree';
+  removeNode,
+  find } from 'react-sortable-tree';
 
 import 'react-sortable-tree/style.css';
 import uniqid from 'uniqid';
@@ -21,27 +22,40 @@ class NotesListWidget extends React.Component {
     this.buildNodeProps = this.buildNodeProps.bind(this);
     this.newFolder = this.newFolder.bind(this);
     this.noteTitleSubmitHandler = this.noteTitleSubmitHandler.bind(this);
+    this._extractInfoFromPath = this._extractInfoFromPath.bind(this);
   }
 
   /**
-   * Extracts the specified kind of info from the path and returns it in an array.
-   * @param path
-   * @param kind
-   * @return {*}
+   * Extracts the specified kind of info from each entry in the path and returns it in an array.
+   * @param path {Array}
+   * @param kind {string}
+   * @return {Array}
    * @private
    */
-  static _extractInfoFromPath({ path = [], kind = 'title' }) {
+  _extractInfoFromPath({ path = [], kind = 'type' }) {
+    let info = [];
     if (!Array.isArray(path) || !path.length) {
-      return [];
+      return info;
     }
 
     switch (kind) {
       case 'title':
-        return path.map((step) => String(step).split(ID_DELIMITER)[0]);
+      //   return path.map((step) => String(step).split(ID_DELIMITER)[0]);
+        return path.map((id) => {
+          const matches = find({
+            getNodeKey,
+            treeData: this.props.notesTree,
+            searchQuery: id,
+            searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
+          }).matches;
+          return matches.length ? matches[0].node.title : '';
+        });
       case 'type':
-        return path.map((step) => String(step).split(ID_DELIMITER)[1]);
+        info = path.map((step) => String(step).split(ID_DELIMITER));
+        return info[0] ? [info[0]] : [];
       case 'uniqid':
-        return path.map((step) => String(step).split(ID_DELIMITER)[2]);
+        info = path.map((step) => String(step).split(ID_DELIMITER));
+        return info[1] ? [info[1]] : [];
       default:
         return [];
     }
@@ -58,7 +72,7 @@ class NotesListWidget extends React.Component {
       type,
       uniqid: uniqid(),
       get id() {
-        return `${this.title}${ID_DELIMITER}${this.type}${ID_DELIMITER}${this.uniqid}`;
+        return `${this.type}${ID_DELIMITER}${this.uniqid}`;
       },
     };
 
@@ -70,10 +84,9 @@ class NotesListWidget extends React.Component {
     return newNode;
   }
 
-  noteTitleSubmitHandler(title, node, path) {
+  noteTitleSubmitHandler({ title, node, path }) {
     // TODO: TO BE CONTINUED 7/15
     // 1) submit on eventBlur
-    // 2) To solve: retrieve the correct title
     console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
     // this.setState({
     //   notesTree: changeNodeAtPath({
@@ -85,19 +98,34 @@ class NotesListWidget extends React.Component {
     // });
 
     // TODO: Must use a map structure to map the ID to the corresponding node title
-    // By creating an entirely new node (with a new title, thus a new ID), it is breaking the tree
-    // because react-sortable-tree consider it as a standalone new node since its ID is new (not reusing the ID of the old node)
-    const newNode = NotesListWidget._createNode({ title, type: node.type });
+    // Cannot use _createNode for creating a new node (with a new ID) as it is breaking the tree.
+    // This is because react-sortable-tree treats it as a new standalone node due to new ID (not reusing the ID of the old node)
+    // So using { ...node, title } to keep the ID intact and only change the title
+    const modifiedNode = { ...node, title };
     const changedTree = changeNodeAtPath({
       treeData: this.props.notesTree,
       path,
-      // newNode: { ...node, title },
-      newNode,
+      newNode: modifiedNode,
       getNodeKey,
     });
 
+    // Find the newNode now part of the tree, which gives us the its path and children, if any.
+    const matches = find({
+      getNodeKey,
+      treeData: changedTree,
+      searchQuery: modifiedNode.id,
+      searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
+    }).matches;
+
+    let newActiveNode = null;
+    if (matches.length) {
+      newActiveNode = {
+        id: matches[0].node.id,
+        path: matches[0].path,
+      };
+    }
     console.log('-->Tree changed on node title change\n');
-    this.props.nodeChangeHandler(changedTree, newNode);
+    this.props.nodeChangeHandler({ notesTree: changedTree, activeNode: newActiveNode });
   }
 
   buildNodeProps({ node, path }) {
@@ -107,7 +135,7 @@ class NotesListWidget extends React.Component {
       ),
       className: (node.id === this.props.activeNode.id) ? 'active-tree-node' : '',
       buttons: this._buildNodeButtons({ node, path }),
-      onClick: () => this.props.nodeClickHandler({ node, path }),
+      onClick: () => this.props.nodeClickHandler({ id: node.id, path }),
     });
   }
 
@@ -196,8 +224,8 @@ class NotesListWidget extends React.Component {
   /**
    * Returns the index of the deepest node of type 'folder' in path.
    * Returns null if none found.
-   * @param path
-   * @return {*}
+   * @param path {Array}
+   * @return {?number}
    * @private
    */
   static _findFarthestParent(path) {
@@ -207,10 +235,10 @@ class NotesListWidget extends React.Component {
 
     const lastStep = path[path.length - 1];
     if (path.length === 1) {
-      return (lastStep.includes(`${ID_DELIMITER}folder${ID_DELIMITER}`) ? 0 : null);
+      return (lastStep.includes(`folder${ID_DELIMITER}`) ? 0 : null);
     } else {
       // If last step in path is not a folder, then the step previous to last must be a folder.
-      return (lastStep.includes(`${ID_DELIMITER}folder${ID_DELIMITER}`)) ? path.length - 1 : path.length - 2;
+      return (lastStep.includes(`folder${ID_DELIMITER}`)) ? path.length - 1 : path.length - 2;
     }
   }
 
@@ -264,16 +292,14 @@ class NotesListWidget extends React.Component {
 
   render() {
     // TODO: remove
-    console.log(`Active ID: ${this.props.activeNode.id}  //  Path: ${NotesListWidget._extractInfoFromPath({
-      path: this.props.activeNode.path,
-      kind: 'title',
-    }) }`);
+    console.log(`Active ID: ${this.props.activeNode.id} \n
+      Path: ${this.props.activeNode.path} ${this._extractInfoFromPath({ path: this.props.activeNode.path, kind: 'title' }) }`);
 
     return (
       <Fragment>
         <Toolbar newFolderBtnClickHandler={ this.newFolder } newNoteBtnClickHandler={ this.newFolder }/>
         <PathNavigator path={
-          NotesListWidget._extractInfoFromPath({
+          this._extractInfoFromPath({
             path: this.props.activeNode.path,
             kind: 'title',
           })
