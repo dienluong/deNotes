@@ -2,7 +2,7 @@
 import React, { Fragment } from 'react';
 import './Main.css';
 import Editor from './Editor';
-import NotesList from './NotesList';
+import NotesList from './NotesListContainer';
 import SplitPane from 'react-split-pane';
 
 class Main extends React.Component {

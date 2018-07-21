@@ -1,20 +1,13 @@
 import React from 'react';
 
-class PathSegment extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handleClick = this.handleClick.bind(this);
-  }
-  handleClick() {
-    this.props.onClick(this.props.index, this.props.label);
+function PathSegment({ label, index, className, onClick: clickCallback }) {
+  function handleClick() {
+    clickCallback(index, label);
   }
 
-  render() {
-    return (
-      <li className={ this.props.className } onClick={ this.handleClick }><span>{ this.props.label } &gt;</span></li>
-    );
-  }
+  return (
+    <li className={ className } onClick={ handleClick }><span>{ label } &gt;</span></li>
+  );
 }
 
 export default PathSegment;

@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import Toolbar from './Toolbar';
+import Tool from './Tool';
 import PathNavigator from './PathNavigator';
 import Tree, {
   addNodeUnderParent,
@@ -16,16 +17,18 @@ import NoteTitle from './NoteTitle';
 const ID_DELIMITER = '|^|';
 const getNodeKey = ({ node }) => node.id;
 
-class NotesListWidget extends React.Component {
-  constructor(props) {
-    super(props);
-    this.buildNodeProps = this.buildNodeProps.bind(this);
-    this.newFolder = this.newFolder.bind(this);
-    this.noteTitleHandleSubmit = this.noteTitleHandleSubmit.bind(this);
-    this._translatePathtoInfo = this._translatePathtoInfo.bind(this);
-    this.pathNavigatorHandleClick = this.pathNavigatorHandleClick.bind(this);
-  }
-
+function NotesList({
+  notesTree,
+  activeNode,
+  treeChangeHandler,
+  nodeChangeHandler,
+  nodeClickHandler,
+  deleteNodeBtnHandler,
+  addNodeBtnHandler,
+  toolbarNewFolderBtnClickHandler,
+  toolbarNewNoteBtnClickHandler,
+  pathNavigatorClickHandler,
+}) {
   /**
    * For each entry in path, return the specified kind of info
    * @param path {Array}
@@ -33,7 +36,7 @@ class NotesListWidget extends React.Component {
    * @return {Array}
    * @private
    */
-  _translatePathtoInfo({ path = [], kind = 'type' }) {
+  function _translatePathtoInfo({ path = [], kind = 'type' }) {
     let info = [];
     if (!Array.isArray(path) || !path.length) {
       return info;
@@ -44,7 +47,7 @@ class NotesListWidget extends React.Component {
         return path.map((id) => {
           const matches = find({
             getNodeKey,
-            treeData: this.props.notesTree,
+            treeData: notesTree,
             searchQuery: id,
             searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
           }).matches;
@@ -61,7 +64,7 @@ class NotesListWidget extends React.Component {
     }
   }
 
-  static _createNode({
+  function _createNode({
     title = 'New Note',
     subtitle = new Date().toLocaleString(),
     type = 'item',
@@ -84,7 +87,7 @@ class NotesListWidget extends React.Component {
     return newNode;
   }
 
-  noteTitleHandleSubmit({ title, node, path }) {
+  function noteTitleHandleSubmit({ title, node, path }) {
     console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
 
     // TODO? Must use a map structure to map the ID to the corresponding node title
@@ -93,7 +96,7 @@ class NotesListWidget extends React.Component {
     // So using { ...node, title } to keep the ID intact and only change the title
     const modifiedNode = { ...node, title };
     const changedTree = changeNodeAtPath({
-      treeData: this.props.notesTree,
+      treeData: notesTree,
       path,
       newNode: modifiedNode,
       getNodeKey,
@@ -115,51 +118,51 @@ class NotesListWidget extends React.Component {
       };
     }
     console.log('-->Tree changed on node title change\n');
-    this.props.nodeChangeHandler({ notesTree: changedTree, activeNode: newActiveNode });
+    nodeChangeHandler({ notesTree: changedTree, activeNode: newActiveNode });
   }
 
-  buildNodeProps({ node, path }) {
+  function buildNodeProps({ node, path }) {
     return ({
       title: (
-        <NoteTitle node={ node } path={ path } onSubmit={ this.noteTitleHandleSubmit } />
+        <NoteTitle node={ node } path={ path } onSubmit={ noteTitleHandleSubmit } />
       ),
-      className: (node.id === this.props.activeNode.id) ? 'active-tree-node' : '',
-      buttons: this._buildNodeButtons({ node, path }),
-      onClick: () => this.props.nodeClickHandler({ id: node.id, path }),
+      className: (node.id === activeNode.id) ? 'active-tree-node' : '',
+      buttons: _buildNodeButtons({ node, path }),
+      onClick: () => nodeClickHandler({ id: node.id, path }),
     });
   }
 
-  _buildNodeButtons({ node, path }) {
+  function _buildNodeButtons({ node, path }) {
     let buttons = [
       <button
         className='tree-node-btn'
         onClick={ (event) => {
           event.stopPropagation();
           const { treeData } = removeNode({
-            treeData: this.props.notesTree,
+            treeData: notesTree,
             getNodeKey,
             path,
           });
 
-          let activeNode = null;
+          let newActiveNode = null;
           // if deleted node is part of the active path, re-adjust the active node
-          const deletedNodeIdx = this.props.activeNode.path.lastIndexOf(node.id);
+          const deletedNodeIdx = activeNode.path.lastIndexOf(node.id);
           if (deletedNodeIdx >= 0) {
-            const newActivePath = this.props.activeNode.path.slice(0, deletedNodeIdx);
+            const newActivePath = activeNode.path.slice(0, deletedNodeIdx);
             if (!newActivePath.length) {
-              activeNode = {
+              newActiveNode = {
                 id: null,
                 path: [],
               };
             } else {
-              activeNode = {
+              newActiveNode = {
                 id: newActivePath[newActivePath.length - 1],
                 path: newActivePath,
               };
             }
           }
 
-          this.props.deleteNodeBtnHandler({ notesTree: treeData, activeNode });
+          deleteNodeBtnHandler({ notesTree: treeData, activeNode: newActiveNode });
         }}
       >
         x
@@ -173,21 +176,21 @@ class NotesListWidget extends React.Component {
           className='tree-node-btn'
           onClick={ (event) => {
             event.stopPropagation();
-            const newNode = NotesListWidget._createNode({});
+            const newNode = _createNode({});
             const { treeData } = addNodeUnderParent({
-              treeData: this.props.notesTree,
+              treeData: notesTree,
               getNodeKey,
               parentKey: path[path.length - 1],
               newNode,
               expandParent: true,
             });
 
-            const activeNode = {
+            const newActiveNode = {
               id: newNode.id,
               path: [...(path || []), newNode.id],
             };
 
-            this.props.addNodeBtnHandler({ notesTree: treeData, activeNode });
+            addNodeBtnHandler({ notesTree: treeData, activeNode: newActiveNode });
           }}
         >
           +
@@ -204,7 +207,7 @@ class NotesListWidget extends React.Component {
    * @return {?number}
    * @private
    */
-  static _findFarthestParent(path) {
+  function _findFarthestParent(path) {
     if (!Array.isArray(path) || (path.length === 0)) {
       return null;
     }
@@ -218,12 +221,12 @@ class NotesListWidget extends React.Component {
     }
   }
 
-  newFolder() {
+  function newFolder() {
     let newActiveNodePath = [];
     let parentKey = null;
-    const newNode = NotesListWidget._createNode({ type: 'folder' });
-    const currentActivePath = this.props.activeNode.path;
-    const parentIdx = NotesListWidget._findFarthestParent(currentActivePath);
+    const newNode = _createNode({ type: 'folder' });
+    const currentActivePath = activeNode.path;
+    const parentIdx = _findFarthestParent(currentActivePath);
 
     // if parent found
     if (parentIdx !== null) {
@@ -234,64 +237,62 @@ class NotesListWidget extends React.Component {
       newActiveNodePath = [newNode.id];
     }
 
-    const notesTree = addNodeUnderParent({
-      treeData: this.props.notesTree,
+    const newNotesTree = addNodeUnderParent({
+      treeData: notesTree,
       newNode,
       parentKey,
       getNodeKey,
       expandParent: true,
     }).treeData;
 
-    const activeNode = {
+    const newActiveNode = {
       id: newNode.id,
       path: newActiveNodePath,
     };
 
-    this.props.toolbarNewFolderBtnClickHandler({ notesTree, activeNode });
+    toolbarNewFolderBtnClickHandler({ notesTree: newNotesTree, activeNode: newActiveNode });
   }
 
-  pathNavigatorHandleClick(idx) {
-    if (Number.isSafeInteger(idx) && idx < this.props.activeNode.path.length) {
-      const activeNode = {
-        id: this.props.activeNode.path[idx],
-        path: this.props.activeNode.path.slice(0, idx + 1),
+  function pathNavigatorHandleClick(idx) {
+    if (Number.isSafeInteger(idx) && idx < activeNode.path.length) {
+      const newActiveNode = {
+        id: activeNode.path[idx],
+        path: activeNode.path.slice(0, idx + 1),
       };
-      this.props.pathNavigatorClickHandler(activeNode);
+      pathNavigatorClickHandler(newActiveNode);
     }
   }
 
-  render() {
-    // TODO: remove
-    console.log(`
-    Active ID: ${this.props.activeNode.id} \n
-    Path: ${this.props.activeNode.path} \n
-    ${this._translatePathtoInfo({ path: this.props.activeNode.path, kind: 'title' }) }
+  // TODO: remove
+  console.log(`
+    Active ID: ${activeNode.id} \n
+    Path: ${activeNode.path} \n
+    ${_translatePathtoInfo({ path: activeNode.path, kind: 'title' }) }
     `);
 
-    return (
-      <Fragment>
-        <Toolbar
-          newFolderBtnClickHandler={ this.newFolder }
-          newNoteBtnClickHandler={ this.newFolder }
-        />
-        <PathNavigator
-          path={
-            this._translatePathtoInfo({
-              path: this.props.activeNode.path,
-              kind: 'title',
-            })}
-          clickHandler={ this.pathNavigatorHandleClick }
-        />
-        <Tree
-          className='tree'
-          treeData={ this.props.notesTree }
-          onChange={ this.props.treeChangeHandler }
-          getNodeKey={ getNodeKey }
-          generateNodeProps={ this.buildNodeProps }
-        />
-      </Fragment>
-    );
-  }
+  return (
+    <Fragment>
+      <Toolbar>
+        <Tool label='New Folder' onClick={ newFolder}/>
+        <Tool label='New Note' onClick={ newFolder }/>
+      </Toolbar>
+      <PathNavigator
+        path={
+          _translatePathtoInfo({
+            path: activeNode.path,
+            kind: 'title',
+          })}
+        onClick={ pathNavigatorHandleClick }
+      />
+      <Tree
+        className='tree'
+        treeData={ notesTree }
+        onChange={ treeChangeHandler }
+        getNodeKey={ getNodeKey }
+        generateNodeProps={ buildNodeProps }
+      />
+    </Fragment>
+  );
 }
 
-export default NotesListWidget;
+export default NotesList;

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import NotesListWidget from './widgets/NotesListWidget';
+import NotesList from './widgets/NotesList';
 import { changeActiveNodeAction, changeNotesTreeAction } from '../redux/actions/notesListActions';
 
 // const getNodeKey = ({ treeIndex }) => treeIndex;
@@ -73,6 +73,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const NotesList = connect(mapStateToProps, mapDispatchToProps)(NotesListWidget);
-export default NotesList;
+const NotesListContainer = connect(mapStateToProps, mapDispatchToProps)(NotesList);
+export default NotesListContainer;
 
