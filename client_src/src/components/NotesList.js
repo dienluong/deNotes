@@ -67,6 +67,9 @@ function mapDispatchToProps(dispatch) {
     toolbarNewNoteBtnClickHandler: function toolbarNewNoteBtnClickHandler({ notesTree, activeNode = null }) {
       dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
+    pathNavigatorClickHandler: function pathNavigatorClickHandler({ id = null, path = [] }) {
+      dispatch(changeActiveNodeAction({ id, path }));
+    },
   };
 }
 
