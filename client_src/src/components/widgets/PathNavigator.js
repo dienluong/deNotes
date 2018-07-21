@@ -9,13 +9,14 @@ class PathNavigator extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
-  handleClick(label) {
-    console.log(`segment clicked: ${label}`);
+  handleClick(idx, label) {
+    // console.log(`segment clicked: ${label}`);
+    this.props.clickHandler(idx, label);
   }
 
   render() {
     const path = this.props.path.length ?
-      this.props.path.map((step, idx) => <PathSegment className='lined' key={ idx } onClick={ this.handleClick } label={ step } />) : [];
+      this.props.path.map((step, idx) => <PathSegment className='lined' key={ idx } index={ idx } onClick={ this.handleClick } label={ step } />) : [];
 
     return (
       <nav>

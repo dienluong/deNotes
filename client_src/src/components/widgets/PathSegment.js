@@ -7,7 +7,7 @@ class PathSegment extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
   handleClick() {
-    this.props.onClick(this.props.label);
+    this.props.onClick(this.props.index, this.props.label);
   }
 
   render() {

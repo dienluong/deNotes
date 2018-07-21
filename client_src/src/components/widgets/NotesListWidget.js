@@ -21,18 +21,19 @@ class NotesListWidget extends React.Component {
     super(props);
     this.buildNodeProps = this.buildNodeProps.bind(this);
     this.newFolder = this.newFolder.bind(this);
-    this.noteTitleSubmitHandler = this.noteTitleSubmitHandler.bind(this);
-    this._extractInfoFromPath = this._extractInfoFromPath.bind(this);
+    this.noteTitleHandleSubmit = this.noteTitleHandleSubmit.bind(this);
+    this._translatePathtoInfo = this._translatePathtoInfo.bind(this);
+    this.pathNavigatorHandleClick = this.pathNavigatorHandleClick.bind(this);
   }
 
   /**
-   * Extracts the specified kind of info from each entry in the path and returns it in an array.
+   * For each entry in path, return the specified kind of info
    * @param path {Array}
    * @param kind {string}
    * @return {Array}
    * @private
    */
-  _extractInfoFromPath({ path = [], kind = 'type' }) {
+  _translatePathtoInfo({ path = [], kind = 'type' }) {
     let info = [];
     if (!Array.isArray(path) || !path.length) {
       return info;
@@ -83,7 +84,7 @@ class NotesListWidget extends React.Component {
     return newNode;
   }
 
-  noteTitleSubmitHandler({ title, node, path }) {
+  noteTitleHandleSubmit({ title, node, path }) {
     console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
 
     // TODO? Must use a map structure to map the ID to the corresponding node title
@@ -120,7 +121,7 @@ class NotesListWidget extends React.Component {
   buildNodeProps({ node, path }) {
     return ({
       title: (
-        <NoteTitle node={ node } path={ path } submitHandler={ this.noteTitleSubmitHandler } />
+        <NoteTitle node={ node } path={ path } submitHandler={ this.noteTitleHandleSubmit } />
       ),
       className: (node.id === this.props.activeNode.id) ? 'active-tree-node' : '',
       buttons: this._buildNodeButtons({ node, path }),
@@ -218,19 +219,19 @@ class NotesListWidget extends React.Component {
   }
 
   newFolder() {
-    let activeNodePath = [];
+    let newActiveNodePath = [];
     let parentKey = null;
     const newNode = NotesListWidget._createNode({ type: 'folder' });
-    const workingPath = this.props.activeNode.path;
-    const parentIdx = NotesListWidget._findFarthestParent(workingPath);
+    const currentActivePath = this.props.activeNode.path;
+    const parentIdx = NotesListWidget._findFarthestParent(currentActivePath);
 
     // if parent found
     if (parentIdx !== null) {
-      parentKey = workingPath[parentIdx];
-      activeNodePath = [...workingPath.slice(0, parentIdx + 1), newNode.id];
+      parentKey = currentActivePath[parentIdx];
+      newActiveNodePath = [...currentActivePath.slice(0, parentIdx + 1), newNode.id];
     } else {
       parentKey = null;
-      activeNodePath = [newNode.id];
+      newActiveNodePath = [newNode.id];
     }
 
     const notesTree = addNodeUnderParent({
@@ -243,10 +244,20 @@ class NotesListWidget extends React.Component {
 
     const activeNode = {
       id: newNode.id,
-      path: activeNodePath,
+      path: newActiveNodePath,
     };
 
     this.props.toolbarNewFolderBtnClickHandler({ notesTree, activeNode });
+  }
+
+  pathNavigatorHandleClick(idx) {
+    if (Number.isSafeInteger(idx) && idx < this.props.activeNode.path.length) {
+      const activeNode = {
+        id: this.props.activeNode.path[idx],
+        path: this.props.activeNode.path.slice(0, idx + 1),
+      };
+      this.props.pathNavigatorClickHandler(activeNode);
+    }
   }
 
   render() {
@@ -254,18 +265,23 @@ class NotesListWidget extends React.Component {
     console.log(`
     Active ID: ${this.props.activeNode.id} \n
     Path: ${this.props.activeNode.path} \n
-    ${this._extractInfoFromPath({ path: this.props.activeNode.path, kind: 'title' }) }
+    ${this._translatePathtoInfo({ path: this.props.activeNode.path, kind: 'title' }) }
     `);
 
     return (
       <Fragment>
-        <Toolbar newFolderBtnClickHandler={ this.newFolder } newNoteBtnClickHandler={ this.newFolder }/>
-        <PathNavigator path={
-          this._extractInfoFromPath({
-            path: this.props.activeNode.path,
-            kind: 'title',
-          })
-        }/>
+        <Toolbar
+          newFolderBtnClickHandler={ this.newFolder }
+          newNoteBtnClickHandler={ this.newFolder }
+        />
+        <PathNavigator
+          path={
+            this._translatePathtoInfo({
+              path: this.props.activeNode.path,
+              kind: 'title',
+            })}
+          clickHandler={ this.pathNavigatorHandleClick }
+        />
         <Tree
           className='tree'
           treeData={ this.props.notesTree }
