@@ -47,28 +47,28 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     treeChangeHandler: function treeChangeHandler(notesTree) {
-      dispatch(changeNotesTreeAction(notesTree));
+      return dispatch(changeNotesTreeAction(notesTree));
     },
     nodeChangeHandler: function nodeChangeHandler({ notesTree, activeNode }) {
-      dispatchChangeActions({ dispatch, notesTree, activeNode });
+      return dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
     nodeClickHandler: function nodeClickHandler({ id = null, path = [] }) {
-      dispatch(changeActiveNodeAction({ id, path }));
+      return dispatch(changeActiveNodeAction({ id, path }));
     },
     deleteNodeBtnHandler: function deleteNodeBtnHandler({ notesTree, activeNode = null }) {
-      dispatchChangeActions({ dispatch, notesTree, activeNode });
+      return dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
     addNodeBtnHandler: function deleteNodeBtnHandler({ notesTree, activeNode = null }) {
-      dispatchChangeActions({ dispatch, notesTree, activeNode });
+      return dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
     toolbarNewFolderBtnClickHandler: function toolbarNewFolderBtnClickHandler({ notesTree, activeNode = null }) {
-      dispatchChangeActions({ dispatch, notesTree, activeNode });
+      return dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
     toolbarNewNoteBtnClickHandler: function toolbarNewNoteBtnClickHandler({ notesTree, activeNode = null }) {
-      dispatchChangeActions({ dispatch, notesTree, activeNode });
+      return dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
     pathNavigatorClickHandler: function pathNavigatorClickHandler({ id = null, path = [] }) {
-      dispatch(changeActiveNodeAction({ id, path }));
+      return dispatch(changeActiveNodeAction({ id, path }));
     },
   };
 }
