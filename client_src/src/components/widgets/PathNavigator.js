@@ -8,8 +8,9 @@ function PathNavigator({ path, onClick: clickHandler }) {
       <PathSegment
         className='lined'
         key={ idx }
-        onClick={ () => clickHandler(idx) }
-        label={ step } />) :
+        label={ step }
+        onClick={ () => clickHandler({ idx }) }
+      />) :
     [];
 
   return (

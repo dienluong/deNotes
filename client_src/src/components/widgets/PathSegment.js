@@ -1,12 +1,8 @@
 import React from 'react';
 
-function PathSegment({ label, index, className, onClick: clickCallback }) {
-  function handleClick() {
-    clickCallback(index, label);
-  }
-
+function PathSegment({ className, label, onClick: clickCallback }) {
   return (
-    <li className={ className } onClick={ handleClick }><span>{ label } &gt;</span></li>
+    <li className={ className } onClick={ clickCallback }><span>{ label } &gt;</span></li>
   );
 }
 

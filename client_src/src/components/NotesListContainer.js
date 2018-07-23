@@ -1,6 +1,11 @@
 import { connect } from 'react-redux';
 import NotesList from './widgets/NotesList';
-import { changeActiveNodeAction, changeNotesTreeAction } from '../redux/actions/notesListActions';
+import {
+  changeActiveNodeAction,
+  navigateToNodeAction,
+  changeNotesTreeAction,
+  changeNoteTitleAction }
+  from '../redux/actions/notesListActions';
 
 // const getNodeKey = ({ treeIndex }) => treeIndex;
 // class NotesList extends React.Component {
@@ -49,12 +54,19 @@ function mapDispatchToProps(dispatch) {
     treeChangeHandler: function treeChangeHandler(notesTree) {
       return dispatch(changeNotesTreeAction(notesTree));
     },
-    nodeChangeHandler: function nodeChangeHandler({ notesTree, activeNode }) {
-      return dispatchChangeActions({ dispatch, notesTree, activeNode });
+    // nodeChangeHandler: function nodeChangeHandler({ notesTree, activeNode }) {
+    //   return dispatchChangeActions({ dispatch, notesTree, activeNode });
+    // },
+    noteTitleChangeHandler({ node, title, path }) {
+      return dispatch(changeNoteTitleAction({ node, title, path }));
+    },
+    pathNavigatorClickHandler({ idx }) {
+      return dispatch(navigateToNodeAction({ idx }));
     },
     nodeClickHandler: function nodeClickHandler({ id = null, path = [] }) {
       return dispatch(changeActiveNodeAction({ id, path }));
     },
+    // TODO: TO BE CONTINUED moving new state production from NotesList component to reducers.
     deleteNodeBtnHandler: function deleteNodeBtnHandler({ notesTree, activeNode = null }) {
       return dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
@@ -66,9 +78,6 @@ function mapDispatchToProps(dispatch) {
     },
     toolbarNewNoteBtnClickHandler: function toolbarNewNoteBtnClickHandler({ notesTree, activeNode = null }) {
       return dispatchChangeActions({ dispatch, notesTree, activeNode });
-    },
-    pathNavigatorClickHandler: function pathNavigatorClickHandler({ id = null, path = [] }) {
-      return dispatch(changeActiveNodeAction({ id, path }));
     },
   };
 }

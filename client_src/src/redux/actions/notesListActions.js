@@ -20,6 +20,15 @@ function changeActiveNodeAction({ id, path }) {
   };
 }
 
+function navigateToNodeAction({ idx }) {
+  return {
+    type: notesListActionTypes.NAVIGATE_TO_NODE,
+    payload: {
+      idx,
+    },
+  };
+}
+
 function changeNotesTreeAction(notesTree) {
   if (!Array.isArray(notesTree)) {
     notesTree = [];
@@ -33,4 +42,17 @@ function changeNotesTreeAction(notesTree) {
   };
 }
 
-export { changeActiveNodeAction, changeNotesTreeAction };
+function changeNoteTitleAction({ title, node, path }) {
+  return {
+    type: notesListActionTypes.CHANGE_NOTE_TITLE,
+    payload: {
+      title,
+      node,
+      path,
+    },
+  };
+}
+
+export { changeActiveNodeAction, navigateToNodeAction, changeNotesTreeAction, changeNoteTitleAction };
+
+// TODO: validate arguments on action creators

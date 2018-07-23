@@ -4,9 +4,9 @@ import Tool from './Tool';
 import PathNavigator from './PathNavigator';
 import Tree, {
   addNodeUnderParent,
-  changeNodeAtPath,
   removeNode,
   find } from 'react-sortable-tree';
+import { getNodeKey } from '../../utils/tree-utils';
 
 import 'react-sortable-tree/style.css';
 import uniqid from 'uniqid';
@@ -15,13 +15,12 @@ import NoteTitle from './NoteTitle';
 
 // TODO: Define these in a env config file.
 const ID_DELIMITER = '|^|';
-const getNodeKey = ({ node }) => node.id;
 
 function NotesList({
   notesTree,
   activeNode,
   treeChangeHandler,
-  nodeChangeHandler,
+  noteTitleChangeHandler,
   nodeClickHandler,
   deleteNodeBtnHandler,
   addNodeBtnHandler,
@@ -87,6 +86,8 @@ function NotesList({
     return newNode;
   }
 
+  // TODO: to remove
+  /*
   function noteTitleHandleSubmit({ title, node, path }) {
     console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
 
@@ -102,7 +103,7 @@ function NotesList({
       getNodeKey,
     });
 
-    // Find the newNode now part of the tree, which gives us the its path and children, if any.
+    // Find the newNode now part of the tree, which gives us its path and children, if any.
     const matches = find({
       getNodeKey,
       treeData: changedTree,
@@ -120,11 +121,12 @@ function NotesList({
     console.log('-->Tree changed on node title change\n');
     nodeChangeHandler({ notesTree: changedTree, activeNode: newActiveNode });
   }
+  */
 
   function buildNodeProps({ node, path }) {
     return ({
       title: (
-        <NoteTitle node={ node } path={ path } onSubmit={ noteTitleHandleSubmit } />
+        <NoteTitle node={ node } path={ path } onSubmit={ noteTitleChangeHandler } />
       ),
       className: (node.id === activeNode.id) ? 'active-tree-node' : '',
       buttons: _buildNodeButtons({ node, path }),
@@ -253,15 +255,15 @@ function NotesList({
     toolbarNewFolderBtnClickHandler({ notesTree: newNotesTree, activeNode: newActiveNode });
   }
 
-  function pathNavigatorHandleClick(idx) {
-    if (Number.isSafeInteger(idx) && idx < activeNode.path.length) {
-      const newActiveNode = {
-        id: activeNode.path[idx],
-        path: activeNode.path.slice(0, idx + 1),
-      };
-      pathNavigatorClickHandler(newActiveNode);
-    }
-  }
+  // function pathNavigatorHandleClick(idx) {
+  //   if (Number.isSafeInteger(idx) && idx < activeNode.path.length) {
+  //     const newActiveNode = {
+  //       id: activeNode.path[idx],
+  //       path: activeNode.path.slice(0, idx + 1),
+  //     };
+  //     pathNavigatorClickHandler(newActiveNode);
+  //   }
+  // }
 
   // TODO: remove
   console.log(`
@@ -282,7 +284,7 @@ function NotesList({
             path: activeNode.path,
             kind: 'title',
           })}
-        onClick={ pathNavigatorHandleClick }
+        onClick={ pathNavigatorClickHandler }
       />
       <Tree
         className='tree'

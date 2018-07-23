@@ -1,6 +1,8 @@
 const notesListActionTypes = {
   CHANGE_ACTIVE_NODE: 'CHANGE_ACTIVE_NODE',
+  NAVIGATE_TO_NODE: 'NAVIGATE_TO_NODE',
   CHANGE_NOTES_TREE: 'CHANGE_NOTES_TREE',
+  CHANGE_NOTE_TITLE: 'CHANGE_NOTE_TITLE',
 };
 
 export default notesListActionTypes;
