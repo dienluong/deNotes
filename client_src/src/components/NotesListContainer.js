@@ -1,10 +1,11 @@
 import { connect } from 'react-redux';
 import NotesList from './widgets/NotesList';
 import {
-  changeActiveNodeAction,
+  selectNodeAction,
   navigateToNodeAction,
   changeNotesTreeAction,
-  changeNodeTitleAction }
+  changeNodeTitleAction, deleteNodeAction, switchActiveNodeOnDelete,
+}
   from '../redux/actions/notesListActions';
 
 // const getNodeKey = ({ treeIndex }) => treeIndex;
@@ -34,7 +35,7 @@ function dispatchChangeActions({ dispatch, notesTree, activeNode = null }) {
   dispatch(changeNotesTreeAction(notesTree));
   // if activeNode null, then the active node did not change
   if (activeNode !== null && 'id' in activeNode && 'path' in activeNode) {
-    dispatch(changeActiveNodeAction({
+    dispatch(selectNodeAction({
       id: activeNode.id,
       path: activeNode.path,
     }));
@@ -63,14 +64,15 @@ function mapDispatchToProps(dispatch) {
     pathNavigatorClickHandler({ idx }) {
       return dispatch(navigateToNodeAction({ idx }));
     },
-    nodeClickHandler: function nodeClickHandler({ id = null, path = [] }) {
-      return dispatch(changeActiveNodeAction({ id, path }));
+    nodeClickHandler({ id = null, path = [] }) {
+      return dispatch(selectNodeAction({ id, path }));
+    },
+    deleteNodeBtnHandler({ node, path }) {
+      dispatch(deleteNodeAction({ node, path }));
+      return dispatch(switchActiveNodeOnDelete({ id: node.id, path }));
     },
     // TODO: TO BE CONTINUED moving new state production from NotesList component to reducers.
-    deleteNodeBtnHandler: function deleteNodeBtnHandler({ notesTree, activeNode = null }) {
-      return dispatchChangeActions({ dispatch, notesTree, activeNode });
-    },
-    addNodeBtnHandler: function deleteNodeBtnHandler({ notesTree, activeNode = null }) {
+    addNodeBtnHandler: function addNodeBtnHandler({ notesTree, activeNode = null }) {
       return dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
     toolbarNewFolderBtnClickHandler: function toolbarNewFolderBtnClickHandler({ notesTree, activeNode = null }) {

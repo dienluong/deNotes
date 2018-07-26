@@ -2,6 +2,7 @@ import notesListActionTypes from '../actions/constants/notesListActionConstants'
 import sampleNotes from '../../test/sample-tree';
 import {
   changeNodeAtPath,
+  removeNode,
 } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/tree-utils';
 
@@ -45,6 +46,13 @@ function changeNodeTitle({ notesTree, title, node, path }) {
   // nodeChangeHandler({ notesTree: changedTree, activeNode: newActiveNode });
 }
 
+function deleteNode({ notesTree, node, path }) {
+  return removeNode({
+    treeData: notesTree,
+    getNodeKey,
+    path,
+  }).treeData;
+}
 
 export default function notesTreeReducer(state = initialNotesTree, action) {
   switch (action.type) {
@@ -54,8 +62,14 @@ export default function notesTreeReducer(state = initialNotesTree, action) {
     case notesListActionTypes.CHANGE_NODE_TITLE:
       console.log(`REDUCER: ${notesListActionTypes.CHANGE_NODE_TITLE}`);
       return changeNodeTitle({
-        ...action.payload,
         notesTree: state,
+        ...action.payload,
+      });
+    case notesListActionTypes.DELETE_NODE:
+      console.log(`REDUCER: ${notesListActionTypes.DELETE_NODE}`);
+      return deleteNode({
+        notesTree: state,
+        ...action.payload,
       });
     default:
       return state;

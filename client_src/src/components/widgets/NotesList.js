@@ -4,7 +4,6 @@ import Tool from './Tool';
 import PathNavigator from './PathNavigator';
 import Tree, {
   addNodeUnderParent,
-  removeNode,
   find } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/tree-utils';
 
@@ -86,43 +85,6 @@ function NotesList({
     return newNode;
   }
 
-  // TODO: to remove
-  /*
-  function noteTitleHandleSubmit({ title, node, path }) {
-    console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
-
-    // TODO? Must use a map structure to map the ID to the corresponding node title
-    // Cannot use _createNode for creating a new node (with a new ID) as it is breaking the tree.
-    // This is because react-sortable-tree treats it as a new standalone node due to new ID (not reusing the ID of the old node)
-    // So using { ...node, title } to keep the ID intact and only change the title
-    const modifiedNode = { ...node, title };
-    const changedTree = changeNodeAtPath({
-      treeData: notesTree,
-      path,
-      newNode: modifiedNode,
-      getNodeKey,
-    });
-
-    // Find the newNode now part of the tree, which gives us its path and children, if any.
-    const matches = find({
-      getNodeKey,
-      treeData: changedTree,
-      searchQuery: modifiedNode.id,
-      searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
-    }).matches;
-
-    let newActiveNode = null;
-    if (matches.length) {
-      newActiveNode = {
-        id: matches[0].node.id,
-        path: matches[0].path,
-      };
-    }
-    console.log('-->Tree changed on node title change\n');
-    nodeChangeHandler({ notesTree: changedTree, activeNode: newActiveNode });
-  }
-  */
-
   function buildNodeProps({ node, path }) {
     return ({
       title: (
@@ -140,31 +102,7 @@ function NotesList({
         className='tree-node-btn'
         onClick={ (event) => {
           event.stopPropagation();
-          const { treeData } = removeNode({
-            treeData: notesTree,
-            getNodeKey,
-            path,
-          });
-
-          let newActiveNode = null;
-          // if deleted node is part of the active path, re-adjust the active node
-          const deletedNodeIdx = activeNode.path.lastIndexOf(node.id);
-          if (deletedNodeIdx >= 0) {
-            const newActivePath = activeNode.path.slice(0, deletedNodeIdx);
-            if (!newActivePath.length) {
-              newActiveNode = {
-                id: null,
-                path: [],
-              };
-            } else {
-              newActiveNode = {
-                id: newActivePath[newActivePath.length - 1],
-                path: newActivePath,
-              };
-            }
-          }
-
-          deleteNodeBtnHandler({ notesTree: treeData, activeNode: newActiveNode });
+          deleteNodeBtnHandler({ node, path });
         }}
       >
         x

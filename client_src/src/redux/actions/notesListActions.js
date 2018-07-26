@@ -1,6 +1,6 @@
 import notesListActionTypes from './constants/notesListActionConstants';
 
-function changeActiveNodeAction({ id, path }) {
+function selectNodeAction({ id, path }) {
   if (typeof id !== 'string' || id.length === 0) {
     id = null;
   }
@@ -16,6 +16,18 @@ function changeActiveNodeAction({ id, path }) {
     type: notesListActionTypes.SELECT_NODE,
     payload: {
       activeNode,
+    },
+  };
+}
+
+function switchActiveNodeOnDelete({ id, path }) {
+  return {
+    type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
+    payload: {
+      deletedNode: {
+        id,
+        path,
+      },
     },
   };
 }
@@ -53,6 +65,22 @@ function changeNodeTitleAction({ title, node, path }) {
   };
 }
 
-export { changeActiveNodeAction, navigateToNodeAction, changeNotesTreeAction, changeNodeTitleAction };
+function deleteNodeAction({ node, path }) {
+  return {
+    type: notesListActionTypes.DELETE_NODE,
+    payload: {
+      node,
+      path,
+    },
+  };
+}
+
+export {
+  selectNodeAction,
+  switchActiveNodeOnDelete,
+  navigateToNodeAction,
+  changeNotesTreeAction,
+  changeNodeTitleAction,
+  deleteNodeAction };
 
 // TODO: validate arguments on action creators
