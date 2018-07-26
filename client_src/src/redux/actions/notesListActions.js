@@ -13,7 +13,7 @@ function changeActiveNodeAction({ id, path }) {
   };
 
   return {
-    type: notesListActionTypes.CHANGE_ACTIVE_NODE,
+    type: notesListActionTypes.SELECT_NODE,
     payload: {
       activeNode,
     },
@@ -42,9 +42,9 @@ function changeNotesTreeAction(notesTree) {
   };
 }
 
-function changeNoteTitleAction({ title, node, path }) {
+function changeNodeTitleAction({ title, node, path }) {
   return {
-    type: notesListActionTypes.CHANGE_NOTE_TITLE,
+    type: notesListActionTypes.CHANGE_NODE_TITLE,
     payload: {
       title,
       node,
@@ -53,6 +53,6 @@ function changeNoteTitleAction({ title, node, path }) {
   };
 }
 
-export { changeActiveNodeAction, navigateToNodeAction, changeNotesTreeAction, changeNoteTitleAction };
+export { changeActiveNodeAction, navigateToNodeAction, changeNotesTreeAction, changeNodeTitleAction };
 
 // TODO: validate arguments on action creators

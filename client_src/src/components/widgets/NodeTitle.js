@@ -1,6 +1,6 @@
 import React from 'react';
 
-function NoteTitle({ node, path, onSubmit: submitHandler }) {
+function NodeTitle({ node, path, onSubmit: submitHandler }) {
   function submit(event) {
     const inputEl = event.target.matches('input') ? event.target : event.target.firstElementChild;
     // console.log(';' + inputEl.value + ';' + inputEl.defaultValue + ';');
@@ -18,7 +18,7 @@ function NoteTitle({ node, path, onSubmit: submitHandler }) {
   return (
     <form onSubmit={ submit } onBlur={ submit }>
       <input
-        className='note-title'
+        className='node-title'
         type="text"
         defaultValue={ node.title }
         // ref={ this.input }
@@ -27,4 +27,4 @@ function NoteTitle({ node, path, onSubmit: submitHandler }) {
   );
 }
 
-export default NoteTitle;
+export default NodeTitle;

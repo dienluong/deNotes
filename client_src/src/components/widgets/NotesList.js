@@ -11,7 +11,7 @@ import { getNodeKey } from '../../utils/tree-utils';
 import 'react-sortable-tree/style.css';
 import uniqid from 'uniqid';
 import './NotesList.css';
-import NoteTitle from './NoteTitle';
+import NodeTitle from './NodeTitle';
 
 // TODO: Define these in a env config file.
 const ID_DELIMITER = '|^|';
@@ -20,7 +20,7 @@ function NotesList({
   notesTree,
   activeNode,
   treeChangeHandler,
-  noteTitleChangeHandler,
+  nodeTitleChangeHandler,
   nodeClickHandler,
   deleteNodeBtnHandler,
   addNodeBtnHandler,
@@ -126,7 +126,7 @@ function NotesList({
   function buildNodeProps({ node, path }) {
     return ({
       title: (
-        <NoteTitle node={ node } path={ path } onSubmit={ noteTitleChangeHandler } />
+        <NodeTitle node={ node } path={ path } onSubmit={ nodeTitleChangeHandler } />
       ),
       className: (node.id === activeNode.id) ? 'active-tree-node' : '',
       buttons: _buildNodeButtons({ node, path }),

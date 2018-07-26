@@ -2,7 +2,7 @@
 import React, { Fragment } from 'react';
 import './Main.css';
 import Editor from './Editor';
-import NotesList from './NotesListContainer';
+import NotesListContainer from './NotesListContainer';
 import SplitPane from 'react-split-pane';
 
 class Main extends React.Component {
@@ -10,7 +10,7 @@ class Main extends React.Component {
     return (
       <Fragment>
         <SplitPane split="vertical" defaultSize="30%" >
-          <NotesList />
+          <NotesListContainer />
           <Editor />
         </SplitPane>
       </Fragment>

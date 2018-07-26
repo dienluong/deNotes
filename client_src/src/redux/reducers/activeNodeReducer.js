@@ -18,8 +18,8 @@ function changeActiveNodeOnPathNavClick({ currentActive, idx }) {
 
 export default function activeNodeReducer(state = initialActiveNode, action) {
   switch (action.type) {
-    case notesListActionTypes.CHANGE_ACTIVE_NODE:
-      console.log(`REDUCER: ${notesListActionTypes.CHANGE_ACTIVE_NODE}`);
+    case notesListActionTypes.SELECT_NODE:
+      console.log(`REDUCER: ${notesListActionTypes.SELECT_NODE}`);
       return {
         id: action.payload.activeNode.id,
         path: action.payload.activeNode.path,

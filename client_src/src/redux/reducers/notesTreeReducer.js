@@ -7,7 +7,7 @@ import { getNodeKey } from '../../utils/tree-utils';
 
 let initialNotesTree = sampleNotes;
 
-function changeNoteTitle({ notesTree, title, node, path }) {
+function changeNodeTitle({ notesTree, title, node, path }) {
   console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
 
   // TODO? Must use a map structure to map the ID to the corresponding node title
@@ -51,9 +51,9 @@ export default function notesTreeReducer(state = initialNotesTree, action) {
     case notesListActionTypes.CHANGE_NOTES_TREE:
       console.log(`REDUCER: ${notesListActionTypes.CHANGE_NOTES_TREE}`);
       return action.payload.notesTree;
-    case notesListActionTypes.CHANGE_NOTE_TITLE:
-      console.log(`REDUCER: ${notesListActionTypes.CHANGE_NOTE_TITLE}`);
-      return changeNoteTitle({
+    case notesListActionTypes.CHANGE_NODE_TITLE:
+      console.log(`REDUCER: ${notesListActionTypes.CHANGE_NODE_TITLE}`);
+      return changeNodeTitle({
         ...action.payload,
         notesTree: state,
       });

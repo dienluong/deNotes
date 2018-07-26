@@ -4,7 +4,7 @@ import {
   changeActiveNodeAction,
   navigateToNodeAction,
   changeNotesTreeAction,
-  changeNoteTitleAction }
+  changeNodeTitleAction }
   from '../redux/actions/notesListActions';
 
 // const getNodeKey = ({ treeIndex }) => treeIndex;
@@ -57,8 +57,8 @@ function mapDispatchToProps(dispatch) {
     // nodeChangeHandler: function nodeChangeHandler({ notesTree, activeNode }) {
     //   return dispatchChangeActions({ dispatch, notesTree, activeNode });
     // },
-    noteTitleChangeHandler({ node, title, path }) {
-      return dispatch(changeNoteTitleAction({ node, title, path }));
+    nodeTitleChangeHandler({ node, title, path }) {
+      return dispatch(changeNodeTitleAction({ node, title, path }));
     },
     pathNavigatorClickHandler({ idx }) {
       return dispatch(navigateToNodeAction({ idx }));
