@@ -11,6 +11,8 @@ const notesListActionTypes = {
   CHANGE_NODE_TITLE: 'CHANGE_NODE_TITLE',
   DELETE_NODE: 'DELETE_NODE',
   SWITCH_NODE_ON_DELETE: 'SWITCH_NODE_ON_DELETE',
+  ADD_NODE: 'ADD_NODE',
+  SWITCH_NODE_ON_ADD: 'SWITCH_NODE_ON_ADD',
 };
 
 export default notesListActionTypes;

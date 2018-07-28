@@ -116,21 +116,7 @@ function NotesList({
           className='tree-node-btn'
           onClick={ (event) => {
             event.stopPropagation();
-            const newNode = _createNode({});
-            const { treeData } = addNodeUnderParent({
-              treeData: notesTree,
-              getNodeKey,
-              parentKey: path[path.length - 1],
-              newNode,
-              expandParent: true,
-            });
-
-            const newActiveNode = {
-              id: newNode.id,
-              path: [...(path || []), newNode.id],
-            };
-
-            addNodeBtnHandler({ notesTree: treeData, activeNode: newActiveNode });
+            addNodeBtnHandler({ path });
           }}
         >
           +

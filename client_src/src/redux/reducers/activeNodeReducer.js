@@ -27,8 +27,7 @@ function changeActiveNodeOnDelete({ currentActive, deletedNode }) {
         id: newActivePath[newActivePath.length - 1],
         path: newActivePath,
       };
-    }
-    else {
+    } else {
       newActiveNode = {
         id: null,
         path: [],

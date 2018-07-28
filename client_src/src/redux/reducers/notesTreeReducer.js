@@ -1,12 +1,39 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
-import sampleNotes from '../../test/sample-tree';
+import initialNotesTree from '../../test/sample-tree';
 import {
   changeNodeAtPath,
   removeNode,
+  addNodeUnderParent,
 } from 'react-sortable-tree';
+import uniqid from 'uniqid';
 import { getNodeKey } from '../../utils/tree-utils';
 
-let initialNotesTree = sampleNotes;
+// TODO: Define these in a env config file.
+const ID_DELIMITER = '|^|';
+
+function _createNode({
+  title = 'New Note',
+  subtitle = new Date().toLocaleString(),
+  type = 'item',
+}) {
+  const newNode = {
+    title,
+    subtitle,
+    type,
+    uniqid: uniqid(),
+    get id() {
+      return `${this.type}${ID_DELIMITER}${this.uniqid}`;
+    },
+  };
+
+  if (type === 'folder') {
+    newNode.children = [];
+    newNode.title = title === 'New Note' ? 'New Folder' : title;
+  }
+
+  return newNode;
+}
+
 
 function changeNodeTitle({ notesTree, title, node, path }) {
   console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
@@ -27,23 +54,6 @@ function changeNodeTitle({ notesTree, title, node, path }) {
   });
 
   return newTree || notesTree;
-
-  // Find the newNode now part of the tree, which gives us its path and children, if any.
-  // const matches = find({
-  //   getNodeKey,
-  //   treeData: changedTree,
-  //   searchQuery: modifiedNode.id,
-  //   searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
-  // }).matches;
-  //
-  // let newActiveNode = null;
-  // if (matches.length) {
-  //   newActiveNode = {
-  //     id: matches[0].node.id,
-  //     path: matches[0].path,
-  //   };
-  // }
-  // nodeChangeHandler({ notesTree: changedTree, activeNode: newActiveNode });
 }
 
 function deleteNode({ notesTree, node, path }) {
@@ -51,6 +61,17 @@ function deleteNode({ notesTree, node, path }) {
     treeData: notesTree,
     getNodeKey,
     path,
+  }).treeData;
+}
+
+function addNode({ notesTree, path }) {
+  const newNode = _createNode({});
+  return addNodeUnderParent({
+    treeData: notesTree,
+    getNodeKey,
+    parentKey: path[path.length - 1],
+    newNode,
+    expandParent: true,
   }).treeData;
 }
 
@@ -68,6 +89,12 @@ export default function notesTreeReducer(state = initialNotesTree, action) {
     case notesListActionTypes.DELETE_NODE:
       console.log(`REDUCER: ${notesListActionTypes.DELETE_NODE}`);
       return deleteNode({
+        notesTree: state,
+        ...action.payload,
+      });
+    case notesListActionTypes.ADD_NODE:
+      console.log(`REDUCER: ${notesListActionTypes.ADD_NODE}`);
+      return addNode({
         notesTree: state,
         ...action.payload,
       });

@@ -32,6 +32,15 @@ function switchActiveNodeOnDelete({ id, path }) {
   };
 }
 
+function switchActiveNodeOnAdd({ path }) {
+  return {
+    type: notesListActionTypes.SWITCH_NODE_ON_ADD,
+    payload: {
+      path,
+    },
+  };
+}
+
 function navigateToNodeAction({ idx }) {
   return {
     type: notesListActionTypes.NAVIGATE_TO_NODE,
@@ -75,12 +84,24 @@ function deleteNodeAction({ node, path }) {
   };
 }
 
+function addNodeAction({ path }) {
+  return {
+    type: notesListActionTypes.ADD_NODE,
+    payload: {
+      path,
+    },
+  };
+}
+
 export {
   selectNodeAction,
   switchActiveNodeOnDelete,
+  switchActiveNodeOnAdd,
   navigateToNodeAction,
   changeNotesTreeAction,
   changeNodeTitleAction,
-  deleteNodeAction };
+  deleteNodeAction,
+  addNodeAction,
+};
 
 // TODO: validate arguments on action creators

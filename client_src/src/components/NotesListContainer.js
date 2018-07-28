@@ -4,7 +4,11 @@ import {
   selectNodeAction,
   navigateToNodeAction,
   changeNotesTreeAction,
-  changeNodeTitleAction, deleteNodeAction, switchActiveNodeOnDelete,
+  changeNodeTitleAction,
+  deleteNodeAction,
+  addNodeAction,
+  switchActiveNodeOnDelete,
+  switchActiveNodeOnAdd,
 }
   from '../redux/actions/notesListActions';
 
@@ -52,7 +56,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    treeChangeHandler: function treeChangeHandler(notesTree) {
+    treeChangeHandler(notesTree) {
       return dispatch(changeNotesTreeAction(notesTree));
     },
     // nodeChangeHandler: function nodeChangeHandler({ notesTree, activeNode }) {
@@ -72,13 +76,14 @@ function mapDispatchToProps(dispatch) {
       return dispatch(switchActiveNodeOnDelete({ id: node.id, path }));
     },
     // TODO: TO BE CONTINUED moving new state production from NotesList component to reducers.
-    addNodeBtnHandler: function addNodeBtnHandler({ notesTree, activeNode = null }) {
+    addNodeBtnHandler({ path }) {
+      dispatch(addNodeAction({ path }));
+      return dispatch(switchActiveNodeOnAdd({ path }));
+    },
+    toolbarNewFolderBtnClickHandler({ notesTree, activeNode = null }) {
       return dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
-    toolbarNewFolderBtnClickHandler: function toolbarNewFolderBtnClickHandler({ notesTree, activeNode = null }) {
-      return dispatchChangeActions({ dispatch, notesTree, activeNode });
-    },
-    toolbarNewNoteBtnClickHandler: function toolbarNewNoteBtnClickHandler({ notesTree, activeNode = null }) {
+    toolbarNewNoteBtnClickHandler({ notesTree, activeNode = null }) {
       return dispatchChangeActions({ dispatch, notesTree, activeNode });
     },
   };
