@@ -3,6 +3,14 @@ import { getNodeAtPath, addNodeUnderParent } from 'react-sortable-tree';
 import { getNodeKey, createNode } from '../../utils/tree-utils';
 const ID_DELIMITER = '|^|';
 
+const initialState = {
+  notesTree: [],
+  activeNode: {
+    id: null,
+    path: [],
+  },
+};
+
 /**
  * Returns the index of the deepest node of type 'folder' in path.
  * Returns null if none found.
@@ -79,7 +87,7 @@ function addAndSelectNewNode({ state, kind }) {
   };
 }
 
-export default function reducedReducer(state = {}, action) {
+export default function reducedReducer(state = initialState, action) {
   switch (action.type) {
     case notesListActionTypes.SWITCH_NODE_ON_ADD:
       console.log(`REDUCER: ${notesListActionTypes.SWITCH_NODE_ON_ADD}`);

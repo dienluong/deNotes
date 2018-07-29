@@ -1,5 +1,4 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
-import initialNotesTree from '../../test/sample-tree';
 import {
   changeNodeAtPath,
   removeNode,
@@ -47,7 +46,7 @@ function addNote({ notesTree, path }) {
   }).treeData;
 }
 
-export default function notesTreeReducer(state = initialNotesTree, action) {
+export default function notesTreeReducer(state = [], action) {
   switch (action.type) {
     case notesListActionTypes.CHANGE_NOTES_TREE:
       console.log(`REDUCER: ${notesListActionTypes.CHANGE_NOTES_TREE}`);

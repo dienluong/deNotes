@@ -16,7 +16,6 @@ function PathNavigator({ path, onClick: clickHandler }) {
   return (
     <nav>
       <ul>
-        <PathSegment className='lined' onClick={ clickHandler } label='' />
         { pathSegments }
       </ul>
     </nav>
