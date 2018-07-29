@@ -84,11 +84,20 @@ function deleteNodeAction({ node, path }) {
   };
 }
 
-function addNodeAction({ path }) {
+function addNoteAction({ path }) {
   return {
-    type: notesListActionTypes.ADD_NODE,
+    type: notesListActionTypes.ADD_NOTE,
     payload: {
       path,
+    },
+  };
+}
+
+function addAndSelectNode({ kind }) {
+  return {
+    type: notesListActionTypes.ADD_AND_SELECT_TO_NODE,
+    payload: {
+      kind,
     },
   };
 }
@@ -101,7 +110,8 @@ export {
   changeNotesTreeAction,
   changeNodeTitleAction,
   deleteNodeAction,
-  addNodeAction,
+  addNoteAction,
+  addAndSelectNode,
 };
 
 // TODO: validate arguments on action creators

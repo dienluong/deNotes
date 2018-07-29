@@ -6,29 +6,12 @@ import {
   changeNotesTreeAction,
   changeNodeTitleAction,
   deleteNodeAction,
-  addNodeAction,
+  addNoteAction,
   switchActiveNodeOnDelete,
   switchActiveNodeOnAdd,
+  addAndSelectNode,
 }
   from '../redux/actions/notesListActions';
-
-// const getNodeKey = ({ treeIndex }) => treeIndex;
-// class NotesList extends React.Component {
-//   constructor(props) {
-//     super(props);
-// this.state = {
-//   notesTree: sampleNotes,
-//   activeNode: {
-//     id: null,
-//     path: [],
-//   },
-// };
-
-// this.handleChange = this.handleChange.bind(this);
-// this.buildNodeProps = this.buildNodeProps.bind(this);
-// this.newFolder = this.newFolder.bind(this);
-// }
-// }
 
 /**
  * @param dispatch {function}
@@ -75,14 +58,14 @@ function mapDispatchToProps(dispatch) {
       dispatch(deleteNodeAction({ node, path }));
       return dispatch(switchActiveNodeOnDelete({ id: node.id, path }));
     },
-    // TODO: TO BE CONTINUED moving new state production from NotesList component to reducers.
-    addNodeBtnHandler({ path }) {
-      dispatch(addNodeAction({ path }));
+    addNoteBtnHandler({ path }) {
+      dispatch(addNoteAction({ path }));
       return dispatch(switchActiveNodeOnAdd({ path }));
     },
-    toolbarNewFolderBtnClickHandler({ notesTree, activeNode = null }) {
-      return dispatchChangeActions({ dispatch, notesTree, activeNode });
+    toolbarNewFolderBtnClickHandler() {
+      return dispatch(addAndSelectNode({ kind: 'folder' }));
     },
+    // TODO: TO BE CONTINUED moving new state production from NotesList component to reducers.
     toolbarNewNoteBtnClickHandler({ notesTree, activeNode = null }) {
       return dispatchChangeActions({ dispatch, notesTree, activeNode });
     },

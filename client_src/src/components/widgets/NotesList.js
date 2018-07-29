@@ -2,13 +2,10 @@ import React, { Fragment } from 'react';
 import Toolbar from './Toolbar';
 import Tool from './Tool';
 import PathNavigator from './PathNavigator';
-import Tree, {
-  addNodeUnderParent,
-  find } from 'react-sortable-tree';
+import Tree, { find } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/tree-utils';
 
 import 'react-sortable-tree/style.css';
-import uniqid from 'uniqid';
 import './NotesList.css';
 import NodeTitle from './NodeTitle';
 
@@ -22,7 +19,7 @@ function NotesList({
   nodeTitleChangeHandler,
   nodeClickHandler,
   deleteNodeBtnHandler,
-  addNodeBtnHandler,
+  addNoteBtnHandler,
   toolbarNewFolderBtnClickHandler,
   toolbarNewNoteBtnClickHandler,
   pathNavigatorClickHandler,
@@ -62,29 +59,6 @@ function NotesList({
     }
   }
 
-  function _createNode({
-    title = 'New Note',
-    subtitle = new Date().toLocaleString(),
-    type = 'item',
-  }) {
-    const newNode = {
-      title,
-      subtitle,
-      type,
-      uniqid: uniqid(),
-      get id() {
-        return `${this.type}${ID_DELIMITER}${this.uniqid}`;
-      },
-    };
-
-    if (type === 'folder') {
-      newNode.children = [];
-      newNode.title = title === 'New Note' ? 'New Folder' : title;
-    }
-
-    return newNode;
-  }
-
   function buildNodeProps({ node, path }) {
     return ({
       title: (
@@ -116,7 +90,7 @@ function NotesList({
           className='tree-node-btn'
           onClick={ (event) => {
             event.stopPropagation();
-            addNodeBtnHandler({ path });
+            addNoteBtnHandler({ path });
           }}
         >
           +
@@ -124,59 +98,6 @@ function NotesList({
     }
 
     return buttons;
-  }
-
-  /**
-   * Returns the index of the deepest node of type 'folder' in path.
-   * Returns null if none found.
-   * @param path {Array}
-   * @return {?number}
-   * @private
-   */
-  function _findFarthestParent(path) {
-    if (!Array.isArray(path) || (path.length === 0)) {
-      return null;
-    }
-
-    const lastStep = path[path.length - 1];
-    if (path.length === 1) {
-      return (lastStep.includes(`folder${ID_DELIMITER}`) ? 0 : null);
-    } else {
-      // If last step in path is not a folder, then the step previous to last must be a folder.
-      return (lastStep.includes(`folder${ID_DELIMITER}`)) ? path.length - 1 : path.length - 2;
-    }
-  }
-
-  function newFolder() {
-    let newActiveNodePath = [];
-    let parentKey = null;
-    const newNode = _createNode({ type: 'folder' });
-    const currentActivePath = activeNode.path;
-    const parentIdx = _findFarthestParent(currentActivePath);
-
-    // if parent found
-    if (parentIdx !== null) {
-      parentKey = currentActivePath[parentIdx];
-      newActiveNodePath = [...currentActivePath.slice(0, parentIdx + 1), newNode.id];
-    } else {
-      parentKey = null;
-      newActiveNodePath = [newNode.id];
-    }
-
-    const newNotesTree = addNodeUnderParent({
-      treeData: notesTree,
-      newNode,
-      parentKey,
-      getNodeKey,
-      expandParent: true,
-    }).treeData;
-
-    const newActiveNode = {
-      id: newNode.id,
-      path: newActiveNodePath,
-    };
-
-    toolbarNewFolderBtnClickHandler({ notesTree: newNotesTree, activeNode: newActiveNode });
   }
 
   // function pathNavigatorHandleClick(idx) {
@@ -199,8 +120,8 @@ function NotesList({
   return (
     <Fragment>
       <Toolbar>
-        <Tool label='New Folder' onClick={ newFolder}/>
-        <Tool label='New Note' onClick={ newFolder }/>
+        <Tool label='New Folder' onClick={ toolbarNewFolderBtnClickHandler }/>
+        <Tool label='New Note' onClick={ toolbarNewFolderBtnClickHandler }/>
       </Toolbar>
       <PathNavigator
         path={

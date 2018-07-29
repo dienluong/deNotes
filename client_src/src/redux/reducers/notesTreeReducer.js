@@ -5,35 +5,7 @@ import {
   removeNode,
   addNodeUnderParent,
 } from 'react-sortable-tree';
-import uniqid from 'uniqid';
-import { getNodeKey } from '../../utils/tree-utils';
-
-// TODO: Define these in a env config file.
-const ID_DELIMITER = '|^|';
-
-function _createNode({
-  title = 'New Note',
-  subtitle = new Date().toLocaleString(),
-  type = 'item',
-}) {
-  const newNode = {
-    title,
-    subtitle,
-    type,
-    uniqid: uniqid(),
-    get id() {
-      return `${this.type}${ID_DELIMITER}${this.uniqid}`;
-    },
-  };
-
-  if (type === 'folder') {
-    newNode.children = [];
-    newNode.title = title === 'New Note' ? 'New Folder' : title;
-  }
-
-  return newNode;
-}
-
+import { getNodeKey, createNode } from '../../utils/tree-utils';
 
 function changeNodeTitle({ notesTree, title, node, path }) {
   console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
@@ -64,8 +36,8 @@ function deleteNode({ notesTree, node, path }) {
   }).treeData;
 }
 
-function addNode({ notesTree, path }) {
-  const newNode = _createNode({});
+function addNote({ notesTree, path }) {
+  const newNode = createNode({});
   return addNodeUnderParent({
     treeData: notesTree,
     getNodeKey,
@@ -92,9 +64,9 @@ export default function notesTreeReducer(state = initialNotesTree, action) {
         notesTree: state,
         ...action.payload,
       });
-    case notesListActionTypes.ADD_NODE:
-      console.log(`REDUCER: ${notesListActionTypes.ADD_NODE}`);
-      return addNode({
+    case notesListActionTypes.ADD_NOTE:
+      console.log(`REDUCER: ${notesListActionTypes.ADD_NOTE}`);
+      return addNote({
         notesTree: state,
         ...action.payload,
       });

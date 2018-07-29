@@ -1,7 +1,28 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
-import { getNodeAtPath } from 'react-sortable-tree';
-import { getNodeKey } from '../../utils/tree-utils';
+import { getNodeAtPath, addNodeUnderParent } from 'react-sortable-tree';
+import { getNodeKey, createNode } from '../../utils/tree-utils';
+const ID_DELIMITER = '|^|';
 
+/**
+ * Returns the index of the deepest node of type 'folder' in path.
+ * Returns null if none found.
+ * @param path {Array}
+ * @return {?number}
+ * @private
+ */
+function _findFarthestParent(path) {
+  if (!Array.isArray(path) || (path.length === 0)) {
+    return null;
+  }
+
+  const lastStep = path[path.length - 1];
+  if (path.length === 1) {
+    return (lastStep.includes(`folder${ID_DELIMITER}`) ? 0 : null);
+  } else {
+    // If last step in path is not a folder, then the step previous to last must be a folder.
+    return (lastStep.includes(`folder${ID_DELIMITER}`)) ? path.length - 1 : path.length - 2;
+  }
+}
 
 function switchActiveNodeOnAdd({ state, parentPath }) {
   let newActiveNode = { id: null, path: [] };
@@ -17,12 +38,45 @@ function switchActiveNodeOnAdd({ state, parentPath }) {
     newActiveNode.path = [...parentPath, newActiveNode.id];
   }
 
-  let newState = {
+  return {
     ...state,
     activeNode: newActiveNode,
   };
-  console.log(newState);
-  return newState;
+}
+
+function addAndSelectNewNode({ state, kind }) {
+  let newActiveNodePath = [];
+  let parentKey = null;
+  const newNode = createNode({ type: kind });
+  const currentActivePath = state.activeNode.path;
+  const parentIdx = _findFarthestParent(currentActivePath);
+
+  // if parent found
+  if (parentIdx !== null) {
+    parentKey = currentActivePath[parentIdx];
+    newActiveNodePath = [...currentActivePath.slice(0, parentIdx + 1), newNode.id];
+  } else {
+    parentKey = null;
+    newActiveNodePath = [newNode.id];
+  }
+
+  const newNotesTree = addNodeUnderParent({
+    treeData: state.notesTree,
+    newNode,
+    parentKey,
+    getNodeKey,
+    expandParent: true,
+  }).treeData;
+
+  const newActiveNode = {
+    id: newNode.id,
+    path: newActiveNodePath,
+  };
+
+  return {
+    notesTree: newNotesTree,
+    activeNode: newActiveNode,
+  };
 }
 
 export default function reducedReducer(state = {}, action) {
@@ -32,6 +86,12 @@ export default function reducedReducer(state = {}, action) {
       return switchActiveNodeOnAdd({
         state,
         parentPath: action.payload.path,
+      });
+    case notesListActionTypes.ADD_AND_SELECT_TO_NODE:
+      console.log(`REDUCER: ${notesListActionTypes.ADD_AND_SELECT_TO_NODE}`);
+      return addAndSelectNewNode({
+        state,
+        kind: action.payload.kind,
       });
     default:
       return state;
