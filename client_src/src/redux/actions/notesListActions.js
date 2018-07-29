@@ -95,7 +95,7 @@ function addNoteAction({ path }) {
 
 function addAndSelectNode({ kind }) {
   return {
-    type: notesListActionTypes.ADD_AND_SELECT_TO_NODE,
+    type: notesListActionTypes.ADD_AND_SELECT_NODE,
     payload: {
       kind,
     },

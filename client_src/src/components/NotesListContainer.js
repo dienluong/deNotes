@@ -13,21 +13,21 @@ import {
 }
   from '../redux/actions/notesListActions';
 
-/**
- * @param dispatch {function}
- * @param notesTree {Array}
- * @param activeNode {Object} Object with properties id and path
- */
-function dispatchChangeActions({ dispatch, notesTree, activeNode = null }) {
-  dispatch(changeNotesTreeAction(notesTree));
+// /**
+//  * @param dispatch {function}
+//  * @param notesTree {Array}
+//  * @param activeNode {Object} Object with properties id and path
+//  */
+// function dispatchChangeActions({ dispatch, notesTree, activeNode = null }) {
+//   dispatch(changeNotesTreeAction(notesTree));
   // if activeNode null, then the active node did not change
-  if (activeNode !== null && 'id' in activeNode && 'path' in activeNode) {
-    dispatch(selectNodeAction({
-      id: activeNode.id,
-      path: activeNode.path,
-    }));
-  }
-}
+  // if (activeNode !== null && 'id' in activeNode && 'path' in activeNode) {
+  //   dispatch(selectNodeAction({
+  //     id: activeNode.id,
+  //     path: activeNode.path,
+  //   }));
+  // }
+// }
 
 
 function mapStateToProps(state) {
@@ -42,9 +42,6 @@ function mapDispatchToProps(dispatch) {
     treeChangeHandler(notesTree) {
       return dispatch(changeNotesTreeAction(notesTree));
     },
-    // nodeChangeHandler: function nodeChangeHandler({ notesTree, activeNode }) {
-    //   return dispatchChangeActions({ dispatch, notesTree, activeNode });
-    // },
     nodeTitleChangeHandler({ node, title, path }) {
       return dispatch(changeNodeTitleAction({ node, title, path }));
     },
@@ -66,8 +63,8 @@ function mapDispatchToProps(dispatch) {
       return dispatch(addAndSelectNode({ kind: 'folder' }));
     },
     // TODO: TO BE CONTINUED moving new state production from NotesList component to reducers.
-    toolbarNewNoteBtnClickHandler({ notesTree, activeNode = null }) {
-      return dispatchChangeActions({ dispatch, notesTree, activeNode });
+    toolbarNewNoteBtnClickHandler() {
+      return dispatch(addAndSelectNode({ kind: 'item' }));
     },
   };
 }

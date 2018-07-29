@@ -100,16 +100,6 @@ function NotesList({
     return buttons;
   }
 
-  // function pathNavigatorHandleClick(idx) {
-  //   if (Number.isSafeInteger(idx) && idx < activeNode.path.length) {
-  //     const newActiveNode = {
-  //       id: activeNode.path[idx],
-  //       path: activeNode.path.slice(0, idx + 1),
-  //     };
-  //     pathNavigatorClickHandler(newActiveNode);
-  //   }
-  // }
-
   // TODO: remove
   console.log(`
     Active ID: ${activeNode.id} \n
@@ -121,7 +111,7 @@ function NotesList({
     <Fragment>
       <Toolbar>
         <Tool label='New Folder' onClick={ toolbarNewFolderBtnClickHandler }/>
-        <Tool label='New Note' onClick={ toolbarNewFolderBtnClickHandler }/>
+        <Tool label='New Note' onClick={ toolbarNewNoteBtnClickHandler }/>
       </Toolbar>
       <PathNavigator
         path={

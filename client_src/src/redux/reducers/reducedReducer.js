@@ -87,8 +87,8 @@ export default function reducedReducer(state = {}, action) {
         state,
         parentPath: action.payload.path,
       });
-    case notesListActionTypes.ADD_AND_SELECT_TO_NODE:
-      console.log(`REDUCER: ${notesListActionTypes.ADD_AND_SELECT_TO_NODE}`);
+    case notesListActionTypes.ADD_AND_SELECT_NODE:
+      console.log(`REDUCER: ${notesListActionTypes.ADD_AND_SELECT_NODE}`);
       return addAndSelectNewNode({
         state,
         kind: action.payload.kind,
