@@ -9,8 +9,7 @@ import 'react-sortable-tree/style.css';
 import './NotesList.css';
 import NodeTitle from './NodeTitle';
 
-// TODO: Define these in a env config file.
-const ID_DELIMITER = '|^|';
+const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
 function NotesList({
   notesTree,
