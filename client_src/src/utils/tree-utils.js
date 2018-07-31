@@ -1,6 +1,6 @@
 import uniqid from 'uniqid';
 // TODO: Define these in a env config file.
-const ID_DELIMITER = '|^|';
+const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
 export const getNodeKey = ({ node }) => node.id;
 export function createNode({

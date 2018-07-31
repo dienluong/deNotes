@@ -7,7 +7,7 @@ function randomDateString(start, end) {
 
 const start = new Date(2018, 5, 1);
 const end = new Date();
-const _ID_DELIMITER = '|^|';
+const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
 export default [
   {

@@ -5,7 +5,7 @@ import { combineReducers } from 'redux';
 import reduceReducers from 'reduce-reducers';
 import uniqid from 'uniqid';
 import initNotesTree from '../../test/sample-tree';
-const _ID_DELIMITER = '|^|';
+const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
 const root = [{
   title: '/',
