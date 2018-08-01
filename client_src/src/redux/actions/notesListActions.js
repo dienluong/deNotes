@@ -41,9 +41,9 @@ function switchActiveNodeOnAdd({ path }) {
   };
 }
 
-function navigateToNodeAction({ idx }) {
+function navigatePathAction({ idx }) {
   return {
-    type: notesListActionTypes.NAVIGATE_TO_NODE,
+    type: notesListActionTypes.NAVIGATE_PATH,
     payload: {
       idx,
     },
@@ -106,7 +106,7 @@ export {
   selectNodeAction,
   switchActiveNodeOnDelete,
   switchActiveNodeOnAdd,
-  navigateToNodeAction,
+  navigatePathAction,
   changeNotesTreeAction,
   changeNodeTitleAction,
   deleteNodeAction,
