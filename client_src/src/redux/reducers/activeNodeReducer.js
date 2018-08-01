@@ -10,7 +10,8 @@ function changeActiveNodeOnPathNavClick({ currentActive, idx }) {
   if (Number.isSafeInteger(idx) && idx < currentActive.path.length) {
     newActiveNode = {
       id: currentActive.path[idx],
-      path: currentActive.path.slice(0, idx + 1),
+      // path: currentActive.path.slice(0, idx + 1),
+      path: currentActive.path,
     };
   }
   return newActiveNode;

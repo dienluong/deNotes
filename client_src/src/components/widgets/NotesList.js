@@ -118,6 +118,7 @@ function NotesList({
             path: activeNode.path,
             kind: 'title',
           })}
+        activeSegmentIdx={ activeNode.path.indexOf(activeNode.id) }
         onClick={ pathNavigatorClickHandler }
       />
       <Tree
