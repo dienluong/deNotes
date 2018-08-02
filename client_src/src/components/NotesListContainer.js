@@ -10,8 +10,7 @@ import {
   switchActiveNodeOnDelete,
   switchActiveNodeOnAdd,
   addAndSelectNode,
-}
-  from '../redux/actions/notesListActions';
+} from '../redux/actions/notesListActions';
 
 function mapStateToProps(state) {
   return {
@@ -21,6 +20,19 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
+  function toolbarNewFolderBtnClickHandler() {
+    return dispatch(addAndSelectNode({ kind: 'folder' }));
+  }
+
+  function toolbarNewNoteBtnClickHandler() {
+    return dispatch(addAndSelectNode({ kind: 'item' }));
+  }
+
+  const toolbarHandlersMap = new Map();
+
+  toolbarHandlersMap.set('New Folder', toolbarNewFolderBtnClickHandler);
+  toolbarHandlersMap.set('New Note', toolbarNewNoteBtnClickHandler);
+
   return {
     treeChangeHandler(notesTree) {
       return dispatch(changeNotesTreeAction(notesTree));
@@ -42,15 +54,9 @@ function mapDispatchToProps(dispatch) {
       dispatch(addNoteAction({ path }));
       return dispatch(switchActiveNodeOnAdd({ path }));
     },
-    toolbarNewFolderBtnClickHandler() {
-      return dispatch(addAndSelectNode({ kind: 'folder' }));
-    },
-    toolbarNewNoteBtnClickHandler() {
-      return dispatch(addAndSelectNode({ kind: 'item' }));
-    },
+    toolbarHandlersMap: toolbarHandlersMap,
   };
 }
 
 const NotesListContainer = connect(mapStateToProps, mapDispatchToProps)(NotesList);
 export default NotesListContainer;
-

@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import Toolbar from './Toolbar';
-import Tool from './Tool';
 import PathNavigator from './PathNavigator';
 import Tree, { find } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/tree-utils';
@@ -19,9 +18,8 @@ function NotesList({
   nodeClickHandler,
   deleteNodeBtnHandler,
   addNoteBtnHandler,
-  toolbarNewFolderBtnClickHandler,
-  toolbarNewNoteBtnClickHandler,
   pathNavigatorClickHandler,
+  toolbarHandlersMap,
 }) {
   /**
    * For each entry in path, return the specified kind of info
@@ -108,16 +106,9 @@ function NotesList({
 
   return (
     <Fragment>
-      <Toolbar>
-        <Tool label='New Folder' onClick={ toolbarNewFolderBtnClickHandler }/>
-        <Tool label='New Note' onClick={ toolbarNewNoteBtnClickHandler }/>
-      </Toolbar>
+      <Toolbar toolsMap={ toolbarHandlersMap } />
       <PathNavigator
-        path={
-          _translatePathtoInfo({
-            path: activeNode.path,
-            kind: 'title',
-          })}
+        path={ _translatePathtoInfo({ path: activeNode.path, kind: 'title' }) }
         activeSegmentIdx={ activeNode.path.indexOf(activeNode.id) }
         onClick={ pathNavigatorClickHandler }
       />
