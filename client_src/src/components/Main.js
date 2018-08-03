@@ -7,11 +7,13 @@ import SplitPane from 'react-split-pane';
 
 class Main extends React.Component {
   render() {
+    const editorOpts = {};
+
     return (
       <Fragment>
         <SplitPane split="vertical" defaultSize="30%" >
           <NotesListContainer />
-          <Editor />
+          <Editor options={ editorOpts }/>
         </SplitPane>
       </Fragment>
     );

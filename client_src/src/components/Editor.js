@@ -4,8 +4,16 @@ import './Editor.css';
 import Quill from 'quill';
 
 class Editor extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      options: props.options,
+    };
+  }
   componentDidMount() {
     this.quill = new Quill('#quill', {
+      ...this.state.options,
       theme: 'snow',
     });
   }
