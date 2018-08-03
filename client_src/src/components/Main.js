@@ -7,7 +7,7 @@ import SplitPane from 'react-split-pane';
 
 class Main extends React.Component {
   render() {
-    const editorOpts = {};
+    const editorOpts = { placeholder: 'Start typing' };
 
     return (
       <Fragment>
