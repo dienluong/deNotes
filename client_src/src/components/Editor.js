@@ -1,7 +1,6 @@
 import React from 'react';
 import 'react-quill/dist/quill.snow.css';
 import './Editor.css';
-// import Quill from 'quill';
 import Quill from 'react-quill';
 
 class Editor extends React.Component {
@@ -9,11 +8,13 @@ class Editor extends React.Component {
     super(props);
 
     this.state = {
-      text: '',
-      options: props.options,
+      deltas: props.initialContent,
+      content: '',
     };
     this.handleChange = this.handleChange.bind(this);
   }
+
+  // TODO: Remove
   // componentDidMount() {
   //   this.quill = new Quill('#quill', {
   //     ...this.state.options,
@@ -31,19 +32,21 @@ class Editor extends React.Component {
   //   );
   // }
 
-  handleChange(text) {
+  handleChange(content, delta, source, editor) {
+    // console.log(`Deltas: ${JSON.stringify(this.state.deltas)}`);
+    // console.log(`Content: ${content}`);
     this.setState({
-      text,
+      deltas: this.state.deltas.concat(delta),
+      content,
     });
   }
 
   render() {
     return (
       <Quill
-        value={ this.state.text }
         onChange={ this.handleChange }
         theme='snow'
-        { ...this.state.options }
+        { ...this.props.options }
       />
     );
   }

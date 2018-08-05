@@ -102,6 +102,7 @@ export default function reducedReducer(state = initialState, action) {
         kind: action.payload.kind,
       });
     default:
+      console.log(`Initial state: ${JSON.stringify(state)}`);
       return state;
   }
 }

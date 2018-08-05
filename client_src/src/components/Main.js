@@ -4,6 +4,9 @@ import './Main.css';
 import Editor from './Editor';
 import NotesListContainer from './NotesListContainer';
 import SplitPane from 'react-split-pane';
+import Delta from 'quill-delta';
+
+const initContent = new Delta();
 
 class Main extends React.Component {
   render() {
@@ -13,7 +16,7 @@ class Main extends React.Component {
       <Fragment>
         <SplitPane split="vertical" defaultSize="30%" >
           <NotesListContainer />
-          <Editor options={ editorOpts }/>
+          <Editor options={ editorOpts } initialContent={ initContent }/>
         </SplitPane>
       </Fragment>
     );

@@ -99,6 +99,7 @@ function NotesList({
 
   // TODO: remove
   console.log(`
+    Tree: ${JSON.stringify(notesTree)} \n
     Active ID: ${activeNode.id} \n
     Path: ${activeNode.path} \n
     ${_translatePathtoInfo({ path: activeNode.path, kind: 'title' }) }

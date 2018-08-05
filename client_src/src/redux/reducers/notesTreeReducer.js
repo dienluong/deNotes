@@ -70,6 +70,7 @@ export default function notesTreeReducer(state = [], action) {
         ...action.payload,
       });
     default:
+      console.log(`Initial notesTree: ${JSON.stringify(state)}`);
       return state;
   }
 }

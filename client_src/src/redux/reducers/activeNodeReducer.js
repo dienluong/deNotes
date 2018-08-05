@@ -60,6 +60,7 @@ export default function activeNodeReducer(state = initialActiveNode, action) {
         deletedNode: action.payload.deletedNode,
       });
     default:
+      console.log(`Initial activeNode: ${JSON.stringify(state)}`);
       return state;
   }
 }
