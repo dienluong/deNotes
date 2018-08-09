@@ -16,14 +16,21 @@
       ]
     },
     "body": {
-      "type": "string"
+      "type": "string",
+      "dataType": "MEDIUMTEXT"
     },
     "dateCreated": {
       "type": "date",
-      "required": true
+      "required": true,
+      "mysql": {
+        "default":"CURRENT_TIMESTAMP"
+      }
     },
     "dateModified": {
-      "type": "date"
+      "type": "date",
+      "mysql": {
+        "default":"CURRENT_TIMESTAMP"
+      }
     },
     "author": {
       "type": "string",

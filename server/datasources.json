@@ -12,5 +12,15 @@
     "name": "mongoDS",
     "user": "",
     "connector": "mongodb"
+  },
+  "mysql": {
+    "host": "localhost",
+    "port": 3306,
+    "url": "",
+    "database": "${MYSQL_USER}",
+    "password": "${MYSQL_PASS}",
+    "name": "mysql",
+    "user": "loopback-denotes",
+    "connector": "mysql"
   }
 }
