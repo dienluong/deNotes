@@ -1,5 +1,5 @@
 {
-  "name": "note",
+  "name": "folder",
   "base": "PersistedModel",
   "idInjection": false,
   "options": {
@@ -17,13 +17,9 @@
         "dataLength": 36
       }
     },
-    "title": {
+    "name": {
       "type": "string",
       "required": true
-    },
-    "body": {
-      "type": "string",
-      "dataType": "MEDIUMTEXT"
     },
     "dateCreated": {
       "type": "date",
@@ -38,21 +34,11 @@
   },
   "validations": [],
   "relations": {
-    "tags": {
-      "type": "hasAndBelongsToMany",
-      "model": "tag",
-      "foreignKey": "",
-      "options": {
-        "nestRemoting": true,
-        "disableInclude": false
-      }
-    },
-    "author": {
+    "owner": {
       "type": "belongsTo",
       "model": "user",
       "foreignKey": "",
       "options": {
-        "nestRemoting": false,
         "disableInclude": true
       }
     }

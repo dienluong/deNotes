@@ -11,16 +11,17 @@
     "password": "",
     "name": "mongoDS",
     "user": "",
-    "connector": "mongodb"
+    "connector": "mongodb",
+    "lazyConnect": true
   },
-  "mysql": {
-    "host": "localhost",
+  "mysqlDS": {
+    "host": "${MYSQL_HOST}",
     "port": 3306,
     "url": "",
-    "database": "${MYSQL_USER}",
+    "database": "deNotes",
     "password": "${MYSQL_PASS}",
-    "name": "mysql",
-    "user": "loopback-denotes",
+    "name": "mysqlDS",
+    "user": "${MYSQL_USER}",
     "connector": "mysql"
   }
 }

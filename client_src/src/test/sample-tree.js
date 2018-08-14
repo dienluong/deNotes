@@ -1,4 +1,4 @@
-import uniqid from 'uniqid';
+import uuid from 'uuid/v1';
 
 function randomDateString(start, end) {
   return new Date(start.getTime() +
@@ -13,7 +13,7 @@ export default [
   {
     title: 'react-ui-tree',
     subtitle: randomDateString(start, end),
-    uniqid: uniqid(),
+    uniqid: uuid(),
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
@@ -23,7 +23,7 @@ export default [
       {
         title: 'dist',
         subtitle: randomDateString(start, end),
-        uniqid: uniqid(),
+        uniqid: uuid(),
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
@@ -32,7 +32,7 @@ export default [
           {
             title: 'node.js',
             subtitle: randomDateString(start, end),
-            uniqid: uniqid(),
+            uniqid: uuid(),
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
@@ -41,7 +41,7 @@ export default [
           {
             title: 'react-ui-tree.css',
             subtitle: randomDateString(start, end),
-            uniqid: uniqid(),
+            uniqid: uuid(),
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
@@ -50,7 +50,7 @@ export default [
           {
             title: 'react-ui-tree.js',
             subtitle: randomDateString(start, end),
-            uniqid: uniqid(),
+            uniqid: uuid(),
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
@@ -59,7 +59,7 @@ export default [
           {
             title: 'tree.js',
             subtitle: randomDateString(start, end),
-            uniqid: uniqid(),
+            uniqid: uuid(),
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
@@ -70,7 +70,7 @@ export default [
       {
         title: 'example',
         subtitle: randomDateString(start, end),
-        uniqid: uniqid(),
+        uniqid: uuid(),
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
@@ -79,7 +79,7 @@ export default [
           {
             title: 'app.js',
             subtitle: randomDateString(start, end),
-            uniqid: uniqid(),
+            uniqid: uuid(),
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
@@ -88,7 +88,7 @@ export default [
           {
             title: 'app.less',
             subtitle: randomDateString(start, end),
-            uniqid: uniqid(),
+            uniqid: uuid(),
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
@@ -97,7 +97,7 @@ export default [
           {
             title: 'index.html',
             subtitle: randomDateString(start, end),
-            uniqid: uniqid(),
+            uniqid: uuid(),
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
@@ -108,7 +108,7 @@ export default [
       {
         title: 'lib',
         subtitle: randomDateString(start, end),
-        uniqid: uniqid(),
+        uniqid: uuid(),
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
@@ -117,7 +117,7 @@ export default [
           {
             title: 'node.js',
             subtitle: randomDateString(start, end),
-            uniqid: uniqid(),
+            uniqid: uuid(),
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
@@ -126,7 +126,7 @@ export default [
           {
             title: 'react-ui-tree.js',
             subtitle: randomDateString(start, end),
-            uniqid: uniqid(),
+            uniqid: uuid(),
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
@@ -135,7 +135,7 @@ export default [
           {
             title: 'react-ui-tree.less',
             subtitle: randomDateString(start, end),
-            uniqid: uniqid(),
+            uniqid: uuid(),
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
@@ -144,7 +144,7 @@ export default [
           {
             title: 'tree.js',
             subtitle: randomDateString(start, end),
-            uniqid: uniqid(),
+            uniqid: uuid(),
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
@@ -155,7 +155,7 @@ export default [
       {
         title: '.gitiignore',
         subtitle: randomDateString(start, end),
-        uniqid: uniqid(),
+        uniqid: uuid(),
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
@@ -164,7 +164,7 @@ export default [
       {
         title: 'index.js',
         subtitle: randomDateString(start, end),
-        uniqid: uniqid(),
+        uniqid: uuid(),
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
@@ -173,7 +173,7 @@ export default [
       {
         title: 'LICENSE',
         subtitle: randomDateString(start, end),
-        uniqid: uniqid(),
+        uniqid: uuid(),
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
@@ -182,7 +182,7 @@ export default [
       {
         title: 'Makefile',
         subtitle: randomDateString(start, end),
-        uniqid: uniqid(),
+        uniqid: uuid(),
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
@@ -191,7 +191,7 @@ export default [
       {
         title: 'package.json',
         subtitle: randomDateString(start, end),
-        uniqid: uniqid(),
+        uniqid: uuid(),
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
@@ -200,7 +200,7 @@ export default [
       {
         title: 'README.md',
         subtitle: randomDateString(start, end),
-        uniqid: uniqid(),
+        uniqid: uuid(),
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
@@ -209,7 +209,7 @@ export default [
       {
         title: 'webpack.config.js',
         subtitle: randomDateString(start, end),
-        uniqid: uniqid(),
+        uniqid: uuid(),
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
@@ -220,7 +220,7 @@ export default [
   {
     title: 'react-sortable-tree bottom',
     subtitle: randomDateString(start, end),
-    uniqid: uniqid(),
+    uniqid: uuid(),
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
@@ -230,7 +230,7 @@ export default [
   {
     title: 'QuillJS',
     subtitle: randomDateString(start, end),
-    uniqid: uniqid(),
+    uniqid: uuid(),
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },

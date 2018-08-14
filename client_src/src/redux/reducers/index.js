@@ -3,7 +3,7 @@ import notesTree from './notesTreeReducer';
 import reducedReducer from './reducedReducer';
 import { combineReducers } from 'redux';
 import reduceReducers from 'reduce-reducers';
-import uniqid from 'uniqid';
+import uuid from 'uuid/v1';
 
 // TODO: remove
 // import initNotesTree from '../../test/sample-tree';
@@ -13,7 +13,7 @@ const root = [
   {
     title: '/',
     subtitle: '',
-    uniqid: uniqid(),
+    uniqid: uuid(),
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },

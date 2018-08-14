@@ -1,4 +1,4 @@
-import uniqid from 'uniqid';
+import uuid from 'uuid/v1';
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
 export const getNodeKey = ({ node }) => node.id;
@@ -11,7 +11,7 @@ export function createNode({
     title,
     subtitle,
     type,
-    uniqid: uniqid(),
+    uniqid: uuid(),
     get id() {
       return `${this.type}${ID_DELIMITER}${this.uniqid}`;
     },
