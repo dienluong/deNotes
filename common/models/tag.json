@@ -16,7 +16,17 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "notes": {
+      "type": "hasMany",
+      "model": "note",
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": false
+      },
+      "through": "notetag"
+    }
+  },
   "acls": [],
   "methods": {}
 }

@@ -43,10 +43,6 @@
     "dataSource": "mysqlDS",
     "public": true
   },
-  "user": {
-    "dataSource": "mysqlDS",
-    "public": true
-  },
   "tree": {
     "dataSource": "mysqlDS",
     "public": true
@@ -54,5 +50,13 @@
   "folder": {
     "dataSource": "mysqlDS",
     "public": true
+  },
+  "usr": {
+    "dataSource": "mysqlDS",
+    "public": true
+  },
+  "notetag": {
+    "dataSource": "mysqlDS",
+    "public": false
   }
 }

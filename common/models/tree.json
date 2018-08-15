@@ -18,11 +18,19 @@
   "relations": {
     "owner": {
       "type": "belongsTo",
-      "model": "user",
+      "model": "usr",
       "foreignKey": "",
       "options": {
         "disableInclude": true
       }
+    }
+  },
+  "foreignKeys": {
+    "tree_ownerFK": {
+      "name": "tree_ownerFK",
+      "foreignKey": "ownerId",
+      "entityKey": "id",
+      "entity": "usr"
     }
   },
   "acls": [],

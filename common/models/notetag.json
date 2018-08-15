@@ -1,0 +1,37 @@
+{
+  "name": "notetag",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {
+    "note": {
+      "type": "belongsTo",
+      "model": "note",
+      "foreignKey": ""
+    },
+    "tag": {
+      "type": "belongsTo",
+      "model": "tag",
+      "foreignKey": ""
+    }
+  },
+  "foreignKeys": {
+    "notetag_noteFK": {
+      "name": "notetag_noteFK",
+      "foreignKey": "noteId",
+      "entityKey": "id",
+      "entity": "note"
+    },
+    "notetag_tagFK": {
+      "name": "notetag_tagFK",
+      "foreignKey": "tagId",
+      "entityKey": "id",
+      "entity": "tag"
+    }  },
+  "acls": [],
+  "methods": {}
+}

@@ -36,11 +36,19 @@
   "relations": {
     "owner": {
       "type": "belongsTo",
-      "model": "user",
+      "model": "usr",
       "foreignKey": "",
       "options": {
         "disableInclude": true
       }
+    }
+  },
+  "foreignKeys": {
+    "folder_ownerFK": {
+      "name": "folder_ownerFK",
+      "foreignKey": "ownerId",
+      "entityKey": "id",
+      "entity": "usr"
     }
   },
   "acls": [],

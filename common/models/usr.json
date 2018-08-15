@@ -1,5 +1,5 @@
 {
-  "name": "user",
+  "name": "usr",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -23,6 +23,7 @@
     }
   },
   "validations": [],
+  "relations": {},
   "acls": [],
   "methods": {}
 }

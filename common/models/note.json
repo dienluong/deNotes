@@ -38,23 +38,31 @@
   },
   "validations": [],
   "relations": {
-    "tags": {
-      "type": "hasAndBelongsToMany",
-      "model": "tag",
-      "foreignKey": "",
-      "options": {
-        "nestRemoting": true,
-        "disableInclude": false
-      }
-    },
     "author": {
       "type": "belongsTo",
-      "model": "user",
+      "model": "usr",
       "foreignKey": "",
       "options": {
         "nestRemoting": false,
         "disableInclude": true
       }
+    },
+    "tags": {
+      "type": "hasMany",
+      "model": "tag",
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": false
+      },
+      "through": "notetag"
+    }
+  },
+  "foreignKeys": {
+    "note_authorFK": {
+      "name": "note_authorFK",
+      "foreignKey": "authorId",
+      "entityKey": "id",
+      "entity": "usr"
     }
   },
   "acls": [],
