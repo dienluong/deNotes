@@ -12,10 +12,14 @@ import {
   addAndSelectNode,
 } from '../redux/actions/notesListActions';
 
+import { getNodeKey, translatePathToInfo } from '../utils/tree-utils';
+
 function mapStateToProps(state) {
+  const activePath = translatePathToInfo({ notesTree: state.notesTree, path: state.activeNode.path, kind: 'title' });
   return {
     notesTree: state.notesTree,
     activeNode: state.activeNode,
+    activePath,
   };
 }
 
@@ -58,5 +62,9 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const NotesListContainer = connect(mapStateToProps, mapDispatchToProps)(NotesList);
+function mergeProps(stateProps, dispatchProps, ownProps) {
+  return Object.assign({}, ownProps, stateProps, dispatchProps, { getNodeKey });
+}
+
+const NotesListContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(NotesList);
 export default NotesListContainer;
