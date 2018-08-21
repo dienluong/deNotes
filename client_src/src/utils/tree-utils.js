@@ -57,3 +57,32 @@ export function translatePathToInfo({ notesTree = [], path = [], kind = 'type' }
       return [];
   }
 }
+
+/**
+ * Keep only uniqid and children properties of nodes.
+ * @param tree
+ * @returns {*}
+ */
+// TODO To remove
+// https://stackoverflow.com/questions/41312228/filter-nested-tree-object-without-losing-structure
+export function trimTree(tree) {
+  if (!Array.isArray(tree)) {
+    return [];
+  }
+
+  return tree.map(node => {
+    const normNode = {
+      uniqid: node.uniqid,
+    };
+
+    if (Array.isArray(node.children)) {
+      if (node.children.length !== 0) {
+        normNode.children = trimTree(node.children);
+      } else {
+        normNode.children = [];
+      }
+    }
+
+    return normNode;
+  });
+}
