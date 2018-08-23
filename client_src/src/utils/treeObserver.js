@@ -18,14 +18,16 @@ export default (user) => {
         }
       ).then(response => {
         if (response.ok) {
-          console.log('$$$$$$$$$$$$$$$ Tree saved!!!');
-          observer.prevTree = tree;
+          return response.json();
         } else {
-          throw new Error(`Save response NOT OK: ${response}`);
+          throw new Error(`Save response NOT OK: ${response.status} - ${response.statusText}`);
         }
+      }).then(responseObj => {
+        console.log(`$$$$$$$$$$$$$$$ Tree saved!!!\n${JSON.stringify(responseObj, null, 2)}`);
+        observer.prevTree = tree;
       }).catch(err => console.log(err.message));
     } else {
-      console.log('!!!!!!!!!!!!!!! Tree did not changed. Skip saving.');
+      console.log('!!!!!!!!!!!!!!! Tree did not change. Skip saving.');
     }
   };
 
