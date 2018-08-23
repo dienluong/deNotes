@@ -3,6 +3,16 @@ import { find } from 'react-sortable-tree';
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
 export const getNodeKey = ({ node }) => node.id;
+
+/**
+ * Builds a node for a tree.
+ * 'uniqid' is a unique ID usually used as a key when storing in a database.
+ * 'id' is the combo of type+uniqid; it is the ID used for react-sortable-tree (in the 'path' it returns for example). The node type is included in order to efficiently determine the type of node when we only have its ID.
+ * @param title
+ * @param subtitle
+ * @param type
+ * @return {*}
+ */
 export function createNode({ title = 'New Note', subtitle = new Date().toLocaleString(), type = 'item' }) {
   const newNode = {
     title,
