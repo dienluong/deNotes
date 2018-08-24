@@ -10,11 +10,11 @@ import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/pluck';
 import 'rxjs/add/operator/auditTime';
 import treeObserver from './utils/treeObserver';
-import { inject, loadTree } from './utils/treeStorage';
+import * as treeStorage from './utils/treeStorage';
 import { save, load } from './utils/loopbackREST';
 
 // Use loopbackREST for loading and saving persisted data
-inject({ save, load });
+treeStorage.inject({ save, load });
 
 // TODO: adjust user ID to logged in user
 const userId = process.env.REACT_APP_USER_ID;
@@ -34,19 +34,23 @@ function render({ initialState = null }) {
   registerServiceWorker();
 }
 
-loadTree(userId)
+treeStorage.loadTree(userId)
   .then(treesArray => {
-    // In the unexpected case where there are more than one tree for the same user, use the last one.
-    const notesTree = JSON.parse(treesArray[treesArray.length - 1].jsonStr);
-    const initialState = {
-      notesTree,
-      // TODO: adjust activeNode to where user left off
-      activeNode: {
-        id: notesTree[0].id,
-        path: [notesTree[0].id],
-      },
-    };
-    render({ initialState });
+    if (Array.isArray(treesArray) && treesArray.length) {
+      // In the unexpected case where there are more than one tree for the same user, use the last one.
+      const notesTree = JSON.parse(treesArray[treesArray.length - 1].jsonStr);
+      const initialState = {
+        notesTree,
+        // TODO: adjust activeNode to where user left off
+        activeNode: {
+          id: notesTree[0].id,
+          path: [notesTree[0].id],
+        },
+      };
+      render({ initialState });
+    } else {
+      render({});
+    }
   })
   .catch(error => {
     window.alert(`No saved tree loaded. ${error.message}`);
