@@ -1,18 +1,10 @@
-export function saveTree(tree, user) {
-  return fetch(
-    `${process.env.REACT_APP_SERVER_URL}/api/trees/upsertWithWhere?where={"ownerId": ${user}}`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({
-        'jsonStr': JSON.stringify(tree),
-        'ownerId': user,
-      }),
-    }
-  ).then(response => {
+import { save, load } from './loopbackREST';
+
+export function saveTree(tree, userId) {
+  return save(userId, {
+    'jsonStr': JSON.stringify(tree),
+    'ownerId': userId,
+  }).then(response => {
     if (response.ok) {
       return response.json();
     } else {
@@ -23,24 +15,16 @@ export function saveTree(tree, user) {
 
 /**
  * Returns a promise for an array of trees
- * @param user
+ * @param userId
  * @return {Promise<Response | never>}
  */
-export function loadTree(user) {
-  return fetch(
-    `${process.env.REACT_APP_SERVER_URL}/api/trees?where={"ownerId": ${user}}`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-    },
-  ).then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error(`ERROR loading tree! ${response.status} - ${response.statusText}`);
-    }
-  });
+export function loadTree(userId) {
+  return load(userId)
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error(`ERROR loading tree! ${response.status} - ${response.statusText}`);
+      }
+    });
 }

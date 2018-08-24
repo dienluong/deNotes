@@ -4,7 +4,7 @@ import {
   removeNode,
   addNodeUnderParent,
 } from 'react-sortable-tree';
-import { getNodeKey, createNode } from '../../utils/tree-utils';
+import { getNodeKey, createNode } from '../../utils/treeUtils';
 
 function changeNodeTitle({ notesTree, title, node, path }) {
   console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);

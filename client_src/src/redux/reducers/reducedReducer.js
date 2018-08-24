@@ -1,6 +1,6 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import { getNodeAtPath, addNodeUnderParent } from 'react-sortable-tree';
-import { getNodeKey, createNode } from '../../utils/tree-utils';
+import { getNodeKey, createNode } from '../../utils/treeUtils';
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
 const initialState = {

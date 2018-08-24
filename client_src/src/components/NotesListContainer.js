@@ -12,7 +12,7 @@ import {
   addAndSelectNode,
 } from '../redux/actions/notesListActions';
 
-import { getNodeKey, translatePathToInfo } from '../utils/tree-utils';
+import { getNodeKey, translatePathToInfo } from '../utils/treeUtils';
 
 function mapStateToProps(state) {
   const activePath = translatePathToInfo({ notesTree: state.notesTree, path: state.activeNode.path, kind: 'title' });
