@@ -10,7 +10,11 @@ import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/pluck';
 import 'rxjs/add/operator/auditTime';
 import treeObserver from './utils/treeObserver';
-import { loadTree } from './utils/treeStorage';
+import { inject, loadTree } from './utils/treeStorage';
+import { save, load } from './utils/loopbackREST';
+
+// Use loopbackREST for loading and saving persisted data
+inject({ save, load });
 
 // TODO: adjust user ID to logged in user
 const userId = process.env.REACT_APP_USER_ID;
@@ -45,6 +49,6 @@ loadTree(userId)
     render({ initialState });
   })
   .catch(error => {
-    console.log(`No saved tree loaded: ${error.message}`);
+    window.alert(`No saved tree loaded. ${error.message}`);
     render({});
   });

@@ -11,7 +11,7 @@ export default (user) => {
           console.log(`$$$$$$$$$$$$$$$ Tree saved!!!\n${JSON.stringify(responseObj, null, 2)}`);
           observer.prevTree = tree;
         })
-        .catch(err => console.log(err.message));
+        .catch(err => window.alert(err.message));
     } else {
       console.log('############### Tree did not change. Skip saving.');
       observer.prevTree = tree;
