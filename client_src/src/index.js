@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/pluck';
 import 'rxjs/add/operator/auditTime';
-import treeObserver from './utils/treeObserver';
+import treeObserver from './reactive/treeObserver';
 import * as treeStorage from './utils/treeStorage';
 import { save, load } from './utils/loopbackREST';
 

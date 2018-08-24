@@ -1,4 +1,4 @@
-import { saveTree } from './treeStorage';
+import { saveTree } from '../utils/treeStorage';
 
 export default (user) => {
   const observer = function observer(tree) {
