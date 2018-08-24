@@ -1,6 +1,7 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import { getNodeAtPath, addNodeUnderParent } from 'react-sortable-tree';
 import { getNodeKey, createNode } from '../../utils/treeUtils';
+import Delta from 'quill-delta';
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
 const initialState = {
@@ -8,6 +9,10 @@ const initialState = {
   activeNode: {
     id: null,
     path: [],
+  },
+  editorContent: {
+    content: '',
+    delta: new Delta(),
   },
 };
 

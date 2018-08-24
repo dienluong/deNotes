@@ -1,9 +1,11 @@
 import activeNode from './activeNodeReducer';
 import notesTree from './notesTreeReducer';
+import editorContent from './editorContentReducer';
 import reducedReducer from './reducedReducer';
 import { combineReducers } from 'redux';
 import reduceReducers from 'reduce-reducers';
 import uuid from 'uuid/v1';
+import Delta from 'quill-delta';
 
 // TODO: remove
 // import initNotesTree from '../../test/sample-tree';
@@ -29,9 +31,13 @@ const initialState = {
     id: root[0].id,
     path: [root[0].id],
   },
+  editorContent: {
+    content: '',
+    delta: new Delta(),
+  },
 };
 
-const mainReducer = combineReducers({ notesTree, activeNode });
+const mainReducer = combineReducers({ notesTree, activeNode, editorContent });
 const rootReducer = reduceReducers(mainReducer, reducedReducer, initialState);
 
 export default rootReducer;

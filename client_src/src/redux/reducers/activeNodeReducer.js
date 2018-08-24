@@ -1,6 +1,6 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 
-let initialActiveNode = {
+const initialActiveNode = {
   id: null,
   path: [],
 };
