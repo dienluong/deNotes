@@ -61,12 +61,12 @@ function NotesList({
   }
 
   // TODO: remove
-  console.log(`
-    Tree: ${JSON.stringify(notesTree)} \n
-    Active ID: ${activeNode.id} \n
-    Path: ${activeNode.path} \n
-    ${ activePath }
-    `);
+  // console.log(`
+  //   Tree: ${JSON.stringify(notesTree)} \n
+  //   Active ID: ${activeNode.id} \n
+  //   Path: ${activeNode.path} \n
+  //   ${ activePath }
+  // `);
 
   return (
     <Fragment>

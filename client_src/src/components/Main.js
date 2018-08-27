@@ -9,15 +9,17 @@ import SplitPane from 'react-split-pane';
 // import Delta from 'quill-delta';
 // const initContent = new Delta();
 
+const editorParams = {
+  options: { placeholder: 'Welcome to deNotes! v0.02' },
+};
+
 class Main extends React.Component {
   render() {
-    const editorOpts = { placeholder: 'Welcome to deNotes!' };
-
     return (
       <Fragment>
         <SplitPane split="vertical" defaultSize="30%" >
           <NotesListContainer />
-          <EditorContainer options={ editorOpts }/>
+          <EditorContainer options={ editorParams.options }/>
         </SplitPane>
       </Fragment>
     );

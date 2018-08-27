@@ -7,9 +7,13 @@ export function inject({ save = _save, load = _load }) {
 }
 
 export function saveTree(tree, userId) {
-  return _save(userId, {
-    'jsonStr': JSON.stringify(tree),
-    'ownerId': userId,
+  return _save({
+    collectionName: 'trees',
+    id: userId,
+    dataObj: {
+      'jsonStr': JSON.stringify(tree),
+      'ownerId': userId,
+    },
   }).then(response => {
     if (response.ok) {
       return response.json();
@@ -21,16 +25,20 @@ export function saveTree(tree, userId) {
 
 /**
  * Returns a promise for an array of trees
+ * @param id
  * @param userId
  * @return {Promise<Response | never>}
  */
-export function loadTree(userId) {
-  return _load(userId)
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error(`ERROR loading tree! ${response.status} - ${response.statusText}`);
-      }
-    });
+export function loadTree({ id = null, userId = null }) {
+  return _load({
+    collectionName: 'trees',
+    id,
+    ownerId: userId,
+  }).then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error(`ERROR loading tree! ${response.status} - ${response.statusText}`);
+    }
+  });
 }

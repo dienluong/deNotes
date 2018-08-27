@@ -1,10 +1,10 @@
-import { saveTree } from '../utils/treeStorage';
+import { saveTree } from '../utils/notesTreeStorage';
 
 export default (user) => {
   const observer = function observer(tree) {
     console.log('************* Tree *************\n');
     console.log(JSON.stringify(tree, null, 4));
-    // Save only if tree is not the initially loaded one or if it changed
+    // Save only if tree was not from initial load or if it changed
     if (observer.prevTree !== null && observer.prevTree !== tree) {
       saveTree(tree, user)
         .then(responseObj => {

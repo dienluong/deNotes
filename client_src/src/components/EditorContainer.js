@@ -2,12 +2,12 @@ import { connect } from 'react-redux';
 import Editor from './widgets/Editor';
 import { changeContentAction } from '../redux/actions/editorActions';
 
-// function mapStateToProps(state) {
-//   return {
-//     delta: state.editor.delta,
-//     content: state.editor.content,
-//   };
-// }
+function mapStateToProps(state) {
+  return {
+    delta: state.editorContent.delta,
+    content: state.editorContent.content,
+  };
+}
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -17,9 +17,9 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-function mergeProps(stateProps, dispatchProps, ownProps) {
-  return Object.assign({}, ownProps, dispatchProps);
-}
+// function mergeProps(stateProps, dispatchProps, ownProps) {
+//   return Object.assign({}, ownProps, stateProps, dispatchProps);
+// }
 
-const EditorContainer = connect(null, mapDispatchToProps, mergeProps)(Editor);
+const EditorContainer = connect(mapStateToProps, mapDispatchToProps)(Editor);
 export default EditorContainer;

@@ -25,6 +25,12 @@
       "type": "string",
       "dataType": "MEDIUMTEXT"
     },
+    "delta": {
+      "type": "string",
+      "mysql": {
+        "dataType": "JSON"
+      }
+    },
     "dateCreated": {
       "type": "date",
       "required": true,
@@ -38,7 +44,7 @@
   },
   "validations": [],
   "relations": {
-    "author": {
+    "owner": {
       "type": "belongsTo",
       "model": "usr",
       "foreignKey": "",
@@ -58,9 +64,9 @@
     }
   },
   "foreignKeys": {
-    "note_authorFK": {
-      "name": "note_authorFK",
-      "foreignKey": "authorId",
+    "note_ownerFK": {
+      "name": "note_ownerFK",
+      "foreignKey": "ownerId",
       "entityKey": "id",
       "entity": "usr"
     }
