@@ -8,13 +8,14 @@ export default (user) => {
     if (observer.prevTree !== null && observer.prevTree !== tree) {
       saveTree({ userId: user, tree })
         .then(responseObj => {
+          observer.prevTree = tree;
           console.log(`$$$$$$$$$$$$$$$ Tree saved!!!\n${JSON.stringify(responseObj, null, 2)}`);
         })
-        .catch(() => window.alert('Failed to save tree'));
+        .catch(() => window.alert('Failed to save tree'));// TODO: Failed save should retry.
     } else {
+      observer.prevTree = tree;
       console.log('############### Tree did not change. Skip saving.');
     }
-    observer.prevTree = tree;
   };
 
   observer.prevTree = null;

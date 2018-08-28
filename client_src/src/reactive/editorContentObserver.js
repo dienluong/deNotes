@@ -8,13 +8,14 @@ export default (user) => {
     if (observer.prevContent !== null && observer.prevContent !== editorContent) {
       saveEditorContent({ userId: user, editorContent })
         .then(responseObj => {
+          observer.prevContent = editorContent;
           console.log(`$$$$$$$$$$$$$$$ Content saved!!!\n${JSON.stringify(responseObj, null, 2)}`);
         })
-        .catch(() => window.alert('Failed to save editor content'));
+        .catch(() => window.alert('Failed to save editor content'));// TODO: Failed save should retry
     } else {
+      observer.prevContent = editorContent;
       console.log('############### Content did not change. Skip saving.');
     }
-    observer.prevContent = editorContent;
   };
 
   observer.prevContent = null;
