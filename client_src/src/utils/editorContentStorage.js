@@ -6,10 +6,18 @@ export function inject({ save = _save, load = _load }) {
   _load = load;
 }
 
-export function saveEditorContent(editorContent, userId) {
+export function saveEditorContent({ userId, editorContent }) {
+  if (!editorContent || !editorContent.content || !editorContent.delta) {
+    return Promise.reject(new Error('Save aborted. Cause: invalid content.'));
+  }
+
+  if (!userId) {
+    return Promise.reject(new Error('Save aborted. Cause: invalid userId.'));
+  }
+
   return _save({
     collectionName: 'notes',
-    id: userId,
+    ownerId: userId,
     // TODO: Replace hardcoded values
     dataObj: {
       'id': '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e',
@@ -24,7 +32,7 @@ export function saveEditorContent(editorContent, userId) {
     if (response.ok) {
       return response.json();
     } else {
-      throw new Error(`ERROR saving content! ${response.status} - ${response.statusText}`);
+      return Promise.reject(new Error(`ERROR saving content! ${response.status} - ${response.statusText}`));
     }
   });
 }
@@ -35,6 +43,10 @@ export function saveEditorContent(editorContent, userId) {
  * @return {Promise<Response | never>}
  */
 export function loadEditorContent({ id = null, userId = null }) {
+  if (!id && !userId) {
+    return Promise.reject(new Error('Load aborted. Cause: invalid parameters.'));
+  }
+
   return _load({
     collectionName: 'notes',
     id,
@@ -43,7 +55,7 @@ export function loadEditorContent({ id = null, userId = null }) {
     if (response.ok) {
       return response.json();
     } else {
-      throw new Error(`ERROR loading content! ${response.status} - ${response.statusText}`);
+      return Promise.reject(new Error(`ERROR loading content! ${response.status} - ${response.statusText}`));
     }
   });
 }

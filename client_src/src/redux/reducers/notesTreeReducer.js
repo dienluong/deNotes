@@ -5,6 +5,9 @@ import {
   addNodeUnderParent,
 } from 'react-sortable-tree';
 import { getNodeKey, createNode } from '../../utils/treeUtils';
+import baseState from '../misc/initialState';
+
+const initialTree = [...baseState.notesTree];
 
 function changeNodeTitle({ notesTree, title, node, path }) {
   console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
@@ -46,7 +49,7 @@ function addNote({ notesTree, path }) {
   }).treeData;
 }
 
-export default function notesTreeReducer(state = [], action) {
+export default function notesTreeReducer(state = initialTree, action) {
   switch (action.type) {
     case notesListActionTypes.CHANGE_NOTES_TREE:
       console.log(`REDUCER: ${notesListActionTypes.CHANGE_NOTES_TREE}`);

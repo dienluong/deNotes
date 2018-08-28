@@ -1,9 +1,8 @@
 import editorActionTypes from '../actions/constants/editorActionConstants';
-import Delta from 'quill-delta';
+import baseState from '../misc/initialState';
 
 const initialContent = {
-  content: '',
-  delta: new Delta(),
+  ...baseState.editorContent,
 };
 
 export default function editorContentReducer(state = initialContent, action) {
@@ -12,13 +11,13 @@ export default function editorContentReducer(state = initialContent, action) {
       console.log(`REDUCER: ${editorActionTypes.CONTENT_CHANGED}`);
       const newD = state.delta.concat(action.payload.newContent.delta);
       // TODO: Remove
-      console.log(newD);
+      // console.log(newD);
       return {
         content: action.payload.newContent.content,
         delta: newD,
       };
     default:
-      console.log(`Initial editorContent: ${JSON.stringify(state, null, 4)}`);
+      console.log(`Initial editorContent: ${JSON.stringify(state)}`);
       return state;
   }
 }

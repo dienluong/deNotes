@@ -6,10 +6,18 @@ export function inject({ save = _save, load = _load }) {
   _load = load;
 }
 
-export function saveTree(tree, userId) {
+export function saveTree({ userId, tree }) {
+  if (!Array.isArray(tree)) {
+    return Promise.reject(new Error('Save aborted. Cause: invalid tree.'));
+  }
+
+  if (!userId) {
+    return Promise.reject(new Error('Save aborted. Cause: invalid userId.'));
+  }
+
   return _save({
     collectionName: 'trees',
-    id: userId,
+    ownerId: userId,
     dataObj: {
       'jsonStr': JSON.stringify(tree),
       'ownerId': userId,
@@ -18,7 +26,7 @@ export function saveTree(tree, userId) {
     if (response.ok) {
       return response.json();
     } else {
-      throw new Error(`ERROR saving tree! ${response.status} - ${response.statusText}`);
+      return Promise.reject(new Error(`ERROR saving tree! ${response.status} - ${response.statusText}`));
     }
   });
 }
@@ -30,6 +38,10 @@ export function saveTree(tree, userId) {
  * @return {Promise<Response | never>}
  */
 export function loadTree({ id = null, userId = null }) {
+  if (!id && !userId) {
+    return Promise.reject(new Error('Load aborted. Cause: invalid parameters.'));
+  }
+
   return _load({
     collectionName: 'trees',
     id,
@@ -38,7 +50,7 @@ export function loadTree({ id = null, userId = null }) {
     if (response.ok) {
       return response.json();
     } else {
-      throw new Error(`ERROR loading tree! ${response.status} - ${response.statusText}`);
+      return Promise.reject(new Error(`ERROR loading tree! ${response.status} - ${response.statusText}`));
     }
   });
 }

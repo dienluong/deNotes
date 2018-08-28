@@ -1,8 +1,7 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
-
+import baseState from '../misc/initialState';
 const initialActiveNode = {
-  id: null,
-  path: [],
+  ...baseState.activeNode,
 };
 
 function changeActiveNodeOnPathNavClick({ currentActive, idx }) {

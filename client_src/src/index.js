@@ -7,7 +7,9 @@ import Delta from 'quill-delta';
 import { createStore } from 'redux';
 import rootReducer from './redux/reducers';
 import { Provider } from 'react-redux';
+import baseState from './redux/misc/initialState';
 import { Observable } from 'rxjs/Rx';
+import uuid from 'uuid/v1';
 import 'rxjs/add/operator/pluck';
 import 'rxjs/add/operator/auditTime';
 import notesTreeObserver from './reactive/notesTreeObserver';
@@ -20,18 +22,31 @@ import { save, load } from './utils/loopbackREST';
 notesTreeStorage.inject({ save, load });
 editorContentStorage.inject({ save, load });
 
+const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 // TODO: adjust user ID to logged in user
 const userId = process.env.REACT_APP_USER_ID;
-// TODO: Refactor and centralize the initialState
-let baseState = {
-  notesTree: [],
-  activeNode: {
-    id: null,
-    path: [],
+
+// TODO: Is it the best place to define this?
+const rootNode = [
+  {
+    title: '/',
+    subtitle: '',
+    uniqid: uuid(),
+    get id() {
+      return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
+    },
+    type: 'folder',
+    expanded: true,
+    children: [],
   },
-  editorContent: {
-    content: '',
-    delta: new Delta(),
+];
+
+let initialState = {
+  ...baseState,
+  notesTree: rootNode,
+  activeNode: {
+    id: rootNode[0].id,
+    path: [rootNode[0].id],
   },
 };
 
@@ -58,9 +73,9 @@ notesTreeStorage.loadTree({ userId })
     if (Array.isArray(treesArray) && treesArray.length) {
       // In the unexpected case where there are more than one tree for the same user, use the last one.
       const notesTree = JSON.parse(treesArray[treesArray.length - 1].jsonStr);
-      baseState.notesTree = notesTree;
+      initialState.notesTree = notesTree;
       // TODO: adjust activeNode to where user left off
-      baseState.activeNode = {
+      initialState.activeNode = {
         id: notesTree[0].id,
         path: [notesTree[0].id],
       };
@@ -70,12 +85,12 @@ notesTreeStorage.loadTree({ userId })
     return editorContentStorage.loadEditorContent({ id: noteId });
   })
   .then(editorContent => {
-    if (editorContent) {
-      baseState.editorContent = {
+    if (editorContent && 'body' in editorContent && 'delta' in editorContent) {
+      initialState.editorContent = {
         content: editorContent.body,
         delta: new Delta(JSON.parse(editorContent.delta)),
       };
     }
   })
   .catch(error => window.alert(`No saved data loaded. ${error.message}`))
-  .finally(() => render({ initialState: baseState }));
+  .finally(() => render({ initialState }));
