@@ -1,14 +1,11 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import { getNodeAtPath, addNodeUnderParent } from 'react-sortable-tree';
-import { getNodeKey, createNode } from '../../utils/tree-utils';
+import { getNodeKey, createNode } from '../../utils/treeUtils';
+import baseState from '../misc/initialState';
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
 const initialState = {
-  notesTree: [],
-  activeNode: {
-    id: null,
-    path: [],
-  },
+  ...baseState,
 };
 
 /**
@@ -82,6 +79,7 @@ function addAndSelectNewNode({ state, kind }) {
   };
 
   return {
+    ...state,
     notesTree: newNotesTree,
     activeNode: newActiveNode,
   };
@@ -102,6 +100,7 @@ export default function reducedReducer(state = initialState, action) {
         kind: action.payload.kind,
       });
     default:
+      console.log(`Initial state: ${JSON.stringify(state)}`);
       return state;
   }
 }

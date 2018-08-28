@@ -11,6 +11,17 @@
     "password": "",
     "name": "mongoDS",
     "user": "",
-    "connector": "mongodb"
+    "connector": "mongodb",
+    "lazyConnect": true
+  },
+  "mysqlDS": {
+    "host": "${MYSQL_HOST}",
+    "port": 3306,
+    "url": "",
+    "database": "deNotes",
+    "password": "${MYSQL_PASS}",
+    "name": "mysqlDS",
+    "user": "${MYSQL_USER}",
+    "connector": "mysql"
   }
 }

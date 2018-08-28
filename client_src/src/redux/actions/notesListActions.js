@@ -20,7 +20,7 @@ function selectNodeAction({ id, path }) {
   };
 }
 
-function switchActiveNodeOnDelete({ id, path }) {
+function switchActiveNodeOnDeleteAction({ id, path }) {
   return {
     type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
     payload: {
@@ -32,7 +32,7 @@ function switchActiveNodeOnDelete({ id, path }) {
   };
 }
 
-function switchActiveNodeOnAdd({ path }) {
+function switchActiveNodeOnAddAction({ path }) {
   return {
     type: notesListActionTypes.SWITCH_NODE_ON_ADD,
     payload: {
@@ -93,7 +93,7 @@ function addNoteAction({ path }) {
   };
 }
 
-function addAndSelectNode({ kind }) {
+function addAndSelectNodeAction({ kind }) {
   return {
     type: notesListActionTypes.ADD_AND_SELECT_NODE,
     payload: {
@@ -104,14 +104,14 @@ function addAndSelectNode({ kind }) {
 
 export {
   selectNodeAction,
-  switchActiveNodeOnDelete,
-  switchActiveNodeOnAdd,
+  switchActiveNodeOnDeleteAction,
+  switchActiveNodeOnAddAction,
   navigatePathAction,
   changeNotesTreeAction,
   changeNodeTitleAction,
   deleteNodeAction,
   addNoteAction,
-  addAndSelectNode,
+  addAndSelectNodeAction,
 };
 
 // TODO: validate arguments on action creators

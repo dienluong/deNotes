@@ -1,0 +1,38 @@
+{
+  "name": "tree",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "jsonStr": {
+      "type": "string",
+      "required": true,
+      "mysql": {
+        "dataType": "JSON"
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+    "owner": {
+      "type": "belongsTo",
+      "model": "usr",
+      "foreignKey": "",
+      "options": {
+        "disableInclude": true
+      }
+    }
+  },
+  "foreignKeys": {
+    "tree_ownerFK": {
+      "name": "tree_ownerFK",
+      "foreignKey": "ownerId",
+      "entityKey": "id",
+      "entity": "usr"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

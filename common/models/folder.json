@@ -1,5 +1,5 @@
 {
-  "name": "note",
+  "name": "folder",
   "base": "PersistedModel",
   "idInjection": false,
   "options": {
@@ -17,19 +17,9 @@
         "dataLength": 36
       }
     },
-    "title": {
+    "name": {
       "type": "string",
       "required": true
-    },
-    "body": {
-      "type": "string",
-      "dataType": "MEDIUMTEXT"
-    },
-    "delta": {
-      "type": "string",
-      "mysql": {
-        "dataType": "JSON"
-      }
     },
     "dateCreated": {
       "type": "date",
@@ -49,23 +39,13 @@
       "model": "usr",
       "foreignKey": "",
       "options": {
-        "nestRemoting": false,
         "disableInclude": true
       }
-    },
-    "tags": {
-      "type": "hasMany",
-      "model": "tag",
-      "foreignKey": "",
-      "options": {
-        "nestRemoting": false
-      },
-      "through": "notetag"
     }
   },
   "foreignKeys": {
-    "note_ownerFK": {
-      "name": "note_ownerFK",
+    "folder_ownerFK": {
+      "name": "folder_ownerFK",
       "foreignKey": "ownerId",
       "entityKey": "id",
       "entity": "usr"

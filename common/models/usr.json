@@ -1,0 +1,29 @@
+{
+  "name": "usr",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "mysql": {
+        "dataType": "VARCHAR",
+        "dataLength": 255
+      }
+    },
+    "email": {
+      "type": "string",
+      "mysql": {
+        "dataType": "VARCHAR",
+        "dataLength": 255
+      }
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

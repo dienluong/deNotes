@@ -1,8 +1,7 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
-
-let initialActiveNode = {
-  id: null,
-  path: [],
+import baseState from '../misc/initialState';
+const initialActiveNode = {
+  ...baseState.activeNode,
 };
 
 function changeActiveNodeOnPathNavClick({ currentActive, idx }) {
@@ -60,6 +59,7 @@ export default function activeNodeReducer(state = initialActiveNode, action) {
         deletedNode: action.payload.deletedNode,
       });
     default:
+      console.log(`Initial activeNode: ${JSON.stringify(state)}`);
       return state;
   }
 }
