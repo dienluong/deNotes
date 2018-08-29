@@ -9,7 +9,6 @@ import rootReducer from './redux/reducers';
 import { Provider } from 'react-redux';
 import baseState from './redux/misc/initialState';
 import { Observable } from 'rxjs/Rx';
-import uuid from 'uuid/v1';
 import 'rxjs/add/operator/pluck';
 import 'rxjs/add/operator/auditTime';
 import notesTreeObserver from './reactive/notesTreeObserver';
@@ -22,33 +21,10 @@ import { save, load } from './utils/loopbackREST';
 notesTreeStorage.inject({ save, load });
 editorContentStorage.inject({ save, load });
 
-const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 // TODO: adjust user ID to logged in user
 const userId = process.env.REACT_APP_USER_ID;
 
-// TODO: Is it the best place to define this?
-const rootNode = [
-  {
-    title: '/',
-    subtitle: '',
-    uniqid: uuid(),
-    get id() {
-      return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
-    },
-    type: 'folder',
-    expanded: true,
-    children: [],
-  },
-];
-
-let initialState = {
-  ...baseState,
-  notesTree: rootNode,
-  activeNode: {
-    id: rootNode[0].id,
-    path: [rootNode[0].id],
-  },
-};
+let initialState = baseState;
 
 function render({ initialState = null }) {
   let store = null;

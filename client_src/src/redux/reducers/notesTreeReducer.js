@@ -7,7 +7,7 @@ import {
 import { getNodeKey, createNode } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
 
-const initialTree = [...baseState.notesTree];
+const initialTree = baseState.notesTree;
 
 function changeNodeTitle({ notesTree, title, node, path }) {
   console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
