@@ -1,4 +1,5 @@
 import notesListActionTypes from './constants/notesListActionConstants';
+import * as notesTreeStorage from '../../utils/notesTreeStorage';
 
 function selectNodeAction({ id, path }) {
   if (typeof id !== 'string' || id.length === 0) {
@@ -102,6 +103,46 @@ function addAndSelectNodeAction({ kind }) {
   };
 }
 
+function fetchNotesTree({ userId }) {
+  return (dispatch) => {
+    dispatch({
+      type: notesListActionTypes.FETCH_NOTES_TREE,
+      payload: { userId },
+    });
+    notesTreeStorage.loadTree({ userId })
+      .then(treesArray => {
+        if (Array.isArray(treesArray) && treesArray.length) {
+          // In the unexpected case where there are more than one tree for the same user, use the last one.
+          const notesTree = JSON.parse(treesArray[treesArray.length - 1].jsonStr);
+          const activeNode = { id: notesTree[0].id, path: [notesTree[0].id] };// TODO: adjust activeNode to where user left off
+          dispatch({
+            type: notesListActionTypes.FETCH_NOTES_TREE_SUCCESS,
+            payload: {
+              notesTree,
+              activeNode,
+            },
+          });
+        } else {
+          const error = 'Notes tree fetch failed: unrecognized data fetched.';
+          window.alert(error);// TODO: To adjust
+          dispatch({
+            type: notesListActionTypes.FETCH_NOTES_TREE_FAILED,
+            payload: { error },
+          });
+        }
+      })
+      .catch(error => {
+        window.alert(`No saved data loaded. ${error.message}`);// TODO: To adjust
+        dispatch({
+          type: notesListActionTypes.FETCH_NOTES_TREE_FAILED,
+          payload: {
+            error,
+          },
+        });
+      });
+  };
+}
+
 export {
   selectNodeAction,
   switchActiveNodeOnDeleteAction,
@@ -112,6 +153,7 @@ export {
   deleteNodeAction,
   addNoteAction,
   addAndSelectNodeAction,
+  fetchNotesTree,
 };
 
 // TODO: validate arguments on action creators
