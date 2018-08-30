@@ -41,10 +41,7 @@ export default function activeNodeReducer(state = initialActiveNode, action) {
   switch (action.type) {
     case notesListActionTypes.SELECT_NODE:
       console.log(`REDUCER: ${notesListActionTypes.SELECT_NODE}`);
-      return {
-        id: action.payload.activeNode.id,
-        path: action.payload.activeNode.path,
-      };
+      return action.payload.activeNode;
     case notesListActionTypes.NAVIGATE_PATH:
       console.log(`REDUCER: ${notesListActionTypes.NAVIGATE_PATH}`);
       return changeActiveNodeOnPathNavClick({
@@ -57,6 +54,9 @@ export default function activeNodeReducer(state = initialActiveNode, action) {
         currentActive: state,
         deletedNode: action.payload.deletedNode,
       });
+    case notesListActionTypes.FETCH_NOTES_TREE_SUCCESS:
+      console.log(`REDUCER: ${notesListActionTypes.FETCH_NOTES_TREE_SUCCESS}`);
+      return action.payload.activeNode;
     default:
       console.log(`Initial activeNode: ${JSON.stringify(state)}`);
       return state;

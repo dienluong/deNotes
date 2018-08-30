@@ -22,37 +22,37 @@ function fetchEditorContent({ id }) {
     });
     // TODO: replace hardcoded noteId value
     id = '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e';
-    editorContentStorage.loadEditorContent({ id })
+    return editorContentStorage.loadEditorContent({ id })
       .then(content => {
         if (content && 'body' in content && 'delta' in content) {
           const editorContent = {
             content: content.body,
             delta: new Delta(JSON.parse(content.delta)),
           };
-          dispatch({
+          return dispatch({
             type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
             payload: { editorContent },
           });
         } else {
-          const error = 'Editor content fetch failed: unrecognized data fetched.';
-          window.alert(error);// TODO: To adjust
+          const error = 'Note content fetch error: unrecognized data fetched.';
           dispatch({
             type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILED,
             payload: { error },
           });
+          return Promise.reject(new Error(error));
         }
       })
-      .catch(error => {
-        window.alert(`No saved data loaded. ${error.message}`);// TODO: To adjust
+      .catch(err => {
+        const error = `No note content loaded. ${err.message}`;
         dispatch({
           type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILED,
-          payload: {
-            error,
-          },
+          payload: { error },
         });
+        return Promise.reject(new Error(error));
       });
   };
 }
+
 export {
   changeContentAction,
   fetchEditorContent,

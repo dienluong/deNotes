@@ -11,7 +11,7 @@ export default (user) => {
           observer.prevTree = tree;
           console.log(`$$$$$$$$$$$$$$$ Tree saved!!!\n${JSON.stringify(responseObj, null, 2)}`);
         })
-        .catch(() => window.alert('Failed to save tree'));// TODO: Failed save should retry.
+        .catch(() => window.alert('Failed to save notes list'));// TODO: Failed save should retry.
     } else {
       observer.prevTree = tree;
       console.log('############### Tree did not change. Skip saving.');

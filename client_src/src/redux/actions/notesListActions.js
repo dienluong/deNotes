@@ -9,8 +9,8 @@ function selectNodeAction({ id, path }) {
     path = [];
   }
   const activeNode = {
-    id: id,
-    path: path,
+    id,
+    path,
   };
 
   return {
@@ -109,36 +109,35 @@ function fetchNotesTree({ userId }) {
       type: notesListActionTypes.FETCH_NOTES_TREE,
       payload: { userId },
     });
-    notesTreeStorage.loadTree({ userId })
+    return notesTreeStorage.loadTree({ userId })
       .then(treesArray => {
         if (Array.isArray(treesArray) && treesArray.length) {
           // In the unexpected case where there are more than one tree for the same user, use the last one.
           const notesTree = JSON.parse(treesArray[treesArray.length - 1].jsonStr);
           const activeNode = { id: notesTree[0].id, path: [notesTree[0].id] };// TODO: adjust activeNode to where user left off
-          dispatch({
+          return dispatch({
             type: notesListActionTypes.FETCH_NOTES_TREE_SUCCESS,
             payload: {
               notesTree,
-              activeNode,
+              activeNode, // TODO: not sure if it is okay to set activeNode in a notesList action.
             },
           });
         } else {
-          const error = 'Notes tree fetch failed: unrecognized data fetched.';
-          window.alert(error);// TODO: To adjust
+          const error = 'Notes list fetch error: unrecognized data fetched.';
           dispatch({
             type: notesListActionTypes.FETCH_NOTES_TREE_FAILED,
             payload: { error },
           });
+          return Promise.reject(new Error(error));
         }
       })
-      .catch(error => {
-        window.alert(`No saved data loaded. ${error.message}`);// TODO: To adjust
+      .catch(err => {
+        const error = `No notes list loaded. ${err.message}`;
         dispatch({
           type: notesListActionTypes.FETCH_NOTES_TREE_FAILED,
-          payload: {
-            error,
-          },
+          payload: { error },
         });
+        return Promise.reject(new Error(error));
       });
   };
 }

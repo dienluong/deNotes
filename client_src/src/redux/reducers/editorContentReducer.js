@@ -11,6 +11,9 @@ export default function editorContentReducer(state = initialContent, action) {
         content: action.payload.newContent.content,
         delta: state.delta.concat(action.payload.newContent.delta),
       };
+    case editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS:
+      console.log(`REDUCER: ${editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS}`);
+      return action.payload.editorContent;
     default:
       console.log(`Initial editorContent: ${JSON.stringify(state)}`);
       return state;
