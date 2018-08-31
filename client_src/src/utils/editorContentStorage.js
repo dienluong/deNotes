@@ -7,7 +7,7 @@ export function inject({ save = _save, load = _load }) {
 }
 
 export function save({ userId, editorContent }) {
-  if (!editorContent || !editorContent.content || !editorContent.delta) {
+  if (!editorContent || !editorContent.content || !editorContent.delta || !editorContent.id) {
     return Promise.reject(new Error('Save aborted. Cause: invalid content.'));
   }
 
@@ -20,7 +20,7 @@ export function save({ userId, editorContent }) {
     ownerId: userId,
     // TODO: Replace hardcoded values
     dataObj: {
-      'id': '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e',
+      'id': editorContent.id,
       'title': 'Hardcoded Title',
       'body': editorContent.content,
       'delta': JSON.stringify(editorContent.delta),

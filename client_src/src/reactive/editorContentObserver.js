@@ -1,4 +1,4 @@
-export default (user, storage) => {
+export default ({ user, storage }) => {
   const observer = function observer(editorContent) {
     // console.log('************* CONTENT *************\n');
     // console.log(JSON.stringify(editorContent, null, 4));

@@ -30,7 +30,7 @@ const store = createStore(rootReducer, applyMiddleware(thunk));
 const notesTree$ = Observable.from(store).pluck('notesTree').auditTime(3000);
 const editorContent$ = Observable.from(store).pluck('editorContent').auditTime(3000);
 const myNotesTreeObserver = notesTreeObserver(userId, notesTreeStorage);
-const myEditorContentObserver = editorContentObserver(userId, editorContentStorage);
+const myEditorContentObserver = editorContentObserver({ user: userId, storage: editorContentStorage });
 notesTree$.subscribe(myNotesTreeObserver);
 editorContent$.subscribe(myEditorContentObserver);
 

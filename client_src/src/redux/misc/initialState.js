@@ -24,6 +24,7 @@ export default {
     path: [_rootNode[0].id],
   },
   editorContent: {
+    id: '',
     content: '',
     delta: new Delta(),
   },

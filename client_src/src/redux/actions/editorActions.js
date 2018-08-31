@@ -13,18 +13,19 @@ function changeContentAction({ editor, content }) {
   };
 }
 
-function fetchEditorContentAction({ id, storage }) {
+function fetchEditorContentAction({ noteId, storage }) {
   return (dispatch) => {
     dispatch({
       type: editorActionTypes.FETCH_EDITOR_CONTENT,
-      payload: { id },
+      payload: { id: noteId },
     });
     // TODO: replace hardcoded noteId value
-    id = '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e';
-    return storage.load({ id })
+    // id = '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e';
+    return storage.load({ noteId })
       .then(content => {
         if (content && 'body' in content && 'delta' in content) {
           const editorContent = {
+            id: noteId,
             content: content.body,
             delta: new Delta(JSON.parse(content.delta)),
           };
@@ -33,21 +34,21 @@ function fetchEditorContentAction({ id, storage }) {
             payload: { editorContent },
           });
         } else {
-          const error = 'Note content fetch error: unrecognized data fetched.';
+          const message = `Note content fetch error: unrecognized data fetched. ID: ${noteId}`;
           dispatch({
             type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILED,
-            payload: { error },
+            payload: { error: { message, id: noteId } },
           });
-          return Promise.reject(new Error(error));
+          return Promise.reject(new Error(message));
         }
       })
       .catch(err => {
-        const error = `No note content loaded. ${err.message}`;
+        const message = `No note content loaded. ${err.message} ID: ${noteId}`;
         dispatch({
           type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILED,
-          payload: { error },
+          payload: { error: { message, id: noteId } },
         });
-        return Promise.reject(new Error(error));
+        return Promise.reject(new Error(message));
       });
   };
 }

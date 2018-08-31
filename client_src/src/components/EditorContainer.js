@@ -4,6 +4,7 @@ import { changeContentAction } from '../redux/actions/editorActions';
 
 function mapStateToProps(state) {
   return {
+    id: state.editorContent.id,
     delta: state.editorContent.delta,
     content: state.editorContent.content,
   };
