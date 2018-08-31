@@ -9,7 +9,6 @@ import rootReducer from './redux/reducers';
 import { fetchNotesTree } from './redux/actions/notesListActions';
 import { fetchEditorContent } from './redux/actions/editorActions';
 import { Provider } from 'react-redux';
-// import baseState from './redux/misc/initialState';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/pluck';
 import 'rxjs/add/operator/auditTime';
@@ -19,28 +18,26 @@ import * as notesTreeStorage from './utils/notesTreeStorage';
 import * as editorContentStorage from './utils/editorContentStorage';
 import { save, load } from './utils/loopbackREST';
 
-// Use loopbackREST for loading and saving persisted data
-notesTreeStorage.inject({ save, load });
-editorContentStorage.inject({ save, load });
-
 // TODO: adjust user ID to logged in user
 const userId = process.env.REACT_APP_USER_ID;
 // TODO: replace hardcoded noteId value
 const noteId = '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e';
 
-// let initialState = baseState;
-
+// Use loopbackREST for loading and saving persisted data
+notesTreeStorage.inject({ save, load });
+editorContentStorage.inject({ save, load });
 const store = createStore(rootReducer, applyMiddleware(thunk));
 const notesTree$ = Observable.from(store).pluck('notesTree').auditTime(3000);
 const editorContent$ = Observable.from(store).pluck('editorContent').auditTime(3000);
-const myNotesTreeObserver = notesTreeObserver(userId);
-const myEditorContentObserver = editorContentObserver(userId);
+const myNotesTreeObserver = notesTreeObserver(userId, notesTreeStorage);
+const myEditorContentObserver = editorContentObserver(userId, editorContentStorage);
 notesTree$.subscribe(myNotesTreeObserver);
 editorContent$.subscribe(myEditorContentObserver);
 
-store.dispatch(fetchNotesTree({ userId }))
+// Fetch asynchronously
+store.dispatch(fetchNotesTree({ userId, storage: notesTreeStorage }))
   .catch(err => window.alert(err.message));
-store.dispatch(fetchEditorContent({ noteId }))
+store.dispatch(fetchEditorContent({ noteId, storage: editorContentStorage }))
   .catch(err => window.alert(err.message));
 
 ReactDOM.render(<Provider store={ store }><App /></Provider>, document.getElementById('root'));

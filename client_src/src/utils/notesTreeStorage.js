@@ -6,7 +6,7 @@ export function inject({ save = _save, load = _load }) {
   _load = load;
 }
 
-export function saveTree({ userId, tree }) {
+export function save({ userId, tree }) {
   if (!Array.isArray(tree)) {
     return Promise.reject(new Error('Save aborted. Cause: invalid tree.'));
   }
@@ -37,7 +37,7 @@ export function saveTree({ userId, tree }) {
  * @param userId
  * @return {Promise<Response | never>}
  */
-export function loadTree({ id = null, userId = null }) {
+export function load({ id = null, userId = null }) {
   if (!id && !userId) {
     return Promise.reject(new Error('Load aborted. Cause: invalid parameters.'));
   }

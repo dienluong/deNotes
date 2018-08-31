@@ -6,7 +6,7 @@ export function inject({ save = _save, load = _load }) {
   _load = load;
 }
 
-export function saveEditorContent({ userId, editorContent }) {
+export function save({ userId, editorContent }) {
   if (!editorContent || !editorContent.content || !editorContent.delta) {
     return Promise.reject(new Error('Save aborted. Cause: invalid content.'));
   }
@@ -42,7 +42,7 @@ export function saveEditorContent({ userId, editorContent }) {
  * @param noteId
  * @return {Promise<Response | never>}
  */
-export function loadEditorContent({ id = null, userId = null }) {
+export function load({ id = null, userId = null }) {
   if (!id && !userId) {
     return Promise.reject(new Error('Load aborted. Cause: invalid parameters.'));
   }

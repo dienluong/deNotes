@@ -1,5 +1,4 @@
 import notesListActionTypes from './constants/notesListActionConstants';
-import * as notesTreeStorage from '../../utils/notesTreeStorage';
 
 function selectNodeAction({ id, path }) {
   if (typeof id !== 'string' || id.length === 0) {
@@ -103,13 +102,13 @@ function addAndSelectNodeAction({ kind }) {
   };
 }
 
-function fetchNotesTree({ userId }) {
+function fetchNotesTree({ userId, storage }) {
   return (dispatch) => {
     dispatch({
       type: notesListActionTypes.FETCH_NOTES_TREE,
       payload: { userId },
     });
-    return notesTreeStorage.loadTree({ userId })
+    return storage.load({ userId })
       .then(treesArray => {
         if (Array.isArray(treesArray) && treesArray.length) {
           // In the unexpected case where there are more than one tree for the same user, use the last one.

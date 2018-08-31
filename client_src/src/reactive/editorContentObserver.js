@@ -1,12 +1,10 @@
-import { saveEditorContent } from '../utils/editorContentStorage';
-
-export default (user) => {
+export default (user, storage) => {
   const observer = function observer(editorContent) {
     // console.log('************* CONTENT *************\n');
     // console.log(JSON.stringify(editorContent, null, 4));
     // Save only if content was not from initial load or if it changed afterwards
     if (observer.prevContent !== null && observer.prevContent !== editorContent) {
-      saveEditorContent({ userId: user, editorContent })
+      storage.save({ userId: user, editorContent })
         .then(responseObj => {
           observer.prevContent = editorContent;
           console.log(`$$$$$$$$$$$$$$$ Content saved!!!\n${JSON.stringify(responseObj, null, 2)}`);
