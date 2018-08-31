@@ -58,7 +58,7 @@ export default function activeNodeReducer(state = initialActiveNode, action) {
       console.log(`REDUCER: ${notesListActionTypes.FETCH_NOTES_TREE_SUCCESS}`);
       return action.payload.activeNode;
     default:
-      console.log(`Initial activeNode: ${JSON.stringify(state)}`);
+      console.log(`Current activeNode: ${JSON.stringify(state)}`);
       return state;
   }
 }

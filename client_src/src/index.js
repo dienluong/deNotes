@@ -6,8 +6,8 @@ import registerServiceWorker from './registerServiceWorker';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from './redux/reducers';
-import { fetchNotesTree } from './redux/actions/notesListActions';
-import { fetchEditorContent } from './redux/actions/editorActions';
+import { fetchNotesTreeAction } from './redux/actions/notesListActions';
+import { fetchEditorContentAction } from './redux/actions/editorActions';
 import { Provider } from 'react-redux';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/pluck';
@@ -35,9 +35,9 @@ notesTree$.subscribe(myNotesTreeObserver);
 editorContent$.subscribe(myEditorContentObserver);
 
 // Fetch asynchronously
-store.dispatch(fetchNotesTree({ userId, storage: notesTreeStorage }))
+store.dispatch(fetchNotesTreeAction({ userId, storage: notesTreeStorage }))
   .catch(err => window.alert(err.message));
-store.dispatch(fetchEditorContent({ noteId, storage: editorContentStorage }))
+store.dispatch(fetchEditorContentAction({ noteId, storage: editorContentStorage }))
   .catch(err => window.alert(err.message));
 
 ReactDOM.render(<Provider store={ store }><App /></Provider>, document.getElementById('root'));

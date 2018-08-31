@@ -12,7 +12,7 @@ export default function editorContentReducer(state = initialContent, action) {
       console.log(`REDUCER: ${editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS}`);
       return action.payload.editorContent;
     default:
-      console.log(`Initial editorContent: ${JSON.stringify(state)}`);
+      console.log(`Current editorContent: ${JSON.stringify(state)}`);
       return state;
   }
 }

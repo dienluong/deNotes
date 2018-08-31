@@ -102,7 +102,7 @@ function addAndSelectNodeAction({ kind }) {
   };
 }
 
-function fetchNotesTree({ userId, storage }) {
+function fetchNotesTreeAction({ userId, storage }) {
   return (dispatch) => {
     dispatch({
       type: notesListActionTypes.FETCH_NOTES_TREE,
@@ -151,7 +151,7 @@ export {
   deleteNodeAction,
   addNoteAction,
   addAndSelectNodeAction,
-  fetchNotesTree,
+  fetchNotesTreeAction,
 };
 
 // TODO: validate arguments on action creators

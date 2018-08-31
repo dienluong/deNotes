@@ -6,7 +6,7 @@ import Quill from 'react-quill';
 function Editor({ delta, content, contentChangeHandler, options }) {
   return (
     <Quill
-      value={ content }
+      value={ delta }
       onChange={ contentChangeHandler }
       theme='snow'
       { ...options }

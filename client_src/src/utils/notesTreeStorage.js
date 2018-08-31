@@ -2,8 +2,8 @@ let _save = () => Promise.reject(new Error('Save aborted. Cause: No Storage impl
 let _load = () => Promise.reject(new Error('Load aborted. Cause: No Storage implementation provided.'));
 
 export function inject({ save = _save, load = _load }) {
-  _save = save;
-  _load = load;
+  _save = typeof save === 'function' ? save : _save;
+  _load = typeof load === 'function' ? load : _load;
 }
 
 export function save({ userId, tree }) {

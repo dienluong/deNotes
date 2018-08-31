@@ -13,7 +13,7 @@ function changeContentAction({ editor, content }) {
   };
 }
 
-function fetchEditorContent({ id, storage }) {
+function fetchEditorContentAction({ id, storage }) {
   return (dispatch) => {
     dispatch({
       type: editorActionTypes.FETCH_EDITOR_CONTENT,
@@ -54,7 +54,7 @@ function fetchEditorContent({ id, storage }) {
 
 export {
   changeContentAction,
-  fetchEditorContent,
+  fetchEditorContentAction,
 };
 
 // TODO: validate arguments on action creators

@@ -76,7 +76,7 @@ export default function notesTreeReducer(state = initialTree, action) {
       console.log(`REDUCER: ${notesListActionTypes.FETCH_NOTES_TREE_SUCCESS}`);
       return action.payload.notesTree;
     default:
-      console.log(`Initial notesTree: ${JSON.stringify(state)}`);
+      console.log(`Current notesTree: ${JSON.stringify(state)}`);
       return state;
   }
 }
