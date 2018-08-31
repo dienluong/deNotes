@@ -12,7 +12,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     contentChangeHandler(content, delta, source, editor) {
-      return dispatch(changeContentAction({ delta, content }));
+      return dispatch(changeContentAction({ editor, content }));
     },
   };
 }

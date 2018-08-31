@@ -1,12 +1,12 @@
 import Delta from 'quill-delta';
 import editorActionTypes from './constants/editorActionConstants';
 
-function changeContentAction({ delta, content }) {
+function changeContentAction({ editor, content }) {
   return {
     type: editorActionTypes.CONTENT_CHANGED,
     payload: {
       newContent: {
-        delta,
+        delta: editor.getContents(),
         content,
       },
     },
