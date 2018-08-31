@@ -1,4 +1,4 @@
-export default (user, storage) => {
+export default ({ user, storage }) => {
   const observer = function observer(tree) {
     // console.log('************* Tree *************\n');
     // console.log(JSON.stringify(tree, null, 4));
