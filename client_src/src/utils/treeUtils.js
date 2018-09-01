@@ -33,7 +33,30 @@ export function createNode({ title = 'New Note', subtitle = new Date().toLocaleS
 }
 
 /**
- * For each entry in path, return the specified kind of info
+ * Return the info embedded in provided ID.
+ * Example: For ID "folder|^|a9914200-a7d2-11e8-a12b-99205b853de7"
+ *          type is "folder"
+ *          uniqid is "a9914200-a7d2-11e8-a12b-99205b853de7""
+ * @param nodeId {string}
+ * @param kind {"uniqid"|"type"}
+ */
+export function translateNodeIdToInfo({ nodeId, kind = 'uniqid' }) {
+  if (typeof nodeId !== 'string') {
+    return '';
+  }
+
+  switch (kind) {
+    case 'type':
+      return nodeId.split(ID_DELIMITER)[0];
+    case 'uniqid':
+      return nodeId.split(ID_DELIMITER)[1];
+    default:
+      return '';
+  }
+}
+
+/**
+ * For each entry in path, return the specified kind of info.
  * @param notesTree {!Object[]}
  * @param path {Array}
  * @param kind {string}
@@ -58,11 +81,11 @@ export function translatePathToInfo({ notesTree = [], path = [], kind = 'type' }
         return matches.length ? matches[0].node.title : '';
       });
     case 'type':
-      info = path.map((step) => String(step).split(ID_DELIMITER));
-      return info[0] ? [info[0]] : [];
+      info = path.map((step) => String(step).split(ID_DELIMITER)[0]);
+      return info || [];
     case 'uniqid':
-      info = path.map((step) => String(step).split(ID_DELIMITER));
-      return info[1] ? [info[1]] : [];
+      info = path.map((step) => String(step).split(ID_DELIMITER)[1]);
+      return info || [];
     default:
       return [];
   }

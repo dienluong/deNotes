@@ -1,5 +1,6 @@
 import Delta from 'quill-delta';
 import editorActionTypes from './constants/editorActionConstants';
+import * as editorContentStorage from '../../utils/editorContentStorage';
 
 function changeContentAction({ editor, content }) {
   return {
@@ -13,7 +14,7 @@ function changeContentAction({ editor, content }) {
   };
 }
 
-function fetchEditorContentAction({ noteId, storage }) {
+function fetchEditorContentAction({ noteId }) {
   return (dispatch) => {
     dispatch({
       type: editorActionTypes.FETCH_EDITOR_CONTENT,
@@ -21,7 +22,7 @@ function fetchEditorContentAction({ noteId, storage }) {
     });
     // TODO: replace hardcoded noteId value
     // id = '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e';
-    return storage.load({ noteId })
+    return editorContentStorage.load({ id: noteId })
       .then(content => {
         if (content && 'body' in content && 'delta' in content) {
           const editorContent = {

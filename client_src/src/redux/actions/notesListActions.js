@@ -1,8 +1,11 @@
 import notesListActionTypes from './constants/notesListActionConstants';
+import { fetchEditorContentAction } from './editorActions';
+import { translateNodeIdToInfo } from '../../utils/treeUtils';
+import * as notesTreeStorage from '../../utils/notesTreeStorage';
 
 function selectNodeAction({ id, path }) {
   if (typeof id !== 'string' || id.length === 0) {
-    id = null;
+    id = '';
   }
   if (!Array.isArray(path)) {
     path = [];
@@ -12,11 +15,20 @@ function selectNodeAction({ id, path }) {
     path,
   };
 
-  return {
-    type: notesListActionTypes.SELECT_NODE,
-    payload: {
-      activeNode,
-    },
+  return (dispatch) => {
+    dispatch({
+      type: notesListActionTypes.SELECT_NODE,
+      payload: {
+        activeNode,
+      },
+    });
+
+    // If selected a node representing a note, as opposed to a folder
+    if (translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'type' }) === 'item') {
+      const noteId = translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'uniqid' });
+      dispatch(fetchEditorContentAction({ noteId }))
+        .catch(err => window.alert(err.message));
+    }
   };
 }
 
@@ -102,13 +114,13 @@ function addAndSelectNodeAction({ kind }) {
   };
 }
 
-function fetchNotesTreeAction({ userId, storage }) {
+function fetchNotesTreeAction({ userId }) {
   return (dispatch) => {
     dispatch({
       type: notesListActionTypes.FETCH_NOTES_TREE,
       payload: { userId },
     });
-    return storage.load({ userId })
+    return notesTreeStorage.load({ userId })
       .then(treesArray => {
         if (Array.isArray(treesArray) && treesArray.length) {
           // In the unexpected case where there are more than one tree for the same user, use the last one.
