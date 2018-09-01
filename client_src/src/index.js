@@ -16,29 +16,30 @@ import notesTreeObserver from './reactive/notesTreeObserver';
 import editorContentObserver from './reactive/editorContentObserver';
 import * as notesTreeStorage from './utils/notesTreeStorage';
 import * as editorContentStorage from './utils/editorContentStorage';
-import { save, load } from './utils/loopbackREST';
+import { save as loopbackSave, load as loopbackLoad } from './utils/loopbackREST';
 
 // TODO: adjust user ID to logged in user
 const userId = process.env.REACT_APP_USER_ID;
 // TODO: replace hardcoded noteId value
-const noteId = '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e';
+const noteId = '218013d0-ad79-11e8-bfc8-79a6754f355a';
 
 // Use loopbackREST for loading and saving persisted data
-notesTreeStorage.inject({ save, load });
-editorContentStorage.inject({ save, load });
+notesTreeStorage.inject({ save: loopbackSave, load: loopbackLoad });
+editorContentStorage.inject({ save: loopbackSave, load: loopbackLoad });
 const store = createStore(rootReducer, applyMiddleware(thunk));
+// Fetch asynchronously
+store.dispatch(fetchNotesTreeAction({ userId }))
+  .catch(err => window.alert(err.message));
+store.dispatch(fetchEditorContentAction({ noteId }))
+  .catch(err => window.alert(err.message));
+
+// Build Reactive Parts
 const notesTree$ = Observable.from(store).pluck('notesTree').auditTime(3000);
 const editorContent$ = Observable.from(store).pluck('editorContent').auditTime(3000);
 const myNotesTreeObserver = notesTreeObserver({ user: userId, storage: notesTreeStorage });
 const myEditorContentObserver = editorContentObserver({ user: userId, storage: editorContentStorage });
 notesTree$.subscribe(myNotesTreeObserver);
 editorContent$.subscribe(myEditorContentObserver);
-
-// Fetch asynchronously
-store.dispatch(fetchNotesTreeAction({ userId, storage: notesTreeStorage }))
-  .catch(err => window.alert(err.message));
-store.dispatch(fetchEditorContentAction({ noteId, storage: editorContentStorage }))
-  .catch(err => window.alert(err.message));
 
 ReactDOM.render(<Provider store={ store }><App /></Provider>, document.getElementById('root'));
 registerServiceWorker();

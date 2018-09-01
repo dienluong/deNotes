@@ -17,6 +17,7 @@ export function save({ userId, editorContent }) {
 
   return _save({
     collectionName: 'notes',
+    id: editorContent.id,
     ownerId: userId,
     // TODO: Replace hardcoded values
     dataObj: {
@@ -42,7 +43,7 @@ export function save({ userId, editorContent }) {
  * @param noteId
  * @return {Promise<Response | never>}
  */
-export function load({ id = null, userId = null }) {
+export function load({ id = '', userId = '' }) {
   if (!id && !userId) {
     return Promise.reject(new Error('Load aborted. Cause: invalid parameters.'));
   }

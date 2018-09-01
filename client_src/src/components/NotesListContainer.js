@@ -47,7 +47,7 @@ function mapDispatchToProps(dispatch) {
     pathNavigatorClickHandler({ idx }) {
       return dispatch(navigatePathAction({ idx }));
     },
-    nodeClickHandler({ id = null, path = [] }) {
+    nodeClickHandler({ id = '', path = [] }) {
       return dispatch(selectNodeAction({ id, path }));
     },
     deleteNodeBtnHandler({ node, path }) {

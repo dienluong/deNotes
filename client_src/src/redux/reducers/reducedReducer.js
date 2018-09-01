@@ -28,7 +28,7 @@ function _findFarthestParent(path) {
 }
 
 function switchActiveNodeOnAdd({ state, parentPath }) {
-  let newActiveNode = { id: null, path: [] };
+  let newActiveNode = { id: '', path: [] };
   const children = getNodeAtPath({
     treeData: state.notesTree,
     path: parentPath,

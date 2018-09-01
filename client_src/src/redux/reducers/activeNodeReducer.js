@@ -7,6 +7,7 @@ function changeActiveNodeOnPathNavClick({ currentActive, idx }) {
   let newActiveNode = currentActive;
   if (Number.isSafeInteger(idx) && idx < currentActive.path.length) {
     newActiveNode = {
+      ...currentActive,
       id: currentActive.path[idx],
       // path: currentActive.path.slice(0, idx + 1),
       path: currentActive.path,
@@ -23,12 +24,14 @@ function changeActiveNodeOnDelete({ currentActive, deletedNode }) {
     const newActivePath = currentActive.path.slice(0, deletedNodeIdx);
     if (newActivePath.length) {
       newActiveNode = {
+        ...currentActive,
         id: newActivePath[newActivePath.length - 1],
         path: newActivePath,
       };
     } else {
       newActiveNode = {
-        id: null,
+        ...currentActive,
+        id: '',
         path: [],
       };
     }
@@ -41,7 +44,10 @@ export default function activeNodeReducer(state = initialActiveNode, action) {
   switch (action.type) {
     case notesListActionTypes.SELECT_NODE:
       console.log(`REDUCER: ${notesListActionTypes.SELECT_NODE}`);
-      return action.payload.activeNode;
+      return {
+        ...state,
+        ...action.payload.activeNode,
+      };
     case notesListActionTypes.NAVIGATE_PATH:
       console.log(`REDUCER: ${notesListActionTypes.NAVIGATE_PATH}`);
       return changeActiveNodeOnPathNavClick({
@@ -56,7 +62,10 @@ export default function activeNodeReducer(state = initialActiveNode, action) {
       });
     case notesListActionTypes.FETCH_NOTES_TREE_SUCCESS:
       console.log(`REDUCER: ${notesListActionTypes.FETCH_NOTES_TREE_SUCCESS}`);
-      return action.payload.activeNode;
+      return {
+        ...state,
+        ...action.payload.activeNode,
+      };
     default:
       console.log(`Current activeNode: ${JSON.stringify(state)}`);
       return state;

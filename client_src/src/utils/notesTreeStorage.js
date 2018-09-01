@@ -37,7 +37,7 @@ export function save({ userId, tree }) {
  * @param userId
  * @return {Promise<Response | never>}
  */
-export function load({ id = null, userId = null }) {
+export function load({ id = '', userId = '' }) {
   if (!id && !userId) {
     return Promise.reject(new Error('Load aborted. Cause: invalid parameters.'));
   }
