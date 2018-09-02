@@ -1,7 +1,5 @@
 export default ({ user, storage }) => {
   const observer = function observer(editorContent) {
-    // console.log('************* CONTENT *************\n');
-    // console.log(JSON.stringify(editorContent, null, 4));
     // Save only if content was not from initial load or if it changed afterwards
     if (observer.prevContent !== null && observer.prevContent !== editorContent) {
       storage.save({ userId: user, editorContent })
@@ -14,6 +12,8 @@ export default ({ user, storage }) => {
       observer.prevContent = editorContent;
       console.log('############### Content did not change. Skip saving.');
     }
+    // console.log('************* CONTENT *************\n');
+    // console.log(JSON.stringify(editorContent, null, 4));
   };
 
   observer.prevContent = null;
