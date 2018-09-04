@@ -87,7 +87,9 @@ export default function activeNodeReducer(state = initialActiveNode, action) {
     }
 
     default:
-      console.log(`Current activeNode: ${JSON.stringify(state)}`);
+      if (process.env.REACT_APP_DEBUG) {
+        console.log(`Current activeNode: ${JSON.stringify(state)}`);
+      }
       return state;
   }
 }

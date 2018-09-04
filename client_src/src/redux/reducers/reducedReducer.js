@@ -113,7 +113,9 @@ export default function reducedReducer(state = initialState, action) {
         kind: action.payload.kind,
       });
     default:
-      console.log(`Current state tree: ${JSON.stringify(state)}`);
+      if (process.env.REACT_APP_DEBUG) {
+        console.log(`Current state tree: ${JSON.stringify(state)}`);
+      }
       return state;
   }
 }

@@ -18,7 +18,9 @@ export default function editorContentReducer(state = initialContent, action) {
         ...action.payload.editorContent,
       };
     default:
-      console.log(`Current editorContent: ${JSON.stringify(state)}`);
+      if (process.env.REACT_APP_DEBUG) {
+        console.log(`Current editorContent: ${JSON.stringify(state)}`);
+      }
       return state;
   }
 }
