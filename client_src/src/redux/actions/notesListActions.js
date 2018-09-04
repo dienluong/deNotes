@@ -23,7 +23,7 @@ function selectNodeAction({ id, path }) {
       },
     });
 
-    // If selected a node representing a note, as opposed to a folder
+    // Fetch note only if selected a node representing a note, as opposed to a folder.
     if (translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'type' }) === 'item') {
       const noteId = translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'uniqid' });
       dispatch(fetchEditorContentAction({ noteId }))

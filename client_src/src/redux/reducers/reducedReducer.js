@@ -27,7 +27,14 @@ function _findFarthestParent(path) {
   }
 }
 
-function switchActiveNodeOnAdd({ state, parentPath }) {
+/**
+ * Switch to newly added node.
+ * @param state
+ * @param parentPath
+ * @returns {{activeNode: {id: string, path: Array}}}
+ * @private
+ */
+function _switchActiveNodeOnAdd({ state, parentPath }) {
   let newActiveNode = { id: '', path: [] };
   const children = getNodeAtPath({
     treeData: state.notesTree,
@@ -37,6 +44,7 @@ function switchActiveNodeOnAdd({ state, parentPath }) {
   }).node.children || [];
 
   if (children.length) {
+    // The last child is the newly added node.
     newActiveNode.id = children[children.length - 1].id;
     newActiveNode.path = [...parentPath, newActiveNode.id];
   }
@@ -47,7 +55,14 @@ function switchActiveNodeOnAdd({ state, parentPath }) {
   };
 }
 
-function addAndSelectNewNode({ state, kind }) {
+/**
+ * Create new node and switch to it
+ * @param state
+ * @param kind
+ * @returns {{notesTree: *, activeNode: {id: *, path: Array}}}
+ * @private
+ */
+function _addAndSelectNewNode({ state, kind }) {
   let newActiveNodePath = [];
   let parentKey = null;
   const newNode = createNode({ type: kind });
@@ -87,13 +102,13 @@ export default function reducedReducer(state = initialState, action) {
   switch (action.type) {
     case notesListActionTypes.SWITCH_NODE_ON_ADD:
       console.log(`REDUCER: ${notesListActionTypes.SWITCH_NODE_ON_ADD}`);
-      return switchActiveNodeOnAdd({
+      return _switchActiveNodeOnAdd({
         state,
         parentPath: action.payload.path,
       });
     case notesListActionTypes.ADD_AND_SELECT_NODE:
       console.log(`REDUCER: ${notesListActionTypes.ADD_AND_SELECT_NODE}`);
-      return addAndSelectNewNode({
+      return _addAndSelectNewNode({
         state,
         kind: action.payload.kind,
       });

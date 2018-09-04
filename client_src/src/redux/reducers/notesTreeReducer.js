@@ -9,7 +9,7 @@ import baseState from '../misc/initialState';
 
 const initialTree = baseState.notesTree;
 
-function changeNodeTitle({ notesTree, title, node, path }) {
+function _changeNodeTitle({ notesTree, title, node, path }) {
   console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
 
   // TODO? Must use a map structure to map the ID to the corresponding node title
@@ -30,7 +30,7 @@ function changeNodeTitle({ notesTree, title, node, path }) {
   return newTree || notesTree;
 }
 
-function deleteNode({ notesTree, node, path }) {
+function _deleteNode({ notesTree, node, path }) {
   return removeNode({
     treeData: notesTree,
     getNodeKey,
@@ -38,7 +38,7 @@ function deleteNode({ notesTree, node, path }) {
   }).treeData;
 }
 
-function addNote({ notesTree, path }) {
+function _addNote({ notesTree, path }) {
   const newNode = createNode({});
   return addNodeUnderParent({
     treeData: notesTree,
@@ -56,19 +56,19 @@ export default function notesTreeReducer(state = initialTree, action) {
       return action.payload.notesTree;
     case notesListActionTypes.CHANGE_NODE_TITLE:
       console.log(`REDUCER: ${notesListActionTypes.CHANGE_NODE_TITLE}`);
-      return changeNodeTitle({
+      return _changeNodeTitle({
         notesTree: state,
         ...action.payload,
       });
     case notesListActionTypes.DELETE_NODE:
       console.log(`REDUCER: ${notesListActionTypes.DELETE_NODE}`);
-      return deleteNode({
+      return _deleteNode({
         notesTree: state,
         ...action.payload,
       });
     case notesListActionTypes.ADD_NOTE:
       console.log(`REDUCER: ${notesListActionTypes.ADD_NOTE}`);
-      return addNote({
+      return _addNote({
         notesTree: state,
         ...action.payload,
       });

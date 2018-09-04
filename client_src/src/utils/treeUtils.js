@@ -64,9 +64,8 @@ export function translateNodeIdToInfo({ nodeId, kind = 'uniqid' }) {
  * @private
  */
 export function translatePathToInfo({ notesTree = [], path = [], kind = 'type' }) {
-  let info = [];
   if (!Array.isArray(path) || !path.length) {
-    return info;
+    return [];
   }
 
   switch (kind) {
@@ -81,11 +80,9 @@ export function translatePathToInfo({ notesTree = [], path = [], kind = 'type' }
         return matches.length ? matches[0].node.title : '';
       });
     case 'type':
-      info = path.map((step) => String(step).split(ID_DELIMITER)[0]);
-      return info || [];
+      return path.map((step) => String(step).split(ID_DELIMITER)[0]);
     case 'uniqid':
-      info = path.map((step) => String(step).split(ID_DELIMITER)[1]);
-      return info || [];
+      return path.map((step) => String(step).split(ID_DELIMITER)[1]);
     default:
       return [];
   }
