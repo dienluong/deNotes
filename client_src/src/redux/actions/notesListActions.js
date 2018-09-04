@@ -4,33 +4,48 @@ import { translateNodeIdToInfo } from '../../utils/treeUtils';
 import * as notesTreeStorage from '../../utils/notesTreeStorage';
 
 function selectNodeAction({ id, path }) {
+  let activeNode = null;
   if (typeof id !== 'string' || id.length === 0) {
     id = '';
   }
   if (!Array.isArray(path)) {
     path = [];
   }
-  const activeNode = {
-    id,
-    path,
-  };
 
-  return (dispatch) => {
-    dispatch({
-      type: notesListActionTypes.SELECT_NODE,
-      payload: {
-        activeNode,
-      },
-    });
+  // Perform actions only if selected node actually changed
+  if (selectNodeAction.savedPayload.id !== id || selectNodeAction.savedPayload.path !== path) {
+    activeNode = {
+      id,
+      path,
+    };
 
-    // Fetch note only if selected a node representing a note, as opposed to a folder.
-    if (translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'type' }) === 'item') {
-      const noteId = translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'uniqid' });
-      dispatch(fetchEditorContentAction({ noteId }))
-        .catch(err => window.alert(err.message));
-    }
-  };
+    selectNodeAction.savedPayload.id = id;
+    selectNodeAction.savedPayload.path = path;
+
+    return (dispatch) => {
+      dispatch({
+        type: notesListActionTypes.SELECT_NODE,
+        payload: {
+          activeNode,
+        },
+      });
+
+      // Fetch note only if selected a node represents a note, as opposed to a folder.
+      if (translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'type' }) === 'item') {
+        const noteId = translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'uniqid' });
+        dispatch(fetchEditorContentAction({ noteId }))
+          .catch(err => window.alert(err.message));
+      }
+    };
+  } else {
+    return {
+      type: 'NO_OP',
+      payload: {},
+    };
+  }
 }
+selectNodeAction.savedPayload = {};
+
 
 function switchActiveNodeOnDeleteAction({ id, path }) {
   return {
