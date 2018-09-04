@@ -1,5 +1,5 @@
 import notesListActionTypes from './constants/notesListActionConstants';
-import { fetchEditorContentAction } from './editorActions';
+import { fetchEditorContentThunkAction } from './editorActions';
 import { translateNodeIdToInfo } from '../../utils/treeUtils';
 import * as notesTreeStorage from '../../utils/notesTreeStorage';
 
@@ -13,16 +13,15 @@ function selectNodeAction({ id, path }) {
   }
 
   // Perform actions only if selected node actually changed
-  if (selectNodeAction.savedPayload.id !== id || selectNodeAction.savedPayload.path !== path) {
+  if (selectNodeAction.savedPayload.id !== id) {
     activeNode = {
       id,
       path,
     };
 
     selectNodeAction.savedPayload.id = id;
-    selectNodeAction.savedPayload.path = path;
 
-    return (dispatch) => {
+    return (dispatch, getState) => {
       dispatch({
         type: notesListActionTypes.SELECT_NODE,
         payload: {
@@ -30,11 +29,14 @@ function selectNodeAction({ id, path }) {
         },
       });
 
-      // Fetch note only if selected a node represents a note, as opposed to a folder.
-      if (translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'type' }) === 'item') {
-        const noteId = translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'uniqid' });
-        dispatch(fetchEditorContentAction({ noteId }))
-          .catch(err => window.alert(err.message));
+      const uniqid = translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'uniqid' });
+      // If newly selected node is not the opened note
+      if (getState().editorContent.id !== uniqid) {
+        // Fetch note only if newly selected node represents a note, as opposed to a folder.
+        if (translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'type' }) === 'item') {
+          dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
+            .catch(err => window.alert(err.message));
+        }
       }
     };
   } else {
@@ -129,7 +131,7 @@ function addAndSelectNodeAction({ kind }) {
   };
 }
 
-function fetchNotesTreeAction({ userId }) {
+function fetchNotesTreeThunkAction({ userId }) {
   return (dispatch) => {
     dispatch({
       type: notesListActionTypes.FETCH_NOTES_TREE,
@@ -178,7 +180,7 @@ export {
   deleteNodeAction,
   addNoteAction,
   addAndSelectNodeAction,
-  fetchNotesTreeAction,
+  fetchNotesTreeThunkAction,
 };
 
 // TODO: validate arguments on action creators
