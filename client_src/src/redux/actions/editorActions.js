@@ -14,7 +14,7 @@ function changeContentAction({ editor, content }) {
   };
 }
 
-function fetchEditorContentAction({ noteId }) {
+function fetchEditorContentThunkAction({ noteId }) {
   return (dispatch) => {
     dispatch({
       type: editorActionTypes.FETCH_EDITOR_CONTENT,
@@ -56,7 +56,7 @@ function fetchEditorContentAction({ noteId }) {
 
 export {
   changeContentAction,
-  fetchEditorContentAction,
+  fetchEditorContentThunkAction,
 };
 
 // TODO: validate arguments on action creators
