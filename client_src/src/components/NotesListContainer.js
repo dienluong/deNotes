@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { selectTitleFromId } from '../redux/selectors';
 import NotesList from './widgets/NotesList';
 import {
   selectNodeAction,
@@ -12,16 +13,42 @@ import {
   addAndSelectNodeAction,
 } from '../redux/actions/notesListActions';
 
-import { getNodeKey, translatePathToInfo } from '../utils/treeUtils';
+import { getNodeKey } from '../utils/treeUtils';
 
 function mapStateToProps(state) {
-  const activePath = translatePathToInfo({ notesTree: state.notesTree, path: state.activeNode.path, kind: 'title' });
+  const activePath = selectTitleFromId(state);
+
+  // const activePath = translatePathToInfo({ notesTree: state.notesTree, path: state.activeNode.path, kind: 'title' });
+  if (mapStateToProps.cache.notesTree !== state.notesTree) {
+    console.log('~~~~~~~~~~~~~~~~ Notes Tree Changed');
+    mapStateToProps.cache.notesTree = state.notesTree;
+  } else {
+    console.log('~~~~~~~~~~~~~~~~ Same Notes Tree');
+  }
+  if (mapStateToProps.cache.activeNode !== state.activeNode) {
+    console.log('~~~~~~~~~~~~~~~~ Active Node Changed');
+    mapStateToProps.cache.activeNode = state.activeNode;
+  } else {
+    console.log('~~~~~~~~~~~~~~~~ Same Active Node');
+  }
+  if (mapStateToProps.cache.activePath !== activePath) {
+    console.log('~~~~~~~~~~~~~~~~ Active Path Changed');
+    mapStateToProps.cache.activePath = activePath;
+  } else {
+    console.log('~~~~~~~~~~~~~~~~ Same Active Path');
+  }
+  // TODO: Remove ABOVE
+
   return {
     notesTree: state.notesTree,
     activeNode: state.activeNode,
     activePath,
   };
 }
+
+// TODO: Remove
+// Memoization.
+mapStateToProps.cache = {};
 
 function mapDispatchToProps(dispatch) {
   function toolbarNewFolderBtnClickHandler() {

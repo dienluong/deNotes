@@ -3,12 +3,13 @@ import baseState from '../misc/initialState';
 
 const initialActiveNode = baseState.activeNode;
 
-function changeActiveNodeOnPathNavClick({ currentActive, idx }) {
+function _changeActiveNodeOnPathNavClick({ currentActive, idx }) {
   let newActiveNode = currentActive;
   if (Number.isSafeInteger(idx) && idx < currentActive.path.length) {
     newActiveNode = {
       ...currentActive,
       id: currentActive.path[idx],
+      // TODO: remove
       // path: currentActive.path.slice(0, idx + 1),
       path: currentActive.path,
     };
@@ -16,7 +17,7 @@ function changeActiveNodeOnPathNavClick({ currentActive, idx }) {
   return newActiveNode;
 }
 
-function changeActiveNodeOnDelete({ currentActive, deletedNode }) {
+function _changeActiveNodeOnDelete({ currentActive, deletedNode }) {
   let newActiveNode = currentActive;
   // if deleted node is part of the active path, re-adjust the active node
   const deletedNodeIdx = currentActive.path.lastIndexOf(deletedNode.id);
@@ -40,32 +41,51 @@ function changeActiveNodeOnDelete({ currentActive, deletedNode }) {
   return newActiveNode;
 }
 
+function _equals(currentActiveNode, newActiveNode) {
+  const currentKeys = Object.keys(currentActiveNode);
+  const newKeys = Object.keys(newActiveNode);
+
+  if (currentKeys.length !== newKeys.length) { return false; }
+
+  return newKeys.every(key => currentActiveNode[key] === newActiveNode[key]);
+}
+
 export default function activeNodeReducer(state = initialActiveNode, action) {
   switch (action.type) {
-    case notesListActionTypes.SELECT_NODE:
+    case notesListActionTypes.SELECT_NODE: {
       console.log(`REDUCER: ${notesListActionTypes.SELECT_NODE}`);
-      return {
-        ...state,
-        ...action.payload.activeNode,
-      };
-    case notesListActionTypes.NAVIGATE_PATH:
+      if (_equals(state, action.payload.activeNode)) { return state; }
+      else { return { ...state, ...action.payload.activeNode }; }
+    }
+
+    case notesListActionTypes.NAVIGATE_PATH: {
       console.log(`REDUCER: ${notesListActionTypes.NAVIGATE_PATH}`);
-      return changeActiveNodeOnPathNavClick({
+      const newActiveNode = _changeActiveNodeOnPathNavClick({
         currentActive: state,
         idx: action.payload.idx,
       });
-    case notesListActionTypes.SWITCH_NODE_ON_DELETE:
+
+      if (_equals(state, newActiveNode)) { return state; }
+      else { return newActiveNode; }
+    }
+
+    case notesListActionTypes.SWITCH_NODE_ON_DELETE: {
       console.log(`REDUCER: ${notesListActionTypes.SWITCH_NODE_ON_DELETE}`);
-      return changeActiveNodeOnDelete({
+      const newActiveNode = _changeActiveNodeOnDelete({
         currentActive: state,
         deletedNode: action.payload.deletedNode,
       });
-    case notesListActionTypes.FETCH_NOTES_TREE_SUCCESS:
+
+      if (_equals(state, newActiveNode)) { return state; }
+      else { return newActiveNode; }
+    }
+
+    case notesListActionTypes.FETCH_NOTES_TREE_SUCCESS: {
       console.log(`REDUCER: ${notesListActionTypes.FETCH_NOTES_TREE_SUCCESS}`);
-      return {
-        ...state,
-        ...action.payload.activeNode,
-      };
+      if (_equals(state, action.payload.activeNode)) { return state; }
+      else { return { ...state, ...action.payload.activeNode }; }
+    }
+
     default:
       console.log(`Current activeNode: ${JSON.stringify(state)}`);
       return state;
