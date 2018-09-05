@@ -12,16 +12,11 @@ function selectNodeAction({ id, path }) {
     path = [];
   }
 
-  // Perform actions only if selected node actually changed
-  if (selectNodeAction.savedPayload.id !== id) {
-    activeNode = {
-      id,
-      path,
-    };
+  return (dispatch, getState) => {
+    // dispatch actions only if selected node actually changed
+    if (!getState.activeNode || getState.activeNode.id !== id) {
+      activeNode = { id, path };
 
-    selectNodeAction.savedPayload.id = id;
-
-    return (dispatch, getState) => {
       dispatch({
         type: notesListActionTypes.SELECT_NODE,
         payload: {
@@ -38,16 +33,14 @@ function selectNodeAction({ id, path }) {
             .catch(err => window.alert(err.message));
         }
       }
-    };
-  } else {
-    return {
-      type: 'NO_OP',
-      payload: {},
-    };
-  }
+    } else {
+      return {
+        type: 'NO_OP',
+        payload: {},
+      };
+    }
+  };
 }
-selectNodeAction.savedPayload = {};
-
 
 function switchActiveNodeOnDeleteAction({ id, path }) {
   return {

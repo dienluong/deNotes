@@ -1,6 +1,6 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import { addNodeUnderParent } from 'react-sortable-tree';
-import { getNodeKey, createNode } from '../../utils/treeUtils';
+import { getNodeKey, createNode, translateNodeIdToInfo } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
 
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
@@ -28,7 +28,7 @@ function _findFarthestParent(path) {
 }
 
 /**
- * Create new node and switch to it
+ * Create new node, switch to it and set editor content to blank page.
  * @param state
  * @param kind
  * @param path {string[]}
@@ -68,6 +68,10 @@ function _addAndSelectNewNode({ state, kind, path = [] }) {
     ...state,
     notesTree: newNotesTree,
     activeNode: newActiveNode,
+    editorContent: {
+      ...initialState.editorContent,
+      id: translateNodeIdToInfo({ nodeId: newActiveNode.id, kind: 'uniqid' }),
+    },
   };
 }
 
