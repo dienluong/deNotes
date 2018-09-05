@@ -7,9 +7,7 @@ import {
   changeNotesTreeAction,
   changeNodeTitleAction,
   deleteNodeAction,
-  addNoteAction,
   switchActiveNodeOnDeleteAction,
-  switchActiveNodeOnAddAction,
   addAndSelectNodeAction,
 } from '../redux/actions/notesListActions';
 
@@ -51,18 +49,18 @@ function mapStateToProps(state) {
 mapStateToProps.cache = {};
 
 function mapDispatchToProps(dispatch) {
-  function toolbarNewFolderBtnClickHandler() {
+  function toolbarNewFolderBtnHandler() {
     return dispatch(addAndSelectNodeAction({ kind: 'folder' }));
   }
 
-  function toolbarNewNoteBtnClickHandler() {
+  function toolbarNewNoteBtnHandler() {
     return dispatch(addAndSelectNodeAction({ kind: 'item' }));
   }
 
   const toolbarHandlersMap = new Map();
 
-  toolbarHandlersMap.set('New Folder', toolbarNewFolderBtnClickHandler);
-  toolbarHandlersMap.set('New Note', toolbarNewNoteBtnClickHandler);
+  toolbarHandlersMap.set('New Folder', toolbarNewFolderBtnHandler);
+  toolbarHandlersMap.set('New Note', toolbarNewNoteBtnHandler);
 
   return {
     treeChangeHandler(notesTree) {
@@ -82,8 +80,7 @@ function mapDispatchToProps(dispatch) {
       return dispatch(switchActiveNodeOnDeleteAction({ id: node.id, path }));
     },
     addNoteBtnHandler({ path }) {
-      dispatch(addNoteAction({ path }));
-      return dispatch(switchActiveNodeOnAddAction({ path }));
+      return dispatch(addAndSelectNodeAction({ kind: 'item', path }));
     },
     toolbarHandlersMap: toolbarHandlersMap,
   };

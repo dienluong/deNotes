@@ -2,9 +2,8 @@ import notesListActionTypes from '../actions/constants/notesListActionConstants'
 import {
   changeNodeAtPath,
   removeNode,
-  addNodeUnderParent,
 } from 'react-sortable-tree';
-import { getNodeKey, createNode } from '../../utils/treeUtils';
+import { getNodeKey } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
 
 const initialTree = baseState.notesTree;
@@ -38,17 +37,6 @@ function _deleteNode({ notesTree, node, path }) {
   }).treeData;
 }
 
-function _addNote({ notesTree, path }) {
-  const newNode = createNode({});
-  return addNodeUnderParent({
-    treeData: notesTree,
-    getNodeKey,
-    parentKey: path[path.length - 1],
-    newNode,
-    expandParent: true,
-  }).treeData;
-}
-
 export default function notesTreeReducer(state = initialTree, action) {
   switch (action.type) {
     case notesListActionTypes.CHANGE_NOTES_TREE:
@@ -63,12 +51,6 @@ export default function notesTreeReducer(state = initialTree, action) {
     case notesListActionTypes.DELETE_NODE:
       console.log(`REDUCER: ${notesListActionTypes.DELETE_NODE}`);
       return _deleteNode({
-        notesTree: state,
-        ...action.payload,
-      });
-    case notesListActionTypes.ADD_NOTE:
-      console.log(`REDUCER: ${notesListActionTypes.ADD_NOTE}`);
-      return _addNote({
         notesTree: state,
         ...action.payload,
       });

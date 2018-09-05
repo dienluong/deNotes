@@ -61,15 +61,6 @@ function switchActiveNodeOnDeleteAction({ id, path }) {
   };
 }
 
-function switchActiveNodeOnAddAction({ path }) {
-  return {
-    type: notesListActionTypes.SWITCH_NODE_ON_ADD,
-    payload: {
-      path,
-    },
-  };
-}
-
 function navigatePathAction({ idx }) {
   return {
     type: notesListActionTypes.NAVIGATE_PATH,
@@ -113,20 +104,12 @@ function deleteNodeAction({ node, path }) {
   };
 }
 
-function addNoteAction({ path }) {
-  return {
-    type: notesListActionTypes.ADD_NOTE,
-    payload: {
-      path,
-    },
-  };
-}
-
-function addAndSelectNodeAction({ kind }) {
+function addAndSelectNodeAction({ kind, path }) {
   return {
     type: notesListActionTypes.ADD_AND_SELECT_NODE,
     payload: {
       kind,
+      path,
     },
   };
 }
@@ -173,12 +156,10 @@ function fetchNotesTreeThunkAction({ userId }) {
 export {
   selectNodeAction,
   switchActiveNodeOnDeleteAction,
-  switchActiveNodeOnAddAction,
   navigatePathAction,
   changeNotesTreeAction,
   changeNodeTitleAction,
   deleteNodeAction,
-  addNoteAction,
   addAndSelectNodeAction,
   fetchNotesTreeThunkAction,
 };
