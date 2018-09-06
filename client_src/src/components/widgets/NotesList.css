@@ -1,8 +1,8 @@
 /* NotesList styles */
-.active-tree-node {
+.dnt__active-tree-node {
   box-shadow: 0 0 0 4px pink;
 }
 
-.tree-node-btn {
+.dnt__tree-node-btn {
   vertical-align: middle;
 }
