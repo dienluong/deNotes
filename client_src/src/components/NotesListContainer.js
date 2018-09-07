@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { selectTitleFromId } from '../redux/selectors';
 import NotesList from './widgets/NotesList';
 import {
   selectNodeAction,
@@ -6,16 +7,36 @@ import {
   changeNotesTreeAction,
   changeNodeTitleAction,
   deleteNodeAction,
-  addNoteAction,
   switchActiveNodeOnDeleteAction,
-  switchActiveNodeOnAddAction,
   addAndSelectNodeAction,
 } from '../redux/actions/notesListActions';
 
-import { getNodeKey, translatePathToInfo } from '../utils/treeUtils';
+import { getNodeKey } from '../utils/treeUtils';
 
 function mapStateToProps(state) {
-  const activePath = translatePathToInfo({ notesTree: state.notesTree, path: state.activeNode.path, kind: 'title' });
+  const activePath = selectTitleFromId(state);
+
+  // const activePath = translatePathToInfo({ notesTree: state.notesTree, path: state.activeNode.path, kind: 'title' });
+  if (mapStateToProps.cache.notesTree !== state.notesTree) {
+    console.log('~~~~~~~~~~~~~~~~ Notes Tree Changed');
+    mapStateToProps.cache.notesTree = state.notesTree;
+  } else {
+    console.log('~~~~~~~~~~~~~~~~ Same Notes Tree');
+  }
+  if (mapStateToProps.cache.activeNode !== state.activeNode) {
+    console.log('~~~~~~~~~~~~~~~~ Active Node Changed');
+    mapStateToProps.cache.activeNode = state.activeNode;
+  } else {
+    console.log('~~~~~~~~~~~~~~~~ Same Active Node');
+  }
+  if (mapStateToProps.cache.activePath !== activePath) {
+    console.log('~~~~~~~~~~~~~~~~ Active Path Changed');
+    mapStateToProps.cache.activePath = activePath;
+  } else {
+    console.log('~~~~~~~~~~~~~~~~ Same Active Path');
+  }
+  // TODO: Remove ABOVE
+
   return {
     notesTree: state.notesTree,
     activeNode: state.activeNode,
@@ -23,19 +44,23 @@ function mapStateToProps(state) {
   };
 }
 
+// TODO: Remove
+// Memoization.
+mapStateToProps.cache = {};
+
 function mapDispatchToProps(dispatch) {
-  function toolbarNewFolderBtnClickHandler() {
+  function toolbarNewFolderBtnHandler() {
     return dispatch(addAndSelectNodeAction({ kind: 'folder' }));
   }
 
-  function toolbarNewNoteBtnClickHandler() {
+  function toolbarNewNoteBtnHandler() {
     return dispatch(addAndSelectNodeAction({ kind: 'item' }));
   }
 
   const toolbarHandlersMap = new Map();
 
-  toolbarHandlersMap.set('New Folder', toolbarNewFolderBtnClickHandler);
-  toolbarHandlersMap.set('New Note', toolbarNewNoteBtnClickHandler);
+  toolbarHandlersMap.set('New Folder', toolbarNewFolderBtnHandler);
+  toolbarHandlersMap.set('New Note', toolbarNewNoteBtnHandler);
 
   return {
     treeChangeHandler(notesTree) {
@@ -47,7 +72,7 @@ function mapDispatchToProps(dispatch) {
     pathNavigatorClickHandler({ idx }) {
       return dispatch(navigatePathAction({ idx }));
     },
-    nodeClickHandler({ id = null, path = [] }) {
+    nodeClickHandler({ id = '', path = [] }) {
       return dispatch(selectNodeAction({ id, path }));
     },
     deleteNodeBtnHandler({ node, path }) {
@@ -55,8 +80,7 @@ function mapDispatchToProps(dispatch) {
       return dispatch(switchActiveNodeOnDeleteAction({ id: node.id, path }));
     },
     addNoteBtnHandler({ path }) {
-      dispatch(addNoteAction({ path }));
-      return dispatch(switchActiveNodeOnAddAction({ path }));
+      return dispatch(addAndSelectNodeAction({ kind: 'item', path }));
     },
     toolbarHandlersMap: toolbarHandlersMap,
   };

@@ -1,12 +1,10 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
-import { getNodeAtPath, addNodeUnderParent } from 'react-sortable-tree';
-import { getNodeKey, createNode } from '../../utils/treeUtils';
+import { addNodeUnderParent } from 'react-sortable-tree';
+import { getNodeKey, createNode, translateNodeIdToInfo } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
-const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
-const initialState = {
-  ...baseState,
-};
+const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
+const initialState = baseState;
 
 /**
  * Returns the index of the deepest node of type 'folder' in path.
@@ -29,31 +27,19 @@ function _findFarthestParent(path) {
   }
 }
 
-function switchActiveNodeOnAdd({ state, parentPath }) {
-  let newActiveNode = { id: null, path: [] };
-  const children = getNodeAtPath({
-    treeData: state.notesTree,
-    path: parentPath,
-    getNodeKey,
-    ignoreCollapsed: false,
-  }).node.children || [];
-
-  if (children.length) {
-    newActiveNode.id = children[children.length - 1].id;
-    newActiveNode.path = [...parentPath, newActiveNode.id];
-  }
-
-  return {
-    ...state,
-    activeNode: newActiveNode,
-  };
-}
-
-function addAndSelectNewNode({ state, kind }) {
+/**
+ * Create new node, switch to it and set editor content to blank page.
+ * @param state
+ * @param kind
+ * @param path {string[]}
+ * @returns {{notesTree: *, activeNode: {id: *, path: Array}}}
+ * @private
+ */
+function _addAndSelectNewNode({ state, kind, path = [] }) {
   let newActiveNodePath = [];
   let parentKey = null;
   const newNode = createNode({ type: kind });
-  const currentActivePath = state.activeNode.path;
+  const currentActivePath = (Array.isArray(path) && path.length) ? path : state.activeNode.path;
   const parentIdx = _findFarthestParent(currentActivePath);
 
   // if parent found
@@ -82,25 +68,26 @@ function addAndSelectNewNode({ state, kind }) {
     ...state,
     notesTree: newNotesTree,
     activeNode: newActiveNode,
+    editorContent: {
+      ...initialState.editorContent,
+      id: translateNodeIdToInfo({ nodeId: newActiveNode.id, kind: 'uniqid' }),
+    },
   };
 }
 
 export default function reducedReducer(state = initialState, action) {
   switch (action.type) {
-    case notesListActionTypes.SWITCH_NODE_ON_ADD:
-      console.log(`REDUCER: ${notesListActionTypes.SWITCH_NODE_ON_ADD}`);
-      return switchActiveNodeOnAdd({
-        state,
-        parentPath: action.payload.path,
-      });
     case notesListActionTypes.ADD_AND_SELECT_NODE:
       console.log(`REDUCER: ${notesListActionTypes.ADD_AND_SELECT_NODE}`);
-      return addAndSelectNewNode({
+      return _addAndSelectNewNode({
         state,
         kind: action.payload.kind,
+        path: action.payload.path,
       });
     default:
-      console.log(`Initial state: ${JSON.stringify(state)}`);
+      if (process.env.REACT_APP_DEBUG) {
+        console.log(`Current state tree: ${JSON.stringify(state)}`);
+      }
       return state;
   }
 }

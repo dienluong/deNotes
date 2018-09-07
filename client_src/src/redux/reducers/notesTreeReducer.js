@@ -2,14 +2,13 @@ import notesListActionTypes from '../actions/constants/notesListActionConstants'
 import {
   changeNodeAtPath,
   removeNode,
-  addNodeUnderParent,
 } from 'react-sortable-tree';
-import { getNodeKey, createNode } from '../../utils/treeUtils';
+import { getNodeKey } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
 
-const initialTree = [...baseState.notesTree];
+const initialTree = baseState.notesTree;
 
-function changeNodeTitle({ notesTree, title, node, path }) {
+function _changeNodeTitle({ notesTree, title, node, path }) {
   console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
 
   // TODO? Must use a map structure to map the ID to the corresponding node title
@@ -30,22 +29,11 @@ function changeNodeTitle({ notesTree, title, node, path }) {
   return newTree || notesTree;
 }
 
-function deleteNode({ notesTree, node, path }) {
+function _deleteNode({ notesTree, node, path }) {
   return removeNode({
     treeData: notesTree,
     getNodeKey,
     path,
-  }).treeData;
-}
-
-function addNote({ notesTree, path }) {
-  const newNode = createNode({});
-  return addNodeUnderParent({
-    treeData: notesTree,
-    getNodeKey,
-    parentKey: path[path.length - 1],
-    newNode,
-    expandParent: true,
   }).treeData;
 }
 
@@ -56,24 +44,23 @@ export default function notesTreeReducer(state = initialTree, action) {
       return action.payload.notesTree;
     case notesListActionTypes.CHANGE_NODE_TITLE:
       console.log(`REDUCER: ${notesListActionTypes.CHANGE_NODE_TITLE}`);
-      return changeNodeTitle({
+      return _changeNodeTitle({
         notesTree: state,
         ...action.payload,
       });
     case notesListActionTypes.DELETE_NODE:
       console.log(`REDUCER: ${notesListActionTypes.DELETE_NODE}`);
-      return deleteNode({
+      return _deleteNode({
         notesTree: state,
         ...action.payload,
       });
-    case notesListActionTypes.ADD_NOTE:
-      console.log(`REDUCER: ${notesListActionTypes.ADD_NOTE}`);
-      return addNote({
-        notesTree: state,
-        ...action.payload,
-      });
+    case notesListActionTypes.FETCH_NOTES_TREE_SUCCESS:
+      console.log(`REDUCER: ${notesListActionTypes.FETCH_NOTES_TREE_SUCCESS}`);
+      return action.payload.notesTree;
     default:
-      console.log(`Initial notesTree: ${JSON.stringify(state)}`);
+      if (process.env.REACT_APP_DEBUG) {
+        console.log(`Current notesTree: ${JSON.stringify(state)}`);
+      }
       return state;
   }
 }

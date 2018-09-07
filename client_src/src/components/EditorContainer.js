@@ -4,6 +4,7 @@ import { changeContentAction } from '../redux/actions/editorActions';
 
 function mapStateToProps(state) {
   return {
+    id: state.editorContent.id,
     delta: state.editorContent.delta,
     content: state.editorContent.content,
   };
@@ -12,7 +13,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     contentChangeHandler(content, delta, source, editor) {
-      return dispatch(changeContentAction({ delta, content }));
+      return dispatch(changeContentAction({ editor, content }));
     },
   };
 }

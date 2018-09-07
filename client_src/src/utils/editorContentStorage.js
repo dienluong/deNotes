@@ -2,12 +2,12 @@ let _save = () => Promise.reject(new Error('Save aborted. Cause: No Storage impl
 let _load = () => Promise.reject(new Error('Load aborted. Cause: No Storage implementation provided.'));
 
 export function inject({ save = _save, load = _load }) {
-  _save = save;
-  _load = load;
+  _save = typeof save === 'function' ? save : _save;
+  _load = typeof load === 'function' ? load : _load;
 }
 
-export function saveEditorContent({ userId, editorContent }) {
-  if (!editorContent || !editorContent.content || !editorContent.delta) {
+export function save({ userId, editorContent }) {
+  if (!editorContent || !editorContent.content || !editorContent.delta || !editorContent.id) {
     return Promise.reject(new Error('Save aborted. Cause: invalid content.'));
   }
 
@@ -17,10 +17,11 @@ export function saveEditorContent({ userId, editorContent }) {
 
   return _save({
     collectionName: 'notes',
+    id: editorContent.id,
     ownerId: userId,
     // TODO: Replace hardcoded values
     dataObj: {
-      'id': '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e',
+      'id': editorContent.id,
       'title': 'Hardcoded Title',
       'body': editorContent.content,
       'delta': JSON.stringify(editorContent.delta),
@@ -42,7 +43,7 @@ export function saveEditorContent({ userId, editorContent }) {
  * @param noteId
  * @return {Promise<Response | never>}
  */
-export function loadEditorContent({ id = null, userId = null }) {
+export function load({ id = '', userId = '' }) {
   if (!id && !userId) {
     return Promise.reject(new Error('Load aborted. Cause: invalid parameters.'));
   }

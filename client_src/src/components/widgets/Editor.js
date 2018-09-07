@@ -3,10 +3,10 @@ import 'react-quill/dist/quill.snow.css';
 import './Editor.css';
 import Quill from 'react-quill';
 
-function Editor({ delta, content, contentChangeHandler, options }) {
+function Editor({ id, delta, content, contentChangeHandler, options }) {
   return (
     <Quill
-      defaultValue={ content }
+      value={ delta }
       onChange={ contentChangeHandler }
       theme='snow'
       { ...options }

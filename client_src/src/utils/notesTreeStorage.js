@@ -2,11 +2,11 @@ let _save = () => Promise.reject(new Error('Save aborted. Cause: No Storage impl
 let _load = () => Promise.reject(new Error('Load aborted. Cause: No Storage implementation provided.'));
 
 export function inject({ save = _save, load = _load }) {
-  _save = save;
-  _load = load;
+  _save = typeof save === 'function' ? save : _save;
+  _load = typeof load === 'function' ? load : _load;
 }
 
-export function saveTree({ userId, tree }) {
+export function save({ userId, tree }) {
   if (!Array.isArray(tree)) {
     return Promise.reject(new Error('Save aborted. Cause: invalid tree.'));
   }
@@ -37,7 +37,7 @@ export function saveTree({ userId, tree }) {
  * @param userId
  * @return {Promise<Response | never>}
  */
-export function loadTree({ id = null, userId = null }) {
+export function load({ id = '', userId = '' }) {
   if (!id && !userId) {
     return Promise.reject(new Error('Load aborted. Cause: invalid parameters.'));
   }

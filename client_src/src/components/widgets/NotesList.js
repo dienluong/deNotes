@@ -21,19 +21,20 @@ function NotesList({
 }) {
   function buildNodeProps({ node, path }) {
     return ({
-      title: (
-        <NodeTitle node={ node } path={ path } onSubmit={ nodeTitleChangeHandler } />
-      ),
-      className: (node.id === activeNode.id) ? 'active-tree-node' : '',
+      title: (<NodeTitle node={ node } path={ path } onSubmit={ nodeTitleChangeHandler } />),
+      className: (node.id === activeNode.id) ? 'dnt__active-tree-node' : '',
       buttons: _buildNodeButtons({ node, path }),
+      tabIndex: '0',
       onClick: () => nodeClickHandler({ id: node.id, path }),
+      onFocus: () => console.log('Focused: ' + node.title),
+      onBlur: () => console.log('unFocused: ' + node.title),
     });
   }
 
   function _buildNodeButtons({ node, path }) {
     let buttons = [
       <button
-        className='tree-node-btn'
+        className='dnt__tree-node-btn'
         onClick={ (event) => {
           event.stopPropagation();
           deleteNodeBtnHandler({ node, path });
@@ -47,7 +48,7 @@ function NotesList({
     if (typeof node.children !== 'undefined') {
       buttons.unshift(
         <button
-          className='tree-node-btn'
+          className='dnt__tree-node-btn'
           onClick={ (event) => {
             event.stopPropagation();
             addNoteBtnHandler({ path });
