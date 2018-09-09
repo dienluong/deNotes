@@ -3,7 +3,7 @@ import 'react-quill/dist/quill.snow.css';
 import './Editor.css';
 import Quill from 'react-quill';
 
-function Editor({ id, delta, content, contentChangeHandler, options }) {
+function Editor({ id, delta, content, dateCreated, dateModified, contentChangeHandler, options }) {
   return (
     <Quill
       value={ delta }
@@ -25,42 +25,42 @@ function Editor({ id, delta, content, contentChangeHandler, options }) {
 //     this.handleChange = this.handleChange.bind(this);
 //   }
 //
-  // TODO: Remove
-  // componentDidMount() {
-  //   this.quill = new Quill('#quill', {
-  //     ...this.state.options,
-  //     theme: 'snow',
-  //   });
-  // }
+// TODO: Remove
+// componentDidMount() {
+//   this.quill = new Quill('#quill', {
+//     ...this.state.options,
+//     theme: 'snow',
+//   });
+// }
 
-  // render() {
-  //   return (
-  //     <div className='editor'>
-  //       <div id={'quill'}>
-  //         <p>Hello, this is <strong>Quill</strong>!</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+// render() {
+//   return (
+//     <div className='editor'>
+//       <div id={'quill'}>
+//         <p>Hello, this is <strong>Quill</strong>!</p>
+//       </div>
+//     </div>
+//   );
+// }
 
-  // handleChange(content, delta, source, editor) {
-    // console.log(`Deltas: ${JSON.stringify(this.state.deltas)}`);
-    // console.log(`Content: ${content}`);
-    // this.setState({
-    //   deltas: this.state.deltas.concat(delta),
-    //   content,
-    // });
-  // }
-  //
-  // render() {
-  //   return (
-  //     {/*<Quill*/}
-        // onChange={ this.handleChange }
-        // theme='snow'
-        // { ...this.props.options }
-      // />
-    // );
-  // }
+// handleChange(content, delta, source, editor) {
+// console.log(`Deltas: ${JSON.stringify(this.state.deltas)}`);
+// console.log(`Content: ${content}`);
+// this.setState({
+//   deltas: this.state.deltas.concat(delta),
+//   content,
+// });
+// }
+//
+// render() {
+//   return (
+//     {/*<Quill*/}
+// onChange={ this.handleChange }
+// theme='snow'
+// { ...this.props.options }
+// />
+// );
+// }
 // }
 
 export default Editor;

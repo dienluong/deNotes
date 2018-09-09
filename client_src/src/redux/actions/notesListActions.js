@@ -25,7 +25,7 @@ function selectNodeAction({ id, path }) {
       });
 
       const uniqid = translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'uniqid' });
-      // If newly selected node is not the opened note
+      // If newly selected node is not the already opened note
       if (getState().editorContent.id !== uniqid) {
         // Fetch note only if newly selected node represents a note, as opposed to a folder.
         if (translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'type' }) === 'item') {

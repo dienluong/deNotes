@@ -9,6 +9,7 @@ function changeContentAction({ editor, content }) {
       newContent: {
         delta: editor.getContents(),
         content,
+        dateModified: Date.now(),
       },
     },
   };
@@ -29,6 +30,8 @@ function fetchEditorContentThunkAction({ noteId }) {
             id: noteId,
             content: content.body,
             delta: new Delta(JSON.parse(content.delta)),
+            dateModified: content.dateModified,
+            dateCreated: content.dateCreated,
           };
           return dispatch({
             type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,

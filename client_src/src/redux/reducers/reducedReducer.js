@@ -64,6 +64,7 @@ function _addAndSelectNewNode({ state, kind, path = [] }) {
     path: newActiveNodePath,
   };
 
+  const now = Date.now();
   return {
     ...state,
     notesTree: newNotesTree,
@@ -71,6 +72,8 @@ function _addAndSelectNewNode({ state, kind, path = [] }) {
     editorContent: {
       ...initialState.editorContent,
       id: translateNodeIdToInfo({ nodeId: newActiveNode.id, kind: 'uniqid' }),
+      dateCreated: now,
+      dateModified: now,
     },
   };
 }

@@ -33,7 +33,6 @@
     },
     "dateCreated": {
       "type": "date",
-      "required": true,
       "mysql": {
         "default": "CURRENT_TIMESTAMP"
       }

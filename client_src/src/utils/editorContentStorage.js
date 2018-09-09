@@ -25,8 +25,8 @@ export function save({ userId, editorContent }) {
       'title': 'Hardcoded Title',
       'body': editorContent.content,
       'delta': JSON.stringify(editorContent.delta),
-      'dateCreated': '2018-08-27T11:11:11.435Z',
-      'dateModified': '2018-08-27T22:22:22.435Z',
+      'dateCreated': editorContent.dateCreated,
+      'dateModified': editorContent.dateModified,
       'ownerId': userId,
     },
   }).then(response => {

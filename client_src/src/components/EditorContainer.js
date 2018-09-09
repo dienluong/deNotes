@@ -7,6 +7,8 @@ function mapStateToProps(state) {
     id: state.editorContent.id,
     delta: state.editorContent.delta,
     content: state.editorContent.content,
+    dateCreated: state.editorContent.dateCreated,
+    dateModified: state.editorContent.dateModified,
   };
 }
 

@@ -17,6 +17,7 @@ const _rootNode = [
   },
 ];
 
+const now = Date.now();
 export default {
   notesTree: _rootNode,
   activeNode: {
@@ -27,5 +28,7 @@ export default {
     id: '',
     content: '',
     delta: new Delta(),
+    dateCreated: now,
+    dateModified: now,
   },
 };
