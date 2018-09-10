@@ -26,8 +26,9 @@ function NotesList({
       buttons: _buildNodeButtons({ node, path }),
       tabIndex: '0',
       onClick: () => nodeClickHandler({ id: node.id, path }),
-      onFocus: () => console.log('Focused: ' + node.title),
-      onBlur: () => console.log('unFocused: ' + node.title),
+      // TODO: remove
+      // onFocus: () => console.log('Focused: ' + node.title),
+      // onBlur: () => console.log('unFocused: ' + node.title),
     });
   }
 

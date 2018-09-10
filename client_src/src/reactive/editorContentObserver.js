@@ -3,14 +3,14 @@ export default ({ user, storage }) => {
     // TODO: remove
     // Save only if 1) content was not from initial load, 2) if content changed, 3) content is for the same note (i.e. not content of newly loaded note)
 
-    // Save if 1) newly created note -OR- 2) content of already opened note changed.
+    // Save 1) if newly created note -OR- 2) if content of already opened note changed.
     if (editorContent.dateCreated > observer.lastSavedDate || (editorContent.id === observer.lastContentId && editorContent.dateModified > observer.lastSavedDate)) {
       storage.save({ userId: user, editorContent })
         .then(responseObj => {
-          observer.lastSavedDate = editorContent.dateModified;
+          observer.lastSavedDate = editorContent.dateModified > editorContent.dateCreated ? editorContent.dateModified : editorContent.dateCreated;
           console.log(`$$$$$$$$$$$$$$$ Content saved!!!\n${JSON.stringify(responseObj, null, 2)}`);
         })
-        .catch(() => window.alert('Failed to save editor content'));// TODO: Failed save should retry
+        .catch((err) => window.alert('Failed to save editor content.' + err.message));// TODO: Failed save should retry
     } else {
       console.log('############### Content did not change. Skip saving.');
     }

@@ -36,6 +36,7 @@ function _findFarthestParent(path) {
  * @private
  */
 function _addAndSelectNewNode({ state, kind, path = [] }) {
+  let newState = null;
   let newActiveNodePath = [];
   let parentKey = null;
   const newNode = createNode({ type: kind });
@@ -64,18 +65,24 @@ function _addAndSelectNewNode({ state, kind, path = [] }) {
     path: newActiveNodePath,
   };
 
-  const now = Date.now();
-  return {
+  newState = {
     ...state,
     notesTree: newNotesTree,
     activeNode: newActiveNode,
-    editorContent: {
+  };
+
+  // Only change the editorContent state if newly added node is a note, as opposed to a folder.
+  if (kind === 'item') {
+    const now = Date.now();
+    newState.editorContent = {
       ...initialState.editorContent,
       id: translateNodeIdToInfo({ nodeId: newActiveNode.id, kind: 'uniqid' }),
       dateCreated: now,
       dateModified: now,
-    },
-  };
+    };
+  }
+
+  return newState;
 }
 
 export default function reducedReducer(state = initialState, action) {

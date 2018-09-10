@@ -26,7 +26,7 @@ export default {
   },
   editorContent: {
     id: '',
-    content: '',
+    content: '<p><br></p>',
     delta: new Delta(),
     dateCreated: now,
     dateModified: now,
