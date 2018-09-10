@@ -26,12 +26,14 @@ function fetchEditorContentThunkAction({ noteId }) {
     return editorContentStorage.load({ id: noteId })
       .then(content => {
         if (content && 'body' in content && 'delta' in content) {
+          // Note: the retrieved dates are date-time strings in ISO format; must convert to milliseconds since Unix epoch.
           const editorContent = {
             id: noteId,
+            title: content.title,
             content: content.body,
             delta: new Delta(JSON.parse(content.delta)),
-            dateModified: content.dateModified,
-            dateCreated: content.dateCreated,
+            dateModified: new Date(content.dateModified).getTime(),
+            dateCreated: new Date(content.dateCreated).getTime(),
           };
           return dispatch({
             type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,

@@ -7,6 +7,8 @@ export default ({ user, storage }) => {
     if (editorContent.dateCreated > observer.lastSavedDate || (editorContent.id === observer.lastContentId && editorContent.dateModified > observer.lastSavedDate)) {
       storage.save({ userId: user, editorContent })
         .then(responseObj => {
+          // TODO: remove
+          // console.log(editorContent.dateCreated, editorContent.dateModified, observer.lastSavedDate, observer.lastContentId, editorContent.id);
           observer.lastSavedDate = editorContent.dateModified > editorContent.dateCreated ? editorContent.dateModified : editorContent.dateCreated;
           console.log(`$$$$$$$$$$$$$$$ Content saved!!!\n${JSON.stringify(responseObj, null, 2)}`);
         })

@@ -25,11 +25,16 @@
       "type": "date",
       "required": true,
       "mysql": {
-        "default": "CURRENT_TIMESTAMP"
+        "dataType": "timestamp(3)",
+        "default": "CURRENT_TIMESTAMP(3)"
       }
     },
     "dateModified": {
-      "type": "date"
+      "type": "date",
+      "mysql": {
+        "dataType": "timestamp(3)",
+        "default": "CURRENT_TIMESTAMP(3)"
+      }
     }
   },
   "validations": [],
