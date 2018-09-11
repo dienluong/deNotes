@@ -77,6 +77,7 @@ function _addAndSelectNewNode({ state, kind, path = [] }) {
     newState.editorContent = {
       ...initialState.editorContent,
       id: translateNodeIdToInfo({ nodeId: newActiveNode.id, kind: 'uniqid' }),
+      title: newNode.title,
       dateCreated: now,
       dateModified: now,
     };

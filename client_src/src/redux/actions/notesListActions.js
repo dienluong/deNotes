@@ -14,7 +14,7 @@ function selectNodeAction({ id, path }) {
 
   return (dispatch, getState) => {
     // dispatch actions only if selected node actually changed
-    if (!getState.activeNode || getState.activeNode.id !== id) {
+    if (getState().activeNode && getState().activeNode.id !== id) {
       activeNode = { id, path };
 
       dispatch({
