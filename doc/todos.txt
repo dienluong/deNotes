@@ -10,7 +10,8 @@ x Add created date and modified date to editor content
 x To fix: Loading/switching note triggers a content change, triggers refresh of modified date and consequently a save.
     => Fixed by changing Editor from controlled to uncontrolled. So now loading a note would rerender the Editor instead of triggering a content-change action.
 x Save newly created note
-The saved note title should appear on corresponding node.
+x The saved note title should appear on corresponding node.
+Active node should be the persistent.
 Upon creation of new note, auto select editor body.
 delete node deletes note in DB, and other necessary operations.
 ? Deselecting note with empty content deletes the note.
