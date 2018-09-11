@@ -29,6 +29,16 @@ export default function editorContentReducer(state = initialContent, action) {
       } else {
         return state;
       }
+    case notesListActionTypes.DELETE_NODE:
+      console.log(`REDUCER: ${notesListActionTypes.DELETE_NODE}`);
+      if (state.id === action.payload.node.uniqid) {
+        return {
+          ...initialContent,
+          readOnly: true,
+        };
+      } else {
+        return state;
+      }
     default:
       if (process.env.REACT_APP_DEBUG) {
         console.log(`Current editorContent: ${JSON.stringify(state)}`);

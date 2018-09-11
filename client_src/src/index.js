@@ -10,7 +10,7 @@ import thunk from 'redux-thunk';
 import rootReducer from './redux/reducers';
 import { fetchNotesTreeThunkAction } from './redux/actions/notesListActions';
 // import { fetchEditorContentThunkAction } from './redux/actions/editorActions';
-import { selectNodeAction } from './redux/actions/notesListActions';
+import { selectNodeThunkAction } from './redux/actions/notesListActions';
 import { Provider } from 'react-redux';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/pluck';
@@ -46,7 +46,7 @@ store.dispatch(fetchNotesTreeThunkAction({ userId }))
       searchQuery: activeId,
       searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
     }).matches[0].path;
-    store.dispatch(selectNodeAction({ id: activeId, path }));
+    store.dispatch(selectNodeThunkAction({ id: activeId, path }));
   })
   .catch(err => window.alert(err.message));
 // store.dispatch(fetchEditorContentThunkAction({ noteId }))

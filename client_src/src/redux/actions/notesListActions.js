@@ -3,7 +3,7 @@ import { fetchEditorContentThunkAction } from './editorActions';
 import { translateNodeIdToInfo } from '../../utils/treeUtils';
 import * as notesTreeStorage from '../../utils/notesTreeStorage';
 
-function selectNodeAction({ id, path }) {
+function selectNodeThunkAction({ id, path }) {
   let activeNode = null;
   if (typeof id !== 'string' || id.length === 0) {
     id = '';
@@ -147,7 +147,7 @@ function fetchNotesTreeThunkAction({ userId }) {
 }
 
 export {
-  selectNodeAction,
+  selectNodeThunkAction,
   switchActiveNodeOnDeleteAction,
   navigatePathAction,
   changeNotesTreeAction,

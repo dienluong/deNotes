@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { selectTitleFromId } from '../redux/selectors';
 import NotesList from './widgets/NotesList';
 import {
-  selectNodeAction,
+  selectNodeThunkAction,
   navigatePathAction,
   changeNotesTreeAction,
   changeNodeTitleAction,
@@ -73,7 +73,7 @@ function mapDispatchToProps(dispatch) {
       return dispatch(navigatePathAction({ idx }));
     },
     nodeClickHandler({ id = '', path = [] }) {
-      return dispatch(selectNodeAction({ id, path }));
+      return dispatch(selectNodeThunkAction({ id, path }));
     },
     deleteNodeBtnHandler({ node, path }) {
       dispatch(deleteNodeAction({ node, path }));

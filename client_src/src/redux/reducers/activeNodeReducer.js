@@ -22,18 +22,18 @@ function _changeActiveNodeOnDelete({ currentActive, deletedNode }) {
   // if deleted node is part of the active path, re-adjust the active node
   const deletedNodeIdx = currentActive.path.lastIndexOf(deletedNode.id);
   if (deletedNodeIdx >= 0) {
-    const newActivePath = currentActive.path.slice(0, deletedNodeIdx);
-    if (newActivePath.length) {
-      newActiveNode = {
-        ...currentActive,
-        id: newActivePath[newActivePath.length - 1],
-        path: newActivePath,
-      };
-    } else {
+    if (deletedNodeIdx === 0) {
       newActiveNode = {
         ...currentActive,
         id: '',
         path: [],
+      };
+    } else {
+      const newActivePath = currentActive.path.slice(0, deletedNodeIdx);
+      newActiveNode = {
+        ...currentActive,
+        id: newActivePath[newActivePath.length - 1],
+        path: newActivePath,
       };
     }
   }

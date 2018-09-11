@@ -80,6 +80,7 @@ function _addAndSelectNewNode({ state, kind, path = [] }) {
       title: newNode.title,
       dateCreated: now,
       dateModified: now,
+      readOnly: false,
     };
   }
 

@@ -34,6 +34,7 @@ function fetchEditorContentThunkAction({ noteId }) {
             delta: new Delta(JSON.parse(content.delta)),
             dateModified: new Date(content.dateModified).getTime(),
             dateCreated: new Date(content.dateCreated).getTime(),
+            readOnly: false,
           };
           return dispatch({
             type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
