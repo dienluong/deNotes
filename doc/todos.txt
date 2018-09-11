@@ -12,7 +12,7 @@ x To fix: Loading/switching note triggers a content change, triggers refresh of 
 x Save newly created note
 x The saved note title should appear on corresponding node.
 x delete node deletes note in DB, and other necessary operations.
-Upon deleting a note, switch active node to previous note in folder.
+Upon deleting a note, switch active node to previous note in folder; if no note in folder, switch to folder and disable editor
 Upon deleting a folder, switch active node to parent.
 Active node should be the persistent across sessions.
 Deleting node should switch to previous active node.
