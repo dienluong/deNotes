@@ -60,9 +60,25 @@ function fetchEditorContentThunkAction({ noteId }) {
   };
 }
 
+function removeNoteThunkAction({ id }) {
+  return (dispatch) => {
+    dispatch({ type: editorActionTypes.REMOVING_NOTE, payload: { id } });
+    return (
+      editorContentStorage.remove({ id })
+        .then((result) => {
+          return dispatch({
+            type: editorActionTypes.REMOVE_NOTE_SUCCESS,
+            payload: { id, count: result.count },
+          });
+        })
+    );
+  };
+}
+
 export {
   changeContentAction,
   fetchEditorContentThunkAction,
+  removeNoteThunkAction,
 };
 
 // TODO: validate arguments on action creators

@@ -57,3 +57,21 @@ export function load({ collectionName = '', id = '', ownerId = '' }) {
     },
   );
 }
+
+export function remove({ collectionName = '', id = '', ownerId = '' }) {
+  const ownerFilter = ownerId ? `?where={"ownerId": "${ownerId}"}` : '';
+  const idFilter = id ? `/${id}` : '';
+  if (!collectionName) {
+    return Promise.reject('Delete aborted: invalid collection name.');
+  }
+  return fetch(
+    `${process.env.REACT_APP_SERVER_URL}/api/${collectionName}${idFilter}${ownerFilter}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    },
+  );
+}

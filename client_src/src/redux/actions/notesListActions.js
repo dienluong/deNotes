@@ -1,5 +1,5 @@
 import notesListActionTypes from './constants/notesListActionConstants';
-import { fetchEditorContentThunkAction } from './editorActions';
+import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { translateNodeIdToInfo } from '../../utils/treeUtils';
 import * as notesTreeStorage from '../../utils/notesTreeStorage';
 
@@ -17,27 +17,27 @@ function selectNodeThunkAction({ id, path }) {
     if (getState().activeNode && getState().activeNode.id !== id) {
       activeNode = { id, path };
 
-      dispatch({
+      const returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
         payload: {
           activeNode,
         },
       });
 
-      const uniqid = translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'uniqid' });
-      // If newly selected node is not the already opened note
-      if (getState().editorContent.id !== uniqid) {
-        // Fetch note only if newly selected node represents a note, as opposed to a folder.
-        if (translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'type' }) === 'item') {
-          dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
-            .catch(err => window.alert(err.message));
+      // Fetch saved note only if:
+      // 1) newly selected node represents a note ('item'), as opposed to a folder.
+      // 2) newly selected node is not the already opened note
+      const kind = translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'type' });
+      if (kind === 'item') {
+        const uniqid = translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'uniqid' });
+        if (uniqid !== getState().editorContent.id) {
+          return dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
+            .catch(err => window.alert(`Error loading saved note content: ${err.message}`)); // TODO: adjust error handling.
         }
       }
+      return Promise.resolve(returnVal);
     } else {
-      return {
-        type: 'NO_OP',
-        payload: {},
-      };
+      return Promise.resolve({ type: 'NO_OP', payload: {} });
     }
   };
 }
@@ -87,13 +87,29 @@ function changeNodeTitleAction({ title, node, path }) {
   };
 }
 
-function deleteNodeAction({ node, path }) {
-  return {
-    type: notesListActionTypes.DELETE_NODE,
-    payload: {
-      node,
-      path,
-    },
+function deleteNodeThunkAction({ node, path }) {
+  return (dispatch) => {
+    if (node.type === 'item') {
+      // dispatch action to delete note from storage
+      return dispatch(removeNoteThunkAction({ id: node.uniqid }))
+        .then((action) => {
+          console.log(`Number of notes deleted: ${action.payload.count}`); // TODO: remove
+          // if delete from storage succeeded, delete node from tree
+          dispatch({
+            type: notesListActionTypes.DELETE_NODE,
+            payload: { node, path },
+          });
+          // then determine if the active node must change.
+          return dispatch(switchActiveNodeOnDeleteAction({ id: node.id, path }));
+        })
+        .catch((err) => window.alert(`ERROR deleting saved note: ${err.message}`));
+    } else {
+      dispatch({
+        type: notesListActionTypes.DELETE_NODE,
+        payload: { node, path },
+      });
+      return Promise.resolve(dispatch(switchActiveNodeOnDeleteAction({ id: node.id, path })));
+    }
   };
 }
 
@@ -152,7 +168,7 @@ export {
   navigatePathAction,
   changeNotesTreeAction,
   changeNodeTitleAction,
-  deleteNodeAction,
+  deleteNodeThunkAction,
   addAndSelectNodeAction,
   fetchNotesTreeThunkAction,
 };

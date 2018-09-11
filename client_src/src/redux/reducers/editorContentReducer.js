@@ -29,9 +29,9 @@ export default function editorContentReducer(state = initialContent, action) {
       } else {
         return state;
       }
-    case notesListActionTypes.DELETE_NODE:
-      console.log(`REDUCER: ${notesListActionTypes.DELETE_NODE}`);
-      if (state.id === action.payload.node.uniqid) {
+    case editorActionTypes.REMOVE_NOTE_SUCCESS:
+      console.log(`REDUCER: ${editorActionTypes.REMOVE_NOTE_SUCCESS}`);
+      if (state.id === action.payload.id) {
         return {
           ...initialContent,
           readOnly: true,

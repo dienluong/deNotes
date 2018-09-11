@@ -11,9 +11,12 @@ x To fix: Loading/switching note triggers a content change, triggers refresh of 
     => Fixed by changing Editor from controlled to uncontrolled. So now loading a note would rerender the Editor instead of triggering a content-change action.
 x Save newly created note
 x The saved note title should appear on corresponding node.
-Active node should be the persistent.
+x delete node deletes note in DB, and other necessary operations.
+Upon deleting a note, switch active node to previous note in folder.
+Upon deleting a folder, switch active node to parent.
+Active node should be the persistent across sessions.
+Deleting node should switch to previous active node.
 Upon creation of new note, auto select editor body.
-delete node deletes note in DB, and other necessary operations.
 ? Deselecting note with empty content deletes the note.
 Retry save or load on failure
 recycle bin

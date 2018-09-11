@@ -6,8 +6,7 @@ import {
   navigatePathAction,
   changeNotesTreeAction,
   changeNodeTitleAction,
-  deleteNodeAction,
-  switchActiveNodeOnDeleteAction,
+  deleteNodeThunkAction,
   addAndSelectNodeAction,
 } from '../redux/actions/notesListActions';
 
@@ -76,8 +75,7 @@ function mapDispatchToProps(dispatch) {
       return dispatch(selectNodeThunkAction({ id, path }));
     },
     deleteNodeBtnHandler({ node, path }) {
-      dispatch(deleteNodeAction({ node, path }));
-      return dispatch(switchActiveNodeOnDeleteAction({ id: node.id, path }));
+      return dispatch(deleteNodeThunkAction({ node, path }));
     },
     addNoteBtnHandler({ path }) {
       return dispatch(addAndSelectNodeAction({ kind: 'item', path }));

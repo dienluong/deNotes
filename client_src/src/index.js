@@ -19,7 +19,7 @@ import notesTreeObserver from './reactive/notesTreeObserver';
 import editorContentObserver from './reactive/editorContentObserver';
 import * as notesTreeStorage from './utils/notesTreeStorage';
 import * as editorContentStorage from './utils/editorContentStorage';
-import { save as loopbackSave, load as loopbackLoad } from './utils/loopbackREST';
+import { save as loopbackSave, load as loopbackLoad, remove as loopbackDelete } from './utils/loopbackREST';
 
 // TODO: adjust user ID to logged in user
 const userId = process.env.REACT_APP_USER_ID;
@@ -34,7 +34,7 @@ const activeId = 'item|^|218013d0-ad79-11e8-bfc8-79a6754f355a';
 
 // Use loopbackREST for loading and saving persisted data
 notesTreeStorage.inject({ save: loopbackSave, load: loopbackLoad });
-editorContentStorage.inject({ save: loopbackSave, load: loopbackLoad });
+editorContentStorage.inject({ save: loopbackSave, load: loopbackLoad, remove: loopbackDelete });
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
 // Fetch asynchronously
