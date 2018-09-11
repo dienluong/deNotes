@@ -22,7 +22,7 @@ export function save({ userId, editorContent }) {
     // TODO: Replace hardcoded values
     dataObj: {
       'id': editorContent.id,
-      'title': 'Hardcoded Title',
+      'title': editorContent.title || '',
       'body': editorContent.content,
       'delta': JSON.stringify(editorContent.delta),
       'dateCreated': editorContent.dateCreated,
