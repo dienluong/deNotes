@@ -16,7 +16,7 @@ import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/pluck';
 import 'rxjs/add/operator/auditTime';
 import notesTreeObserver from './reactive/notesTreeObserver';
-import editorContentObserver from './reactive/editorContentObserver';
+import * as editorContentObserver from './reactive/editorContentObserver';
 import * as notesTreeStorage from './utils/notesTreeStorage';
 import * as editorContentStorage from './utils/editorContentStorage';
 import { save as loopbackSave, load as loopbackLoad, remove as loopbackDelete } from './utils/loopbackREST';
@@ -56,9 +56,10 @@ store.dispatch(fetchNotesTreeThunkAction({ userId }))
 const notesTree$ = Observable.from(store).pluck('notesTree').auditTime(1000);
 const editorContent$ = Observable.from(store).pluck('editorContent').auditTime(1000);
 const myNotesTreeObserver = notesTreeObserver({ user: userId, storage: notesTreeStorage });
-const myEditorContentObserver = editorContentObserver({ user: userId, storage: editorContentStorage });
+// const myEditorContentObserver = editorContentObserver({ user: userId, storage: editorContentStorage });
+editorContentObserver.inject({ user: userId, storage: editorContentStorage });
 notesTree$.subscribe(myNotesTreeObserver);
-editorContent$.subscribe(myEditorContentObserver);
+editorContent$.subscribe(editorContentObserver.save);
 
 ReactDOM.render(<Provider store={ store }><App /></Provider>, document.getElementById('root'));
 registerServiceWorker();

@@ -1,6 +1,7 @@
 import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { translateNodeIdToInfo } from '../../utils/treeUtils';
+import * as editorContentObserver from '../../reactive/editorContentObserver';
 import * as notesTreeStorage from '../../utils/notesTreeStorage';
 
 function selectNodeThunkAction({ id, path }) {
@@ -16,6 +17,12 @@ function selectNodeThunkAction({ id, path }) {
     // dispatch actions only if selected node actually changed
     if (getState().activeNode && getState().activeNode.id !== id) {
       activeNode = { id, path };
+
+      // Immediately save currenly opened note
+      const currentContent = getState().editorContent;
+      if (currentContent.id) {
+        editorContentObserver.save(currentContent);
+      }
 
       const returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
