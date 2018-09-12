@@ -145,7 +145,7 @@ function fetchNotesTreeThunkAction({ userId }) {
         } else {
           const error = 'Notes list fetch error: unrecognized data fetched.';
           dispatch({
-            type: notesListActionTypes.FETCH_NOTES_TREE_FAILED,
+            type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
             payload: { error },
           });
           return Promise.reject(new Error(error));
@@ -154,7 +154,7 @@ function fetchNotesTreeThunkAction({ userId }) {
       .catch(err => {
         const error = `No notes list loaded. ${err.message}`;
         dispatch({
-          type: notesListActionTypes.FETCH_NOTES_TREE_FAILED,
+          type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
           payload: { error },
         });
         return Promise.reject(new Error(error));

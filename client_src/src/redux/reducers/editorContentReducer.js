@@ -20,6 +20,7 @@ export default function editorContentReducer(state = initialContent, action) {
       };
     case notesListActionTypes.CHANGE_NODE_TITLE:
       console.log(`REDUCER: ${notesListActionTypes.CHANGE_NODE_TITLE}`);
+      // if the changed title belongs to the opened note
       if (state.id === action.payload.node.uniqid) {
         return {
           ...state,

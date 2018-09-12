@@ -43,16 +43,16 @@ function fetchEditorContentThunkAction({ noteId }) {
         } else {
           const message = `Note content fetch error: unrecognized data fetched. ID: ${noteId}`;
           dispatch({
-            type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILED,
+            type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILURE,
             payload: { error: { message, id: noteId } },
           });
           return Promise.reject(new Error(message));
         }
       })
       .catch(err => {
-        const message = `No note content loaded. ${err.message} ID: ${noteId}`;
+        const message = `Failed loading note content. ${err.message} ID: ${noteId}`;
         dispatch({
-          type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILED,
+          type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILURE,
           payload: { error: { message, id: noteId } },
         });
         return Promise.reject(new Error(message));
@@ -63,15 +63,19 @@ function fetchEditorContentThunkAction({ noteId }) {
 function removeNoteThunkAction({ id }) {
   return (dispatch) => {
     dispatch({ type: editorActionTypes.REMOVING_NOTE, payload: { id } });
-    return (
-      editorContentStorage.remove({ id })
-        .then((result) => {
-          return dispatch({
-            type: editorActionTypes.REMOVE_NOTE_SUCCESS,
-            payload: { id, count: result.count },
-          });
-        })
-    );
+    return editorContentStorage.remove({ id })
+      .then(result => dispatch({
+        type: editorActionTypes.REMOVE_NOTE_SUCCESS,
+        payload: { id, count: result.count },
+      }))
+      .catch(err => {
+        const message = `Failed deleting note. ${err.message} ID: ${id}`;
+        dispatch({
+          type: editorActionTypes.REMOVE_NOTE_FAILURE,
+          payload: { error: { message, id } },
+        });
+        return Promise.reject(new Error(message));
+      });
   };
 }
 
