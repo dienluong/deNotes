@@ -3,6 +3,7 @@ import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorAc
 import { translateNodeIdToInfo } from '../../utils/treeUtils';
 import * as editorContentObserver from '../../reactive/editorContentObserver';
 import * as notesTreeStorage from '../../utils/notesTreeStorage';
+import baseState from '../misc/initialState';
 
 function selectNodeThunkAction({ id, path }) {
   let activeNode = null;
@@ -150,12 +151,18 @@ function fetchNotesTreeThunkAction({ userId }) {
             },
           });
         } else {
-          const error = 'Notes list fetch error: unrecognized data fetched.';
-          dispatch({
-            type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
-            payload: { error },
-          });
-          return Promise.reject(new Error(error));
+          // If no tree found for this user, use default tree from initial state and add new node (new blank note)
+          if (Array.isArray(treesArray) && !treesArray.length) {
+            dispatch(changeNotesTreeAction(baseState.notesTree));
+            return dispatch(addAndSelectNodeAction({ kind: 'item' }));
+          } else {
+            const error = 'Notes list fetch error: unrecognized data fetched.';
+            dispatch({
+              type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
+              payload: { error },
+            });
+            return Promise.reject(new Error(error));
+          }
         }
       })
       .catch(err => {

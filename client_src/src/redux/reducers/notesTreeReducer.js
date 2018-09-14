@@ -38,24 +38,21 @@ function _deleteNode({ notesTree, node, path }) {
 }
 
 export default function notesTreeReducer(state = initialTree, action) {
+  console.log(`REDUCER: ${action.type}`);
   switch (action.type) {
     case notesListActionTypes.CHANGE_NOTES_TREE:
-      console.log(`REDUCER: ${notesListActionTypes.CHANGE_NOTES_TREE}`);
       return action.payload.notesTree;
     case notesListActionTypes.CHANGE_NODE_TITLE:
-      console.log(`REDUCER: ${notesListActionTypes.CHANGE_NODE_TITLE}`);
       return _changeNodeTitle({
         notesTree: state,
         ...action.payload,
       });
     case notesListActionTypes.DELETE_NODE:
-      console.log(`REDUCER: ${notesListActionTypes.DELETE_NODE}`);
       return _deleteNode({
         notesTree: state,
         ...action.payload,
       });
     case notesListActionTypes.FETCH_NOTES_TREE_SUCCESS:
-      console.log(`REDUCER: ${notesListActionTypes.FETCH_NOTES_TREE_SUCCESS}`);
       return action.payload.notesTree;
     default:
       if (process.env.REACT_APP_DEBUG) {

@@ -34,6 +34,12 @@ function mapStateToProps(state) {
   } else {
     console.log('~~~~~~~~~~~~~~~~ Same Active Path');
   }
+  if (mapStateToProps.cache.editorContent !== state.editorContent) {
+    console.log('~~~~~~~~~~~~~~~~ Editor Content Changed');
+    mapStateToProps.cache.editorContent = state.editorContent;
+  } else {
+    console.log('~~~~~~~~~~~~~~~~ Same Editor Content');
+  }
   // TODO: Remove ABOVE
 
   return {

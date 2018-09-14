@@ -1,6 +1,7 @@
 export default ({ user, storage }) => {
   const observer = function observer(tree) {
-    // Save only if tree was not from initial load or if it changed afterwards
+    console.log(observer.prevTree, tree);
+    // Save only if tree was not from initial load and if it changed afterwards
     if (observer.prevTree !== null && observer.prevTree !== tree) {
       storage.save({ userId: user, tree })
         .then(responseObj => {

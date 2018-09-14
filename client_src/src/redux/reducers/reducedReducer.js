@@ -88,9 +88,9 @@ function _addAndSelectNewNode({ state, kind, path = [] }) {
 }
 
 export default function reducedReducer(state = initialState, action) {
+  console.log(`REDUCER: ${action.type}`);
   switch (action.type) {
     case notesListActionTypes.ADD_AND_SELECT_NODE:
-      console.log(`REDUCER: ${notesListActionTypes.ADD_AND_SELECT_NODE}`);
       return _addAndSelectNewNode({
         state,
         kind: action.payload.kind,

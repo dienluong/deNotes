@@ -51,15 +51,14 @@ function _equals(currentActiveNode, newActiveNode) {
 }
 
 export default function activeNodeReducer(state = initialActiveNode, action) {
+  console.log(`REDUCER: ${action.type}`);
   switch (action.type) {
     case notesListActionTypes.SELECT_NODE: {
-      console.log(`REDUCER: ${notesListActionTypes.SELECT_NODE}`);
       if (_equals(state, action.payload.activeNode)) { return state; }
       else { return { ...state, ...action.payload.activeNode }; }
     }
 
     case notesListActionTypes.NAVIGATE_PATH: {
-      console.log(`REDUCER: ${notesListActionTypes.NAVIGATE_PATH}`);
       const newActiveNode = _changeActiveNodeOnPathNavClick({
         currentActive: state,
         idx: action.payload.idx,
@@ -70,7 +69,6 @@ export default function activeNodeReducer(state = initialActiveNode, action) {
     }
 
     case notesListActionTypes.SWITCH_NODE_ON_DELETE: {
-      console.log(`REDUCER: ${notesListActionTypes.SWITCH_NODE_ON_DELETE}`);
       const newActiveNode = _changeActiveNodeOnDelete({
         currentActive: state,
         deletedNode: action.payload.deletedNode,
@@ -81,7 +79,6 @@ export default function activeNodeReducer(state = initialActiveNode, action) {
     }
 
     case notesListActionTypes.FETCH_NOTES_TREE_SUCCESS: {
-      console.log(`REDUCER: ${notesListActionTypes.FETCH_NOTES_TREE_SUCCESS}`);
       if (_equals(state, action.payload.activeNode)) { return state; }
       else { return { ...state, ...action.payload.activeNode }; }
     }
