@@ -55,7 +55,6 @@ store.dispatch(fetchNotesTreeThunkAction({ userId }))
 //   .catch(err => window.alert(err.message));
 
 // Build Reactive Parts
-console.log(`build reactive parts`);
 const notesTree$ = Observable.from(store).pluck('notesTree').auditTime(1000);
 const editorContent$ = Observable.from(store).pluck('editorContent').auditTime(1000);
 const myNotesTreeObserver = notesTreeObserver({ user: userId, storage: notesTreeStorage });
@@ -63,7 +62,6 @@ const myNotesTreeObserver = notesTreeObserver({ user: userId, storage: notesTree
 editorContentObserver.inject({ user: userId, storage: editorContentStorage });
 notesTree$.subscribe(myNotesTreeObserver);
 editorContent$.subscribe(editorContentObserver.save);
-console.log(`FINISH build reactive parts`);
 
 ReactDOM.render(<Provider store={ store }><App /></Provider>, document.getElementById('root'));
 registerServiceWorker();

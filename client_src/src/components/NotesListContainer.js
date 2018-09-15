@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { selectTitleFromId } from '../redux/selectors';
+import { selectTitlesFromActivePath } from '../redux/selectors';
 import NotesList from './widgets/NotesList';
 import {
   selectNodeThunkAction,
@@ -13,7 +13,7 @@ import {
 import { getNodeKey } from '../utils/treeUtils';
 
 function mapStateToProps(state) {
-  const activePath = selectTitleFromId(state);
+  const activePath = selectTitlesFromActivePath(state);
 
   // const activePath = translatePathToInfo({ notesTree: state.notesTree, path: state.activeNode.path, kind: 'title' });
   if (mapStateToProps.cache.notesTree !== state.notesTree) {

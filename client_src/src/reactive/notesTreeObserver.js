@@ -1,5 +1,6 @@
 export default ({ user, storage }) => {
   const observer = function observer(tree) {
+    // TODO: remove
     console.log(observer.prevTree, tree);
     // Save only if tree was not from initial load and if it changed afterwards
     if (observer.prevTree !== null && observer.prevTree !== tree) {

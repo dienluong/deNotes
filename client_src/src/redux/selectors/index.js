@@ -6,13 +6,13 @@ const selectNotesTree = (state) => state.notesTree;
 const selectActiveNodePath = (state) => state.activeNode.path;
 
 /**
- * For each note ID in list, return the corresponding title.
+ * For each note ID in path, return the corresponding title.
  * @param notesTree {!Object[]}
  * @param idList {Array}
  * @return {Array}
  * @private
  */
-export const selectTitleFromId = createSelector(
+export const selectTitlesFromActivePath = createSelector(
   [selectNotesTree, selectActiveNodePath],
   (notesTree = [], idList = []) => {
     if (!Array.isArray(idList) || !idList.length) {
