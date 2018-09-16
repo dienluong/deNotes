@@ -12,8 +12,8 @@ x To fix: Loading/switching note triggers a content change, triggers refresh of 
 x Save newly created note
 x The saved note title should appear on corresponding node.
 x delete node deletes note in DB, and other necessary operations.
--> Use selectors to decouple state shape.
-If no tree saved, created default tree and add node. And save it.
+x Use selectors to decouple state shape.
+x If no tree saved, created default tree and add node. And save it.
 Fix Bug: edit title, then select another note (not folder) does not save the new title. Race condition: content of selected note is loaded before observer could save previous note!
   => Solution: Switching note triggers immediate save.
   => Fixed.  But must review code and punder design. Should editorContentObserver be a singleton?
