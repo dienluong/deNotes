@@ -18,7 +18,7 @@ function _changeNodeTitle({ notesTree, title, node, path }) {
   // This is because react-sortable-tree treats it as a new standalone node due to new ID (not reusing the ID of the old node)
   // So using { ...node, title } to keep the ID intact and only change the title
   const modifiedNode = { ...node, title };
-  
+
   const newTree = changeNodeAtPath({
     treeData: notesTree.tree,
     path,
