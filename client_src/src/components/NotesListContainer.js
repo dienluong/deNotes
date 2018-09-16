@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { selectTitlesFromActivePath } from '../redux/selectors';
+import * as rootReducer from '../redux/reducers';
 import NotesList from './widgets/NotesList';
 import {
   selectNodeThunkAction,
@@ -13,39 +14,39 @@ import {
 import { getNodeKey } from '../utils/treeUtils';
 
 function mapStateToProps(state) {
-  const activePath = selectTitlesFromActivePath(state);
+  const activePathTitles = selectTitlesFromActivePath(state);
 
   // const activePath = translatePathToInfo({ notesTree: state.notesTree, path: state.activeNode.path, kind: 'title' });
-  if (mapStateToProps.cache.notesTree !== state.notesTree) {
+  if (mapStateToProps.cache.notesTree !== rootReducer.selectNotesTree(state)) {
     console.log('~~~~~~~~~~~~~~~~ Notes Tree Changed');
-    mapStateToProps.cache.notesTree = state.notesTree;
+    mapStateToProps.cache.notesTree = rootReducer.selectNotesTree(state);
   } else {
     console.log('~~~~~~~~~~~~~~~~ Same Notes Tree');
   }
-  if (mapStateToProps.cache.activeNode !== state.activeNode) {
+  if (mapStateToProps.cache.activeNode !== rootReducer.selectActiveNode(state)) {
     console.log('~~~~~~~~~~~~~~~~ Active Node Changed');
-    mapStateToProps.cache.activeNode = state.activeNode;
+    mapStateToProps.cache.activeNode = rootReducer.selectActiveNode(state);
   } else {
     console.log('~~~~~~~~~~~~~~~~ Same Active Node');
   }
-  if (mapStateToProps.cache.activePath !== activePath) {
+  if (mapStateToProps.cache.activePath !== activePathTitles) {
     console.log('~~~~~~~~~~~~~~~~ Active Path Changed');
-    mapStateToProps.cache.activePath = activePath;
+    mapStateToProps.cache.activePath = activePathTitles;
   } else {
     console.log('~~~~~~~~~~~~~~~~ Same Active Path');
   }
-  if (mapStateToProps.cache.editorContent !== state.editorContent) {
+  if (mapStateToProps.cache.editorContent !== rootReducer.selectEditorContent(state)) {
     console.log('~~~~~~~~~~~~~~~~ Editor Content Changed');
-    mapStateToProps.cache.editorContent = state.editorContent;
+    mapStateToProps.cache.editorContent = rootReducer.selectEditorContent(state);
   } else {
     console.log('~~~~~~~~~~~~~~~~ Same Editor Content');
   }
   // TODO: Remove ABOVE
 
   return {
-    notesTree: state.notesTree,
-    activeNode: state.activeNode,
-    activePath,
+    notesTree: rootReducer.selectNotesTreeTree(state),
+    activeNode: rootReducer.selectActiveNode(state),
+    activePath: activePathTitles,
   };
 }
 
@@ -68,8 +69,8 @@ function mapDispatchToProps(dispatch) {
   toolbarHandlersMap.set('New Note', toolbarNewNoteBtnHandler);
 
   return {
-    treeChangeHandler(notesTree) {
-      return dispatch(changeNotesTreeAction(notesTree));
+    treeChangeHandler(tree) {
+      return dispatch(changeNotesTreeAction({ tree }));
     },
     nodeTitleChangeHandler({ node, title, path }) {
       return dispatch(changeNodeTitleAction({ node, title, path }));

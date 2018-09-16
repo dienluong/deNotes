@@ -20,28 +20,41 @@ function _changeNodeTitle({ notesTree, title, node, path }) {
   console.log('-->Tree changed on node title change\n');
 
   const newTree = changeNodeAtPath({
-    treeData: notesTree,
+    treeData: notesTree.tree,
     path,
     newNode: modifiedNode,
     getNodeKey,
   });
 
-  return newTree || notesTree;
+  return {
+    ...notesTree,
+    tree: newTree || notesTree.tree,
+    dateModified: Date.now(),
+  };
 }
 
 function _deleteNode({ notesTree, node, path }) {
-  return removeNode({
-    treeData: notesTree,
+  const newTree = removeNode({
+    treeData: notesTree.tree,
     getNodeKey,
     path,
   }).treeData;
+
+  return {
+    ...notesTree,
+    tree: newTree || notesTree.tree,
+    dateModified: Date.now(),
+  };
 }
 
 export default function notesTreeReducer(state = initialTree, action) {
   console.log(`REDUCER: ${action.type}`);
   switch (action.type) {
     case notesListActionTypes.CHANGE_NOTES_TREE:
-      return action.payload.notesTree;
+      return {
+        ...state,
+        ...action.payload.notesTree,
+      };
     case notesListActionTypes.CHANGE_NODE_TITLE:
       return _changeNodeTitle({
         notesTree: state,
@@ -53,7 +66,10 @@ export default function notesTreeReducer(state = initialTree, action) {
         ...action.payload,
       });
     case notesListActionTypes.FETCH_NOTES_TREE_SUCCESS:
-      return action.payload.notesTree;
+      return {
+        ...state,
+        ...action.payload.notesTree,
+      };
     default:
       if (process.env.REACT_APP_DEBUG) {
         console.log(`Current notesTree: ${JSON.stringify(state)}`);
@@ -61,3 +77,7 @@ export default function notesTreeReducer(state = initialTree, action) {
       return state;
   }
 }
+
+export const selectTree = (state) => state.tree;
+export const selectDateModified = (state) => state.dateModified;
+export const selectDateCreated = (state) => state.dateCreated;

@@ -71,9 +71,18 @@ function navigatePathAction({ idx }) {
   };
 }
 
-function changeNotesTreeAction(notesTree) {
-  if (!Array.isArray(notesTree)) {
-    notesTree = [];
+function changeNotesTreeAction({ tree, dateCreated, dateModified }) {
+  const notesTree = {};
+  if (Array.isArray(tree)) {
+    notesTree.tree = tree;
+  }
+
+  if (dateCreated) {
+    notesTree.dateCreated = dateCreated;
+  }
+
+  if (dateModified) {
+    notesTree.dateModified = dateModified;
   }
 
   return {
@@ -138,31 +147,34 @@ function fetchNotesTreeThunkAction({ userId }) {
       payload: { userId },
     });
     return notesTreeStorage.load({ userId })
-      .then(treesArray => {
-        if (Array.isArray(treesArray) && treesArray.length) {
-          // In the unexpected case where there are more than one tree for the same user, use the last one.
-          const notesTree = JSON.parse(treesArray[treesArray.length - 1].jsonStr);
-          const activeNode = { id: notesTree[0].id, path: [notesTree[0].id] };// TODO: adjust activeNode to where user left off
-          return dispatch({
-            type: notesListActionTypes.FETCH_NOTES_TREE_SUCCESS,
-            payload: {
-              notesTree,
-              activeNode, // TODO: not sure if it is okay to set activeNode in a notesList action.
-            },
-          });
-        } else {
-          // If no tree found for this user, use default tree from initial state and add new node (new blank note)
-          if (Array.isArray(treesArray) && !treesArray.length) {
-            dispatch(changeNotesTreeAction(baseState.notesTree));
-            return dispatch(addAndSelectNodeAction({ kind: 'item' }));
+      .then(notesTree => {
+        if (notesTree.tree) {
+          if (Array.isArray(notesTree.tree)) {
+            const activeNode = { id: notesTree.tree[0].id, path: [notesTree.tree[0].id] };// TODO: adjust activeNode to where user left off
+            return dispatch({
+              type: notesListActionTypes.FETCH_NOTES_TREE_SUCCESS,
+              payload: {
+                notesTree,
+                activeNode, // TODO: not sure if it is okay to set activeNode in a notesList action.
+              },
+            });
           } else {
             const error = 'Notes list fetch error: unrecognized data fetched.';
             dispatch({
               type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
-              payload: { error },
+              payload: { error, data: notesTree.tree },
             });
             return Promise.reject(new Error(error));
           }
+        } else {
+          // If no tree found for this user, use default tree from initial state and add new node (new blank note)
+          const now = Date.now();
+          dispatch(changeNotesTreeAction({
+            ...baseState.notesTree,
+            dateCreated: now,
+            dateModified: now,
+          }));
+          return dispatch(addAndSelectNodeAction({ kind: 'item' }));
         }
       })
       .catch(err => {

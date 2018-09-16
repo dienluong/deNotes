@@ -90,3 +90,5 @@ export default function activeNodeReducer(state = initialActiveNode, action) {
       return state;
   }
 }
+
+export const selectPath = (state) => state.path;

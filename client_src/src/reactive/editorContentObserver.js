@@ -14,6 +14,7 @@ export function inject({ user, storage }) {
 
 export function save(editorContent) {
   // TODO: remove
+  // console.log(_lastSavedDate, editorContent.dateCreated, editorContent.dateModified, _lastContentId, editorContent.id);
   // Save only if 1) content was not from initial load, 2) if content changed, 3) content is for the same note (i.e. not content of newly loaded note)
 
   // Save 1) if newly created note -OR- 2) if content of already opened note changed.

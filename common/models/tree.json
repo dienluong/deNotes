@@ -12,6 +12,20 @@
       "mysql": {
         "dataType": "JSON"
       }
+    },
+    "dateCreated": {
+      "type": "date",
+      "default": "$now",
+      "mysql": {
+        "dataType": "timestamp(3)"
+      }
+    },
+    "dateModified": {
+      "type": "date",
+      "default": "$now",
+      "mysql": {
+        "dataType": "timestamp(3)"
+      }
     }
   },
   "validations": [],

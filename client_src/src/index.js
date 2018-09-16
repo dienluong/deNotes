@@ -7,7 +7,7 @@ import { getNodeKey } from './utils/treeUtils';
 import registerServiceWorker from './registerServiceWorker';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import rootReducer from './redux/reducers';
+import rootReducer, { selectNotesTreeTree } from './redux/reducers';
 import { fetchNotesTreeThunkAction } from './redux/actions/notesListActions';
 import { selectNodeThunkAction } from './redux/actions/notesListActions';
 import { Provider } from 'react-redux';
@@ -34,10 +34,11 @@ const store = createStore(rootReducer, applyMiddleware(thunk));
 // Fetch asynchronously
 store.dispatch(fetchNotesTreeThunkAction({ userId }))
   .then(() => {
+    const notesTree = selectNotesTreeTree(store.getState());
     // Once tree loaded, select a node.
     const matches = find({
       getNodeKey,
-      treeData: store.getState().notesTree,
+      treeData: notesTree,
       searchQuery: activeId,
       searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
     }).matches;
@@ -46,7 +47,7 @@ store.dispatch(fetchNotesTreeThunkAction({ userId }))
       store.dispatch(selectNodeThunkAction({ id: activeId, path: matches[0].path }));
     }
     else {
-      const defaultNodeId = store.getState().notesTree[0].id;
+      const defaultNodeId = notesTree[0].id;
       store.dispatch(selectNodeThunkAction({ id: defaultNodeId, path: [defaultNodeId] }));
     }
   })
