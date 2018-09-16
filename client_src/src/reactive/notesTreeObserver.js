@@ -2,7 +2,7 @@ export default ({ user, storage }) => {
   const observer = function observer(notesTree) {
     // TODO: remove
     // console.log(observer.lastSavedDate, notesTree.dateCreated, notesTree.dateModified);
-    
+
     const mostRecentDate = notesTree.dateModified > notesTree.dateCreated ? notesTree.dateModified : notesTree.dateCreated;
     // Save only if tree was not from initial load and if it changed afterwards
     if (mostRecentDate > observer.lastSavedDate) {

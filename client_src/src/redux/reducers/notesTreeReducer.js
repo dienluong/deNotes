@@ -9,16 +9,16 @@ import baseState from '../misc/initialState';
 const initialTree = baseState.notesTree;
 
 function _changeNodeTitle({ notesTree, title, node, path }) {
+  // TODO: remove
   console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
+  console.log('-->Tree changed on node title change\n');
 
   // TODO? Must use a map structure to map the ID to the corresponding node title
   // Cannot use _createNode for creating a new node (with a new ID) as it is breaking the tree.
   // This is because react-sortable-tree treats it as a new standalone node due to new ID (not reusing the ID of the old node)
   // So using { ...node, title } to keep the ID intact and only change the title
   const modifiedNode = { ...node, title };
-
-  console.log('-->Tree changed on node title change\n');
-
+  
   const newTree = changeNodeAtPath({
     treeData: notesTree.tree,
     path,
