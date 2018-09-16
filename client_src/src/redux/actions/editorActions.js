@@ -1,8 +1,8 @@
 import Delta from 'quill-delta';
 import editorActionTypes from './constants/editorActionConstants';
-import * as editorContentStorage from '../../utils/editorContentStorage';
+import { load as loadEditorContent, remove as removeEditorContent } from '../../utils/editorContentStorage';
 
-function changeContentAction({ editor, content }) {
+export function changeContentAction({ editor, content }) {
   return {
     type: editorActionTypes.CONTENT_CHANGED,
     payload: {
@@ -15,7 +15,7 @@ function changeContentAction({ editor, content }) {
   };
 }
 
-function fetchEditorContentThunkAction({ noteId }) {
+export function fetchEditorContentThunkAction({ noteId }) {
   return (dispatch) => {
     dispatch({
       type: editorActionTypes.FETCH_EDITOR_CONTENT,
@@ -23,7 +23,7 @@ function fetchEditorContentThunkAction({ noteId }) {
     });
     // TODO: replace hardcoded noteId value
     // id = '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e';
-    return editorContentStorage.load({ id: noteId })
+    return loadEditorContent({ id: noteId })
       .then(content => {
         if (content && 'body' in content && 'delta' in content) {
           // Note: the retrieved dates are date-time strings in ISO format; must convert to milliseconds since Unix epoch.
@@ -60,10 +60,10 @@ function fetchEditorContentThunkAction({ noteId }) {
   };
 }
 
-function removeNoteThunkAction({ id }) {
+export function removeNoteThunkAction({ id }) {
   return (dispatch) => {
     dispatch({ type: editorActionTypes.REMOVING_NOTE, payload: { id } });
-    return editorContentStorage.remove({ id })
+    return removeEditorContent({ id })
       .then(result => dispatch({
         type: editorActionTypes.REMOVE_NOTE_SUCCESS,
         payload: { id, count: result.count },
@@ -78,11 +78,5 @@ function removeNoteThunkAction({ id }) {
       });
   };
 }
-
-export {
-  changeContentAction,
-  fetchEditorContentThunkAction,
-  removeNoteThunkAction,
-};
 
 // TODO: validate arguments on action creators

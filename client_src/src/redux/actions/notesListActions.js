@@ -1,11 +1,11 @@
 import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { translateNodeIdToInfo } from '../../utils/treeUtils';
-import * as editorContentObserver from '../../reactive/editorContentObserver';
-import * as notesTreeStorage from '../../utils/notesTreeStorage';
+import { save as saveEditorContent } from '../../reactive/editorContentObserver';
+import { load as loadNotesTree } from '../../utils/notesTreeStorage';
 import baseState from '../misc/initialState';
 
-function selectNodeThunkAction({ id, path }) {
+export function selectNodeThunkAction({ id, path }) {
   let activeNode = null;
   if (typeof id !== 'string' || id.length === 0) {
     id = '';
@@ -22,7 +22,7 @@ function selectNodeThunkAction({ id, path }) {
       // Immediately save currenly opened note
       const currentContent = getState().editorContent;
       if (currentContent.id) {
-        editorContentObserver.save(currentContent);
+        saveEditorContent(currentContent);
       }
 
       const returnVal = dispatch({
@@ -50,7 +50,7 @@ function selectNodeThunkAction({ id, path }) {
   };
 }
 
-function switchActiveNodeOnDeleteAction({ id, path }) {
+export function switchActiveNodeOnDeleteAction({ id, path }) {
   return {
     type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
     payload: {
@@ -62,7 +62,7 @@ function switchActiveNodeOnDeleteAction({ id, path }) {
   };
 }
 
-function navigatePathAction({ idx }) {
+export function navigatePathAction({ idx }) {
   return {
     type: notesListActionTypes.NAVIGATE_PATH,
     payload: {
@@ -71,7 +71,7 @@ function navigatePathAction({ idx }) {
   };
 }
 
-function changeNotesTreeAction({ tree, dateCreated, dateModified }) {
+export function changeNotesTreeAction({ tree, dateCreated, dateModified }) {
   const notesTree = {};
   if (Array.isArray(tree)) {
     notesTree.tree = tree;
@@ -93,7 +93,7 @@ function changeNotesTreeAction({ tree, dateCreated, dateModified }) {
   };
 }
 
-function changeNodeTitleAction({ title, node, path }) {
+export function changeNodeTitleAction({ title, node, path }) {
   return {
     type: notesListActionTypes.CHANGE_NODE_TITLE,
     payload: {
@@ -104,7 +104,7 @@ function changeNodeTitleAction({ title, node, path }) {
   };
 }
 
-function deleteNodeThunkAction({ node, path }) {
+export function deleteNodeThunkAction({ node, path }) {
   return (dispatch) => {
     if (node.type === 'item') {
       // dispatch action to delete note from storage
@@ -130,7 +130,7 @@ function deleteNodeThunkAction({ node, path }) {
   };
 }
 
-function addAndSelectNodeAction({ kind, path }) {
+export function addAndSelectNodeAction({ kind, path }) {
   return {
     type: notesListActionTypes.ADD_AND_SELECT_NODE,
     payload: {
@@ -140,15 +140,15 @@ function addAndSelectNodeAction({ kind, path }) {
   };
 }
 
-function fetchNotesTreeThunkAction({ userId }) {
+export function fetchNotesTreeThunkAction({ userId }) {
   return (dispatch) => {
     dispatch({
       type: notesListActionTypes.FETCH_NOTES_TREE,
       payload: { userId },
     });
-    return notesTreeStorage.load({ userId })
+    return loadNotesTree({ userId })
       .then(notesTree => {
-        if (notesTree.tree) {
+        if (notesTree && notesTree.tree) {
           if (Array.isArray(notesTree.tree)) {
             const activeNode = { id: notesTree.tree[0].id, path: [notesTree.tree[0].id] };// TODO: adjust activeNode to where user left off
             return dispatch({
@@ -187,16 +187,5 @@ function fetchNotesTreeThunkAction({ userId }) {
       });
   };
 }
-
-export {
-  selectNodeThunkAction,
-  switchActiveNodeOnDeleteAction,
-  navigatePathAction,
-  changeNotesTreeAction,
-  changeNodeTitleAction,
-  deleteNodeThunkAction,
-  addAndSelectNodeAction,
-  fetchNotesTreeThunkAction,
-};
 
 // TODO: validate arguments on action creators
