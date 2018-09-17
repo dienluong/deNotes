@@ -17,9 +17,14 @@ const _rootNode = [
   },
 ];
 
+const epoch = 0;
 const now = Date.now();
 export default {
-  notesTree: _rootNode,
+  notesTree: {
+    tree: _rootNode,
+    dateCreated: now,
+    dateModified: now,
+  },
   activeNode: {
     id: _rootNode[0].id,
     path: [_rootNode[0].id],
@@ -29,7 +34,8 @@ export default {
     title: '',
     content: '<p><br></p>',
     delta: new Delta(),
-    dateCreated: now,
-    dateModified: now,
+    dateCreated: epoch,
+    dateModified: epoch,
+    readOnly: false,
   },
 };

@@ -23,17 +23,16 @@
     },
     "dateCreated": {
       "type": "date",
-      "required": true,
+      "default": "$now",
       "mysql": {
-        "dataType": "timestamp(3)",
-        "default": "CURRENT_TIMESTAMP(3)"
+        "dataType": "timestamp(3)"
       }
     },
     "dateModified": {
       "type": "date",
+      "default": "$now",
       "mysql": {
-        "dataType": "timestamp(3)",
-        "default": "CURRENT_TIMESTAMP(3)"
+        "dataType": "timestamp(3)"
       }
     }
   },

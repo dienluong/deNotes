@@ -9,7 +9,9 @@ import baseState from '../misc/initialState';
 const initialTree = baseState.notesTree;
 
 function _changeNodeTitle({ notesTree, title, node, path }) {
+  // TODO: remove
   console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
+  console.log('-->Tree changed on node title change\n');
 
   // TODO? Must use a map structure to map the ID to the corresponding node title
   // Cannot use _createNode for creating a new node (with a new ID) as it is breaking the tree.
@@ -17,46 +19,57 @@ function _changeNodeTitle({ notesTree, title, node, path }) {
   // So using { ...node, title } to keep the ID intact and only change the title
   const modifiedNode = { ...node, title };
 
-  console.log('-->Tree changed on node title change\n');
-
   const newTree = changeNodeAtPath({
-    treeData: notesTree,
+    treeData: notesTree.tree,
     path,
     newNode: modifiedNode,
     getNodeKey,
   });
 
-  return newTree || notesTree;
+  return {
+    ...notesTree,
+    tree: newTree || notesTree.tree,
+    dateModified: Date.now(),
+  };
 }
 
 function _deleteNode({ notesTree, node, path }) {
-  return removeNode({
-    treeData: notesTree,
+  const newTree = removeNode({
+    treeData: notesTree.tree,
     getNodeKey,
     path,
   }).treeData;
+
+  return {
+    ...notesTree,
+    tree: newTree || notesTree.tree,
+    dateModified: Date.now(),
+  };
 }
 
 export default function notesTreeReducer(state = initialTree, action) {
+  console.log(`REDUCER: ${action.type}`);
   switch (action.type) {
     case notesListActionTypes.CHANGE_NOTES_TREE:
-      console.log(`REDUCER: ${notesListActionTypes.CHANGE_NOTES_TREE}`);
-      return action.payload.notesTree;
+      return {
+        ...state,
+        ...action.payload.notesTree,
+      };
     case notesListActionTypes.CHANGE_NODE_TITLE:
-      console.log(`REDUCER: ${notesListActionTypes.CHANGE_NODE_TITLE}`);
       return _changeNodeTitle({
         notesTree: state,
         ...action.payload,
       });
     case notesListActionTypes.DELETE_NODE:
-      console.log(`REDUCER: ${notesListActionTypes.DELETE_NODE}`);
       return _deleteNode({
         notesTree: state,
         ...action.payload,
       });
     case notesListActionTypes.FETCH_NOTES_TREE_SUCCESS:
-      console.log(`REDUCER: ${notesListActionTypes.FETCH_NOTES_TREE_SUCCESS}`);
-      return action.payload.notesTree;
+      return {
+        ...state,
+        ...action.payload.notesTree,
+      };
     default:
       if (process.env.REACT_APP_DEBUG) {
         console.log(`Current notesTree: ${JSON.stringify(state)}`);
@@ -64,3 +77,7 @@ export default function notesTreeReducer(state = initialTree, action) {
       return state;
   }
 }
+
+export const selectTree = (state) => state.tree;
+export const selectDateModified = (state) => state.dateModified;
+export const selectDateCreated = (state) => state.dateCreated;

@@ -1,8 +1,8 @@
 import Delta from 'quill-delta';
 import editorActionTypes from './constants/editorActionConstants';
-import * as editorContentStorage from '../../utils/editorContentStorage';
+import { load as loadEditorContent, remove as removeEditorContent } from '../../utils/editorContentStorage';
 
-function changeContentAction({ editor, content }) {
+export function changeContentAction({ editor, content }) {
   return {
     type: editorActionTypes.CONTENT_CHANGED,
     payload: {
@@ -15,7 +15,7 @@ function changeContentAction({ editor, content }) {
   };
 }
 
-function fetchEditorContentThunkAction({ noteId }) {
+export function fetchEditorContentThunkAction({ noteId }) {
   return (dispatch) => {
     dispatch({
       type: editorActionTypes.FETCH_EDITOR_CONTENT,
@@ -23,7 +23,7 @@ function fetchEditorContentThunkAction({ noteId }) {
     });
     // TODO: replace hardcoded noteId value
     // id = '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e';
-    return editorContentStorage.load({ id: noteId })
+    return loadEditorContent({ id: noteId })
       .then(content => {
         if (content && 'body' in content && 'delta' in content) {
           // Note: the retrieved dates are date-time strings in ISO format; must convert to milliseconds since Unix epoch.
@@ -34,6 +34,7 @@ function fetchEditorContentThunkAction({ noteId }) {
             delta: new Delta(JSON.parse(content.delta)),
             dateModified: new Date(content.dateModified).getTime(),
             dateCreated: new Date(content.dateCreated).getTime(),
+            readOnly: false,
           };
           return dispatch({
             type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
@@ -42,16 +43,16 @@ function fetchEditorContentThunkAction({ noteId }) {
         } else {
           const message = `Note content fetch error: unrecognized data fetched. ID: ${noteId}`;
           dispatch({
-            type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILED,
+            type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILURE,
             payload: { error: { message, id: noteId } },
           });
           return Promise.reject(new Error(message));
         }
       })
       .catch(err => {
-        const message = `No note content loaded. ${err.message} ID: ${noteId}`;
+        const message = `Failed loading note content. ${err.message} ID: ${noteId}`;
         dispatch({
-          type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILED,
+          type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILURE,
           payload: { error: { message, id: noteId } },
         });
         return Promise.reject(new Error(message));
@@ -59,9 +60,23 @@ function fetchEditorContentThunkAction({ noteId }) {
   };
 }
 
-export {
-  changeContentAction,
-  fetchEditorContentThunkAction,
-};
+export function removeNoteThunkAction({ id }) {
+  return (dispatch) => {
+    dispatch({ type: editorActionTypes.REMOVING_NOTE, payload: { id } });
+    return removeEditorContent({ id })
+      .then(result => dispatch({
+        type: editorActionTypes.REMOVE_NOTE_SUCCESS,
+        payload: { id, count: result.count },
+      }))
+      .catch(err => {
+        const message = `Failed deleting note. ${err.message} ID: ${id}`;
+        dispatch({
+          type: editorActionTypes.REMOVE_NOTE_FAILURE,
+          payload: { error: { message, id } },
+        });
+        return Promise.reject(new Error(message));
+      });
+  };
+}
 
 // TODO: validate arguments on action creators

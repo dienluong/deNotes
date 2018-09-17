@@ -52,15 +52,20 @@ function _addAndSelectNewNode({ state, kind, path = [] }) {
     newActiveNodePath = [newNode.id];
   }
 
-  const newNotesTree = addNodeUnderParent({
-    treeData: state.notesTree,
-    newNode,
-    parentKey,
-    getNodeKey,
-    expandParent: true,
-  }).treeData;
+  const newNotesTree = {
+    ...state.notesTree,
+    tree: addNodeUnderParent({
+      treeData: state.notesTree.tree,
+      newNode,
+      parentKey,
+      getNodeKey,
+      expandParent: true,
+    }).treeData,
+    dateModified: Date.now(),
+  };
 
   const newActiveNode = {
+    ...state.activeNode,
     id: newNode.id,
     path: newActiveNodePath,
   };
@@ -76,10 +81,11 @@ function _addAndSelectNewNode({ state, kind, path = [] }) {
     const now = Date.now();
     newState.editorContent = {
       ...initialState.editorContent,
-      id: translateNodeIdToInfo({ nodeId: newActiveNode.id, kind: 'uniqid' }),
+      id: translateNodeIdToInfo({ nodeId: newNode.id, kind: 'uniqid' }),
       title: newNode.title,
       dateCreated: now,
       dateModified: now,
+      readOnly: false,
     };
   }
 
@@ -87,9 +93,9 @@ function _addAndSelectNewNode({ state, kind, path = [] }) {
 }
 
 export default function reducedReducer(state = initialState, action) {
+  console.log(`REDUCER: ${action.type}`);
   switch (action.type) {
     case notesListActionTypes.ADD_AND_SELECT_NODE:
-      console.log(`REDUCER: ${notesListActionTypes.ADD_AND_SELECT_NODE}`);
       return _addAndSelectNewNode({
         state,
         kind: action.payload.kind,

@@ -10,6 +10,7 @@ function mapStateToProps(state) {
     content: state.editorContent.content,
     dateCreated: state.editorContent.dateCreated,
     dateModified: state.editorContent.dateModified,
+    readOnly: state.editorContent.readOnly,
   };
 }
 

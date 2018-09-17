@@ -5,13 +5,14 @@ import Quill from 'react-quill';
 
 // NOTE: Using uncontrolled component mainly because, as such, loading a note will not trigger a CONTENT_CHANGED action;
 // a CONTENT_CHANGED would have updated the 'modified date' of the note and ultimately resulted in a (unnecessary) content save.
-function Editor({ id, title, delta, content, dateCreated, dateModified, contentChangeHandler, options }) {
+function Editor({ id, title, delta, content, dateCreated, dateModified, readOnly, contentChangeHandler, options }) {
   return (
     <Quill
-      key={id}
+      key={ id }
       defaultValue={ delta }
       onChange={ contentChangeHandler }
       theme='snow'
+      readOnly={ readOnly }
       { ...options }
     />
   );

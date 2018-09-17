@@ -1,19 +1,21 @@
 import { find } from 'react-sortable-tree';
 import { createSelector } from 'reselect';
 import { getNodeKey } from '../../utils/treeUtils';
+import { selectNotesTreeTree, selectActiveNodePath } from '../reducers';
 
-const selectNotesTree = (state) => state.notesTree;
-const selectActiveNodePath = (state) => state.activeNode.path;
+// TODO: remove
+// const selectNotesTree = (state) => state.notesTree;
+// const selectActiveNodePath = (state) => state.activeNode.path;
 
 /**
- * For each note ID in list, return the corresponding title.
+ * For each note ID in path, return the corresponding title.
  * @param notesTree {!Object[]}
  * @param idList {Array}
  * @return {Array}
  * @private
  */
-export const selectTitleFromId = createSelector(
-  [selectNotesTree, selectActiveNodePath],
+export const selectTitlesFromActivePath = createSelector(
+  [selectNotesTreeTree, selectActiveNodePath],
   (notesTree = [], idList = []) => {
     if (!Array.isArray(idList) || !idList.length) {
       return [];

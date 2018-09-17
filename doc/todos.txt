@@ -8,12 +8,20 @@ x To fix: with folder node selected, switching to a note would fetch *and* save.
 
 x Add created date and modified date to editor content
 x To fix: Loading/switching note triggers a content change, triggers refresh of modified date and consequently a save.
-    => Fixed by changing Editor from controlled to uncontrolled. So now loading a note would rerender the Editor instead of triggering a content-change action.
+  => Fixed by changing Editor from controlled to uncontrolled. So now loading a note would rerender the Editor instead of triggering a content-change action.
 x Save newly created note
 x The saved note title should appear on corresponding node.
-Active node should be the persistent.
+x delete node deletes note in DB, and other necessary operations.
+x Use selectors to decouple state shape.
+x If no tree saved, created default tree and add node. And save it.
+Fix Bug: edit title, then select another note (not folder) does not save the new title. Race condition: content of selected note is loaded before observer could save previous note!
+  => Solution: Switching note triggers immediate save.
+  => Fixed.  But must review code and punder design. Should editorContentObserver be a singleton?
+Upon deleting a note, switch active node to previous note in folder; if no note in folder, switch to folder and disable editor
+Upon deleting a folder, switch active node to parent.
+Active node should be the persistent across sessions.
+Deleting node should switch to previous active node.
 Upon creation of new note, auto select editor body.
-delete node deletes note in DB, and other necessary operations.
 ? Deselecting note with empty content deletes the note.
 Retry save or load on failure
 recycle bin
