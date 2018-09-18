@@ -1,7 +1,12 @@
 'use strict';
 module.exports = function MultiDelete(Model) {
   Model.MultiDelete = function(ids, cb) {
-    if (!ids || !Array.isArray(ids)) return cb('Invalid List of IDs');
+    if (!ids || !Array.isArray(ids)) {
+      if (typeof cb !== 'function') {
+        return;
+      }
+      return cb('Invalid IDs argument.');
+    }
 
     Model.destroyAll({
       id: {inq: ids},
@@ -12,7 +17,7 @@ module.exports = function MultiDelete(Model) {
     description: 'Delete multiple model instances by IDs from the data source.',
     accepts: [
       {
-        'arg': 'id',
+        'arg': 'ids',
         'type': ['string'],
         'description': 'Array of IDs',
         required: true,
