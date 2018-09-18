@@ -64,10 +64,16 @@ export function removeNoteThunkAction({ id }) {
   return (dispatch) => {
     dispatch({ type: editorActionTypes.REMOVING_NOTE, payload: { id } });
     return removeEditorContent({ id })
-      .then(result => dispatch({
-        type: editorActionTypes.REMOVE_NOTE_SUCCESS,
-        payload: { id, count: result.count },
-      }))
+      .then(result => {
+        if (result.count) {
+          return dispatch({
+            type: editorActionTypes.REMOVE_NOTE_SUCCESS,
+            payload: { id, count: result.count },
+          });
+        } else {
+          return Promise.reject(new Error('None deleted.'));
+        }
+      })
       .catch(err => {
         const message = `Failed deleting note. ${err.message} ID: ${id}`;
         dispatch({

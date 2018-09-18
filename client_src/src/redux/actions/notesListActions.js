@@ -120,7 +120,8 @@ export function deleteNodeThunkAction({ node, path }) {
           return dispatch(switchActiveNodeOnDeleteAction({ id: node.id, path }));
         })
         .catch((err) => window.alert(`ERROR deleting saved note: ${err.message}`));
-    } else {
+    } else if (node.type === 'folder') {
+      // TODO: Find any child and remote them...
       dispatch({
         type: notesListActionTypes.DELETE_NODE,
         payload: { node, path },
