@@ -5,7 +5,7 @@ import App from './App';
 import { find } from 'react-sortable-tree';
 import { getNodeKey } from './utils/treeUtils';
 import registerServiceWorker from './registerServiceWorker';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import rootReducer, { selectNotesTreeTree } from './redux/reducers';
@@ -28,7 +28,10 @@ const activeId = 'item|^|218013d0-ad79-11e8-bfc8-79a6754f355a';
 // Use loopbackREST for loading and saving persisted data
 notesTreeStorage.inject({ save: loopbackSave, load: loopbackLoad });
 editorContentStorage.inject({ save: loopbackSave, load: loopbackLoad, remove: loopbackDelete });
-const store = createStore(rootReducer, applyMiddleware(thunk));
+
+// TODO: Restrict Devtools in dev-only?
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
 
 // Fetch asynchronously
 store.dispatch(fetchNotesTreeThunkAction({ userId }))

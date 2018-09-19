@@ -1,6 +1,6 @@
 import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
-import { translateNodeIdToInfo } from '../../utils/treeUtils';
+import { translateNodeIdToInfo, getItemDescendants } from '../../utils/treeUtils';
 import { save as saveEditorContent } from '../../reactive/editorContentObserver';
 import { load as loadNotesTree } from '../../utils/notesTreeStorage';
 import baseState from '../misc/initialState';
@@ -121,7 +121,13 @@ export function deleteNodeThunkAction({ node, path }) {
         })
         .catch((err) => window.alert(`ERROR deleting saved note: ${err.message}`));
     } else if (node.type === 'folder') {
-      // TODO: Find any child and remote them...
+      // TODO: To be continued: find any child and remove them...
+      if (node.children && node.children.length) {
+        const children = getItemDescendants({ node });
+        console.log(children);
+      }
+      // dispatch(removeMultiNotesThunkAction({}))
+      //   .then()
       dispatch({
         type: notesListActionTypes.DELETE_NODE,
         payload: { node, path },

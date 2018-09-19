@@ -17,7 +17,7 @@ x If no tree saved, created default tree and add node. And save it.
 x Fix Bug: edit title, then select another note (not folder) does not save the new title. Race condition: content of selected note is loaded before observer could save previous note!
   -> Solution: Switching note triggers immediate save.
   -> Fixed.  But must review code and punder design. Should editorContentObserver be a singleton?
-*=> deleting folder
+=> deleting folder
   -> If folder contains notes, ask for confirmation
     -> delete notes too
 x Upon deleting a folder, switch active node to parent.
