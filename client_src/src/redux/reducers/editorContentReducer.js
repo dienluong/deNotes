@@ -29,7 +29,7 @@ export default function editorContentReducer(state = initialContent, action) {
         return state;
       }
     case editorActionTypes.REMOVE_NOTE_SUCCESS:
-      if (state.id === action.payload.id) {
+      if (Array.isArray(action.payload.ids) && action.payload.ids.includes(state.id)) {
         return {
           ...initialContent,
           readOnly: true,

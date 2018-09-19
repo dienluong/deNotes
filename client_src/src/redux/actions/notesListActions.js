@@ -1,6 +1,6 @@
 import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
-import { translateNodeIdToInfo, getItemDescendants } from '../../utils/treeUtils';
+import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
 import { save as saveEditorContent } from '../../reactive/editorContentObserver';
 import { load as loadNotesTree } from '../../utils/notesTreeStorage';
 import baseState from '../misc/initialState';
@@ -106,34 +106,29 @@ export function changeNodeTitleAction({ title, node, path }) {
 
 export function deleteNodeThunkAction({ node, path }) {
   return (dispatch) => {
+    let itemIds;
     if (node.type === 'item') {
-      // dispatch action to delete note from storage
-      return dispatch(removeNoteThunkAction({ id: node.uniqid }))
-        .then((action) => {
-          console.log(`Number of notes deleted: ${action.payload.count}`); // TODO: remove
-          // if delete from storage succeeded, delete node from tree
-          dispatch({
-            type: notesListActionTypes.DELETE_NODE,
-            payload: { node, path },
-          });
-          // then determine if the active node must change.
-          return dispatch(switchActiveNodeOnDeleteAction({ id: node.id, path }));
-        })
-        .catch((err) => window.alert(`ERROR deleting saved note: ${err.message}`));
+      itemIds = [node.uniqid];
     } else if (node.type === 'folder') {
-      // TODO: To be continued: find any child and remove them...
       if (node.children && node.children.length) {
-        const children = getItemDescendants({ node });
-        console.log(children);
+        itemIds = getDescendantItems({ node }).map(node => node.uniqid);
+      } else {
+        itemIds = [];
       }
-      // dispatch(removeMultiNotesThunkAction({}))
-      //   .then()
-      dispatch({
-        type: notesListActionTypes.DELETE_NODE,
-        payload: { node, path },
-      });
-      return Promise.resolve(dispatch(switchActiveNodeOnDeleteAction({ id: node.id, path })));
     }
+    // dispatch action to delete note(s) from storage
+    return dispatch(removeNoteThunkAction({ ids: itemIds }))
+      .then(action => {
+        console.log(`Number of notes deleted: ${action.payload.count}`); // TODO: remove
+        // if delete from storage succeeded, then delete node from tree
+        dispatch({
+          type: notesListActionTypes.DELETE_NODE,
+          payload: { node, path },
+        });
+        // then determine if the active node must change.
+        return dispatch(switchActiveNodeOnDeleteAction({ id: node.id, path }));
+      })
+      .catch((err) => window.alert(`ERROR deleting saved note: ${err.message}`));
   };
 }
 

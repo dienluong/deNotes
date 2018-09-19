@@ -133,10 +133,10 @@ export function getDescendants({ node }) {
   return getFlatDataFromTree({ treeData: [node], getNodeKey, ignoreCollapsed: false }).map(data => data.node);
 }
 
-export function getItemDescendants({ node }) {
+export function getDescendantItems({ node }) {
   return getDescendants({ node }).filter(descendant => descendant.type === 'item');
 }
 
-export function getFolderDescendants({ node }) {
+export function getDescendantFolders({ node }) {
   return getDescendants({ node }).filter(descendant => descendant.type === 'folder');
 }
