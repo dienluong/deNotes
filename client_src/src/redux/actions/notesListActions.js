@@ -19,10 +19,11 @@ export function selectNodeThunkAction({ id, path }) {
     if (getState().activeNode && getState().activeNode.id !== id) {
       activeNode = { id, path };
 
-      // Immediately save currenly opened note
+      // Immediately save currently opened note
       const currentContent = getState().editorContent;
       if (currentContent.id) {
-        saveEditorContent(currentContent);
+        saveEditorContent(currentContent)
+          .catch(err => {}); // TODO: log error?
       }
 
       const returnVal = dispatch({
@@ -133,12 +134,21 @@ export function deleteNodeThunkAction({ node, path }) {
 }
 
 export function addAndSelectNodeAction({ kind, path }) {
-  return {
-    type: notesListActionTypes.ADD_AND_SELECT_NODE,
-    payload: {
-      kind,
-      path,
-    },
+  return (dispatch, getState) => {
+    // Immediately save currently opened note
+    const currentContent = getState().editorContent;
+    if (currentContent.id) {
+      saveEditorContent(currentContent)
+        .catch(err => {}); // TODO: log error?
+    }
+
+    return dispatch({
+      type: notesListActionTypes.ADD_AND_SELECT_NODE,
+      payload: {
+        kind,
+        path,
+      },
+    });
   };
 }
 
@@ -170,6 +180,10 @@ export function fetchNotesTreeThunkAction({ userId }) {
           }
         } else {
           // If no tree found for this user, use default tree from initial state and add new node (new blank note)
+          dispatch({
+            type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
+            payload: { userId },
+          });
           const now = Date.now();
           dispatch(changeNotesTreeAction({
             ...baseState.notesTree,

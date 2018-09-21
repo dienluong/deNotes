@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import rootReducer, { selectNotesTreeTree } from './redux/reducers';
 import { fetchNotesTreeThunkAction, selectNodeThunkAction } from './redux/actions/notesListActions';
+import notesListActionTypes from './redux/actions/constants/notesListActionConstants';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/pluck';
 import 'rxjs/add/operator/auditTime';
@@ -35,7 +36,11 @@ const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)))
 
 // Fetch asynchronously
 store.dispatch(fetchNotesTreeThunkAction({ userId }))
-  .then(() => {
+  .then((action) => {
+    if (action.type !== notesListActionTypes.FETCH_NOTES_TREE_SUCCESS) {
+      return;
+    }
+    // TODO: Node selected should be from last session, not hardcoded.
     const notesTree = selectNotesTreeTree(store.getState());
     // Once tree loaded, select a node.
     const matches = find({

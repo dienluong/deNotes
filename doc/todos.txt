@@ -17,13 +17,14 @@ x If no tree saved, created default tree and add node. And save it.
 x Fix Bug: edit title, then select another note (not folder) does not save the new title. Race condition: content of selected note is loaded before observer could save previous note!
   -> Solution: Switching note triggers immediate save.
   -> Fixed.  But must review code and punder design. Should editorContentObserver be a singleton?
-=> deleting folder
-  -> If folder contains notes, ask for confirmation
-    -> delete notes too
+x Deleting folder
+  ? -> If folder contains notes, ask for confirmation
+  x -> deletes descendant notes.
 x Upon deleting a folder, switch active node to parent.
 
-Fix bug: quick successive notes creation skips saving of some notes.
+x Fix bug: quick successive notes creation skips saving of some notes.
 
+Should adopt convention for thunk return value:  1) a Promise resolving to an action obj in the successful case or 2) a Promise rejected with an Error obj.
 Upon deleting a note, switch active node to previous note in folder; if no note in folder, switch to folder and disable editor
 Active node should be the persistent across sessions.
 Deleting node should switch to previous active node.
