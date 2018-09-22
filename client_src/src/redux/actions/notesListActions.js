@@ -133,7 +133,7 @@ export function deleteNodeThunkAction({ node, path }) {
   };
 }
 
-export function addAndSelectNodeAction({ kind, path }) {
+export function addAndSelectNodeThunkAction({ kind, path }) {
   return (dispatch, getState) => {
     // Immediately save currently opened note
     const currentContent = getState().editorContent;
@@ -190,7 +190,7 @@ export function fetchNotesTreeThunkAction({ userId }) {
             dateCreated: now,
             dateModified: now,
           }));
-          return dispatch(addAndSelectNodeAction({ kind: 'item' }));
+          return dispatch(addAndSelectNodeThunkAction({ kind: 'item' }));
         }
       })
       .catch(err => {
