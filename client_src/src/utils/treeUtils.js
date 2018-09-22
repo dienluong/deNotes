@@ -1,5 +1,6 @@
-import uuid from 'uuid/v1';
-import { find } from 'react-sortable-tree';
+import uuid from 'uuid/v4';
+import { find, getFlatDataFromTree } from 'react-sortable-tree';
+
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
 export const getNodeKey = ({ node }) => node.id;
@@ -117,4 +118,25 @@ export function trimTree(tree) {
 
     return normNode;
   });
+}
+
+/**
+ * Returns an array of all the node's descendants.
+ * @param node {Object}
+ * @returns {Array}
+ */
+export function getDescendants({ node }) {
+  if (typeof node !== 'object') {
+    return [];
+  }
+
+  return getFlatDataFromTree({ treeData: [node], getNodeKey, ignoreCollapsed: false }).map(data => data.node);
+}
+
+export function getDescendantItems({ node }) {
+  return getDescendants({ node }).filter(descendant => descendant.type === 'item');
+}
+
+export function getDescendantFolders({ node }) {
+  return getDescendants({ node }).filter(descendant => descendant.type === 'folder');
 }

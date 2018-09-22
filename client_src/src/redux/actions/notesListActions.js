@@ -1,6 +1,6 @@
 import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
-import { translateNodeIdToInfo } from '../../utils/treeUtils';
+import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
 import { save as saveEditorContent } from '../../reactive/editorContentObserver';
 import { load as loadNotesTree } from '../../utils/notesTreeStorage';
 import baseState from '../misc/initialState';
@@ -19,10 +19,11 @@ export function selectNodeThunkAction({ id, path }) {
     if (getState().activeNode && getState().activeNode.id !== id) {
       activeNode = { id, path };
 
-      // Immediately save currenly opened note
+      // Immediately save currently opened note
       const currentContent = getState().editorContent;
       if (currentContent.id) {
-        saveEditorContent(currentContent);
+        saveEditorContent(currentContent)
+          .catch(err => {}); // TODO: log error?
       }
 
       const returnVal = dispatch({
@@ -106,37 +107,48 @@ export function changeNodeTitleAction({ title, node, path }) {
 
 export function deleteNodeThunkAction({ node, path }) {
   return (dispatch) => {
+    let itemIds;
     if (node.type === 'item') {
-      // dispatch action to delete note from storage
-      return dispatch(removeNoteThunkAction({ id: node.uniqid }))
-        .then((action) => {
-          console.log(`Number of notes deleted: ${action.payload.count}`); // TODO: remove
-          // if delete from storage succeeded, delete node from tree
-          dispatch({
-            type: notesListActionTypes.DELETE_NODE,
-            payload: { node, path },
-          });
-          // then determine if the active node must change.
-          return dispatch(switchActiveNodeOnDeleteAction({ id: node.id, path }));
-        })
-        .catch((err) => window.alert(`ERROR deleting saved note: ${err.message}`));
-    } else {
-      dispatch({
-        type: notesListActionTypes.DELETE_NODE,
-        payload: { node, path },
-      });
-      return Promise.resolve(dispatch(switchActiveNodeOnDeleteAction({ id: node.id, path })));
+      itemIds = [node.uniqid];
+    } else if (node.type === 'folder') {
+      if (node.children && node.children.length) {
+        itemIds = getDescendantItems({ node }).map(node => node.uniqid);
+      } else {
+        itemIds = [];
+      }
     }
+    // dispatch action to delete note(s) from storage
+    return dispatch(removeNoteThunkAction({ ids: itemIds }))
+      .then(action => {
+        console.log(`Number of notes deleted: ${action.payload.count}`); // TODO: remove
+        // if delete from storage succeeded, then delete node from tree
+        dispatch({
+          type: notesListActionTypes.DELETE_NODE,
+          payload: { node, path },
+        });
+        // then determine if the active node must change.
+        return dispatch(switchActiveNodeOnDeleteAction({ id: node.id, path }));
+      })
+      .catch((err) => window.alert(`ERROR deleting saved note: ${err.message}`));
   };
 }
 
-export function addAndSelectNodeAction({ kind, path }) {
-  return {
-    type: notesListActionTypes.ADD_AND_SELECT_NODE,
-    payload: {
-      kind,
-      path,
-    },
+export function addAndSelectNodeThunkAction({ kind, path }) {
+  return (dispatch, getState) => {
+    // Immediately save currently opened note
+    const currentContent = getState().editorContent;
+    if (currentContent.id) {
+      saveEditorContent(currentContent)
+        .catch(err => {}); // TODO: log error?
+    }
+
+    return dispatch({
+      type: notesListActionTypes.ADD_AND_SELECT_NODE,
+      payload: {
+        kind,
+        path,
+      },
+    });
   };
 }
 
@@ -168,13 +180,17 @@ export function fetchNotesTreeThunkAction({ userId }) {
           }
         } else {
           // If no tree found for this user, use default tree from initial state and add new node (new blank note)
+          dispatch({
+            type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
+            payload: { userId },
+          });
           const now = Date.now();
           dispatch(changeNotesTreeAction({
             ...baseState.notesTree,
             dateCreated: now,
             dateModified: now,
           }));
-          return dispatch(addAndSelectNodeAction({ kind: 'item' }));
+          return dispatch(addAndSelectNodeThunkAction({ kind: 'item' }));
         }
       })
       .catch(err => {

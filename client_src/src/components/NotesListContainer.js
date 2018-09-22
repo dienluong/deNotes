@@ -8,7 +8,7 @@ import {
   changeNotesTreeAction,
   changeNodeTitleAction,
   deleteNodeThunkAction,
-  addAndSelectNodeAction,
+  addAndSelectNodeThunkAction,
 } from '../redux/actions/notesListActions';
 
 import { getNodeKey } from '../utils/treeUtils';
@@ -56,11 +56,11 @@ mapStateToProps.cache = {};
 
 function mapDispatchToProps(dispatch) {
   function toolbarNewFolderBtnHandler() {
-    return dispatch(addAndSelectNodeAction({ kind: 'folder' }));
+    return dispatch(addAndSelectNodeThunkAction({ kind: 'folder' }));
   }
 
   function toolbarNewNoteBtnHandler() {
-    return dispatch(addAndSelectNodeAction({ kind: 'item' }));
+    return dispatch(addAndSelectNodeThunkAction({ kind: 'item' }));
   }
 
   const toolbarHandlersMap = new Map();
@@ -85,7 +85,7 @@ function mapDispatchToProps(dispatch) {
       return dispatch(deleteNodeThunkAction({ node, path }));
     },
     addNoteBtnHandler({ path }) {
-      return dispatch(addAndSelectNodeAction({ kind: 'item', path }));
+      return dispatch(addAndSelectNodeThunkAction({ kind: 'item', path }));
     },
     toolbarHandlersMap: toolbarHandlersMap,
   };

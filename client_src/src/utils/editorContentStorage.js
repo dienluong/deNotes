@@ -63,19 +63,20 @@ export function load({ id = '', userId = '' }) {
   });
 }
 
-export function remove({ id = '' }) {
-  if (!id) {
+export function remove({ ids = '' }) {
+  if (typeof ids === 'string' || (Array.isArray(ids) && ids.length)) {
+    return _remove({
+      collectionName: 'notes',
+      ids,
+    }).then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        return Promise.reject(new Error(`ERROR deleting note(s)! ${response.status} - ${response.statusText}`));
+      }
+    });
+  } else {
     return Promise.reject(new Error('Delete aborted. Cause: invalid parameter.'));
   }
-
-  return _remove({
-    collectionName: 'notes',
-    id,
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      return Promise.reject(new Error(`ERROR deleting note! ${response.status} - ${response.statusText}`));
-    }
-  });
 }
+

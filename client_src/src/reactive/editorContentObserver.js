@@ -12,26 +12,38 @@ export function inject({ user, storage }) {
   _storage = typeof storage === 'object' && Object.keys(_storage).every(key => ((key in storage) && (typeof storage[key] === 'function'))) ? storage : _storage;
 }
 
+/**
+ *
+ * @param editorContent {Object}
+ * @return {Promise} Promise resolving to the saved object, an Error or FALSE if save was skipped.
+ */
 export function save(editorContent) {
   // TODO: remove
   // console.log(_lastSavedDate, editorContent.dateCreated, editorContent.dateModified, _lastContentId, editorContent.id);
   // Save only if 1) content was not from initial load, 2) if content changed, 3) content is for the same note (i.e. not content of newly loaded note)
 
+  let retValue;
   // Save 1) if newly created note -OR- 2) if content of already opened note changed.
   if (editorContent.dateCreated > _lastSavedDate || (editorContent.id === _lastContentId && editorContent.dateModified > _lastSavedDate)) {
-    _storage.save({ userId: _user, editorContent })
+    retValue = _storage.save({ userId: _user, editorContent })
       .then(responseObj => {
         // TODO: remove
         // console.log(editorContent.dateCreated, editorContent.dateModified, _lastSavedDate, _lastContentId, editorContent.id);
         _lastSavedDate = editorContent.dateModified > editorContent.dateCreated ? editorContent.dateModified : editorContent.dateCreated;
         console.log(`$$$$$$$$$$$$$$$ Content saved!!!\n${JSON.stringify(responseObj, null, 2)}`);
+        return responseObj;
       })
-      .catch((err) => window.alert('Failed to save editor content. ' + err.message));// TODO: Failed save should retry
+      .catch(err => {
+        window.alert('Failed to save editor content. ' + err.message);
+        return err;
+      });// TODO: Failed save should retry
   } else {
     console.log('############### Content did not change. Skip saving.');
+    retValue = Promise.resolve(false);
   }
 
   _lastContentId = editorContent.id;
+  return retValue;
 
   // TODO: remove
   // console.log('************* CONTENT *************\n');

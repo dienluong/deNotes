@@ -60,19 +60,35 @@ export function fetchEditorContentThunkAction({ noteId }) {
   };
 }
 
-export function removeNoteThunkAction({ id }) {
+export function removeNoteThunkAction({ ids }) {
   return (dispatch) => {
-    dispatch({ type: editorActionTypes.REMOVING_NOTE, payload: { id } });
-    return removeEditorContent({ id })
-      .then(result => dispatch({
-        type: editorActionTypes.REMOVE_NOTE_SUCCESS,
-        payload: { id, count: result.count },
-      }))
+    if (!Array.isArray(ids)) {
+      return Promise.reject(new Error('Invalid parameter.'));
+    } else if (!ids.length) {
+      // if ids is empty array, simply return a Promise resolved to an action.
+      return Promise.resolve({
+        type: '',
+        payload: { count: 0 },
+      });
+    }
+
+    dispatch({ type: editorActionTypes.REMOVING_NOTE, payload: { ids } });
+    return removeEditorContent({ ids })
+      .then(result => {
+        if (result.count) {
+          return dispatch({
+            type: editorActionTypes.REMOVE_NOTE_SUCCESS,
+            payload: { ids, count: result.count },
+          });
+        } else {
+          return Promise.reject(new Error('None deleted.'));
+        }
+      })
       .catch(err => {
-        const message = `Failed deleting note. ${err.message} ID: ${id}`;
+        const message = `Failed deleting note(s). ${err.message} ID: ${ids}`;
         dispatch({
           type: editorActionTypes.REMOVE_NOTE_FAILURE,
-          payload: { error: { message, id } },
+          payload: { error: { message, ids } },
         });
         return Promise.reject(new Error(message));
       });

@@ -15,9 +15,9 @@ export function save({ collectionName = '', id = '', ownerId = '', dataObj }) {
 
   let filter = '';
   if (id) {
-    filter = `?where={"id":"${id}"}`;
+    filter = '?where=' + encodeURIComponent(`{"id":"${id}"}`);
   } else if (ownerId) {
-    filter = `?where={"ownerId":"${ownerId}"}`;
+    filter = '?where=' + encodeURIComponent(`{"ownerId":"${ownerId}"}`);
   }
 
   return fetch(
@@ -41,37 +41,60 @@ export function save({ collectionName = '', id = '', ownerId = '', dataObj }) {
  * @return {Promise<Response | never>}
  */
 export function load({ collectionName = '', id = '', ownerId = '' }) {
-  const ownerFilter = ownerId ? `?where={"ownerId": "${ownerId}"}` : '';
-  const idFilter = id ? `/${id}` : '';
   if (!collectionName) {
     return Promise.reject('Load aborted: invalid collection name.');
   }
+  const ownerFilter = ownerId ? '?where=' + encodeURIComponent(`{"ownerId": "${ownerId}"}`) : '';
+  const idFilter = id ? `/${id}` : '';
   return fetch(
     `${process.env.REACT_APP_SERVER_URL}/api/${collectionName}${idFilter}${ownerFilter}`,
     {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
     },
   );
 }
 
-export function remove({ collectionName = '', id = '', ownerId = '' }) {
-  const ownerFilter = ownerId ? `?where={"ownerId": "${ownerId}"}` : '';
-  const idFilter = id ? `/${id}` : '';
+export function remove({ collectionName = '', ids = '' }) {
   if (!collectionName) {
     return Promise.reject('Delete aborted: invalid collection name.');
   }
+
+  let idFilter;
+  if (ids && typeof ids === 'string') {
+    idFilter = `/${ids}`;
+  } else if (Array.isArray(ids) && ids.length) {
+    idFilter = `/multidelete?ids=${encodeURIComponent(JSON.stringify(ids))}`;
+  } else {
+    return Promise.reject('Delete aborted: invalid filter');
+  }
+
   return fetch(
-    `${process.env.REACT_APP_SERVER_URL}/api/${collectionName}${idFilter}${ownerFilter}`,
+    `${process.env.REACT_APP_SERVER_URL}/api/${collectionName}${idFilter}`,
     {
       method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
     },
   );
 }
+
+// TODO: remove
+// export function removeMultiple({ collectionName = '', ids = [] }) {
+//   if (!collectionName) {
+//     return Promise.reject('Delete aborted: invalid collection name.');
+//   }
+//   const idFilter = Array.isArray(ids) && ids.length ? `?ids=${encodeURIComponent(JSON.stringify(ids))}` : '?ids=[]';
+//   return fetch(
+//     `${process.env.REACT_APP_SERVER_URL}/api/${collectionName}/multidelete${idFilter}`,
+//     {
+//       method: 'DELETE',
+//       headers: {
+//         'Accept': 'application/json',
+//       },
+//     },
+//   );
+// }

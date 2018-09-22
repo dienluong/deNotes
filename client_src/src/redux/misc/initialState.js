@@ -1,4 +1,4 @@
-import uuid from 'uuid/v1';
+import uuid from 'uuid/v4';
 import Delta from 'quill-delta';
 const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
@@ -36,6 +36,6 @@ export default {
     delta: new Delta(),
     dateCreated: epoch,
     dateModified: epoch,
-    readOnly: false,
+    readOnly: true,
   },
 };
