@@ -6,7 +6,7 @@
     "validateUpsert": true
   },
   "properties": {
-    "jsonStr": {
+    "tree": {
       "type": "string",
       "required": true,
       "mysql": {

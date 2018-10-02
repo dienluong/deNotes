@@ -19,7 +19,7 @@ export function save({ userId, notesTree }) {
     collectionName: 'trees',
     ownerId: userId,
     dataObj: {
-      'jsonStr': JSON.stringify(notesTree.tree),
+      'tree': JSON.stringify(notesTree.tree),
       'ownerId': userId,
       'dateCreated': notesTree.dateCreated,
       'dateModified': notesTree.dateModified,
@@ -34,10 +34,10 @@ export function save({ userId, notesTree }) {
 }
 
 /**
- * Returns a promise for an array of trees
+ * Returns a promise resolving to an object containing the tree, the modified and the created dates.
  * @param id
  * @param userId
- * @return {Promise<Response | never>}
+ * @returns {*}
  */
 export function load({ id = '', userId = '' }) {
   if (!id && !userId) {
@@ -66,7 +66,7 @@ export function load({ id = '', userId = '' }) {
     } else {
       noteTree = noteTrees;
     }
-    const tree = JSON.parse(noteTree.jsonStr);
+    const tree = JSON.parse(noteTree.tree);
     const dateCreated = new Date(noteTree.dateCreated).getTime();
     const dateModified = new Date(noteTree.dateModified).getTime();
     return { tree, dateCreated, dateModified };
