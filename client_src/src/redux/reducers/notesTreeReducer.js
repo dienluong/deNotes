@@ -79,5 +79,6 @@ export default function notesTreeReducer(state = initialTree, action) {
 }
 
 export const selectTree = (state) => state.tree;
+export const selectTreeId = (state) => state.id;
 export const selectDateModified = (state) => state.dateModified;
 export const selectDateCreated = (state) => state.dateCreated;

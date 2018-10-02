@@ -11,6 +11,7 @@ const rootReducer = reduceReducers(mainReducer, reducedReducer);
 export default rootReducer;
 export const selectNotesTree = (state) => state.notesTree;
 export const selectNotesTreeTree = (state) => fromNotesTree.selectTree(state.notesTree);
+export const selectNotesTreeId = (state) => fromNotesTree.selectTreeId(state.notesTree);
 export const selectNotesTreeDateCreated = (state) => fromNotesTree.selectDateCreated(state.notesTree);
 export const selectNotesTreeDateModified = (state) => fromNotesTree.selectDateModified(state.notesTree);
 export const selectActiveNode = (state) => state.activeNode;

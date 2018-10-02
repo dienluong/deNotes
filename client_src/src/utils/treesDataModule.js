@@ -46,7 +46,7 @@ function builder(privateClient) {
         'type': 'integer',
       },
     },
-    'required': ['id'],
+    'required': ['id', 'tree'],
   });
 
   const treesDecorator = {

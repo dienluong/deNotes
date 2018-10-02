@@ -21,6 +21,7 @@ const epoch = 0;
 const now = Date.now();
 export default {
   notesTree: {
+    id: uuid(),
     tree: _rootNode,
     dateCreated: now,
     dateModified: now,

@@ -17,8 +17,10 @@ export function save({ userId, notesTree }) {
 
   return _save({
     collectionName: 'trees',
+    id: notesTree.id,
     ownerId: userId,
     dataObj: {
+      'id': notesTree.id,
       'tree': JSON.stringify(notesTree.tree),
       'ownerId': userId,
       'dateCreated': notesTree.dateCreated,
