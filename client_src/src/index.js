@@ -19,11 +19,12 @@ import notesTreeObserver from './reactive/notesTreeObserver';
 import * as editorContentObserver from './reactive/editorContentObserver';
 import * as notesTreeStorage from './utils/notesTreeStorage';
 import * as editorContentStorage from './utils/editorContentStorage';
-import { save as loopbackSave, load as loopbackLoad, remove as loopbackDelete } from './utils/loopbackREST';
+// import { save as loopbackSave, load as loopbackLoad, remove as loopbackDelete } from './utils/loopbackREST';
+import { save as saveToStorage, load as loadFromStorage, remove as deleteFromStorage } from './utils/offlineStorage';
 
 // Use loopbackREST for loading and saving persisted data
-notesTreeStorage.inject({ save: loopbackSave, load: loopbackLoad });
-editorContentStorage.inject({ save: loopbackSave, load: loopbackLoad, remove: loopbackDelete });
+notesTreeStorage.inject({ save: saveToStorage, load: loadFromStorage });
+editorContentStorage.inject({ save: saveToStorage, load: loadFromStorage, remove: deleteFromStorage });
 
 // TODO: Restrict Devtools in dev-only?
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

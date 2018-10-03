@@ -1,10 +1,10 @@
 import accountActionTypes from './constants/accountActionConstants';
 
-export function setUser({ user }) {
+export function setUser({ id }) {
   return {
     type: accountActionTypes.SET_USERID,
     payload: {
-      user,
+      id,
     },
   };
 }

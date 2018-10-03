@@ -31,12 +31,6 @@ export function save({ userId, editorContent }) {
       'dateModified': editorContent.dateModified,
       'ownerId': userId,
     },
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      return Promise.reject(new Error(`ERROR saving content! ${response.status} - ${response.statusText}`));
-    }
   });
 }
 
@@ -54,12 +48,6 @@ export function load({ id = '', userId = '' }) {
     collectionName: 'notes',
     id,
     ownerId: userId,
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      return Promise.reject(new Error(`ERROR loading content! ${response.status} - ${response.statusText}`));
-    }
   });
 }
 
@@ -69,12 +57,6 @@ export function remove({ ids = '', userId = '' }) {
       collectionName: 'notes',
       ids,
       ownerId: userId,
-    }).then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        return Promise.reject(new Error(`ERROR deleting note(s)! ${response.status} - ${response.statusText}`));
-      }
     });
   } else {
     return Promise.reject(new Error('Delete aborted. Cause: invalid parameter.'));

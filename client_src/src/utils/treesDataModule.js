@@ -63,7 +63,7 @@ function builder(privateClient) {
     },
     destroy({ ownerId, ids }) {
       if (!ids) {
-        return this.remote(`${ownerId}`);
+        return this.remove(`${ownerId}`);
       }
 
       if (Array.isArray(ids)) {

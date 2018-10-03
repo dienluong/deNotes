@@ -26,12 +26,6 @@ export function save({ userId, notesTree }) {
       'dateCreated': notesTree.dateCreated,
       'dateModified': notesTree.dateModified,
     },
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      return Promise.reject(new Error(`ERROR saving tree! ${response.status} - ${response.statusText}`));
-    }
   });
 }
 
@@ -50,16 +44,11 @@ export function load({ id = '', userId = '' }) {
     collectionName: 'trees',
     id,
     ownerId: userId,
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      return Promise.reject(new Error(`ERROR loading tree! ${response.status} - ${response.statusText}`));
-    }
   }).then(noteTrees => {
     let noteTree;
     if (Array.isArray(noteTrees)) {
       if (noteTrees.length) {
+        // just take the last tree, if multiple returned.
         noteTree = noteTrees[noteTrees.length - 1];
       } else {
         // if no tree (noteTrees is empty array)...
@@ -71,6 +60,6 @@ export function load({ id = '', userId = '' }) {
     const tree = JSON.parse(noteTree.tree);
     const dateCreated = new Date(noteTree.dateCreated).getTime();
     const dateModified = new Date(noteTree.dateModified).getTime();
-    return { tree, dateCreated, dateModified };
+    return { ...noteTree, tree, dateCreated, dateModified };
   });
 }

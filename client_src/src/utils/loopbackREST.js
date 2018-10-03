@@ -30,7 +30,13 @@ export function save({ collectionName = '', id = '', ownerId = '', dataObj }) {
       },
       body: JSON.stringify(dataObj),
     }
-  );
+  ).then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      return Promise.reject(new Error(`ERROR saving data to remote storage! ${response.status} - ${response.statusText}`));
+    }
+  });
 }
 
 /**
@@ -54,7 +60,13 @@ export function load({ collectionName = '', id = '', ownerId = '' }) {
         'Accept': 'application/json',
       },
     },
-  );
+  ).then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      return Promise.reject(new Error(`ERROR loading data from remote storage! ${response.status} - ${response.statusText}`));
+    }
+  });
 }
 
 export function remove({ collectionName = '', ids = '' }) {
@@ -79,7 +91,13 @@ export function remove({ collectionName = '', ids = '' }) {
         'Accept': 'application/json',
       },
     },
-  );
+  ).then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      return Promise.reject(new Error(`ERROR deleting item from remote storage! ${response.status} - ${response.statusText}`));
+    }
+  });
 }
 
 // TODO: remove
