@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import rootReducer, { selectNotesTreeTree } from './redux/reducers';
 import { fetchNotesTreeThunkAction, selectNodeThunkAction } from './redux/actions/notesListActions';
+import { setUser } from './redux/actions/accountActions';
 import notesListActionTypes from './redux/actions/constants/notesListActionConstants';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/pluck';
@@ -20,12 +21,6 @@ import * as notesTreeStorage from './utils/notesTreeStorage';
 import * as editorContentStorage from './utils/editorContentStorage';
 import { save as loopbackSave, load as loopbackLoad, remove as loopbackDelete } from './utils/loopbackREST';
 
-// TODO: adjust user ID to logged in user
-const userId = process.env.REACT_APP_USER_ID;
-// TODO: replace hardcoded value
-// const noteId = '218013d0-ad79-11e8-bfc8-79a6754f355a';
-const activeId = 'item|^|218013d0-ad79-11e8-bfc8-79a6754f355a';
-
 // Use loopbackREST for loading and saving persisted data
 notesTreeStorage.inject({ save: loopbackSave, load: loopbackLoad });
 editorContentStorage.inject({ save: loopbackSave, load: loopbackLoad, remove: loopbackDelete });
@@ -34,8 +29,16 @@ editorContentStorage.inject({ save: loopbackSave, load: loopbackLoad, remove: lo
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
 
+// TODO: adjust user ID to logged in user
+const userId = process.env.REACT_APP_USER_ID;
+store.dispatch(setUser({ id: userId }));
+
+// TODO: replace hardcoded value
+// const noteId = '218013d0-ad79-11e8-bfc8-79a6754f355a';
+const activeId = 'item|^|218013d0-ad79-11e8-bfc8-79a6754f355a';
+
 // Fetch asynchronously
-store.dispatch(fetchNotesTreeThunkAction({ userId }))
+store.dispatch(fetchNotesTreeThunkAction())
   .then((action) => {
     if (action.type !== notesListActionTypes.FETCH_NOTES_TREE_SUCCESS) {
       return;

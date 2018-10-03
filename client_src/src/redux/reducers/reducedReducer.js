@@ -36,7 +36,7 @@ function _findFarthestParent(path) {
  * @private
  */
 function _addAndSelectNewNode({ state, kind, path = [] }) {
-  let newState = null;
+  let newState;
   let newActiveNodePath = [];
   let parentKey = null;
   const newNode = createNode({ type: kind });

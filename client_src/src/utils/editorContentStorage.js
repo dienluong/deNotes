@@ -63,11 +63,12 @@ export function load({ id = '', userId = '' }) {
   });
 }
 
-export function remove({ ids = '' }) {
+export function remove({ ids = '', userId = '' }) {
   if (typeof ids === 'string' || (Array.isArray(ids) && ids.length)) {
     return _remove({
       collectionName: 'notes',
       ids,
+      ownerId: userId,
     }).then(response => {
       if (response.ok) {
         return response.json();
