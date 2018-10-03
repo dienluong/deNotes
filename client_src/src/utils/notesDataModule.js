@@ -44,10 +44,17 @@ function builder(privateClient) {
       return this.storeObject(moduleName, path, dataObj);
     },
     load({ ownerId, id }) {
-      const path = `${ownerId}/${id}`;
-      return this.getObject(path);
+      if (!id) {
+        return this.getAll(`${ownerId}/`);
+      }
+
+      return this.getObject(`${ownerId}/${id}`);
     },
     destroy({ ownerId, ids }) {
+      if (!ids) {
+        return this.remove(`${ownerId}`);
+      }
+
       if (Array.isArray(ids)) {
         if (ids.length) {
           // catch any error from remove() to prevent fast-fail by Promise.all()

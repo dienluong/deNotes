@@ -17,7 +17,11 @@ try {
   _offlineStorage.on('ready', function produceMethods() {
     _save = ({ collectionName, id, ownerId, dataObj }) => {
       if (!privateStorageMap.has(collectionName)) {
-        return Promise.reject(new Error('Invalid collection'));
+        return Promise.reject(new Error('Invalid collection.'));
+      }
+
+      if (!id || !ownerId || !dataObj) {
+        return Promise.reject(new Error('Invalid parameters.'));
       }
 
       return privateStorageMap.get(collectionName).save({ id, ownerId, dataObj });
@@ -28,12 +32,20 @@ try {
         return Promise.reject(new Error('Invalid collection'));
       }
 
+      if (!ownerId) {
+        return Promise.reject(new Error('Invalid parameters.'));
+      }
+
       return privateStorageMap.get(collectionName).load({ id, ownerId });
     };
 
     _remove = ({ collectionName, ownerId, ids }) => {
       if (!privateStorageMap.has(collectionName)) {
         return Promise.reject(new Error('Invalid collection'));
+      }
+
+      if (!ownerId) {
+        return Promise.reject(new Error('Invalid parameters.'));
       }
 
       return privateStorageMap.get(collectionName).destroy({ ownerId, ids });
