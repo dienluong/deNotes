@@ -59,6 +59,7 @@ try {
   // TODO: where to fallback if local storage is unavailable?
 }
 
+// TODO: To revise.  No on(ready) ?
 produceMethods();
 
 export function save(paramsObj) {
