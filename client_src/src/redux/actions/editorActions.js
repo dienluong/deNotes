@@ -32,7 +32,7 @@ export function fetchEditorContentThunkAction({ noteId }) {
             id: noteId,
             title: content.title,
             content: content.body,
-            delta: new Delta(JSON.parse(content.delta)),
+            delta: typeof content.delta === 'string' ? new Delta(JSON.parse(content.delta)) : new Delta(content.delta),
             dateModified: new Date(content.dateModified).getTime(),
             dateCreated: new Date(content.dateCreated).getTime(),
             readOnly: false,
@@ -42,7 +42,7 @@ export function fetchEditorContentThunkAction({ noteId }) {
             payload: { editorContent },
           });
         } else {
-          const message = `Note content fetch error: unrecognized data fetched. ID: ${noteId}`;
+          const message = `Unrecognized data fetched. ID: ${noteId}`;
           dispatch({
             type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILURE,
             payload: { error: { message, id: noteId } },
@@ -51,7 +51,7 @@ export function fetchEditorContentThunkAction({ noteId }) {
         }
       })
       .catch(err => {
-        const message = `Failed loading note content. ${err.message} ID: ${noteId}`;
+        const message = `${err.message} ID: ${noteId}`;
         dispatch({
           type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILURE,
           payload: { error: { message, id: noteId } },

@@ -26,7 +26,7 @@ export function save({ userId, editorContent }) {
       'id': editorContent.id,
       'title': editorContent.title || '',
       'body': editorContent.content,
-      'delta': JSON.stringify(editorContent.delta),
+      'delta': editorContent.delta,
       'dateCreated': editorContent.dateCreated,
       'dateModified': editorContent.dateModified,
       'ownerId': userId,

@@ -21,7 +21,7 @@ export function save({ userId, notesTree }) {
     ownerId: userId,
     dataObj: {
       'id': notesTree.id,
-      'tree': JSON.stringify(notesTree.tree),
+      'tree': notesTree.tree,
       'ownerId': userId,
       'dateCreated': notesTree.dateCreated,
       'dateModified': notesTree.dateModified,
@@ -44,22 +44,23 @@ export function load({ id = '', userId = '' }) {
     collectionName: 'trees',
     id,
     ownerId: userId,
-  }).then(noteTrees => {
-    let noteTree;
-    if (Array.isArray(noteTrees)) {
-      if (noteTrees.length) {
+  }).then(fetchedData => {
+    let notesTree;
+    if (Array.isArray(fetchedData)) {
+      if (fetchedData.length) {
         // just take the last tree, if multiple returned.
-        noteTree = noteTrees[noteTrees.length - 1];
+        notesTree = fetchedData[fetchedData.length - 1];
       } else {
         // if no tree (noteTrees is empty array)...
         return {};
       }
     } else {
-      noteTree = noteTrees;
+      notesTree = fetchedData;
     }
-    const tree = JSON.parse(noteTree.tree);
-    const dateCreated = new Date(noteTree.dateCreated).getTime();
-    const dateModified = new Date(noteTree.dateModified).getTime();
-    return { ...noteTree, tree, dateCreated, dateModified };
+
+    const tree = typeof notesTree.tree === 'string' ? JSON.parse(notesTree.tree) : notesTree.tree;
+    const dateCreated = new Date(notesTree.dateCreated).getTime();
+    const dateModified = new Date(notesTree.dateModified).getTime();
+    return { ...notesTree, tree, dateCreated, dateModified };
   });
 }

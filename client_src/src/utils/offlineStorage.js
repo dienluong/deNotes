@@ -49,7 +49,7 @@ function produceMethods() {
 }
 
 try {
-  _offlineStorage = create({ name: 'denotes', onReadyCb: produceMethods });
+  _offlineStorage = create({ name: 'denotes' });
   _offlineStorage.addModule(notesDataModule);
   _offlineStorage.addModule(treesDataModule);
   privateStorageMap.set(notesDataModule.name, _offlineStorage[notesDataModule.name].privateContent());
@@ -59,8 +59,13 @@ try {
   // TODO: where to fallback if local storage is unavailable?
 }
 
+produceMethods();
+
 export function save(paramsObj) {
-  return _save(paramsObj);
+  return _save(paramsObj)
+    .catch(err => {
+      return Promise.reject(err.error);
+    });
 }
 
 export function load(paramsObj) {

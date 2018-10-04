@@ -7,9 +7,11 @@ export function create({ name, onReadyCb }) {
   }
 
   const storage = new RemoteStorage({ logging });
-  storage.on('ready', onReadyCb);
   storage.access.claim(name, 'rw');
   storage.caching.enable(`/${name}/`);
+  if (typeof onReadyCb === 'function') {
+    storage.on('ready', onReadyCb);
+  }
   return storage;
 }
 

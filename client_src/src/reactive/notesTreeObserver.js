@@ -11,7 +11,7 @@ export default ({ user, storage }) => {
           observer.lastSavedDate = mostRecentDate;
           console.log(`$$$$$$$$$$$$$$$ Tree saved!!!\n${JSON.stringify(responseObj, null, 2)}`);
         })
-        .catch((err) => window.alert('Failed to save notes list.' + err.message));// TODO: Failed save should retry.
+        .catch((err) => window.alert('Failed to save notes list. ' + err.message));// TODO: Failed save should retry.
     } else {
       console.log('############### Tree did not change. Skip saving.');
     }

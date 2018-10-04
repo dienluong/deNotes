@@ -5,7 +5,7 @@ function builder(privateClient) {
     'type': 'object',
     'properties': {
       'id': {
-        'type': 'integer',
+        'type': 'string',
       },
       'tree': {
         'type': 'array',
@@ -43,7 +43,7 @@ function builder(privateClient) {
         'type': 'integer',
       },
       'ownerId': {
-        'type': 'integer',
+        'type': 'string',
       },
     },
     'required': ['id', 'tree'],
@@ -56,7 +56,16 @@ function builder(privateClient) {
     },
     load({ ownerId, id }) {
       if (!id) {
-        return this.getAll(`${ownerId}/`);
+        // getAll() is extremely poorly documented.
+        // It returns an object containing all the objects stored.
+        // The key is the object's path relative to the path provided to getAll().
+        // We are converting the object of objects into an array.
+        return this.getAll(`${ownerId}/`)
+          .then(data => {
+            if (typeof data === 'object') {
+              return Promise.resolve(Object.keys(data).map(key => data[key]));
+            }
+          });
       }
 
       return this.getObject(`${ownerId}/${id}`);
