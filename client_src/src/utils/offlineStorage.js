@@ -1,6 +1,6 @@
 import { create } from './remoteStorageJs';
-import notesDataModule from './notesDataModule';
-import treesDataModule from './treesDataModule';
+import notesDataModule from './remoteStorageJs/notesDataModule';
+import treesDataModule from './remoteStorageJs/treesDataModule';
 
 let _offlineStorage;
 let _save = () => Promise.reject(new Error('Not ready'));
@@ -60,7 +60,8 @@ try {
   privateStorageMap.set(notesDataModule.name, _offlineStorage[notesDataModule.name].privateContent());
   privateStorageMap.set(treesDataModule.name, _offlineStorage[treesDataModule.name].privateContent());
 } catch (err) {
-  window.alert('Local storage not available.');
+  window.alert('Local storage not available. ' + err);
+  console.error(err);
   // TODO: where to fallback if local storage is unavailable?
 }
 
