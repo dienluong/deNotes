@@ -59,26 +59,39 @@ function builder(privateClient) {
 
       return this.getObject(`${ownerId}/${id}`);
     },
-    destroy({ ownerId, ids }) {
-      if (!ids) {
-        return this.remove(`${ownerId}`);
-      }
 
+    /**
+     *
+     * @param ownerId
+     * @param ids
+     * @returns {*} Returns a Promise or array of Promise's. The Promise resolves to the ID of the deleted item(s) or to an Error.
+     */
+    destroy({ ownerId, ids }) {
       if (Array.isArray(ids)) {
         if (ids.length) {
           // catch any error from remove() to prevent fast-fail by Promise.all()
-          return Promise.all(ids.map(id => this.remove(`${ownerId}/${id}`).catch(err => err)));
+          return Promise.all(ids.map(id => {
+            return this.remove(`${ownerId}/${id}`)
+              .then(() => id)
+              .catch(caught => {
+                const error = new Error('Error deleting note: ' + id);
+                error.caught = caught;
+                error.id = id;
+                return error;
+              });
+          }));
         } else {
           return Promise.reject(new Error('Invalid ID'));
         }
       } else {
-        return this.remove(`${ownerId}/${ids}`);
+        return this.remove(`${ownerId}/${ids}`)
+          .then(() => ids);
       }
     },
   };
 
   const module = {
-    privateContent: () => Object.assign(privateClient.scope(`${moduleName}/`), notesDecorator),
+    privateContent: () => Object.assign(privateClient, notesDecorator),
   };
 
   return {

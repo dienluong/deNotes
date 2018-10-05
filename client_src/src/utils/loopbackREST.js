@@ -7,10 +7,10 @@
  */
 export function save({ collectionName = '', id = '', ownerId = '', dataObj }) {
   if (!collectionName) {
-    return Promise.reject('Save aborted: invalid collection name.');
+    return Promise.reject(new Error('Save aborted: invalid collection name.'));
   }
   if (!id && !ownerId) {
-    return Promise.reject('Save aborted: no valid ID provided.');
+    return Promise.reject(new Error('Save aborted: no valid ID provided.'));
   }
 
   let filter = '';
@@ -48,7 +48,7 @@ export function save({ collectionName = '', id = '', ownerId = '', dataObj }) {
  */
 export function load({ collectionName = '', id = '', ownerId = '' }) {
   if (!collectionName) {
-    return Promise.reject('Load aborted: invalid collection name.');
+    return Promise.reject(new Error('Load aborted: invalid collection name.'));
   }
   const ownerFilter = ownerId ? '?where=' + encodeURIComponent(`{"ownerId": "${ownerId}"}`) : '';
   const idFilter = id ? `/${id}` : '';
@@ -71,7 +71,7 @@ export function load({ collectionName = '', id = '', ownerId = '' }) {
 
 export function remove({ collectionName = '', ids = '' }) {
   if (!collectionName) {
-    return Promise.reject('Delete aborted: invalid collection name.');
+    return Promise.reject(new Error('Delete aborted: invalid collection name.'));
   }
 
   let idFilter;
@@ -80,7 +80,7 @@ export function remove({ collectionName = '', ids = '' }) {
   } else if (Array.isArray(ids) && ids.length) {
     idFilter = `/multidelete?ids=${encodeURIComponent(JSON.stringify(ids))}`;
   } else {
-    return Promise.reject('Delete aborted: invalid filter');
+    return Promise.reject(new Error('Delete aborted: invalid filter'));
   }
 
   return fetch(
@@ -103,7 +103,7 @@ export function remove({ collectionName = '', ids = '' }) {
 // TODO: remove
 // export function removeMultiple({ collectionName = '', ids = [] }) {
 //   if (!collectionName) {
-//     return Promise.reject('Delete aborted: invalid collection name.');
+//     return Promise.reject(new Error('Delete aborted: invalid collection name.'));
 //   }
 //   const idFilter = Array.isArray(ids) && ids.length ? `?ids=${encodeURIComponent(JSON.stringify(ids))}` : '?ids=[]';
 //   return fetch(

@@ -1,14 +1,8 @@
 import RemoteStorage from 'remotestoragejs';
 const logging = !!process.env.REACT_APP_DEBUG;
 
-export function create({ name, onReadyCb }) {
-  if (typeof name !== 'string') {
-    throw new Error('Invalid name');
-  }
-
+export function create({ onReadyCb }) {
   const storage = new RemoteStorage({ logging });
-  storage.access.claim(name, 'rw');
-  storage.caching.enable(`/${name}/`);
   if (typeof onReadyCb === 'function') {
     storage.on('ready', onReadyCb);
   }

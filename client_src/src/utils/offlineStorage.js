@@ -49,9 +49,14 @@ function produceMethods() {
 }
 
 try {
-  _offlineStorage = create({ name: 'denotes' });
+  _offlineStorage = create({});
   _offlineStorage.addModule(notesDataModule);
   _offlineStorage.addModule(treesDataModule);
+  _offlineStorage.access.claim(notesDataModule.name, 'rw');
+  _offlineStorage.access.claim(treesDataModule.name, 'rw');
+  _offlineStorage.caching.enable(`/${notesDataModule.name}/`);
+  _offlineStorage.caching.enable(`/${treesDataModule.name}/`);
+
   privateStorageMap.set(notesDataModule.name, _offlineStorage[notesDataModule.name].privateContent());
   privateStorageMap.set(treesDataModule.name, _offlineStorage[treesDataModule.name].privateContent());
 } catch (err) {
@@ -74,6 +79,23 @@ export function load(paramsObj) {
 }
 
 export function remove(paramsObj) {
-  return _remove(paramsObj);
+  return _remove(paramsObj)
+    .then(results => {
+      if (typeof results === 'string') {
+        return {
+          results,
+          count: 1,
+        };
+      }
+
+      if (Array.isArray(results)) {
+        return {
+          results,
+          count: results.filter(res => typeof res === 'string').length,
+        };
+      } else {
+        return Promise.reject(new Error('Unknown result on delete.'));
+      }
+    });
 }
 
