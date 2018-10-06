@@ -17,27 +17,23 @@ export function save({ userId, notesTree }) {
 
   return _save({
     collectionName: 'trees',
+    id: notesTree.id,
     ownerId: userId,
     dataObj: {
-      'jsonStr': JSON.stringify(notesTree.tree),
+      'id': notesTree.id,
+      'tree': notesTree.tree,
       'ownerId': userId,
       'dateCreated': notesTree.dateCreated,
       'dateModified': notesTree.dateModified,
     },
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      return Promise.reject(new Error(`ERROR saving tree! ${response.status} - ${response.statusText}`));
-    }
   });
 }
 
 /**
- * Returns a promise for an array of trees
+ * Returns a promise resolving to an object containing the tree, the modified and the created dates.
  * @param id
  * @param userId
- * @return {Promise<Response | never>}
+ * @returns {*}
  */
 export function load({ id = '', userId = '' }) {
   if (!id && !userId) {
@@ -48,27 +44,23 @@ export function load({ id = '', userId = '' }) {
     collectionName: 'trees',
     id,
     ownerId: userId,
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      return Promise.reject(new Error(`ERROR loading tree! ${response.status} - ${response.statusText}`));
-    }
-  }).then(noteTrees => {
-    let noteTree;
-    if (Array.isArray(noteTrees)) {
-      if (noteTrees.length) {
-        noteTree = noteTrees[noteTrees.length - 1];
+  }).then(fetchedData => {
+    let notesTree;
+    if (Array.isArray(fetchedData)) {
+      if (fetchedData.length) {
+        // just take the last tree, if multiple returned.
+        notesTree = fetchedData[fetchedData.length - 1];
       } else {
         // if no tree (noteTrees is empty array)...
         return {};
       }
     } else {
-      noteTree = noteTrees;
+      notesTree = fetchedData;
     }
-    const tree = JSON.parse(noteTree.jsonStr);
-    const dateCreated = new Date(noteTree.dateCreated).getTime();
-    const dateModified = new Date(noteTree.dateModified).getTime();
-    return { tree, dateCreated, dateModified };
+
+    const tree = typeof notesTree.tree === 'string' ? JSON.parse(notesTree.tree) : notesTree.tree;
+    const dateCreated = new Date(notesTree.dateCreated).getTime();
+    const dateModified = new Date(notesTree.dateModified).getTime();
+    return { ...notesTree, tree, dateCreated, dateModified };
   });
 }

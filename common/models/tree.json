@@ -1,12 +1,23 @@
 {
   "name": "tree",
   "base": "PersistedModel",
-  "idInjection": true,
+  "idInjection": false,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "jsonStr": {
+    "id": {
+      "type": "string",
+      "id": true,
+      "generated": false,
+      "required": true,
+      "length": 36,
+      "mysql": {
+        "dataType": "CHAR",
+        "dataLength": 36
+      }
+    },
+    "tree": {
       "type": "string",
       "required": true,
       "mysql": {

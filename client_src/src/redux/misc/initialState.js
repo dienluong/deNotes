@@ -20,7 +20,11 @@ const _rootNode = [
 const epoch = 0;
 const now = Date.now();
 export default {
+  userInfo: {
+    id: 'default-user',
+  },
   notesTree: {
+    id: uuid(),
     tree: _rootNode,
     dateCreated: now,
     dateModified: now,

@@ -26,17 +26,11 @@ export function save({ userId, editorContent }) {
       'id': editorContent.id,
       'title': editorContent.title || '',
       'body': editorContent.content,
-      'delta': JSON.stringify(editorContent.delta),
+      'delta': editorContent.delta,
       'dateCreated': editorContent.dateCreated,
       'dateModified': editorContent.dateModified,
       'ownerId': userId,
     },
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      return Promise.reject(new Error(`ERROR saving content! ${response.status} - ${response.statusText}`));
-    }
   });
 }
 
@@ -54,26 +48,15 @@ export function load({ id = '', userId = '' }) {
     collectionName: 'notes',
     id,
     ownerId: userId,
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      return Promise.reject(new Error(`ERROR loading content! ${response.status} - ${response.statusText}`));
-    }
   });
 }
 
-export function remove({ ids = '' }) {
+export function remove({ ids = '', userId = '' }) {
   if (typeof ids === 'string' || (Array.isArray(ids) && ids.length)) {
     return _remove({
       collectionName: 'notes',
       ids,
-    }).then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        return Promise.reject(new Error(`ERROR deleting note(s)! ${response.status} - ${response.statusText}`));
-      }
+      ownerId: userId,
     });
   } else {
     return Promise.reject(new Error('Delete aborted. Cause: invalid parameter.'));

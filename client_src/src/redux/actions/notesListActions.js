@@ -2,7 +2,7 @@ import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
 import { save as saveEditorContent } from '../../reactive/editorContentObserver';
-import { load as loadNotesTree } from '../../utils/notesTreeStorage';
+import { load as loadNotesTreeFromStorage } from '../../utils/notesTreeStorage';
 import baseState from '../misc/initialState';
 
 export function selectNodeThunkAction({ id, path }) {
@@ -152,13 +152,14 @@ export function addAndSelectNodeThunkAction({ kind, path }) {
   };
 }
 
-export function fetchNotesTreeThunkAction({ userId }) {
-  return (dispatch) => {
+export function fetchNotesTreeThunkAction() {
+  return (dispatch, getState) => {
+    const userId = getState().userInfo.id;
     dispatch({
       type: notesListActionTypes.FETCH_NOTES_TREE,
       payload: { userId },
     });
-    return loadNotesTree({ userId })
+    return loadNotesTreeFromStorage({ userId })
       .then(notesTree => {
         if (notesTree && notesTree.tree) {
           if (Array.isArray(notesTree.tree)) {
