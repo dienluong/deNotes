@@ -16,12 +16,14 @@ const editorParams = {
 class Main extends React.Component {
   render() {
     return (
-      <Fragment>
-        <SplitPane split="vertical" defaultSize="30%" >
-          <NotesListContainer />
-          <EditorContainer options={ editorParams.options }/>
-        </SplitPane>
-      </Fragment>
+      <React.StrictMode>
+        <Fragment>
+          <SplitPane split="vertical" defaultSize="30%" >
+            <NotesListContainer />
+            <EditorContainer options={ editorParams.options }/>
+          </SplitPane>
+        </Fragment>
+      </React.StrictMode>
     );
   }
 }
