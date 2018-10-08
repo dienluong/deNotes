@@ -43,10 +43,6 @@ export function fetchEditorContentThunkAction({ noteId }) {
           });
         } else {
           const message = `Unrecognized data fetched. ID: ${noteId}`;
-          dispatch({
-            type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILURE,
-            payload: { error: { message, id: noteId } },
-          });
           return Promise.reject(new Error(message));
         }
       })

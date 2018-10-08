@@ -10,7 +10,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import rootReducer, { selectNotesTreeTree } from './redux/reducers';
 import { fetchNotesTreeThunkAction, selectNodeThunkAction } from './redux/actions/notesListActions';
-import { setUser } from './redux/actions/accountActions';
+import { setUserAction } from './redux/actions/accountActions';
 import notesListActionTypes from './redux/actions/constants/notesListActionConstants';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/pluck';
@@ -32,7 +32,7 @@ const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)))
 
 // TODO: adjust user ID to logged in user
 const userId = process.env.REACT_APP_USER_ID;
-store.dispatch(setUser({ id: userId }));
+store.dispatch(setUserAction({ user: { id: userId } }));
 
 // TODO: replace hardcoded value
 // const noteId = '218013d0-ad79-11e8-bfc8-79a6754f355a';
