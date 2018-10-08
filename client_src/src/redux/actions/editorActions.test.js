@@ -61,7 +61,8 @@ describe('fetchEditorContentThunkAction action creator', () => {
   });
 
   it('should return a rejected Promise and dispatch a FAILURE-type action if fetched content has wrong format', async() => {
-    load.mockImplementation(() => Promise.resolve({}));
+    // mock the load function, which is expected to be called by the tested function, to return unexpected format
+    load.mockImplementation(() => Promise.resolve({ data: 'wrong format' }));
     const noteId = uuid();
     const expectedErrorMsg = /unrecognized/i;
     const expectedActions = [
@@ -80,6 +81,7 @@ describe('fetchEditorContentThunkAction action creator', () => {
       },
     ];
 
+    expect.assertions(2);
     await expect(mockedStore.dispatch(fetchEditorContentThunkAction({ noteId })))
       .rejects.toMatchObject({ message: expect.stringMatching(expectedErrorMsg) });
 
