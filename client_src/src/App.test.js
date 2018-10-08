@@ -4,6 +4,16 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import initialState from './redux/misc/initialState';
 import App from './App';
+import { MutationObserver } from './test/MutationObserver';
+
+beforeAll(() => {
+  global.MutationObserver = MutationObserver;
+  document.getSelection = function() {
+    return {
+      getRangeAt: () => {},
+    };
+  };
+});
 
 it('renders without crashing', () => {
   const store = createStore(() => initialState);

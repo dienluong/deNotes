@@ -7,6 +7,5 @@ describe('setUser action creator', () => {
     const id = uuid();
     const type = accountActionTypes.SET_USERID;
     expect(setUser({ id })).toEqual({ type, payload: { id } });
-    expect(MutationObserver).toBeDefined();
   });
 });
