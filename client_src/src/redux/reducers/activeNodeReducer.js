@@ -41,13 +41,25 @@ function _changeActiveNodeOnDelete({ currentActive, deletedNode }) {
   return newActiveNode;
 }
 
+function _arraysAreEqual(arr1, arr2) {
+  if (Object.is(arr1, arr2)) { return true; }
+  if (!(Array.isArray(arr1) && Array.isArray(arr2))) { return false; }
+  if (arr1.length !== arr2.length) { return false; }
+  return arr1.every((val, idx) => val === arr2[idx]);
+}
+
 function _equals(currentActiveNode, newActiveNode) {
   const currentKeys = Object.keys(currentActiveNode);
   const newKeys = Object.keys(newActiveNode);
 
   if (currentKeys.length !== newKeys.length) { return false; }
 
-  return newKeys.every(key => currentActiveNode[key] === newActiveNode[key]);
+  return newKeys.every(key => {
+    const currentVal = currentActiveNode[key];
+    const newVal = newActiveNode[key];
+
+    return Array.isArray(currentVal) ? _arraysAreEqual(currentVal, newVal) : currentVal === newVal;
+  });
 }
 
 export default function activeNodeReducer(state = initialActiveNode, action) {
