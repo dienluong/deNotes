@@ -51,30 +51,45 @@ export function fetchEditorContentThunkAction({ noteId }) {
   };
 }
 
+/**
+ *
+ * @param ids {string[]}
+ * @return {Function}
+ */
 export function removeNoteThunkAction({ ids }) {
   return (dispatch, getState) => {
     if (!Array.isArray(ids)) {
-      return Promise.reject(new Error('Invalid parameter.'));
-    } else if (!ids.length) {
-      // if ids is empty array, simply return a Promise resolved to an action.
-      return Promise.resolve({
-        type: '',
-        payload: { count: 0 },
+      const message = 'Invalid parameter. Expecting an array.';
+      dispatch({
+        type: editorActionTypes.REMOVE_NOTE_FAILURE,
+        payload: { error: { message, ids } },
       });
+      return Promise.reject(new Error(message));
+    } else if (!ids.length) {
+      const action = {
+        type: editorActionTypes.REMOVE_NOTE_SUCCESS,
+        payload: { ids, count: 0 },
+      };
+      // if ids is empty array, simply dispatch and return a Promise resolved to that action.
+      return Promise.resolve(dispatch(action));
     }
 
-    dispatch({ type: editorActionTypes.REMOVING_NOTE, payload: { ids } });
+    dispatch({
+      type: editorActionTypes.REMOVING_NOTE,
+      payload: { ids },
+    });
     const userId = getState().userInfo.id;
     return removeContentFromStorage({ userId, ids })
       .then(result => {
-        if (result.count) {
-          return dispatch({
-            type: editorActionTypes.REMOVE_NOTE_SUCCESS,
-            payload: { ids, count: result.count },
-          });
-        } else {
-          return Promise.reject(new Error('None deleted.'));
+        let count = 0;
+        if (result && result.count) {
+          count = result.count;
         }
+
+        return dispatch({
+          type: editorActionTypes.REMOVE_NOTE_SUCCESS,
+          payload: { ids, count },
+        });
       })
       .catch(err => {
         const message = `Failed deleting note(s). ${err.message} ID: ${ids}`;
