@@ -25,26 +25,20 @@ export function fetchEditorContentThunkAction({ noteId }) {
     // TODO: replace hardcoded noteId value
     // id = '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e';
     return loadContentFromStorage({ userId, id: noteId })
-      .then(content => {
-        if (content && 'body' in content && 'delta' in content) {
-          // Note: the retrieved dates are date-time strings in ISO format; must convert to milliseconds since Unix epoch.
-          const editorContent = {
-            id: noteId,
-            title: content.title,
-            content: content.body,
-            delta: typeof content.delta === 'string' ? new Delta(JSON.parse(content.delta)) : new Delta(content.delta),
-            dateModified: new Date(content.dateModified).getTime(),
-            dateCreated: new Date(content.dateCreated).getTime(),
-            readOnly: false,
-          };
-          return dispatch({
-            type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
-            payload: { editorContent },
-          });
-        } else {
-          const message = `Unrecognized data fetched. ID: ${noteId}`;
-          return Promise.reject(new Error(message));
-        }
+      .then(fetched => {
+        const editorContent = {
+          id: fetched.id,
+          title: fetched.title,
+          content: fetched.content,
+          delta: new Delta(fetched.delta),
+          dateModified: fetched.dateModified,
+          dateCreated: fetched.dateCreated,
+          readOnly: false,
+        };
+        return dispatch({
+          type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
+          payload: { editorContent },
+        });
       })
       .catch(err => {
         const message = `${err.message} ID: ${noteId}`;

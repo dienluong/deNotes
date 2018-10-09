@@ -48,6 +48,22 @@ export function load({ id = '', userId = '' }) {
     collectionName: 'notes',
     id,
     ownerId: userId,
+  }).then(content => {
+    const propList = ['id', 'title', 'body', 'delta', 'dateCreated', 'dateModified'];
+    if (content && (typeof content.hasOwnProperty === 'function') && propList.every(prop => content.hasOwnProperty(prop))) {
+      // Note: We convert the retreived dates to milliseconds since Unix epoch.
+      return {
+        id,
+        title: content.title,
+        content: content.body,
+        delta: typeof content.delta === 'string' ? JSON.parse(content.delta) : content.delta,
+        dateModified: new Date(content.dateModified).getTime(),
+        dateCreated: new Date(content.dateCreated).getTime(),
+      };
+    } else {
+      const message = `Unrecognized data fetched. ID: ${id}`;
+      return Promise.reject(new Error(message));
+    }
   });
 }
 

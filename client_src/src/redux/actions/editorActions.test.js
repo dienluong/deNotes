@@ -35,6 +35,7 @@ describe('fetchEditorContentThunkAction action creator', () => {
   });
 
   it('should return a rejected Promise and dispatch a FAILURE-type action if no storage has been setup', async() => {
+    // mock the load function, which is expected to be called by the tested function, to return the rejected Promise
     load.mockImplementation(() => Promise.reject(new Error('Load aborted. Cause: No Storage implementation provided.')));
     const noteId = uuid();
     const expectedErrorMsg = /no storage implementation/i;
@@ -60,30 +61,33 @@ describe('fetchEditorContentThunkAction action creator', () => {
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
-  it('should return a rejected Promise and dispatch a FAILURE-type action if fetched content has wrong format', async() => {
-    // mock the load function, which is expected to be called by the tested function, to return unexpected format
-    load.mockImplementation(() => Promise.resolve({ data: 'wrong format' }));
+  it('should dispatch the SUCCESS-type action and return a Promise resolved to dispatched action, with fetched content as payload', async() => {
     const noteId = uuid();
-    const expectedErrorMsg = /unrecognized/i;
+    const mockedContent = {
+      id: noteId,
+      title: 'Test title',
+      content: '<p>Hellow World!<br></p>',
+      delta: { ops: [{ insert: 'Hello' }, { insert: ' World!\n' }] },
+      dateCreated: Date.now(),
+      dateModified: Date.now() + 1,
+    };
+    load.mockImplementation(() => Promise.resolve(mockedContent));
     const expectedActions = [
       {
         type: editorActionTypes.FETCH_EDITOR_CONTENT,
         payload: { id: noteId },
       },
       {
-        type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILURE,
+        type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
         payload: {
-          error: {
-            message: expect.stringMatching(expectedErrorMsg),
-            id: noteId,
-          },
+          editorContent: { ...mockedContent, readOnly: false },
         },
       },
     ];
 
     expect.assertions(2);
     await expect(mockedStore.dispatch(fetchEditorContentThunkAction({ noteId })))
-      .rejects.toMatchObject({ message: expect.stringMatching(expectedErrorMsg) });
+      .resolves.toMatchObject({ ...expectedActions[1] });
 
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
