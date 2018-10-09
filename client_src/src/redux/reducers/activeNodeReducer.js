@@ -40,15 +40,29 @@ function _changeActiveNodeOnDelete({ currentActive, deletedNode }) {
 
   return newActiveNode;
 }
+// TODO: remove
+// function _arraysAreEqual(arr1, arr2) {
+//   if (Object.is(arr1, arr2)) { return true; }
+//   if (!(Array.isArray(arr1) && Array.isArray(arr2))) { return false; }
+//   if (arr1.length !== arr2.length) { return false; }
+//   return arr1.every((val, idx) => val === arr2[idx]);
+// }
 
-function _arraysAreEqual(arr1, arr2) {
-  if (Object.is(arr1, arr2)) { return true; }
-  if (!(Array.isArray(arr1) && Array.isArray(arr2))) { return false; }
-  if (arr1.length !== arr2.length) { return false; }
-  return arr1.every((val, idx) => val === arr2[idx]);
-}
-
+/**
+ * Deep comparison of objects (including arrays).
+ * @param currentActiveNode
+ * @param newActiveNode
+ * @return {boolean}
+ * @private
+ */
 function _equals(currentActiveNode, newActiveNode) {
+  if ((typeof currentActiveNode !== 'object') || (typeof newActiveNode !== 'object')) {
+    return Object.is(currentActiveNode, newActiveNode);
+  }
+
+  if (currentActiveNode === null || newActiveNode === null) {
+    return currentActiveNode === newActiveNode;
+  }
   const currentKeys = Object.keys(currentActiveNode);
   const newKeys = Object.keys(newActiveNode);
 
@@ -58,7 +72,7 @@ function _equals(currentActiveNode, newActiveNode) {
     const currentVal = currentActiveNode[key];
     const newVal = newActiveNode[key];
 
-    return Array.isArray(currentVal) ? _arraysAreEqual(currentVal, newVal) : currentVal === newVal;
+    return _equals(currentVal, newVal);
   });
 }
 
