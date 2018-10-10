@@ -23,7 +23,7 @@ export function selectNodeThunkAction({ id, path }) {
       const currentContent = getState().editorContent;
       if (currentContent.id) {
         saveEditorContent(currentContent)
-          .catch(err => {}); // TODO: log error?
+          .catch(err => { console.log(err); }); // TODO: log error?
       }
 
       const returnVal = dispatch({
@@ -46,7 +46,7 @@ export function selectNodeThunkAction({ id, path }) {
       }
       return Promise.resolve(returnVal);
     } else {
-      return Promise.resolve({ type: 'NO_OP', payload: {} });
+      return Promise.resolve({});
     }
   };
 }
