@@ -18,12 +18,8 @@ export function inject({ user, storage }) {
  * @return {Promise} Promise resolving to the saved object, an Error or FALSE if save was skipped.
  */
 export function save(editorContent) {
-  // TODO: remove
-  // console.log(_lastSavedDate, editorContent.dateCreated, editorContent.dateModified, _lastContentId, editorContent.id);
-  // Save only if 1) content was not from initial load, 2) if content changed, 3) content is for the same note (i.e. not content of newly loaded note)
-
   let retValue;
-  // Save 1) if newly created note -OR- 2) if content of already opened note changed.
+  // Save 1) if newly created note -OR- 2) if content of opened note changed since last save.
   if (editorContent.dateCreated > _lastSavedDate || (editorContent.id === _lastContentId && editorContent.dateModified > _lastSavedDate)) {
     retValue = _storage.save({ userId: _user, editorContent })
       .then(responseObj => {

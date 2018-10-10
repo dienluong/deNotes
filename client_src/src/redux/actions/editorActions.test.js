@@ -7,9 +7,12 @@ import editorActionTypes from './constants/editorActionConstants';
 import { changeContentAction, fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 jest.mock('../../utils/editorContentStorage');
 import { load, remove } from '../../utils/editorContentStorage';
+import { mockedContent } from '../../test-utils/mocks/mockedEditorContent';
 
-
-describe('changeContentAction action creator', () => {
+/**
+ * changeContentAction
+ */
+describe('1. changeContentAction action creator', () => {
   const RealDate = global.Date;
 
   afterEach(() => {
@@ -43,7 +46,12 @@ describe('changeContentAction action creator', () => {
 });
 
 
-describe('fetchEditorContentThunkAction action creator', () => {
+
+
+/**
+ * fetchEditorContentThunkAction
+ */
+describe('2. fetchEditorContentThunkAction action creator', () => {
   const mockedStore = setupMockStore([thunk])(initialState);
 
   afterEach(() => {
@@ -82,15 +90,6 @@ describe('fetchEditorContentThunkAction action creator', () => {
 
   it('should dispatch the SUCCESS-type action and return a Promise resolving to dispatched action, with fetched content as payload', async() => {
     const noteId = uuid();
-    const mockedContent = {
-      id: noteId,
-      title: 'Test title',
-      content: '<p>Hellow World!<br></p>',
-      delta: { ops: [{ insert: 'Hello' }, { insert: ' World!\n' }] },
-      dateCreated: Date.now(),
-      dateModified: Date.now() + 1,
-    };
-    load.mockImplementation(() => Promise.resolve(mockedContent));
     const expectedActions = [
       {
         type: editorActionTypes.FETCH_EDITOR_CONTENT,
@@ -105,14 +104,22 @@ describe('fetchEditorContentThunkAction action creator', () => {
     ];
 
     expect.assertions(3);
+
+    load.mockImplementation(() => Promise.resolve(mockedContent));
     await expect(mockedStore.dispatch(fetchEditorContentThunkAction({ noteId })))
-      .resolves.toMatchObject({ ...expectedActions[1] });
+      .resolves.toMatchObject(expectedActions[1]);
     expect(load).toHaveBeenCalledWith({ id: noteId, userId: initialState.userInfo.id });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 });
 
-describe('removeNoteThunkAction action creator', () => {
+
+
+
+/**
+ * removeNoteThunkAction
+ */
+describe('3. removeNoteThunkAction action creator', () => {
   const mockedStore = setupMockStore([thunk])(initialState);
 
   afterEach(() => {
@@ -138,7 +145,7 @@ describe('removeNoteThunkAction action creator', () => {
 
     remove.mockImplementation(() => Promise.resolve({ count: ids.length }));
     await expect(mockedStore.dispatch(removeNoteThunkAction({ ids })))
-      .resolves.toMatchObject({ ...expectedActions[1] });
+      .resolves.toMatchObject(expectedActions[1]);
     expect(remove).toHaveBeenCalledWith({ ids, userId: initialState.userInfo.id });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
@@ -156,7 +163,7 @@ describe('removeNoteThunkAction action creator', () => {
 
     remove.mockImplementation(() => Promise.resolve({ count: ids.length }));
     await expect(mockedStore.dispatch(removeNoteThunkAction({ ids })))
-      .resolves.toMatchObject({ ...expectedActions[0] });
+      .resolves.toMatchObject(expectedActions[0]);
     expect(remove).not.toHaveBeenCalled();
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });

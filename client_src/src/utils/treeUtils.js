@@ -9,9 +9,10 @@ export const getNodeKey = ({ node }) => node.id;
  * Builds a node for a tree.
  * 'uniqid' is a unique ID usually used as a key when storing in a database.
  * 'id' is the combo of type+uniqid; it is the ID used for react-sortable-tree (in the 'path' it returns for example). The node type is included in order to efficiently determine the type of node when we only have its ID.
- * @param title {string}
- * @param subtitle {string}
- * @param type {string}
+ * @param {string} title
+ * @param {string} subtitle
+ * @typedef {("item" | "folder")} NodeType
+ * @param {NodeType} type
  * @return {*}
  */
 export function createNode({ title = 'New Note', subtitle = new Date().toLocaleString(), type = 'item' }) {
@@ -40,8 +41,10 @@ export function createNode({ title = 'New Note', subtitle = new Date().toLocaleS
  * Example: For ID "folder|^|a9914200-a7d2-11e8-a12b-99205b853de7"
  *          type is "folder"
  *          uniqid is "a9914200-a7d2-11e8-a12b-99205b853de7""
- * @param nodeId {string}
- * @param kind {"uniqid"|"type"}
+ *
+ * Note: possible types are "item" and "folder".
+ * @param {string} nodeId
+ * @param {("uniqid"|"type")} kind
  */
 export function translateNodeIdToInfo({ nodeId, kind = 'uniqid' }) {
   if (typeof nodeId !== 'string') {
