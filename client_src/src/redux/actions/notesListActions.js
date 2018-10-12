@@ -51,60 +51,6 @@ export function selectNodeThunkAction({ id, path }) {
   };
 }
 
-export function switchActiveNodeOnDeleteAction({ id, path }) {
-  return {
-    type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
-    payload: {
-      deletedNode: {
-        id,
-        path,
-      },
-    },
-  };
-}
-
-export function navigatePathAction({ idx }) {
-  return {
-    type: notesListActionTypes.NAVIGATE_PATH,
-    payload: {
-      idx,
-    },
-  };
-}
-
-export function changeNotesTreeAction({ tree, dateCreated, dateModified }) {
-  const notesTree = {};
-  if (Array.isArray(tree)) {
-    notesTree.tree = tree;
-  }
-
-  if (dateCreated) {
-    notesTree.dateCreated = dateCreated;
-  }
-
-  if (dateModified) {
-    notesTree.dateModified = dateModified;
-  }
-
-  return {
-    type: notesListActionTypes.CHANGE_NOTES_TREE,
-    payload: {
-      notesTree,
-    },
-  };
-}
-
-export function changeNodeTitleAction({ title, node, path }) {
-  return {
-    type: notesListActionTypes.CHANGE_NODE_TITLE,
-    payload: {
-      title,
-      node,
-      path,
-    },
-  };
-}
-
 export function deleteNodeThunkAction({ node, path }) {
   return (dispatch) => {
     let itemIds;
@@ -130,6 +76,18 @@ export function deleteNodeThunkAction({ node, path }) {
         return dispatch(switchActiveNodeOnDeleteAction({ id: node.id, path }));
       })
       .catch((err) => window.alert(`ERROR deleting saved note: ${err.message}`));
+  };
+}
+
+export function switchActiveNodeOnDeleteAction({ id, path }) {
+  return {
+    type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
+    payload: {
+      deletedNode: {
+        id,
+        path,
+      },
+    },
   };
 }
 
@@ -202,6 +160,48 @@ export function fetchNotesTreeThunkAction() {
         });
         return Promise.reject(new Error(error));
       });
+  };
+}
+
+export function navigatePathAction({ idx }) {
+  return {
+    type: notesListActionTypes.NAVIGATE_PATH,
+    payload: {
+      idx,
+    },
+  };
+}
+
+export function changeNotesTreeAction({ tree, dateCreated, dateModified }) {
+  const notesTree = {};
+  if (Array.isArray(tree)) {
+    notesTree.tree = tree;
+  }
+
+  if (dateCreated) {
+    notesTree.dateCreated = dateCreated;
+  }
+
+  if (dateModified) {
+    notesTree.dateModified = dateModified;
+  }
+
+  return {
+    type: notesListActionTypes.CHANGE_NOTES_TREE,
+    payload: {
+      notesTree,
+    },
+  };
+}
+
+export function changeNodeTitleAction({ title, node, path }) {
+  return {
+    type: notesListActionTypes.CHANGE_NODE_TITLE,
+    payload: {
+      title,
+      node,
+      path,
+    },
   };
 }
 
