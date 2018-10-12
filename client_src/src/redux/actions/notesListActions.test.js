@@ -1,3 +1,5 @@
+import {addAndSelectNodeThunkAction} from "./notesListActions";
+
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
@@ -141,6 +143,9 @@ describe('1. selectNodeThunkAction', () => {
   });
 });
 
+/**
+ * deleteNodeThunkAction
+ */
 describe('2. deleteNodeThunkAction', () => {
   const mockedStore = setupMockStore([thunk])({
     ...initialState,
@@ -189,5 +194,115 @@ describe('2. deleteNodeThunkAction', () => {
       .resolves.toMatchObject(expectedActions[1]);
     expect(removeNoteThunkAction).toBeCalledWith({ ids: notesExpectedToBeDeleted });
     expect(mockedStore.getActions()).toEqual(expectedActions);
+  });
+
+  it('should dispatch actions to delete node and switch to new active node. Deleting a note.', async() => {
+    const nodeToDelete = mockedTree[0].children[1];
+    const pathToNode = ['1', '3'];
+    const notesExpectedToBeDeleted = ['3'];
+    const expectedActions = [
+      {
+        type: notesListActionTypes.DELETE_NODE,
+        payload: {
+          node: nodeToDelete,
+          path: pathToNode,
+        },
+      },
+      {
+        type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
+        payload: {
+          deletedNode: {
+            id: nodeToDelete.id,
+            path: pathToNode,
+          },
+        },
+      },
+    ];
+
+    removeNoteThunkAction.mockImplementation(() => () => Promise.resolve({
+      type: editorActionTypes.REMOVE_NOTE_SUCCESS,
+      payload: { ids: notesExpectedToBeDeleted, count: 1 },
+    }));
+
+    expect.assertions(3);
+
+    await expect(mockedStore.dispatch(moduleToTest.deleteNodeThunkAction({ node: nodeToDelete, path: pathToNode })))
+      .resolves.toMatchObject(expectedActions[1]);
+    expect(removeNoteThunkAction).toBeCalledWith({ ids: notesExpectedToBeDeleted });
+    expect(mockedStore.getActions()).toEqual(expectedActions);
+  });
+
+  it('should dispatch actions to delete node and switch to new active node. Deleting empty folder.', async() => {
+    const nodeToDelete = mockedTree[0].children[3];
+    const pathToNode = ['1', '7'];
+    const notesExpectedToBeDeleted = [];
+    const expectedActions = [
+      {
+        type: notesListActionTypes.DELETE_NODE,
+        payload: {
+          node: nodeToDelete,
+          path: pathToNode,
+        },
+      },
+      {
+        type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
+        payload: {
+          deletedNode: {
+            id: nodeToDelete.id,
+            path: pathToNode,
+          },
+        },
+      },
+    ];
+
+    removeNoteThunkAction.mockImplementation(() => () => Promise.resolve({
+      type: editorActionTypes.REMOVE_NOTE_SUCCESS,
+      payload: { ids: notesExpectedToBeDeleted, count: 0 },
+    }));
+
+    expect.assertions(3);
+
+    await expect(mockedStore.dispatch(moduleToTest.deleteNodeThunkAction({ node: nodeToDelete, path: pathToNode })))
+      .resolves.toMatchObject(expectedActions[1]);
+    expect(removeNoteThunkAction).toBeCalledWith({ ids: notesExpectedToBeDeleted });
+    expect(mockedStore.getActions()).toEqual(expectedActions);
+  });
+});
+
+/**
+ * addAndSelectNodeThunkAction
+ */
+describe('3. addAndSelectNodeThunkAction', () => {
+  const mockedStore = setupMockStore([thunk])({
+    ...initialState,
+    editorContent: {
+      ...initialState.editorContent,
+      id: uuid(),
+      dateModified: Date.now(),
+      dateCreated: Date.now(),
+    },
+  });
+
+  afterEach(() => {
+    mockedStore.clearActions();
+    save.mockClear();
+  });
+
+  it('should save the current content before switching node, when adding an item to the tree', () => {
+    const kind = 'item';
+    const path = ['1', '2', '3'];
+    const expectedAction = [
+      {
+        type: notesListActionTypes.ADD_AND_SELECT_NODE,
+        payload: { kind, path },
+      },
+    ];
+
+    save.mockImplementation(() => Promise.resolve('Saved'));
+
+    expect.assertions(3);
+    expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind, path }))).toMatchObject(expectedAction[0]);
+    expect(save).toBeCalledWith(mockedStore.getState().editorContent);
+    expect(mockedStore.getActions()).toEqual(expectedAction);
   });
 });
