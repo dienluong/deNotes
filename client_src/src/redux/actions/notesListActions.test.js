@@ -1,5 +1,3 @@
-import {addAndSelectNodeThunkAction} from "./notesListActions";
-
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
@@ -10,6 +8,8 @@ import setupMockStore from 'redux-mock-store';
 import initialState from '../misc/initialState';
 jest.mock('../../reactive/editorContentObserver');
 import { save } from '../../reactive/editorContentObserver';
+jest.mock('../../utils/notesTreeStorage');
+import { load as loadTree } from '../../utils/notesTreeStorage';
 jest.mock('./editorActions');
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { mockedContent } from '../../test-utils/mocks/mockedEditorContent';
@@ -304,5 +304,61 @@ describe('3. addAndSelectNodeThunkAction', () => {
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind, path }))).toMatchObject(expectedAction[0]);
     expect(save).toBeCalledWith(mockedStore.getState().editorContent);
     expect(mockedStore.getActions()).toEqual(expectedAction);
+  });
+});
+
+/**
+ * fetchNotesTreeThunkAction
+ */
+describe('4. fetchNotesTreeThunkAction', () => {
+  const mockedStore = setupMockStore([thunk])({
+    ...initialState,
+    userInfo: {
+      id: 'test-user',
+    },
+  });
+
+  afterEach(() => {
+    mockedStore.clearActions();
+    loadTree.mockClear();
+  });
+
+  it('should dispatch FETCH actions, load tree from storage and return last dispatched action', async() => {
+    const userId = mockedStore.getState().userInfo.id;
+    const dateCreated = 1;
+    const dateModified = 2;
+    const treeId = uuid();
+    const ownerId = uuid();
+    const fetchedTreeData = {
+      id: treeId,
+      tree: mockedTree,
+      dateCreated,
+      dateModified,
+      ownerId,
+    };
+    const expectedActions = [
+      {
+        type: notesListActionTypes.FETCH_NOTES_TREE,
+        payload: { userId },
+      },
+      {
+        type: notesListActionTypes.FETCH_NOTES_TREE_SUCCESS,
+        payload: {
+          notesTree: fetchedTreeData,
+          activeNode: {
+            id: mockedTree[0].id,
+            path: [mockedTree[0].id],
+          },
+        },
+      },
+    ];
+
+    loadTree.mockImplementation(() => Promise.resolve(fetchedTreeData));
+    expect.assertions(3);
+
+    await expect(mockedStore.dispatch(moduleToTest.fetchNotesTreeThunkAction()))
+      .resolves.toMatchObject(expectedActions[1]);
+    expect(loadTree).toBeCalledWith({ userId });
+    expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 });
