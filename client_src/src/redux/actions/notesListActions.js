@@ -7,18 +7,16 @@ import { load as loadNotesTreeFromStorage } from '../../utils/notesTreeStorage';
 import baseState from '../misc/initialState';
 
 export function selectNodeThunkAction({ id, path }) {
-  let activeNode = null;
-  if (typeof id !== 'string' || id.length === 0) {
-    id = '';
-  }
-  if (!Array.isArray(path)) {
-    path = [];
-  }
-
   return (dispatch, getState) => {
+    if (typeof id !== 'string' || !id.length) {
+      id = getState().activeNode.id;
+    }
+    if (!Array.isArray(path) || !path.length) {
+      path = getState().activeNode.path;
+    }
     // dispatch actions only if selected node actually changed
-    if (getState().activeNode && getState().activeNode.id !== id) {
-      activeNode = { id, path };
+    if (getState().activeNode.id !== id) {
+      const activeNode = { id, path };
 
       // Immediately save currently opened note
       const currentContent = getState().editorContent;
@@ -136,7 +134,7 @@ export function fetchNotesTreeThunkAction() {
       })
       .catch(err => {
         // If no tree found for this user, use default tree from initial state and add new node (new blank note)
-        const error = new Error(`No tree loaded. Error: "${err.message}" Using default tree.`);
+        const error = new Error(`No tree loaded. Error: ${err.message} Using default tree.`);
         dispatch({
           type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
           payload: { error },
