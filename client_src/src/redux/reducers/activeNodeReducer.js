@@ -3,42 +3,52 @@ import baseState from '../misc/initialState';
 
 const initialActiveNode = baseState.activeNode;
 
+/**
+ * Sets the active ID to the newly selected node along the active path.  (The active path remains the same.)
+ * @param currentActive
+ * @param idx
+ * @returns {*}
+ * @private
+ */
 function _changeActiveNodeOnPathNavClick({ currentActive, idx }) {
-  let newActiveNode = currentActive;
   if (Number.isSafeInteger(idx) && idx < currentActive.path.length) {
-    newActiveNode = {
+    return {
       ...currentActive,
       id: currentActive.path[idx],
-      // TODO: remove
-      // path: currentActive.path.slice(0, idx + 1),
       path: currentActive.path,
     };
+  } else {
+    return currentActive;
   }
-  return newActiveNode;
 }
 
 function _changeActiveNodeOnDelete({ currentActive, deletedNode }) {
-  let newActiveNode = currentActive;
+  let returnedActiveNode = currentActive;
   // if deleted node is part of the active path, re-adjust the active node
   const deletedNodeIdx = currentActive.path.lastIndexOf(deletedNode.id);
   if (deletedNodeIdx >= 0) {
     if (deletedNodeIdx === 0) {
-      newActiveNode = {
+      // TODO: Deleting the root folder should never be allowed.
+      returnedActiveNode = {
         ...currentActive,
         id: '',
         path: [],
       };
     } else {
+      // Since deleted node is part of active path, then truncate the path
+      // Only change the active node (i.e. change the active node ID) if deleted node is one of its parents
+      const currentActiveIdx = currentActive.path.lastIndexOf(currentActive.id);
       const newActivePath = currentActive.path.slice(0, deletedNodeIdx);
-      newActiveNode = {
+      const newActiveId = currentActiveIdx >= deletedNodeIdx ? newActivePath[newActivePath.length - 1] : currentActive.path[currentActiveIdx];
+      returnedActiveNode = {
         ...currentActive,
-        id: newActivePath[newActivePath.length - 1],
+        id: newActiveId,
         path: newActivePath,
       };
     }
   }
 
-  return newActiveNode;
+  return returnedActiveNode;
 }
 // TODO: remove
 // function _arraysAreEqual(arr1, arr2) {
@@ -63,6 +73,7 @@ function _equals(currentActiveNode, newActiveNode) {
   if (currentActiveNode === null || newActiveNode === null) {
     return currentActiveNode === newActiveNode;
   }
+
   const currentKeys = Object.keys(currentActiveNode);
   const newKeys = Object.keys(newActiveNode);
 
