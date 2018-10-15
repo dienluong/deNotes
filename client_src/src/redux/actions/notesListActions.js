@@ -1,3 +1,4 @@
+import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
@@ -119,46 +120,36 @@ export function fetchNotesTreeThunkAction() {
     });
     return loadNotesTreeFromStorage({ userId })
       .then(notesTree => {
-        if (notesTree && notesTree.tree) {
-          if (Array.isArray(notesTree.tree)) {
-            const activeNode = { id: notesTree.tree[0].id, path: [notesTree.tree[0].id] };// TODO: adjust activeNode to where user left off
-            return dispatch({
-              type: notesListActionTypes.FETCH_NOTES_TREE_SUCCESS,
-              payload: {
-                notesTree,
-                activeNode, // TODO: not sure if it is okay to set activeNode in a notesList action.
-              },
-            });
-          } else {
-            const error = 'Notes list fetch error: unrecognized data fetched.';
-            dispatch({
-              type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
-              payload: { error, data: notesTree.tree },
-            });
-            return Promise.reject(new Error(error));
-          }
-        } else {
-          // If no tree found for this user, use default tree from initial state and add new node (new blank note)
-          dispatch({
-            type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
-            payload: { userId },
+        if (Array.isArray(notesTree.tree)) {
+          const activeNode = { id: notesTree.tree[0].id, path: [notesTree.tree[0].id] };// TODO: adjust activeNode to where user left off
+          return dispatch({
+            type: notesListActionTypes.FETCH_NOTES_TREE_SUCCESS,
+            payload: {
+              notesTree,
+              activeNode, // TODO: not sure if it is okay to set activeNode in a notesList action.
+            },
           });
-          const now = Date.now();
-          dispatch(changeNotesTreeAction({
-            ...baseState.notesTree,
-            dateCreated: now,
-            dateModified: now,
-          }));
-          return dispatch(addAndSelectNodeThunkAction({ kind: 'item' }));
+        } else {
+          const error = new Error('Unrecognized data fetched.');
+          return Promise.reject(error);
         }
       })
       .catch(err => {
-        const error = `No notes list loaded. ${err.message}`;
+        // If no tree found for this user, use default tree from initial state and add new node (new blank note)
+        const error = new Error(`No tree loaded. Error: "${err.message}" Using default tree.`);
         dispatch({
           type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
           payload: { error },
         });
-        return Promise.reject(new Error(error));
+        const now = Date.now();
+        dispatch(changeNotesTreeAction({
+          ...baseState.notesTree,
+          id: uuid(),
+          dateCreated: now,
+          dateModified: now,
+        }));
+        // Add a "note" node (an item) to the root of the tree
+        return dispatch(addAndSelectNodeThunkAction({ kind: 'item', path: [baseState.notesTree.tree[0]] }));
       });
   };
 }
@@ -172,19 +163,19 @@ export function navigatePathAction({ idx }) {
   };
 }
 
-export function changeNotesTreeAction({ tree, dateCreated, dateModified }) {
+export function changeNotesTreeAction({ id, tree, dateCreated, dateModified }) {
   const notesTree = {};
   if (Array.isArray(tree)) {
     notesTree.tree = tree;
+  } else {
+    notesTree.tree = baseState.notesTree.tree;
   }
 
-  if (dateCreated) {
-    notesTree.dateCreated = dateCreated;
-  }
+  notesTree.dateCreated = Number.isInteger(dateCreated) ? dateCreated : Date.now();
 
-  if (dateModified) {
-    notesTree.dateModified = dateModified;
-  }
+  notesTree.dateModified = Number.isInteger(dateModified) ? dateModified : Date.now();
+
+  notesTree.id = id && typeof id === 'string' ? id : uuid();
 
   return {
     type: notesListActionTypes.CHANGE_NOTES_TREE,

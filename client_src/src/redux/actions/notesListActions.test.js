@@ -288,7 +288,7 @@ describe('3. addAndSelectNodeThunkAction', () => {
     save.mockClear();
   });
 
-  it('should save the current content before switching node, when adding an item to the tree', () => {
+  it('should save the current content before adding an item to the tree and switching to that item', () => {
     const kind = 'item';
     const path = ['1', '2', '3'];
     const expectedAction = [
@@ -316,6 +316,11 @@ describe('4. fetchNotesTreeThunkAction', () => {
     userInfo: {
       id: 'test-user',
     },
+    notesTree: {
+      ...initialState.notesTree,
+      id: uuid(),
+      tree: [],
+    },
   });
 
   afterEach(() => {
@@ -323,7 +328,7 @@ describe('4. fetchNotesTreeThunkAction', () => {
     loadTree.mockClear();
   });
 
-  it('should dispatch FETCH actions, load tree from storage and return last dispatched action', async() => {
+  it('should dispatch SUCCESS-type action, load tree from storage and return Promise w/ last dispatched action', async() => {
     const userId = mockedStore.getState().userInfo.id;
     const dateCreated = 1;
     const dateModified = 2;
@@ -358,6 +363,50 @@ describe('4. fetchNotesTreeThunkAction', () => {
 
     await expect(mockedStore.dispatch(moduleToTest.fetchNotesTreeThunkAction()))
       .resolves.toMatchObject(expectedActions[1]);
+    expect(loadTree).toBeCalledWith({ userId });
+    expect(mockedStore.getActions()).toEqual(expectedActions);
+  });
+
+  it('should 1) dispatch FAILURE-type action when fetch returns no tree, 2) use default tree and 3) return Promise w/ last action', async() => {
+    const userId = mockedStore.getState().userInfo.id;
+    const expectedActions = [
+      {
+        type: notesListActionTypes.FETCH_NOTES_TREE,
+        payload: { userId },
+      },
+      {
+        type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
+        payload: {
+          // Note from Jest doc: .toEqual won't perform a deep equality check for two errors.
+          // Only the message property of an Error is considered for equality.
+          error: new Error('No tree loaded. Error: "No tree." Using default tree.'),
+        },
+      },
+      {
+        type: notesListActionTypes.CHANGE_NOTES_TREE,
+        payload: {
+          notesTree: {
+            id: expect.any(String),
+            tree: initialState.notesTree.tree,
+            dateCreated: expect.any(Number),
+            dateModified: expect.any(Number),
+          },
+        },
+      },
+      {
+        type: notesListActionTypes.ADD_AND_SELECT_NODE,
+        payload: {
+          kind: 'item',
+          path: [initialState.notesTree.tree[0]],
+        },
+      },
+    ];
+
+    loadTree.mockImplementation(() => Promise.reject(new Error('No tree.')));
+    expect.assertions(3);
+
+    await expect(mockedStore.dispatch(moduleToTest.fetchNotesTreeThunkAction()))
+      .resolves.toMatchObject(expectedActions[3]);
     expect(loadTree).toBeCalledWith({ userId });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });

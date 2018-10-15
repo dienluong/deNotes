@@ -45,22 +45,32 @@ export function load({ id = '', userId = '' }) {
     id,
     ownerId: userId,
   }).then(fetchedData => {
+    const propList = ['id', 'tree', 'dateCreated', 'dateModified'];
     let notesTree;
     if (Array.isArray(fetchedData)) {
       if (fetchedData.length) {
         // just take the last tree, if multiple returned.
         notesTree = fetchedData[fetchedData.length - 1];
       } else {
-        // if no tree (noteTrees is empty array)...
-        return {};
+        // if no tree...
+        notesTree = {};
       }
     } else {
-      notesTree = fetchedData;
+      if (fetchedData) {
+        notesTree = fetchedData;
+      } else {
+        notesTree = {};
+      }
     }
 
-    const tree = typeof notesTree.tree === 'string' ? JSON.parse(notesTree.tree) : notesTree.tree;
-    const dateCreated = new Date(notesTree.dateCreated).getTime();
-    const dateModified = new Date(notesTree.dateModified).getTime();
-    return { ...notesTree, tree, dateCreated, dateModified };
+    if (notesTree && (typeof notesTree.hasOwnProperty === 'function') && propList.every(prop => notesTree.hasOwnProperty(prop))) {
+      const tree = typeof notesTree.tree === 'string' ? JSON.parse(notesTree.tree) : notesTree.tree;
+      const dateCreated = new Date(notesTree.dateCreated).getTime();
+      const dateModified = new Date(notesTree.dateModified).getTime();
+      return { ...notesTree, tree, dateCreated, dateModified };
+    } else {
+      const message = `Unrecognized data fetched. ID: ${id}`;
+      return Promise.reject(new Error(message));
+    }
   });
 }

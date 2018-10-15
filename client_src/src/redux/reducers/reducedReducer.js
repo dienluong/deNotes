@@ -28,7 +28,7 @@ function _findFarthestParent(path) {
 }
 
 /**
- * Create new node, switch to it and set editor content to blank page.
+ * Create new node, switch to it and set editor content to blank page. The new node is added to the folder of the current active node, if no path was given.
  * @param state
  * @param kind
  * @param path {string[]}
