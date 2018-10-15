@@ -13,8 +13,8 @@ const initialState = baseState;
  * @return {?number}
  * @private
  */
-function _findFarthestParent(path) {
-  if (!Array.isArray(path) || (path.length === 0)) {
+function _findClosestParent(path) {
+  if (!Array.isArray(path) || !path.length) {
     return null;
   }
 
@@ -36,12 +36,19 @@ function _findFarthestParent(path) {
  * @private
  */
 function _addAndSelectNewNode({ state, kind, path = [] }) {
-  let newState;
+  let newState, currentActivePath;
   let newActiveNodePath = [];
   let parentKey = null;
   const newNode = createNode({ type: kind });
-  const currentActivePath = (Array.isArray(path) && path.length) ? path : state.activeNode.path;
-  const parentIdx = _findFarthestParent(currentActivePath);
+
+  if (Array.isArray(path) && path.length) {
+    currentActivePath = path;
+  } else {
+    const end = state.activeNode.path.indexOf(state.activeNode.id) + 1;
+    currentActivePath = state.activeNode.path.slice(0, end);
+  }
+
+  const parentIdx = _findClosestParent(currentActivePath);
 
   // if parent found
   if (parentIdx !== null) {
