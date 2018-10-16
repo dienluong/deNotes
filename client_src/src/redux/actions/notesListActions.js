@@ -53,6 +53,8 @@ export function selectNodeThunkAction({ id, path }) {
 export function deleteNodeThunkAction({ node, path }) {
   return (dispatch) => {
     let itemIds;
+
+    // Collect the uniqid of all items to delete.
     if (node.type === 'item') {
       itemIds = [node.uniqid];
     } else if (node.type === 'folder') {

@@ -127,8 +127,4 @@ describe('activeNodeReducer', () => {
       },
     })).toBe(currentState);
   });
-
-  it('should ', () => {
-
-  });
 });
