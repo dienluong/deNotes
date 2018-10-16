@@ -328,7 +328,7 @@ describe('4. fetchNotesTreeThunkAction', () => {
     loadTree.mockClear();
   });
 
-  it('should dispatch SUCCESS-type action w/ fetched tree as payload, and return Promise w/ last dispatched action', async() => {
+  it('should dispatch SUCCESS-type action w/ fetched tree as payload, select a node in tree and then return Promise w/ FETCH SUCCESS action', async() => {
     const userId = mockedStore.getState().userInfo.id;
     const dateCreated = 1;
     const dateModified = 2;
@@ -350,6 +350,11 @@ describe('4. fetchNotesTreeThunkAction', () => {
         type: notesListActionTypes.FETCH_NOTES_TREE_SUCCESS,
         payload: {
           notesTree: fetchedTreeData,
+        },
+      },
+      {
+        type: notesListActionTypes.SELECT_NODE,
+        payload: {
           activeNode: {
             id: mockedTree[0].id,
             path: [mockedTree[0].id],

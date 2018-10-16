@@ -7,7 +7,7 @@ describe('activeNodeReducer', () => {
     expect(reducer(undefined, {})).toEqual(initialState.activeNode);
   });
 
-  it('should return selected node on SELECT_NODE', () => {
+  it('should return selected node on SELECT_NODE action', () => {
     const currentState = {
       id: 'current-active-id',
       path: ['current-active-id'],
@@ -59,7 +59,7 @@ describe('activeNodeReducer', () => {
     })).toBe(currentState);
   });
 
-  it('should switch to appropriate node on action SWITCH_NODE_ON_DELETE, if deleted node is either 1) active node\'s parent or 2) the active node itself.', () => {
+  it('should switch to appropriate node on SWITCH_NODE_ON_DELETE action, if deleted node is either 1) active node\'s parent or 2) the active node itself.', () => {
     const currentState = {
       id: 'active1',
       path: ['segment0', 'segment1', 'segment2', 'active1', 'moreSegment', 'notParent'],
@@ -126,5 +126,9 @@ describe('activeNodeReducer', () => {
         deletedNode,
       },
     })).toBe(currentState);
+  });
+
+  it('should ', () => {
+
   });
 });

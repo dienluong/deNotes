@@ -115,11 +115,6 @@ export default function activeNodeReducer(state = initialActiveNode, action) {
       else { return newActiveNode; }
     }
 
-    case notesListActionTypes.FETCH_NOTES_TREE_SUCCESS: {
-      if (_equals(state, action.payload.activeNode)) { return state; }
-      else { return { ...state, ...action.payload.activeNode }; }
-    }
-
     default:
       if (process.env.REACT_APP_DEBUG) {
         console.log(`Current activeNode: ${JSON.stringify(state)}`);

@@ -120,13 +120,21 @@ export function fetchNotesTreeThunkAction() {
       .then(notesTree => {
         if (Array.isArray(notesTree.tree)) {
           const activeNode = { id: notesTree.tree[0].id, path: [notesTree.tree[0].id] };// TODO: adjust activeNode to where user left off
-          return dispatch({
+          const returnVal = dispatch({
             type: notesListActionTypes.FETCH_NOTES_TREE_SUCCESS,
             payload: {
               notesTree,
-              activeNode, // TODO: not sure if it is okay to set activeNode in a notesList action.
             },
           });
+
+          dispatch({
+            type: notesListActionTypes.SELECT_NODE,
+            payload: {
+              activeNode,
+            },
+          });
+
+          return returnVal;
         } else {
           const error = new Error('Unrecognized data fetched.');
           return Promise.reject(error);
