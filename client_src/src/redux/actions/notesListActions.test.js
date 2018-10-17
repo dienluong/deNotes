@@ -353,6 +353,12 @@ describe('4. fetchNotesTreeThunkAction', () => {
         },
       },
       {
+        type: notesListActionTypes.CHANGE_NOTES_TREE,
+        payload: {
+          notesTree: fetchedTreeData,
+        },
+      },
+      {
         type: notesListActionTypes.SELECT_NODE,
         payload: {
           activeNode: {

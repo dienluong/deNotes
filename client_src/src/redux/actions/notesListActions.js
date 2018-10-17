@@ -128,7 +128,12 @@ export function fetchNotesTreeThunkAction() {
               notesTree,
             },
           });
-
+          dispatch({
+            type: notesListActionTypes.CHANGE_NOTES_TREE,
+            payload: {
+              notesTree,
+            },
+          });
           dispatch({
             type: notesListActionTypes.SELECT_NODE,
             payload: {
