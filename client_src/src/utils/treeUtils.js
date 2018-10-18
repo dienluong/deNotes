@@ -3,6 +3,35 @@ import { find, getFlatDataFromTree } from 'react-sortable-tree';
 
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
+/**
+ * Deep comparison of objects (including arrays).
+ * @param obj1
+ * @param obj2
+ * @return {boolean}
+ * @private
+ */
+export function equals(obj1, obj2) {
+  if ((typeof obj1 !== 'object') || (typeof obj2 !== 'object')) {
+    return Object.is(obj1, obj2);
+  }
+
+  if (obj1 === null || obj2 === null) {
+    return obj1 === obj2;
+  }
+
+  const currentKeys = Object.keys(obj1);
+  const newKeys = Object.keys(obj2);
+
+  if (currentKeys.length !== newKeys.length) { return false; }
+
+  return newKeys.every(key => {
+    const currentVal = obj1[key];
+    const newVal = obj2[key];
+
+    return equals(currentVal, newVal);
+  });
+}
+
 export const getNodeKey = ({ node }) => node.id;
 
 /**
@@ -16,7 +45,7 @@ export const getNodeKey = ({ node }) => node.id;
  * @return {*}
  */
 export function createNode({ title = 'New Note', subtitle = new Date().toLocaleString(), type = 'item' }) {
-  // TODO: remove
+  // TODO: remove subtitle = uuid
   const id = uuid();
   const newNode = {
     title,

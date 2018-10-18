@@ -1,5 +1,6 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import baseState from '../misc/initialState';
+import { equals } from '../../utils/treeUtils';
 
 const initialActiveNode = baseState.activeNode;
 
@@ -58,40 +59,11 @@ function _changeActiveNodeOnDelete({ currentActive, deletedNode }) {
 //   return arr1.every((val, idx) => val === arr2[idx]);
 // }
 
-/**
- * Deep comparison of objects (including arrays).
- * @param currentActiveNode
- * @param newActiveNode
- * @return {boolean}
- * @private
- */
-function _equals(currentActiveNode, newActiveNode) {
-  if ((typeof currentActiveNode !== 'object') || (typeof newActiveNode !== 'object')) {
-    return Object.is(currentActiveNode, newActiveNode);
-  }
-
-  if (currentActiveNode === null || newActiveNode === null) {
-    return currentActiveNode === newActiveNode;
-  }
-
-  const currentKeys = Object.keys(currentActiveNode);
-  const newKeys = Object.keys(newActiveNode);
-
-  if (currentKeys.length !== newKeys.length) { return false; }
-
-  return newKeys.every(key => {
-    const currentVal = currentActiveNode[key];
-    const newVal = newActiveNode[key];
-
-    return _equals(currentVal, newVal);
-  });
-}
-
 export default function activeNodeReducer(state = initialActiveNode, action) {
   console.log(`REDUCER: ${action.type}`);
   switch (action.type) {
     case notesListActionTypes.SELECT_NODE: {
-      if (_equals(state, action.payload.activeNode)) { return state; }
+      if (equals(state, action.payload.activeNode)) { return state; }
       else { return { ...state, ...action.payload.activeNode }; }
     }
 
@@ -101,7 +73,7 @@ export default function activeNodeReducer(state = initialActiveNode, action) {
         idx: action.payload.idx,
       });
 
-      if (_equals(state, newActiveNode)) { return state; }
+      if (equals(state, newActiveNode)) { return state; }
       else { return newActiveNode; }
     }
 
@@ -111,7 +83,7 @@ export default function activeNodeReducer(state = initialActiveNode, action) {
         deletedNode: action.payload.deletedNode,
       });
 
-      if (_equals(state, newActiveNode)) { return state; }
+      if (equals(state, newActiveNode)) { return state; }
       else { return newActiveNode; }
     }
 

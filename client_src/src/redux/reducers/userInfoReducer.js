@@ -1,22 +1,23 @@
 import baseState from '../misc/initialState';
 import accountActionTypes from '../actions/constants/accountActionConstants';
+import { equals } from '../../utils/treeUtils';
 
 const initialUser = baseState.userInfo;
 
-function _equals(currentUser, newUser) {
-  const currentKeys = Object.keys(currentUser);
-  const newKeys = Object.keys(newUser);
-
-  if (currentKeys.length !== newKeys.length) { return false; }
-
-  return newKeys.every(key => currentUser[key] === newUser[key]);
-}
+// function _equals(currentUser, newUser) {
+//   const currentKeys = Object.keys(currentUser);
+//   const newKeys = Object.keys(newUser);
+//
+//   if (currentKeys.length !== newKeys.length) { return false; }
+//
+//   return newKeys.every(key => currentUser[key] === newUser[key]);
+// }
 
 export default function userReducer(state = initialUser, action) {
   console.log(`REDUCER: ${action.type}`);
   switch (action.type) {
     case accountActionTypes.SET_USER: {
-      if (_equals(state, action.payload.user)) { return state; }
+      if (equals(state, action.payload.user)) { return state; }
       else { return { ...state, ...action.payload.user }; }
     }
     case accountActionTypes.SET_USERID: {
