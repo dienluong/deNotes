@@ -37,6 +37,27 @@ export function createNode({ title = 'New Note', subtitle = new Date().toLocaleS
 }
 
 /**
+ * Returns the index of the deepest node of type 'folder' in path.
+ * Returns null if none found.
+ * @param path {Array}
+ * @return {?number}
+ * @private
+ */
+export function findClosestParent(path) {
+  if (!Array.isArray(path) || !path.length) {
+    return null;
+  }
+
+  const lastStep = path[path.length - 1];
+  if (path.length === 1) {
+    return (lastStep.includes(`folder${ID_DELIMITER}`) ? 0 : null);
+  } else {
+    // If last step in path is not a folder, then the step previous to last must be a folder.
+    return (lastStep.includes(`folder${ID_DELIMITER}`)) ? path.length - 1 : path.length - 2;
+  }
+}
+
+/**
  * Return the info embedded in provided ID.
  * Example: For ID "folder|^|a9914200-a7d2-11e8-a12b-99205b853de7"
  *          type is "folder"

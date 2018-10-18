@@ -1,31 +1,9 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import { addNodeUnderParent } from 'react-sortable-tree';
-import { getNodeKey, createNode, translateNodeIdToInfo } from '../../utils/treeUtils';
+import { getNodeKey, createNode, translateNodeIdToInfo, findClosestParent } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
 
-const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 const initialState = baseState;
-
-/**
- * Returns the index of the deepest node of type 'folder' in path.
- * Returns null if none found.
- * @param path {Array}
- * @return {?number}
- * @private
- */
-function _findClosestParent(path) {
-  if (!Array.isArray(path) || !path.length) {
-    return null;
-  }
-
-  const lastStep = path[path.length - 1];
-  if (path.length === 1) {
-    return (lastStep.includes(`folder${ID_DELIMITER}`) ? 0 : null);
-  } else {
-    // If last step in path is not a folder, then the step previous to last must be a folder.
-    return (lastStep.includes(`folder${ID_DELIMITER}`)) ? path.length - 1 : path.length - 2;
-  }
-}
 
 /**
  * Create new node, switch to it and set editor content to blank page. The new node is added to the folder of the current active node, if no path was given.
@@ -48,7 +26,7 @@ function _addAndSelectNewNode({ state, kind, path = [] }) {
     currentActivePath = state.activeNode.path.slice(0, end);
   }
 
-  const parentIdx = _findClosestParent(currentActivePath);
+  const parentIdx = findClosestParent(currentActivePath);
 
   // if parent found
   if (parentIdx !== null) {
@@ -67,6 +45,7 @@ function _addAndSelectNewNode({ state, kind, path = [] }) {
       parentKey,
       getNodeKey,
       expandParent: true,
+      ignoreCollapsed: false,
     }).treeData,
     dateModified: Date.now(),
   };
@@ -88,7 +67,7 @@ function _addAndSelectNewNode({ state, kind, path = [] }) {
     const now = Date.now();
     newState.editorContent = {
       ...initialState.editorContent,
-      id: translateNodeIdToInfo({ nodeId: newNode.id, kind: 'uniqid' }),
+      id: newNode.uniqid,
       title: newNode.title,
       dateCreated: now,
       dateModified: now,

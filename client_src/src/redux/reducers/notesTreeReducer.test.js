@@ -67,7 +67,6 @@ describe('notesTreeReducer', () => {
             children: [],
           },
           {
-
             title: 'test child 2',
             subtitle: 'test child subtitle 2',
             uniqid: 'my-test-child-2',
@@ -131,7 +130,6 @@ describe('notesTreeReducer', () => {
             children: [],
           },
           {
-
             title: 'test child 2',
             subtitle: 'test child subtitle 2',
             uniqid: 'my-test-child-2',
@@ -226,7 +224,6 @@ describe('notesTreeReducer', () => {
             ],
           },
           {
-
             title: 'test child 2',
             subtitle: 'test child subtitle 2',
             uniqid: 'my-test-child-2',
