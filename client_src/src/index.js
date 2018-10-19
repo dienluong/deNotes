@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import rootReducer, { selectNotesTreeTree } from './redux/reducers';
 import { use as notesListActionsInject, fetchNotesTreeThunkAction, selectNodeThunkAction } from './redux/actions/notesListActions';
+import { use as editorActionsInject } from './redux/actions/editorActions';
 import { setUserAction } from './redux/actions/accountActions';
 import notesListActionTypes from './redux/actions/constants/notesListActionConstants';
 import { Observable } from 'rxjs/Rx';
@@ -29,6 +30,15 @@ editorContentStorage.inject({ save: saveToStorage, load: loadFromStorage, remove
 // Inject dependencies into notesListActions
 notesListActionsInject({
   notesTreeStorage: notesTreeStorage,
+  editorContentStorage: {
+    save: editorContentObserver.save,
+    load: editorContentStorage.load,
+    remove: editorContentStorage.remove,
+  },
+});
+
+// Inject dependencies into editorActions
+editorActionsInject({
   editorContentStorage: {
     save: editorContentObserver.save,
     load: editorContentStorage.load,

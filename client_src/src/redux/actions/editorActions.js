@@ -1,7 +1,31 @@
 import Delta from 'quill-delta';
 import editorActionTypes from './constants/editorActionConstants';
-import { load as loadContentFromStorage, remove as removeContentFromStorage } from '../../utils/editorContentStorage';
 
+// TODO: Remove
+// import { load as loadContentFromStorage, remove as removeContentFromStorage } from '../../utils/editorContentStorage';
+
+let _editorContentStorage = {
+  save: () => Promise.reject(new Error('Not implemented.')),
+  load: () => Promise.reject(new Error('Not implemented.')),
+  remove: () => Promise.reject(new Error('Not implemented.')),
+};
+
+export function use({ editorContentStorage }) {
+  const methods = ['save', 'load', 'remove'];
+  if (editorContentStorage && typeof editorContentStorage === 'object') {
+    methods.forEach(m => {
+      if (typeof editorContentStorage[m] === 'function') {
+        _editorContentStorage[m] = editorContentStorage[m];
+      }
+    });
+  }
+}
+
+/**
+ * @param editor
+ * @param content
+ * @return {{type: string, payload: {newContent: {delta: Quill.DeltaStatic | Delta, content: *, dateModified: number}}}}
+ */
 export function changeContentAction({ editor, content }) {
   return {
     type: editorActionTypes.CONTENT_CHANGED,
@@ -15,6 +39,10 @@ export function changeContentAction({ editor, content }) {
   };
 }
 
+/**
+ * @param noteId
+ * @return {function(*, *): Promise<T | never>}
+ */
 export function fetchEditorContentThunkAction({ noteId }) {
   return (dispatch, getState) => {
     const userId = getState().userInfo.id;
@@ -24,7 +52,7 @@ export function fetchEditorContentThunkAction({ noteId }) {
     });
     // TODO: replace hardcoded noteId value
     // id = '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e';
-    return loadContentFromStorage({ userId, id: noteId })
+    return _editorContentStorage.load({ userId, id: noteId })
       .then(fetched => {
         const editorContent = {
           id: fetched.id,
@@ -79,7 +107,7 @@ export function removeNoteThunkAction({ ids }) {
       payload: { ids },
     });
     const userId = getState().userInfo.id;
-    return removeContentFromStorage({ userId, ids })
+    return _editorContentStorage.remove({ userId, ids })
       .then(result => {
         let count = 0;
         if (result && result.count) {

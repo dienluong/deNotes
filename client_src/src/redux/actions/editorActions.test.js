@@ -4,9 +4,9 @@ import uuid from 'uuid/v4';
 import thunk from 'redux-thunk';
 import setupMockStore from 'redux-mock-store';
 import editorActionTypes from './constants/editorActionConstants';
-import { changeContentAction, fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
-jest.mock('../../utils/editorContentStorage');
-import { load, remove } from '../../utils/editorContentStorage';
+import * as moduleToTest from './editorActions';
+// jest.mock('../../utils/editorContentStorage');
+// import { load, remove } from '../../utils/editorContentStorage';
 import { mockedContent } from '../../test-utils/mocks/mockedEditorContent';
 
 /**
@@ -36,7 +36,7 @@ describe('1. changeContentAction action creator', () => {
     const getContents = jest.fn();
     getContents.mockReturnValue(delta);
 
-    const returned = changeContentAction({ editor: { getContents }, content });
+    const returned = moduleToTest.changeContentAction({ editor: { getContents }, content });
     expect(returned).toMatchObject({
       type: editorActionTypes.CONTENT_CHANGED,
       payload: { newContent: { delta, content } },
@@ -45,18 +45,19 @@ describe('1. changeContentAction action creator', () => {
   });
 });
 
-
-
-
 /**
  * fetchEditorContentThunkAction
  */
 describe('2. fetchEditorContentThunkAction action creator', () => {
   const mockedStore = setupMockStore([thunk])(initialState);
+  let mockedLoad = jest.fn();
 
+  beforeEach(() => {
+    moduleToTest.use({ editorContentStorage: { load: mockedLoad } });
+  });
   afterEach(() => {
     mockedStore.clearActions();
-    load.mockClear();
+    mockedLoad.mockClear();
   });
 
   it('should return a rejected Promise and dispatch a FAILURE-type action if no storage has been setup', async() => {
@@ -78,13 +79,13 @@ describe('2. fetchEditorContentThunkAction action creator', () => {
       },
     ];
 
-    expect.assertions(3);
-
     // mock the load function, which is expected to be called by the tested function, to return the rejected Promise
-    load.mockImplementation(() => Promise.reject(new Error('Load aborted. Cause: No Storage implementation provided.')));
-    await expect(mockedStore.dispatch(fetchEditorContentThunkAction({ noteId })))
+    mockedLoad.mockImplementation(() => Promise.reject(new Error('Load aborted. Cause: No Storage implementation provided.')));
+
+    expect.assertions(3);
+    await expect(mockedStore.dispatch(moduleToTest.fetchEditorContentThunkAction({ noteId })))
       .rejects.toMatchObject({ message: expect.stringMatching(expectedErrorMsg) });
-    expect(load).toHaveBeenCalledWith({ id: noteId, userId: initialState.userInfo.id });
+    expect(mockedLoad).toHaveBeenCalledWith({ id: noteId, userId: initialState.userInfo.id });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
@@ -103,12 +104,12 @@ describe('2. fetchEditorContentThunkAction action creator', () => {
       },
     ];
 
-    expect.assertions(3);
+    mockedLoad.mockImplementation(() => Promise.resolve(mockedContent));
 
-    load.mockImplementation(() => Promise.resolve(mockedContent));
-    await expect(mockedStore.dispatch(fetchEditorContentThunkAction({ noteId })))
+    expect.assertions(3);
+    await expect(mockedStore.dispatch(moduleToTest.fetchEditorContentThunkAction({ noteId })))
       .resolves.toMatchObject(expectedActions[1]);
-    expect(load).toHaveBeenCalledWith({ id: noteId, userId: initialState.userInfo.id });
+    expect(mockedLoad).toHaveBeenCalledWith({ id: noteId, userId: initialState.userInfo.id });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 });
@@ -121,10 +122,15 @@ describe('2. fetchEditorContentThunkAction action creator', () => {
  */
 describe('3. removeNoteThunkAction action creator', () => {
   const mockedStore = setupMockStore([thunk])(initialState);
+  let mockedRemove = jest.fn();
+
+  beforeEach(() => {
+    moduleToTest.use({ editorContentStorage: { remove: mockedRemove } });
+  });
 
   afterEach(() => {
     mockedStore.clearActions();
-    remove.mockClear();
+    mockedRemove.mockClear();
   });
 
   it('should dispatch SUCCESS-type action and return a Promise resolving to dispatched action', async() => {
@@ -141,12 +147,12 @@ describe('3. removeNoteThunkAction action creator', () => {
       },
     ];
 
-    expect.assertions(3);
+    mockedRemove.mockImplementation(() => Promise.resolve({ count: ids.length }));
 
-    remove.mockImplementation(() => Promise.resolve({ count: ids.length }));
-    await expect(mockedStore.dispatch(removeNoteThunkAction({ ids })))
+    expect.assertions(3);
+    await expect(mockedStore.dispatch(moduleToTest.removeNoteThunkAction({ ids })))
       .resolves.toMatchObject(expectedActions[1]);
-    expect(remove).toHaveBeenCalledWith({ ids, userId: initialState.userInfo.id });
+    expect(mockedRemove).toHaveBeenCalledWith({ ids, userId: initialState.userInfo.id });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
@@ -159,12 +165,12 @@ describe('3. removeNoteThunkAction action creator', () => {
       },
     ];
 
-    expect.assertions(3);
+    mockedRemove.mockImplementation(() => Promise.resolve({ count: ids.length }));
 
-    remove.mockImplementation(() => Promise.resolve({ count: ids.length }));
-    await expect(mockedStore.dispatch(removeNoteThunkAction({ ids })))
+    expect.assertions(3);
+    await expect(mockedStore.dispatch(moduleToTest.removeNoteThunkAction({ ids })))
       .resolves.toMatchObject(expectedActions[0]);
-    expect(remove).not.toHaveBeenCalled();
+    expect(mockedRemove).not.toHaveBeenCalled();
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
@@ -188,12 +194,12 @@ describe('3. removeNoteThunkAction action creator', () => {
       },
     ];
 
-    expect.assertions(3);
+    mockedRemove.mockImplementation(() => Promise.reject(new Error('Error removing')));
 
-    remove.mockImplementation(() => Promise.reject(new Error('Error removing')));
-    await expect(mockedStore.dispatch(removeNoteThunkAction({ ids })))
+    expect.assertions(3);
+    await expect(mockedStore.dispatch(moduleToTest.removeNoteThunkAction({ ids })))
       .rejects.toMatchObject({ message: expect.stringMatching(expectedErrorMsg) });
-    expect(remove).toHaveBeenCalledWith({ ids, userId: initialState.userInfo.id });
+    expect(mockedRemove).toHaveBeenCalledWith({ ids, userId: initialState.userInfo.id });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
@@ -213,9 +219,9 @@ describe('3. removeNoteThunkAction action creator', () => {
     ];
 
     expect.assertions(3);
-    await expect(mockedStore.dispatch(removeNoteThunkAction({ ids })))
+    await expect(mockedStore.dispatch(moduleToTest.removeNoteThunkAction({ ids })))
       .rejects.toMatchObject({ message: expect.stringMatching(expectedErrorMsg) });
-    expect(remove).not.toHaveBeenCalled();
+    expect(mockedRemove).not.toHaveBeenCalled();
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 });
