@@ -9,7 +9,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import rootReducer, { selectNotesTreeTree } from './redux/reducers';
-import { fetchNotesTreeThunkAction, selectNodeThunkAction } from './redux/actions/notesListActions';
+import { use as notesListActionsInject, fetchNotesTreeThunkAction, selectNodeThunkAction } from './redux/actions/notesListActions';
 import { setUserAction } from './redux/actions/accountActions';
 import notesListActionTypes from './redux/actions/constants/notesListActionConstants';
 import { Observable } from 'rxjs/Rx';
@@ -25,6 +25,16 @@ import { save as saveToStorage, load as loadFromStorage, remove as deleteFromSto
 // Use loopbackREST for loading and saving persisted data
 notesTreeStorage.inject({ save: saveToStorage, load: loadFromStorage });
 editorContentStorage.inject({ save: saveToStorage, load: loadFromStorage, remove: deleteFromStorage });
+
+// Inject dependencies into notesListActions
+notesListActionsInject({
+  notesTreeStorage: notesTreeStorage,
+  editorContentStorage: {
+    save: editorContentObserver.save,
+    load: editorContentStorage.load,
+    remove: editorContentStorage.remove,
+  },
+});
 
 // TODO: Restrict Devtools in dev-only?
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

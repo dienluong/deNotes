@@ -2,9 +2,41 @@ import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
-import { save as saveEditorContent } from '../../reactive/editorContentObserver';
-import { load as loadNotesTreeFromStorage } from '../../utils/notesTreeStorage';
 import baseState from '../misc/initialState';
+
+// TODO: remove
+// import { save as saveEditorContent } from '../../reactive/editorContentObserver';
+// import { load as loadNotesTreeFromStorage } from '../../utils/notesTreeStorage';
+
+let _notesTreeStorage = {
+  save: () => Promise.reject(new Error('Not implemented.')),
+  load: () => Promise.reject(new Error('Not implemented.')),
+  remove: () => Promise.reject(new Error('Not implemented')),
+};
+
+let _editorContentStorage = {
+  save: () => Promise.reject(new Error('Not implemented.')),
+  load: () => Promise.reject(new Error('Not implemented.')),
+  remove: () => Promise.reject(new Error('Not implemented')),
+};
+
+export function use({ notesTreeStorage, editorContentStorage }) {
+  const methods = ['save', 'load', 'remove'];
+  if (notesTreeStorage && typeof notesTreeStorage === 'object') {
+    methods.forEach(m => {
+      if (typeof notesTreeStorage[m] === 'function') {
+        _notesTreeStorage[m] = notesTreeStorage[m];
+      }
+    });
+  }
+  if (editorContentStorage && typeof editorContentStorage === 'object') {
+    methods.forEach(m => {
+      if (typeof editorContentStorage[m] === 'function') {
+        _editorContentStorage[m] = editorContentStorage[m];
+      }
+    });
+  }
+}
 
 export function selectNodeThunkAction({ id, path }) {
   return (dispatch, getState) => {
@@ -21,7 +53,7 @@ export function selectNodeThunkAction({ id, path }) {
       // Immediately save currently opened note
       const currentContent = getState().editorContent;
       if (currentContent.id) {
-        saveEditorContent(currentContent)
+        _editorContentStorage.save(currentContent)
           .catch(err => { console.log(err); }); // TODO: log error?
       }
 
@@ -97,7 +129,7 @@ export function addAndSelectNodeThunkAction({ kind, path }) {
     // Immediately save currently opened note
     const currentContent = getState().editorContent;
     if (currentContent.id) {
-      saveEditorContent(currentContent)
+      _editorContentStorage.save(currentContent)
         .catch(err => {}); // TODO: log error?
     }
 
@@ -118,7 +150,7 @@ export function fetchNotesTreeThunkAction() {
       type: notesListActionTypes.FETCH_NOTES_TREE,
       payload: { userId },
     });
-    return loadNotesTreeFromStorage({ userId })
+    return _notesTreeStorage.load({ userId })
       .then(notesTree => {
         if (Array.isArray(notesTree.tree)) {
           const activeNode = { id: notesTree.tree[0].id, path: [notesTree.tree[0].id] };// TODO: adjust activeNode to where user left off

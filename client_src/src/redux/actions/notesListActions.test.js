@@ -6,10 +6,10 @@ import * as moduleToTest from './notesListActions';
 import thunk from 'redux-thunk';
 import setupMockStore from 'redux-mock-store';
 import initialState from '../misc/initialState';
-jest.mock('../../reactive/editorContentObserver');
-import { save } from '../../reactive/editorContentObserver';
-jest.mock('../../utils/notesTreeStorage');
-import { load as loadTree } from '../../utils/notesTreeStorage';
+// jest.mock('../../reactive/editorContentObserver');
+// import { save } from '../../reactive/editorContentObserver';
+// jest.mock('../../utils/notesTreeStorage');
+// import { load as loadTree } from '../../utils/notesTreeStorage';
 jest.mock('./editorActions');
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { mockedContent } from '../../test-utils/mocks/mockedEditorContent';
@@ -30,7 +30,11 @@ describe('1. selectNodeThunkAction', () => {
     },
   });
 
+  let mockedSave = jest.fn();
+
   beforeEach(() => {
+    // inject mocked dependency
+    moduleToTest.use({ editorContentStorage: { save: mockedSave } });
     // provide implementation for window.alert
     global.alert = (...param) => console.log(...param);
   });
@@ -39,7 +43,7 @@ describe('1. selectNodeThunkAction', () => {
     global.alert = RealAlert;
     mockedStore.clearActions();
     fetchEditorContentThunkAction.mockClear();
-    save.mockClear();
+    mockedSave.mockClear();
   });
 
   it('should 1) dispatch "select node", 2) save content, 3) return Promise w/ dispatched action, when Folder selected', async() => {
@@ -56,12 +60,12 @@ describe('1. selectNodeThunkAction', () => {
         },
       },
     ];
-    save.mockImplementation(() => Promise.resolve({}));
+    mockedSave.mockImplementation(() => Promise.resolve({}));
 
     expect.assertions(3);
     await expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path })))
       .resolves.toMatchObject(expectedActions[0]);
-    expect(save).toBeCalledWith(mockedStore.getState().editorContent);
+    expect(mockedSave).toBeCalledWith(mockedStore.getState().editorContent);
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
@@ -86,14 +90,14 @@ describe('1. selectNodeThunkAction', () => {
     };
 
     fetchEditorContentThunkAction.mockImplementation(() => () => Promise.resolve(fetchAction));
-    save.mockImplementation(() => Promise.resolve({}));
+    mockedSave.mockImplementation(() => Promise.resolve({}));
 
     expect.assertions(4);
     // selectNodeThunkAction is expected to return a Promise resolving to the last action, the fetch action in this case.
     await expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path })))
       .resolves.toMatchObject(fetchAction);
     expect(mockedStore.getActions()).toEqual(expectedActions);
-    expect(save).toBeCalledWith(mockedStore.getState().editorContent);
+    expect(mockedSave).toBeCalledWith(mockedStore.getState().editorContent);
     expect(fetchEditorContentThunkAction).toBeCalledWith({ noteId: uniqId });
   });
 
@@ -115,14 +119,14 @@ describe('1. selectNodeThunkAction', () => {
     ];
 
     fetchEditorContentThunkAction.mockImplementation(() => () => Promise.resolve({}));
-    save.mockImplementation(() => Promise.resolve({}));
+    mockedSave.mockImplementation(() => Promise.resolve({}));
 
     expect.assertions(4);
     // selectNodeThunkAction is expected to return a Promise resolving to the last action, the fetch action in this case.
     await expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path })))
       .resolves.toMatchObject(expectedActions[0]);
     expect(mockedStore.getActions()).toEqual(expectedActions);
-    expect(save).toBeCalledWith(mockedStore.getState().editorContent);
+    expect(mockedSave).toBeCalledWith(mockedStore.getState().editorContent);
     expect(fetchEditorContentThunkAction).not.toBeCalled();
   });
 
@@ -133,12 +137,12 @@ describe('1. selectNodeThunkAction', () => {
     const pathSeg2 = uuid();
     const pathSeg3 = uuid();
     const path = [pathSeg1, pathSeg2, pathSeg3, id];
-    save.mockImplementation(() => Promise.resolve({}));
+    mockedSave.mockImplementation(() => Promise.resolve({}));
 
     expect.assertions(3);
     await expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path })))
       .resolves.toMatchObject({});
-    expect(save).not.toBeCalled();
+    expect(mockedSave).not.toBeCalled();
     expect(mockedStore.getActions()).toEqual([]);
   });
 });
@@ -283,9 +287,16 @@ describe('3. addAndSelectNodeThunkAction', () => {
     },
   });
 
+  let mockedSave = jest.fn();
+
+  beforeEach(() => {
+    // inject mocked dependency
+    moduleToTest.use({ editorContentStorage: { save: mockedSave } });
+  });
+
   afterEach(() => {
     mockedStore.clearActions();
-    save.mockClear();
+    mockedSave.mockClear();
   });
 
   it('should save the current content before adding an item to the tree and switching to that item', () => {
@@ -298,11 +309,11 @@ describe('3. addAndSelectNodeThunkAction', () => {
       },
     ];
 
-    save.mockImplementation(() => Promise.resolve('Saved'));
+    mockedSave.mockImplementation(() => Promise.resolve('Saved'));
 
     expect.assertions(3);
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind, path }))).toMatchObject(expectedAction[0]);
-    expect(save).toBeCalledWith(mockedStore.getState().editorContent);
+    expect(mockedSave).toBeCalledWith(mockedStore.getState().editorContent);
     expect(mockedStore.getActions()).toEqual(expectedAction);
   });
 });
@@ -323,9 +334,16 @@ describe('4. fetchNotesTreeThunkAction', () => {
     },
   });
 
+  let mockedLoad = jest.fn();
+
+  beforeEach(() => {
+    // inject mocked dependency
+    moduleToTest.use({ notesTreeStorage: { load: mockedLoad } });
+  });
+
   afterEach(() => {
     mockedStore.clearActions();
-    loadTree.mockClear();
+    mockedLoad.mockClear();
   });
 
   it('should dispatch SUCCESS-type action w/ fetched tree as payload, select a node in tree and then return Promise w/ FETCH SUCCESS action', async() => {
@@ -369,12 +387,12 @@ describe('4. fetchNotesTreeThunkAction', () => {
       },
     ];
 
-    loadTree.mockImplementation(() => Promise.resolve(fetchedTreeData));
-    expect.assertions(3);
+    mockedLoad.mockImplementation(() => Promise.resolve(fetchedTreeData));
 
+    expect.assertions(3);
     await expect(mockedStore.dispatch(moduleToTest.fetchNotesTreeThunkAction()))
       .resolves.toMatchObject(expectedActions[1]);
-    expect(loadTree).toBeCalledWith({ userId });
+    expect(mockedLoad).toBeCalledWith({ userId });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
@@ -413,12 +431,12 @@ describe('4. fetchNotesTreeThunkAction', () => {
       },
     ];
 
-    loadTree.mockImplementation(() => Promise.reject(new Error('No tree.')));
-    expect.assertions(3);
+    mockedLoad.mockImplementation(() => Promise.reject(new Error('No tree.')));
 
+    expect.assertions(3);
     await expect(mockedStore.dispatch(moduleToTest.fetchNotesTreeThunkAction()))
       .resolves.toMatchObject(expectedActions[3]);
-    expect(loadTree).toBeCalledWith({ userId });
+    expect(mockedLoad).toBeCalledWith({ userId });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
@@ -457,12 +475,12 @@ describe('4. fetchNotesTreeThunkAction', () => {
       },
     ];
 
-    loadTree.mockImplementation(() => Promise.resolve({ tree: 'invalid format.' }));
+    mockedLoad.mockImplementation(() => Promise.resolve({ tree: 'invalid format.' }));
     expect.assertions(3);
 
     await expect(mockedStore.dispatch(moduleToTest.fetchNotesTreeThunkAction()))
       .resolves.toMatchObject(expectedActions[3]);
-    expect(loadTree).toBeCalledWith({ userId });
+    expect(mockedLoad).toBeCalledWith({ userId });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 });
