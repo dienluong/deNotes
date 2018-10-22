@@ -15,10 +15,11 @@ export function inject({ user, storage }) {
 /**
  *
  * @param editorContent {Object}
- * @return {Promise} Promise resolving to the saved object, an Error or FALSE if save was skipped.
+ * @return {Promise} Promise resolving to the saved object or to FALSE if save was skipped; or a Promise rejecting to an Error.
  */
 export function save(editorContent) {
   let retValue;
+  // TODO:  Should it save if and only if condition #2 (id = lastContentId && dateModified > lastSavedDate) is met. This would *not* save newly created empty notes.
   // Save 1) if newly created note -OR- 2) if content of opened note changed since last save.
   if (editorContent.dateCreated > _lastSavedDate || (editorContent.id === _lastContentId && editorContent.dateModified > _lastSavedDate)) {
     retValue = _storage.save({ userId: _user, editorContent })
@@ -31,7 +32,7 @@ export function save(editorContent) {
       })
       .catch(err => {
         window.alert('Failed to save editor content. ' + err.message);
-        return err;
+        return Promise.reject(err);
       });// TODO: Failed save should retry
   } else {
     console.log('############### Content did not change. Skip saving.');
@@ -40,26 +41,5 @@ export function save(editorContent) {
 
   _lastContentId = editorContent.id;
   return retValue;
-
-  // TODO: remove
-  // console.log('************* CONTENT *************\n');
-  // console.log(JSON.stringify(editorContent, null, 4));
-
-  // if (observer.prevContent !== editorContent && editorContent.id === _lastContentId) {
-  //   storage.save({ userId: user, editorContent })
-  //     .then(responseObj => {
-  //       observer.prevContent = editorContent;
-  //       console.log(`$$$$$$$$$$$$$$$ Content saved!!!\n${JSON.stringify(responseObj, null, 2)}`);
-  //     })
-  //     .catch(() => window.alert('Failed to save editor content'));// TODO: Failed save should retry
-  // } else {
-  //   observer.prevContent = editorContent;
-  //   _lastContentId = editorContent.id;
-  //   console.log('############### Content did not change. Skip saving.');
-  // }
-  // console.log('************* CONTENT *************\n');
-  // console.log(JSON.stringify(editorContent, null, 4));
 }
-// observer.prevContent = null;
-
 
