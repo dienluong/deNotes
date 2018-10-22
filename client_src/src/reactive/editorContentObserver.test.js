@@ -4,8 +4,6 @@ import uuid from 'uuid/v4';
 
 describe('save', () => {
   const RealAlert = global.alert;
-  // const RealDate = global.Date;
-  // const mockedTimestamp = 10000;
   const mockedStorage = {
     save: jest.fn(),
     load: jest.fn(),
@@ -16,19 +14,9 @@ describe('save', () => {
   beforeEach(() => {
     // provide implementation for window.alert
     global.alert = (...param) => console.log(...param);
-
-    // global.Date = class extends RealDate {
-    //   constructor() {
-    //     super(mockedTimestamp);
-    //   }
-    //   static now() {
-    //     return mockedTimestamp;
-    //   }
-    // };
   });
 
   afterEach(() => {
-    // global.Date = RealDate;
     global.alert = RealAlert;
     mockedStorage.save.mockClear();
     mockedStorage.load.mockClear();
@@ -45,7 +33,7 @@ describe('save', () => {
       readOnly: false,
     };
 
-    await expect(moduleToTest.save(editorContent)).rejects.toMatchObject(new Error('Cannot Save: Storage not available'));
+    await expect(moduleToTest.save(editorContent)).rejects.toEqual(expect.any(Error));
   });
 
   it('should skip saving if content was newly loaded, i.e. save() is called with given content for the first time', async() => {
@@ -58,8 +46,11 @@ describe('save', () => {
       readOnly: false,
     };
 
+    moduleToTest.inject({ user, storage: mockedStorage });
+
     // Calling save() with editorContent for the first time means it was newly loaded.
     await expect(moduleToTest.save(editorContent)).resolves.toBe(false);
+    expect(mockedStorage.save).not.toBeCalled();
   });
 
   it('should skip saving if previously loaded content was not modified recently, i.e. dateModified < module startup datetime', async() => {
@@ -72,9 +63,12 @@ describe('save', () => {
       readOnly: false,
     };
 
+    moduleToTest.inject({ user, storage: mockedStorage });
+
     // Simulate content being previously loaded by calling save() more than once with the same content
     await moduleToTest.save(editorContent);
     await expect(moduleToTest.save(editorContent)).resolves.toBe(false);
+    expect(mockedStorage.save).not.toBeCalled();
   });
 
   it('should save if previously loaded content was modified recently, i.e. dateModified > module startup datetime', async() => {
@@ -87,7 +81,7 @@ describe('save', () => {
       readOnly: false,
     };
 
-    mockedStorage.save = jest.fn().mockImplementation(() => Promise.resolve(editorContent));
+    mockedStorage.save.mockImplementation(() => Promise.resolve(editorContent));
     moduleToTest.inject({ user, storage: mockedStorage });
 
     // Simulate content being previously loaded by calling save() more than once with the same content
@@ -96,7 +90,7 @@ describe('save', () => {
     expect(mockedStorage.save).toBeCalledWith({ userId: user, editorContent });
   });
 
-  it('should not save again if content previously saved and not modified', async() => {
+  it('should not save again if content was already previously saved and not modified afterwards', async() => {
     const editorContent = {
       ...initialState.editorContent,
       id: uuid(),
@@ -106,7 +100,7 @@ describe('save', () => {
       readOnly: false,
     };
 
-    mockedStorage.save = jest.fn().mockImplementation(() => Promise.resolve(editorContent));
+    mockedStorage.save.mockImplementation(() => Promise.resolve(editorContent));
     moduleToTest.inject({ user, storage: mockedStorage });
 
     // Simulate content being previously loaded by calling save() more than once with the same content
