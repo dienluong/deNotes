@@ -2,17 +2,17 @@ import { create } from './remoteStorageJs';
 import notesDataModule from './remoteStorageJs/notesDataModule';
 import treesDataModule from './remoteStorageJs/treesDataModule';
 
+const _privateStorageCollection = new Map();
 let _offlineStorage;
 let _save = () => Promise.reject(new Error('Not ready'));
 let _load = () => Promise.reject(new Error('Not ready'));
 let _remove = () => Promise.reject(new Error('Not ready'));
-const privateStorageMap = new Map();
 
-function produceMethods() {
+function _produceMethods() {
   // TODO: remove
   console.log('LOCAL STORAGE READY!');
   _save = ({ collectionName, id, ownerId, dataObj }) => {
-    if (!privateStorageMap.has(collectionName)) {
+    if (!_privateStorageCollection.has(collectionName)) {
       return Promise.reject(new Error('Invalid collection.'));
     }
 
@@ -20,11 +20,11 @@ function produceMethods() {
       return Promise.reject(new Error('Invalid parameters.'));
     }
 
-    return privateStorageMap.get(collectionName).save({ id, ownerId, dataObj });
+    return _privateStorageCollection.get(collectionName).save({ id, ownerId, dataObj });
   };
 
   _load = ({ collectionName, id, ownerId }) => {
-    if (!privateStorageMap.has(collectionName)) {
+    if (!_privateStorageCollection.has(collectionName)) {
       return Promise.reject(new Error('Invalid collection'));
     }
 
@@ -32,11 +32,11 @@ function produceMethods() {
       return Promise.reject(new Error('Invalid parameters.'));
     }
 
-    return privateStorageMap.get(collectionName).load({ id, ownerId });
+    return _privateStorageCollection.get(collectionName).load({ id, ownerId });
   };
 
   _remove = ({ collectionName, ownerId, ids }) => {
-    if (!privateStorageMap.has(collectionName)) {
+    if (!_privateStorageCollection.has(collectionName)) {
       return Promise.reject(new Error('Invalid collection'));
     }
 
@@ -44,7 +44,7 @@ function produceMethods() {
       return Promise.reject(new Error('Invalid parameters.'));
     }
 
-    return privateStorageMap.get(collectionName).destroy({ ownerId, ids });
+    return _privateStorageCollection.get(collectionName).destroy({ ownerId, ids });
   };
 }
 
@@ -57,8 +57,8 @@ try {
   _offlineStorage.caching.enable(`/${notesDataModule.name}/`);
   _offlineStorage.caching.enable(`/${treesDataModule.name}/`);
 
-  privateStorageMap.set(notesDataModule.name, _offlineStorage[notesDataModule.name].privateContent());
-  privateStorageMap.set(treesDataModule.name, _offlineStorage[treesDataModule.name].privateContent());
+  _privateStorageCollection.set(notesDataModule.name, _offlineStorage[notesDataModule.name].privateContent());
+  _privateStorageCollection.set(treesDataModule.name, _offlineStorage[treesDataModule.name].privateContent());
 } catch (err) {
   window.alert('Local storage not available. ' + err);
   console.error(err);
@@ -66,7 +66,7 @@ try {
 }
 
 // TODO: To revise.  No on(ready) ?
-produceMethods();
+_produceMethods();
 
 export function save(paramsObj) {
   return _save(paramsObj)
