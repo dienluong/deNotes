@@ -13,7 +13,7 @@ export function save({ userId, editorContent }) {
     return Promise.reject(new Error('Save aborted. Cause: invalid content.'));
   }
 
-  if (!userId) {
+  if (!userId || typeof userId !== 'string') {
     return Promise.reject(new Error('Save aborted. Cause: invalid userId.'));
   }
 
@@ -40,7 +40,7 @@ export function save({ userId, editorContent }) {
  * @return {Promise<Response | never>}
  */
 export function load({ id = '', userId = '' }) {
-  if (!id && !userId) {
+  if (!id || !userId || typeof id !== 'string' || typeof userId !== 'string') {
     return Promise.reject(new Error('Load aborted. Cause: invalid parameters.'));
   }
 
