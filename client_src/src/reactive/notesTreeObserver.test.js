@@ -57,7 +57,7 @@ describe('observer', () => {
     mockedStorage.save.mockImplementation(() => Promise.resolve(notesTree));
 
     await expect(moduleToTest({ user, storage: mockedStorage })(notesTree)).resolves.toBe(notesTree);
-    expect(mockedStorage.save).toBeCalledWith({ userId: user, notesTree });
+    expect(mockedStorage.save).lastCalledWith({ userId: user, notesTree });
     expect(mockedStorage.save).toBeCalledTimes(1);
   });
 });

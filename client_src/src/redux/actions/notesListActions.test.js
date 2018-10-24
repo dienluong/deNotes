@@ -65,7 +65,7 @@ describe('1. selectNodeThunkAction', () => {
     expect.assertions(3);
     await expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path })))
       .resolves.toMatchObject(expectedActions[0]);
-    expect(mockedSave).toBeCalledWith(mockedStore.getState().editorContent);
+    expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
@@ -97,8 +97,8 @@ describe('1. selectNodeThunkAction', () => {
     await expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path })))
       .resolves.toMatchObject(fetchAction);
     expect(mockedStore.getActions()).toEqual(expectedActions);
-    expect(mockedSave).toBeCalledWith(mockedStore.getState().editorContent);
-    expect(fetchEditorContentThunkAction).toBeCalledWith({ noteId: uniqId });
+    expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
+    expect(fetchEditorContentThunkAction).lastCalledWith({ noteId: uniqId });
   });
 
   it('should *not* fetch if note selected was already loaded', async() => {
@@ -126,7 +126,7 @@ describe('1. selectNodeThunkAction', () => {
     await expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path })))
       .resolves.toMatchObject(expectedActions[0]);
     expect(mockedStore.getActions()).toEqual(expectedActions);
-    expect(mockedSave).toBeCalledWith(mockedStore.getState().editorContent);
+    expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
     expect(fetchEditorContentThunkAction).not.toBeCalled();
   });
 
@@ -196,7 +196,7 @@ describe('2. deleteNodeThunkAction', () => {
 
     await expect(mockedStore.dispatch(moduleToTest.deleteNodeThunkAction({ node: nodeToDelete, path: pathToNode })))
       .resolves.toMatchObject(expectedActions[1]);
-    expect(removeNoteThunkAction).toBeCalledWith({ ids: notesExpectedToBeDeleted });
+    expect(removeNoteThunkAction).lastCalledWith({ ids: notesExpectedToBeDeleted });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
@@ -232,7 +232,7 @@ describe('2. deleteNodeThunkAction', () => {
 
     await expect(mockedStore.dispatch(moduleToTest.deleteNodeThunkAction({ node: nodeToDelete, path: pathToNode })))
       .resolves.toMatchObject(expectedActions[1]);
-    expect(removeNoteThunkAction).toBeCalledWith({ ids: notesExpectedToBeDeleted });
+    expect(removeNoteThunkAction).lastCalledWith({ ids: notesExpectedToBeDeleted });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
@@ -268,7 +268,7 @@ describe('2. deleteNodeThunkAction', () => {
 
     await expect(mockedStore.dispatch(moduleToTest.deleteNodeThunkAction({ node: nodeToDelete, path: pathToNode })))
       .resolves.toMatchObject(expectedActions[1]);
-    expect(removeNoteThunkAction).toBeCalledWith({ ids: notesExpectedToBeDeleted });
+    expect(removeNoteThunkAction).lastCalledWith({ ids: notesExpectedToBeDeleted });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 });
@@ -313,7 +313,7 @@ describe('3. addAndSelectNodeThunkAction', () => {
 
     expect.assertions(3);
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind, path }))).toMatchObject(expectedAction[0]);
-    expect(mockedSave).toBeCalledWith(mockedStore.getState().editorContent);
+    expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
     expect(mockedStore.getActions()).toEqual(expectedAction);
   });
 });
@@ -392,7 +392,7 @@ describe('4. fetchNotesTreeThunkAction', () => {
     expect.assertions(3);
     await expect(mockedStore.dispatch(moduleToTest.fetchNotesTreeThunkAction()))
       .resolves.toMatchObject(expectedActions[1]);
-    expect(mockedLoad).toBeCalledWith({ userId });
+    expect(mockedLoad).lastCalledWith({ userId });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
@@ -436,7 +436,7 @@ describe('4. fetchNotesTreeThunkAction', () => {
     expect.assertions(3);
     await expect(mockedStore.dispatch(moduleToTest.fetchNotesTreeThunkAction()))
       .resolves.toMatchObject(expectedActions[3]);
-    expect(mockedLoad).toBeCalledWith({ userId });
+    expect(mockedLoad).lastCalledWith({ userId });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
@@ -480,7 +480,7 @@ describe('4. fetchNotesTreeThunkAction', () => {
 
     await expect(mockedStore.dispatch(moduleToTest.fetchNotesTreeThunkAction()))
       .resolves.toMatchObject(expectedActions[3]);
-    expect(mockedLoad).toBeCalledWith({ userId });
+    expect(mockedLoad).lastCalledWith({ userId });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 });

@@ -87,7 +87,7 @@ describe('save', () => {
     // Simulate content being previously loaded by calling save() more than once with the same content
     await moduleToTest.save(editorContent);
     await expect(moduleToTest.save(editorContent)).resolves.toMatchObject(editorContent);
-    expect(mockedStorage.save).toBeCalledWith({ userId: user, editorContent });
+    expect(mockedStorage.save).lastCalledWith({ userId: user, editorContent });
   });
 
   it('should not save again if content was already previously saved and not modified afterwards', async() => {
@@ -108,7 +108,7 @@ describe('save', () => {
 
     // This should save
     await moduleToTest.save(editorContent);
-    expect(mockedStorage.save).toBeCalledWith({ userId: user, editorContent });
+    expect(mockedStorage.save).lastCalledWith({ userId: user, editorContent });
 
     // Subsequent call to save() with same content will not save
     await expect(moduleToTest.save(editorContent)).resolves.toBe(false);
