@@ -13,10 +13,14 @@ describe('1. load', () => {
     const mockedLoad = jest.fn();
     moduleToTest.inject({ load: mockedLoad });
 
-    await expect(moduleToTest.load({ id: 1, userID: {} })).rejects.toMatchObject(expect.any(Error));
-    await expect(moduleToTest.load({ id: [], userID: true })).rejects.toMatchObject(expect.any(Error));
-    await expect(moduleToTest.load({ userID: 'test-user' })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.load({ id: 1, userId: 'some-user' })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.load({ id: true, userId: 'some-user' })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.load({ id: '', userId: 'some-user' })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.load({ userId: 'some-user' })).rejects.toMatchObject(expect.any(Error));
     await expect(moduleToTest.load({ id: 'test-node' })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.load({ id: 'test-node', userId: true })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.load({ id: 'test-node', userId: {} })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.load({ id: 'test-node', userId: '' })).rejects.toMatchObject(expect.any(Error));
     expect(mockedLoad).not.toBeCalled();
   });
 
@@ -99,6 +103,21 @@ describe('1. load', () => {
 });
 
 describe('2. save', () => {
+  it('should return an Error in rejected Promise if invoked with no dependency injected beforehand', async() => {
+    const userId = 'some-user-id';
+    const editorContent = {
+      id: 'some-note-id',
+      title: 'some title',
+      content: '<p>Hellow World!<br></p>',
+      delta: { ops: [] },
+      dateCreated: 10001,
+      dateModified: 20002,
+    };
+
+    await expect(moduleToTest.save({ userId, editorContent }))
+      .rejects.toMatchObject(expect.any(Error));
+  });
+
   it('should return a rejected Promise if invalid arguments provided', async() => {
     const editorContent = {
       id: 'some-note-id',
@@ -131,11 +150,11 @@ describe('2. save', () => {
       dateModified: 20002,
     };
 
-    const mockedSave = jest.fn();
-    mockedSave.mockImplementation(() => Promise.resolve('Saved'));
+    const returned = 'Saved';
+    const mockedSave = jest.fn().mockImplementation(() => Promise.resolve(returned));
     moduleToTest.inject({ save: mockedSave });
 
-    await expect(moduleToTest.save({ userId, editorContent })).toMatchObject(expect.any(Promise));
+    await expect(moduleToTest.save({ userId, editorContent })).resolves.toEqual(returned);
     expect(mockedSave).lastCalledWith({
       collectionName: 'notes',
       id: editorContent.id,
@@ -154,6 +173,14 @@ describe('2. save', () => {
 });
 
 describe('3. remove', async() => {
+  it('should return an Error in rejected Promise if invoked with no dependency injected beforehand', async() => {
+    const userId = 'some-user-id';
+    const ids = ['id1', 'id2'];
+
+    await expect(moduleToTest.remove({ ids, userId }))
+      .rejects.toMatchObject(expect.any(Error));
+  });
+
   it('should return a rejected Promise if invalid arguments provided', async() => {
     const mockedRemove = jest.fn();
     moduleToTest.inject({ remove: mockedRemove });
