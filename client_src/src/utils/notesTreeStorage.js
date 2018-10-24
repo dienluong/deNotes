@@ -7,12 +7,12 @@ export function inject({ save = _save, load = _load }) {
 }
 
 export function save({ userId, notesTree }) {
-  if (!Array.isArray(notesTree.tree)) {
-    return Promise.reject(new Error('Save aborted. Cause: invalid tree.'));
+  if (!notesTree || !Array.isArray(notesTree.tree) || !notesTree.id) {
+    return Promise.reject(new Error('invalid tree.'));
   }
 
-  if (!userId) {
-    return Promise.reject(new Error('Save aborted. Cause: invalid userId.'));
+  if (!userId || typeof userId !== 'string') {
+    return Promise.reject(new Error('invalid user ID.'));
   }
 
   return _save({
@@ -22,9 +22,9 @@ export function save({ userId, notesTree }) {
     dataObj: {
       'id': notesTree.id,
       'tree': notesTree.tree,
+      'dateCreated': notesTree.dateCreated || 0,
+      'dateModified': notesTree.dateModified || 0,
       'ownerId': userId,
-      'dateCreated': notesTree.dateCreated,
-      'dateModified': notesTree.dateModified,
     },
   });
 }
@@ -36,8 +36,8 @@ export function save({ userId, notesTree }) {
  * @returns {*}
  */
 export function load({ id = '', userId = '' }) {
-  if (!id && !userId) {
-    return Promise.reject(new Error('Load aborted. Cause: invalid parameters.'));
+  if (!id || !userId || typeof id !== 'string' || typeof userId !== 'string') {
+    return Promise.reject(new Error('invalid parameters.'));
   }
 
   return _load({
