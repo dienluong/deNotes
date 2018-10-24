@@ -10,25 +10,24 @@ export function inject({ save = _save, load = _load, remove = _remove }) {
 
 export function save({ userId, editorContent }) {
   if (!editorContent || !editorContent.content || !editorContent.delta || !editorContent.id) {
-    return Promise.reject(new Error('Save aborted. Cause: invalid content.'));
+    return Promise.reject(new Error('invalid content.'));
   }
 
   if (!userId || typeof userId !== 'string') {
-    return Promise.reject(new Error('Save aborted. Cause: invalid userId.'));
+    return Promise.reject(new Error('invalid userId.'));
   }
 
   return _save({
     collectionName: 'notes',
     id: editorContent.id,
     ownerId: userId,
-    // TODO: Replace hardcoded values
     dataObj: {
       'id': editorContent.id,
       'title': editorContent.title || '',
       'body': editorContent.content,
       'delta': editorContent.delta,
-      'dateCreated': editorContent.dateCreated,
-      'dateModified': editorContent.dateModified,
+      'dateCreated': editorContent.dateCreated || 0,
+      'dateModified': editorContent.dateModified || 0,
       'ownerId': userId,
     },
   });
@@ -41,7 +40,7 @@ export function save({ userId, editorContent }) {
  */
 export function load({ id = '', userId = '' }) {
   if (!id || !userId || typeof id !== 'string' || typeof userId !== 'string') {
-    return Promise.reject(new Error('Load aborted. Cause: invalid parameters.'));
+    return Promise.reject(new Error('invalid parameters.'));
   }
 
   return _load({
@@ -75,7 +74,7 @@ export function remove({ ids = '', userId = '' }) {
       ownerId: userId,
     });
   } else {
-    return Promise.reject(new Error('Delete aborted. Cause: invalid parameter.'));
+    return Promise.reject(new Error('invalid parameters.'));
   }
 }
 
