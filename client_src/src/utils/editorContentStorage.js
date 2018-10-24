@@ -67,14 +67,14 @@ export function load({ id = '', userId = '' }) {
 }
 
 export function remove({ ids = '', userId = '' }) {
-  if (typeof ids === 'string' || (Array.isArray(ids) && ids.length)) {
+  if (!ids || !userId || (typeof ids !== 'string' && !Array.isArray(ids)) || (Array.isArray(ids) && !ids.length) || typeof userId !== 'string') {
+    return Promise.reject(new Error('invalid parameters.'));
+  } else {
     return _remove({
       collectionName: 'notes',
       ids,
       ownerId: userId,
     });
-  } else {
-    return Promise.reject(new Error('invalid parameters.'));
   }
 }
 

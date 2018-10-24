@@ -1,6 +1,6 @@
 import * as moduleToTest from './editorContentStorage';
 
-describe('load', () => {
+describe('1. load', () => {
   it('should return an Error in rejected Promise if invoked with no dependency injected beforehand', async() => {
     const noteId = 'some-note-id';
     const userId = 'some-user-id';
@@ -98,7 +98,7 @@ describe('load', () => {
   });
 });
 
-describe('save', () => {
+describe('2. save', () => {
   it('should return a rejected Promise if invalid arguments provided', async() => {
     const editorContent = {
       id: 'some-note-id',
@@ -120,7 +120,7 @@ describe('save', () => {
     expect(mockedSave).not.toBeCalled();
   });
 
-  it('should call save and return', async() => {
+  it('should call injected save() and return', async() => {
     const userId = 'some-user-id';
     const editorContent = {
       id: 'some-note-id',
@@ -136,7 +136,7 @@ describe('save', () => {
     moduleToTest.inject({ save: mockedSave });
 
     await expect(moduleToTest.save({ userId, editorContent })).toMatchObject(expect.any(Promise));
-    expect(mockedSave).toBeCalledWith({
+    expect(mockedSave).lastCalledWith({
       collectionName: 'notes',
       id: editorContent.id,
       ownerId: userId,
@@ -150,5 +150,40 @@ describe('save', () => {
         ownerId: userId,
       },
     });
+  });
+});
+
+describe('3. remove', async() => {
+  it('should return a rejected Promise if invalid arguments provided', async() => {
+    const mockedRemove = jest.fn();
+    moduleToTest.inject({ remove: mockedRemove });
+
+    await expect(moduleToTest.remove({ ids: 12, userId: 'some-user-id' })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.remove({ ids: '', userId: 'some-user-id' })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.remove({ ids: [], userId: 'some-user-id' })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.remove({ ids: {}, userId: 'some-user-id' })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.remove({ ids: true, userId: 'some-user-id' })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.remove({ ids: [12, 34], userId: 54 })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.remove({ ids: [12, 34], userId: '' })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.remove({ ids: [12, 34], userId: [] })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.remove({ ids: [12, 34], userId: {} })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.remove({ ids: [12, 34], userId: true })).rejects.toMatchObject(expect.any(Error));
+    expect(mockedRemove).not.toBeCalled();
+  });
+
+  it('should call injected remove() and return', async() => {
+    let ids = 'id-to-remove';
+    let userId = 'some-user-id';
+    const returned = 'Removed';
+    const mockedRemove = jest.fn().mockImplementation(() => Promise.resolve(returned));
+    moduleToTest.inject({ remove: mockedRemove });
+
+    // remove() should support ids as string
+    await expect(moduleToTest.remove({ ids, userId })).resolves.toEqual(returned);
+    expect(mockedRemove).lastCalledWith({ collectionName: 'notes', ids, ownerId: userId });
+    // remove() should also support ids as an array
+    ids = ['id1', 'id2', 'id3'];
+    await expect(moduleToTest.remove({ ids, userId })).resolves.toEqual(returned);
+    expect(mockedRemove).lastCalledWith({ collectionName: 'notes', ids, ownerId: userId });
   });
 });
