@@ -69,10 +69,7 @@ try {
 _produceMethods();
 
 export function save(paramsObj) {
-  return _save(paramsObj)
-    .catch(err => {
-      return Promise.reject(err.error);
-    });
+  return _save(paramsObj);
 }
 
 export function load(paramsObj) {
