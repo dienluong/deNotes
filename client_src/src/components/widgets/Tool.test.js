@@ -1,0 +1,17 @@
+import React from 'react';
+import { render, cleanup, fireEvent } from 'react-testing-library';
+import 'jest-dom/extend-expect';
+import Tool from './Tool';
+
+afterEach(cleanup);
+
+it('renders a button with specified label', () => {
+  const clickHandler = jest.fn();
+  const label = 'test-tool-label';
+
+  const { queryAllByText } = render(<Tool label={ label } onClick={ clickHandler }/>);
+  let elements = queryAllByText(label);
+  expect(elements).toHaveLength(1);
+  fireEvent.click(elements[0]);
+  expect(clickHandler).toBeCalledTimes(1);
+});
