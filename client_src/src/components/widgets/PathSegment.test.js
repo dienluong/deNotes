@@ -12,7 +12,7 @@ it('renders an element with a label and reacting to a click event', () => {
     onClick: jest.fn(),
   };
 
-  const { queryAllByText, container } = render(<PathSegment {...props} />);
+  const { queryAllByText, container } = render(<PathSegment { ...props } />);
   const elements = queryAllByText(props.label, { exact: false });
   expect(elements).toHaveLength(1);
   expect(container.firstChild).toHaveClass(props.className);
