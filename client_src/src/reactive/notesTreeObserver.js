@@ -2,8 +2,6 @@ export default ({ user, storage }) => {
   let _user = '';
   let _storage = {
     save() { return Promise.reject(new Error('Cannot Save: Storage not available')); },
-    load() { return Promise.reject(new Error('Cannot Load: Storage not available')); },
-    remove() { return Promise.reject(new Error('Cannot Remove: Storage not available')); },
   };
 
   _user = typeof user === 'string' ? user : _user;
