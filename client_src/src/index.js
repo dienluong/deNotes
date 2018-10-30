@@ -23,13 +23,15 @@ import * as editorContentStorage from './utils/editorContentStorage';
 // import { save as loopbackSave, load as loopbackLoad, remove as loopbackDelete } from './utils/loopbackREST';
 import { save as saveToStorage, load as loadFromStorage, remove as deleteFromStorage } from './utils/offlineStorage';
 
-// Use loopbackREST for loading and saving persisted data
 notesTreeStorage.inject({ save: saveToStorage, load: loadFromStorage });
 editorContentStorage.inject({ save: saveToStorage, load: loadFromStorage, remove: deleteFromStorage });
 
 // Inject dependencies into notesListActions
 notesListActionsInject({
-  notesTreeStorage: notesTreeStorage,
+  notesTreeStorage: {
+    save: notesTreeStorage.save,
+    load: notesTreeStorage.load,
+  },
   editorContentStorage: {
     save: editorContentObserver.save,
     load: editorContentStorage.load,

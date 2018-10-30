@@ -182,6 +182,8 @@ export function fetchNotesTreeThunkAction() {
       .catch(err => {
         // If no tree found for this user, use default tree from initial state and add new node (new blank note)
         const error = new Error(`No tree loaded. Error: ${err.message} Using default tree.`);
+        // TODO: Remove
+        console.log(error);
         dispatch({
           type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
           payload: { error },

@@ -1,6 +1,6 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import { addNodeUnderParent } from 'react-sortable-tree';
-import { getNodeKey, createNode, translateNodeIdToInfo, findClosestParent } from '../../utils/treeUtils';
+import { getNodeKey, createNode, findClosestParent } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
 
 const initialState = baseState;
