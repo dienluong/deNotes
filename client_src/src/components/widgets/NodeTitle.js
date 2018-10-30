@@ -2,7 +2,7 @@ import React from 'react';
 
 function NodeTitle({ node, path, onSubmit: submitHandler }) {
   function submit(event) {
-    const inputEl = event.target.matches('input') ? event.target : event.target.firstElementChild;
+    const inputEl = event.target.matches('input') ? event.target : event.target.getElementsByTagName('input')[0];
     if (inputEl.value !== inputEl.defaultValue) {
       submitHandler({
         title: inputEl.value,
