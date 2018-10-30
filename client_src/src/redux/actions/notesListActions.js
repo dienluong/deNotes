@@ -194,7 +194,7 @@ export function fetchNotesTreeThunkAction() {
           dateModified: now,
         }));
         // Add a "note" node (an item) to the root of the tree
-        return dispatch(addAndSelectNodeThunkAction({ kind: 'item', path: [baseState.notesTree.tree[0]] }));
+        return dispatch(addAndSelectNodeThunkAction({ kind: 'item', path: [baseState.notesTree.tree[0].id] }));
       });
   };
 }

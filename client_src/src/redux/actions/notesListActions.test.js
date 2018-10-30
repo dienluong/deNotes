@@ -426,7 +426,7 @@ describe('4. fetchNotesTreeThunkAction', () => {
         type: notesListActionTypes.ADD_AND_SELECT_NODE,
         payload: {
           kind: 'item',
-          path: [initialState.notesTree.tree[0]],
+          path: [initialState.notesTree.tree[0].id],
         },
       },
     ];
@@ -470,7 +470,7 @@ describe('4. fetchNotesTreeThunkAction', () => {
         type: notesListActionTypes.ADD_AND_SELECT_NODE,
         payload: {
           kind: 'item',
-          path: [initialState.notesTree.tree[0]],
+          path: [initialState.notesTree.tree[0].id],
         },
       },
     ];
