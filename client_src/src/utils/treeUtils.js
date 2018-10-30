@@ -78,6 +78,10 @@ export function findClosestParent(path) {
   }
 
   const lastStep = path[path.length - 1];
+  if (typeof lastStep !== 'string') {
+    return null;
+  }
+
   if (path.length === 1) {
     return (lastStep.includes(`folder${ID_DELIMITER}`) ? 0 : null);
   } else {
