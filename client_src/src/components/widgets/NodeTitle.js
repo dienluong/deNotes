@@ -2,6 +2,8 @@ import React from 'react';
 
 function NodeTitle({ node, path, onSubmit: submitHandler }) {
   function submit(event) {
+    // event.target is <input> if the event was onBlur
+    // but event.target is *not* <input>, but rather <form>, if the event was onSubmit
     const inputEl = event.target.matches('input') ? event.target : event.target.getElementsByTagName('input')[0];
     if (inputEl.value !== inputEl.defaultValue) {
       submitHandler({
