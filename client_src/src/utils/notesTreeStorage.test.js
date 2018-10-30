@@ -74,12 +74,13 @@ describe('2. load', () => {
 
     await expect(moduleToTest.load({ id: 1, userId: 'some-user' })).rejects.toMatchObject(expect.any(Error));
     await expect(moduleToTest.load({ id: true, userId: 'some-user' })).rejects.toMatchObject(expect.any(Error));
-    await expect(moduleToTest.load({ id: '', userId: 'some-user' })).rejects.toMatchObject(expect.any(Error));
-    await expect(moduleToTest.load({ userId: 'some-user' })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.load({ id: {}, userId: 'some-user' })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.load({ id: [], userId: 'some-user' })).rejects.toMatchObject(expect.any(Error));
     await expect(moduleToTest.load({ id: 'test-tree' })).rejects.toMatchObject(expect.any(Error));
     await expect(moduleToTest.load({ id: 'test-tree', userId: true })).rejects.toMatchObject(expect.any(Error));
     await expect(moduleToTest.load({ id: 'test-tree', userId: {} })).rejects.toMatchObject(expect.any(Error));
     await expect(moduleToTest.load({ id: 'test-tree', userId: '' })).rejects.toMatchObject(expect.any(Error));
+    await expect(moduleToTest.load({ id: 'test-tree', userId: [] })).rejects.toMatchObject(expect.any(Error));
     expect(mockedLoad).not.toBeCalled();
   });
 

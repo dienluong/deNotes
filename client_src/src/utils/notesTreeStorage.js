@@ -31,12 +31,12 @@ export function save({ userId, notesTree }) {
 
 /**
  * Returns a promise resolving to an object containing the tree, the modified and the created dates.
- * @param id
- * @param userId
+ * @param {string} [id=''] ID of the tree to load (optional)
+ * @param {string} userId
  * @returns {*}
  */
 export function load({ id = '', userId = '' }) {
-  if (!id || !userId || typeof id !== 'string' || typeof userId !== 'string') {
+  if (!userId || typeof id !== 'string' || typeof userId !== 'string') {
     return Promise.reject(new Error('invalid parameters.'));
   }
 
