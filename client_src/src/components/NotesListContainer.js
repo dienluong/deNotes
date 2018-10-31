@@ -14,7 +14,7 @@ import {
 import { getNodeKey } from '../utils/treeUtils';
 
 function mapStateToProps(state) {
-  const activePathTitles = selectTitlesFromActivePath(state);
+  const activePathByTitles = selectTitlesFromActivePath(state);
 
   // const activePath = translatePathToInfo({ notesTree: state.notesTree, path: state.activeNode.path, kind: 'title' });
   if (mapStateToProps.cache.notesTree !== rootReducer.selectNotesTree(state)) {
@@ -29,9 +29,9 @@ function mapStateToProps(state) {
   } else {
     console.log('~~~~~~~~~~~~~~~~ Same Active Node');
   }
-  if (mapStateToProps.cache.activePath !== activePathTitles) {
+  if (mapStateToProps.cache.activePath !== activePathByTitles) {
     console.log('~~~~~~~~~~~~~~~~ Active Path Changed');
-    mapStateToProps.cache.activePath = activePathTitles;
+    mapStateToProps.cache.activePath = activePathByTitles;
   } else {
     console.log('~~~~~~~~~~~~~~~~ Same Active Path');
   }
@@ -44,9 +44,9 @@ function mapStateToProps(state) {
   // TODO: Remove ABOVE
 
   return {
-    notesTree: rootReducer.selectNotesTreeTree(state),
+    tree: rootReducer.selectNotesTreeTree(state),
     activeNode: rootReducer.selectActiveNode(state),
-    activePath: activePathTitles,
+    activePath: activePathByTitles,
   };
 }
 
