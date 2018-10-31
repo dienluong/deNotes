@@ -7,7 +7,7 @@ import './NotesList.css';
 import NodeTitle from './NodeTitle';
 
 function NotesList({
-  notesTree,
+  tree,
   activeNode,
   activePath,
   treeChangeHandler,
@@ -26,9 +26,6 @@ function NotesList({
       buttons: _buildNodeButtons({ node, path }),
       tabIndex: '0',
       onClick: () => nodeClickHandler({ id: node.id, path }),
-      // TODO: remove
-      // onFocus: () => console.log('Focused: ' + node.title),
-      // onBlur: () => console.log('unFocused: ' + node.title),
     });
   }
 
@@ -64,7 +61,7 @@ function NotesList({
 
   // TODO: remove
   // console.log(`
-  //   Tree: ${JSON.stringify(notesTree)} \n
+  //   Tree: ${JSON.stringify(tree)} \n
   //   Active ID: ${activeNode.id} \n
   //   Path: ${activeNode.path} \n
   //   ${ activePath }
@@ -80,7 +77,7 @@ function NotesList({
       />
       <Tree
         className='tree'
-        treeData={ notesTree }
+        treeData={ tree }
         onChange={ treeChangeHandler }
         getNodeKey={ getNodeKey }
         generateNodeProps={ buildNodeProps }
