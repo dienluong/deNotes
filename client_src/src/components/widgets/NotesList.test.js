@@ -1,18 +1,16 @@
-import NotesList from './NotesList';
 import React from 'react';
-import { render, cleanup, fireEvent } from 'react-testing-library';
+import NotesList from './NotesList';
+import { render, cleanup } from 'react-testing-library';
 import 'jest-dom/extend-expect';
-import { selectTitlesFromActivePath } from '../../redux/selectors';
 import { walk } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/treeUtils';
 import baseState from '../../redux/misc/initialState';
+import { selectTitlesFromActivePath } from '../../redux/selectors';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
-import Tree from 'react-sortable-tree';
 
 afterEach(cleanup);
-
 it('should render all node titles', () => {
-  const tree = baseState.notesTree.tree;
+  const tree = mockedTree;
   const activeNode = baseState.activeNode;
   const activePath = selectTitlesFromActivePath(baseState);
   const toolbarHandlersMap = new Map();
@@ -32,18 +30,22 @@ it('should render all node titles', () => {
     getNodeKey,
   };
 
-  const { queryAllByText, debug } = render(<NotesList { ...props }/>);
-  // const { queryAllByText, debug } = render(<Tree treeData={ tree } onChange={ props.treeChangeHandler } getNodeKey={ getNodeKey } />);
-  debug();
-  const callback = ({ node }) => {
-    console.log(node.title);
-    expect(queryAllByText(node.title)).toHaveLength(1);
+  const { container, queryAllByValue } = render(<NotesList { ...props }/>);
+
+  const renderedInputs = Array.from(container.getElementsByTagName('input'));
+  const renderedTitles = renderedInputs.map(input => input.value);
+  console.log('\n' + renderedTitles + '\n');
+
+  const test = ({ node }) => {
+    // console.log(node.title + '\n\n\n\n\n\n\n\n');
+    expect(queryAllByValue(node.title)).toHaveLength(1);
+    expect(renderedTitles.includes(node.title)).toBe(true);
   };
 
   walk({
     treeData: props.tree,
     getNodeKey,
-    callback,
+    callback: test,
     ignoreCollapsed: false,
   });
 });
