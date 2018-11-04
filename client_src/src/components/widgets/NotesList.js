@@ -22,7 +22,7 @@ function NotesList({
   function buildNodeProps({ node, path }) {
     return ({
       title: (<NodeTitle node={ node } path={ path } onSubmit={ nodeTitleChangeHandler } />),
-      className: (node.id === activeNode.id) ? 'dnt__active-tree-node' : '',
+      className: (node.id === activeNode.id) ? 'dnt__tree-node dnt__tree-node--active' : 'dnt__tree-node',
       buttons: _buildNodeButtons({ node, path }),
       tabIndex: '0',
       onClick: () => nodeClickHandler({ id: node.id, path }),
