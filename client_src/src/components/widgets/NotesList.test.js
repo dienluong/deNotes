@@ -1,6 +1,6 @@
 import React from 'react';
 import NotesList from './NotesList';
-import { render, cleanup, fireEvent } from 'react-testing-library';
+import { render, cleanup, fireEvent, within } from 'react-testing-library';
 import 'jest-dom/extend-expect';
 import { walk, find, getFlatDataFromTree } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/treeUtils';
@@ -9,6 +9,7 @@ import { selectTitlesFromActivePath } from '../../redux/selectors';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
 
 const TREE_NODE_CLASS = 'dnt__tree-node';
+const PATH_NAV_CLASS = 'dnt__pathnav';
 
 afterEach(cleanup);
 
@@ -97,4 +98,70 @@ it('should invoke handler when tree node is clicked', () => {
 
   const numberOfNodes = getFlatDataFromTree({ treeData: props.tree, getNodeKey, ignoreCollapsed: false }).length;
   expect(props.nodeClickHandler).toBeCalledTimes(numberOfNodes);
+});
+
+it('should invoke handlers when toolbar button clicked', () => {
+  const tree = mockedTree;
+  const activeNode = baseState.activeNode;
+  const activePath = selectTitlesFromActivePath(baseState);
+  const toolbarHandlersMap = new Map();
+  toolbarHandlersMap.set('tool1', jest.fn());
+  toolbarHandlersMap.set('tool2', jest.fn());
+  toolbarHandlersMap.set('tool3', jest.fn());
+  const props = {
+    tree,
+    activeNode,
+    activePath,
+    treeChangeHandler: jest.fn(),
+    nodeTitleChangeHandler: jest.fn(),
+    nodeClickHandler: jest.fn(),
+    deleteNodeBtnHandler: jest.fn(),
+    addNoteBtnHandler: jest.fn(),
+    pathNavigatorClickHandler: jest.fn(),
+    toolbarHandlersMap,
+    getNodeKey,
+  };
+
+  const { queryAllByText } = render(<NotesList { ...props }/>);
+
+  for (let [label, handler] of toolbarHandlersMap) {
+    const button = queryAllByText(label);
+    expect(button).toHaveLength(1);
+    fireEvent.click(button[0]);
+    expect(handler).toBeCalled();
+  }
+
+  toolbarHandlersMap.forEach(handler => expect(handler).toBeCalledTimes(1));
+});
+
+it('should invoke handler when segment in path navigator is clicked', () => {
+  const tree = mockedTree;
+  const activeNode = baseState.activeNode;
+  const activePath = selectTitlesFromActivePath(baseState);
+  const toolbarHandlersMap = new Map();
+  toolbarHandlersMap.set('tool1', jest.fn());
+  toolbarHandlersMap.set('tool2', jest.fn());
+  const props = {
+    tree,
+    activeNode,
+    activePath,
+    treeChangeHandler: jest.fn(),
+    nodeTitleChangeHandler: jest.fn(),
+    nodeClickHandler: jest.fn(),
+    deleteNodeBtnHandler: jest.fn(),
+    addNoteBtnHandler: jest.fn(),
+    pathNavigatorClickHandler: jest.fn(),
+    toolbarHandlersMap,
+    getNodeKey,
+  };
+
+  const { container } = render(<NotesList { ...props }/>);
+  expect(container.getElementsByClassName(PATH_NAV_CLASS)).toHaveLength(1);
+  const renderedPathNav = container.getElementsByClassName(PATH_NAV_CLASS).item(0);
+  activePath.forEach(segment => {
+    const renderedPathSegment = within(renderedPathNav).getByText(new RegExp(`${segment}`));
+    fireEvent.click(renderedPathSegment);
+    expect(props.pathNavigatorClickHandler).toBeCalled();
+    props.pathNavigatorClickHandler.mockClear();
+  });
 });
