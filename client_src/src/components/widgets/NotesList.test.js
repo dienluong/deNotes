@@ -157,10 +157,60 @@ it('should invoke handler when segment in path navigator is clicked', () => {
   const { container } = render(<NotesList { ...props }/>);
   expect(container.getElementsByClassName(pathNavStyles.dnt__pathnav)).toHaveLength(1);
   const renderedPathNav = container.getElementsByClassName(pathNavStyles.dnt__pathnav).item(0);
-  activePath.forEach(segment => {
+  activePath.forEach((segment, idx) => {
     const renderedPathSegment = within(renderedPathNav).getByText(new RegExp(`${segment}`));
     fireEvent.click(renderedPathSegment);
-    expect(props.pathNavigatorClickHandler).toBeCalled();
-    props.pathNavigatorClickHandler.mockClear();
+    expect(props.pathNavigatorClickHandler).lastCalledWith({ idx });
+  });
+});
+
+it('should invoke handler when tree node button is clicked', () => {
+  const tree = mockedTree;
+  const activeNode = baseState.activeNode;
+  const activePath = selectTitlesFromActivePath(baseState);
+  const toolbarHandlersMap = new Map();
+  toolbarHandlersMap.set('tool1', jest.fn());
+  toolbarHandlersMap.set('tool2', jest.fn());
+  const props = {
+    tree,
+    activeNode,
+    activePath,
+    treeChangeHandler: jest.fn(),
+    nodeTitleChangeHandler: jest.fn(),
+    nodeClickHandler: jest.fn(),
+    deleteNodeBtnHandler: jest.fn(),
+    addNoteBtnHandler: jest.fn(),
+    pathNavigatorClickHandler: jest.fn(),
+    toolbarHandlersMap,
+    getNodeKey,
+  };
+
+  const { getByTestId } = render(<NotesList { ...props }/>);
+
+  let numberOfFolders = 0;
+  const test = ({ node, path }) => {
+    if (node.type === 'folder') {
+      numberOfFolders += 1;
+      const renderedTreeNode = getByTestId(node.id);
+      const renderedTitles = within(renderedTreeNode).queryAllByValue(node.title);
+      expect(renderedTitles).toHaveLength(1);
+      const nodeAddButton = within(renderedTreeNode).getByText('+');
+      const nodeDeleteButton = within(renderedTreeNode).getByText('x');
+
+      fireEvent.click(nodeAddButton);
+      expect(props.addNoteBtnHandler).lastCalledWith({ path });
+      expect(props.addNoteBtnHandler).toBeCalledTimes(numberOfFolders);
+
+      fireEvent.click(nodeDeleteButton);
+      expect(props.deleteNodeBtnHandler).lastCalledWith({ node, path });
+      expect(props.deleteNodeBtnHandler).toBeCalledTimes(numberOfFolders);
+    }
+  };
+
+  walk({
+    treeData: props.tree,
+    getNodeKey,
+    callback: test,
+    ignoreCollapsed: false,
   });
 });

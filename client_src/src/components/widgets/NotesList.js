@@ -25,6 +25,7 @@ function NotesList({
       className: (node.id === activeNode.id) ? `${styles['dnt__tree-node']} ${styles['dnt__tree-node--active']}` : styles['dnt__tree-node'],
       buttons: _buildNodeButtons({ node, path }),
       tabIndex: '0',
+      'data-testid': node.id,
       onClick: () => nodeClickHandler({ id: node.id, path }),
     });
   }
