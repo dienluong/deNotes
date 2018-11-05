@@ -2,7 +2,7 @@ import PathNavigator from './PathNavigator';
 import React from 'react';
 import { render, cleanup, fireEvent } from 'react-testing-library';
 import 'jest-dom/extend-expect';
-const ACTIVE_SEGMENT_CLASS = 'active-segment';
+const ACTIVE_SEGMENT_CLASS = 'dnt__pathnav-segment--active';
 
 afterEach(cleanup);
 

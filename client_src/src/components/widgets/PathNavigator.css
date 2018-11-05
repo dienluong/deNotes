@@ -2,7 +2,7 @@
   display: inline-block;
 }
 
-.active-segment {
+.dnt__pathnav-segment--active {
   color: pink;
   font-weight: bold;
 }

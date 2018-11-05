@@ -6,7 +6,7 @@ function PathNavigator({ path, activeSegmentIdx, onClick: clickHandler }) {
   const pathSegments = path.length ?
     path.map((step, idx) =>
       <PathSegment
-        className={ 'lined' + (idx === activeSegmentIdx ? ' active-segment' : '') }
+        className={ 'lined' + (idx === activeSegmentIdx ? ' dnt__pathnav-segment--active' : '') }
         key={ idx }
         label={ step }
         onClick={ () => clickHandler({ idx }) }
@@ -14,7 +14,7 @@ function PathNavigator({ path, activeSegmentIdx, onClick: clickHandler }) {
     [];
 
   return (
-    <nav>
+    <nav className={'dnt__pathnav'}>
       <ul>
         { pathSegments }
       </ul>
