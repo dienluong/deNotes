@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './NodeTitle.module.css';
 
 function NodeTitle({ node, path, onSubmit: submitHandler }) {
   function submit(event) {
@@ -19,7 +20,7 @@ function NodeTitle({ node, path, onSubmit: submitHandler }) {
   return (
     <form onSubmit={ submit } onBlur={ submit }>
       <input
-        className='node-title'
+        className={ styles['dnt__node-title'] }
         type="text"
         defaultValue={ node.title }
       />

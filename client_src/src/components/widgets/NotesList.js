@@ -3,7 +3,7 @@ import Toolbar from './Toolbar';
 import PathNavigator from './PathNavigator';
 import Tree from 'react-sortable-tree';
 import 'react-sortable-tree/style.css';
-import './NotesList.css';
+import styles from './NotesList.module.css';
 import NodeTitle from './NodeTitle';
 
 function NotesList({
@@ -22,7 +22,7 @@ function NotesList({
   function buildNodeProps({ node, path }) {
     return ({
       title: (<NodeTitle node={ node } path={ path } onSubmit={ nodeTitleChangeHandler } />),
-      className: (node.id === activeNode.id) ? 'dnt__tree-node dnt__tree-node--active' : 'dnt__tree-node',
+      className: (node.id === activeNode.id) ? `${styles['dnt__tree-node']} ${styles['dnt__tree-node--active']}` : styles['dnt__tree-node'],
       buttons: _buildNodeButtons({ node, path }),
       tabIndex: '0',
       onClick: () => nodeClickHandler({ id: node.id, path }),
@@ -32,7 +32,7 @@ function NotesList({
   function _buildNodeButtons({ node, path }) {
     let buttons = [
       <button
-        className='dnt__tree-node-btn'
+        className={ styles['dnt__tree-node-btn'] }
         onClick={ (event) => {
           event.stopPropagation();
           deleteNodeBtnHandler({ node, path });
@@ -46,7 +46,7 @@ function NotesList({
     if (typeof node.children !== 'undefined') {
       buttons.unshift(
         <button
-          className='dnt__tree-node-btn'
+          className={ styles['dnt__tree-node-btn'] }
           onClick={ (event) => {
             event.stopPropagation();
             addNoteBtnHandler({ path });

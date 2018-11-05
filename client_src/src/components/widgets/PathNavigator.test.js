@@ -2,7 +2,7 @@ import PathNavigator from './PathNavigator';
 import React from 'react';
 import { render, cleanup, fireEvent } from 'react-testing-library';
 import 'jest-dom/extend-expect';
-const ACTIVE_SEGMENT_CLASS = 'dnt__pathnav-segment--active';
+import styles from './PathNavigator.module.css';
 
 afterEach(cleanup);
 
@@ -19,7 +19,7 @@ it('renders an element composed of segments w/ labels and with specified segment
   props.path.forEach(label => expect(queryAllByText(label, { exact: false })).toHaveLength(1));
 
   // expect one segment as active
-  const activeSegment = container.getElementsByClassName(ACTIVE_SEGMENT_CLASS);
+  const activeSegment = container.getElementsByClassName(styles['dnt__pathnav-segment--active']);
   expect(activeSegment).toHaveLength(1);
   expect(activeSegment[0]).toHaveTextContent(props.path[props.activeSegmentIdx]);
 });

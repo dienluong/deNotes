@@ -1,5 +1,7 @@
 import React from 'react';
 import NotesList from './NotesList';
+import notesListStyles from './NotesList.module.css';
+import pathNavStyles from './PathNavigator.module.css';
 import { render, cleanup, fireEvent, within } from 'react-testing-library';
 import 'jest-dom/extend-expect';
 import { walk, find, getFlatDataFromTree } from 'react-sortable-tree';
@@ -7,9 +9,6 @@ import { getNodeKey } from '../../utils/treeUtils';
 import baseState from '../../redux/misc/initialState';
 import { selectTitlesFromActivePath } from '../../redux/selectors';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
-
-const TREE_NODE_CLASS = 'dnt__tree-node';
-const PATH_NAV_CLASS = 'dnt__pathnav';
 
 afterEach(cleanup);
 
@@ -51,7 +50,7 @@ it('should render all node titles', () => {
     ignoreCollapsed: false,
   });
 
-  const numOfRenderedTreeNodeElements = container.getElementsByClassName(TREE_NODE_CLASS).length;
+  const numOfRenderedTreeNodeElements = container.getElementsByClassName(notesListStyles['dnt__tree-node']).length;
   const numOfNodesInSourceTree = getFlatDataFromTree({ treeData: props.tree, getNodeKey, ignoreCollapsed: false }).length;
   expect(numOfNodesInSourceTree).toEqual(numOfRenderedTreeNodeElements);
 });
@@ -79,7 +78,7 @@ it('should invoke handler when tree node is clicked', () => {
 
   const { container } = render(<NotesList { ...props }/>);
 
-  const renderedTreeNodeElements = [...container.getElementsByClassName(TREE_NODE_CLASS)];
+  const renderedTreeNodeElements = [...container.getElementsByClassName(notesListStyles['dnt__tree-node'])];
   renderedTreeNodeElements.forEach(element => {
     const elementTitle = element.getElementsByTagName('input')[0].value;
     const correspondingNode = find({
@@ -156,8 +155,8 @@ it('should invoke handler when segment in path navigator is clicked', () => {
   };
 
   const { container } = render(<NotesList { ...props }/>);
-  expect(container.getElementsByClassName(PATH_NAV_CLASS)).toHaveLength(1);
-  const renderedPathNav = container.getElementsByClassName(PATH_NAV_CLASS).item(0);
+  expect(container.getElementsByClassName(pathNavStyles.dnt__pathnav)).toHaveLength(1);
+  const renderedPathNav = container.getElementsByClassName(pathNavStyles.dnt__pathnav).item(0);
   activePath.forEach(segment => {
     const renderedPathSegment = within(renderedPathNav).getByText(new RegExp(`${segment}`));
     fireEvent.click(renderedPathSegment);
