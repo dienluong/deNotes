@@ -189,12 +189,17 @@ export function fetchNotesTreeThunkAction() {
           payload: { error },
         });
         const now = Date.now();
-        dispatch(changeNotesTreeAction({
-          ...baseState.notesTree,
-          id: uuid(),
-          dateCreated: now,
-          dateModified: now,
-        }));
+        dispatch({
+          type: notesListActionTypes.CHANGE_NOTES_TREE,
+          payload: {
+            notesTree: {
+              ...baseState.notesTree,
+              id: uuid(),
+              dateCreated: now,
+              dateModified: now,
+            },
+          },
+        });
         // Add a "note" node (an item) to the root of the tree
         return dispatch(addAndSelectNodeThunkAction({ kind: 'item', path: [baseState.notesTree.tree[0].id] }));
       });
@@ -210,19 +215,13 @@ export function navigatePathAction({ idx }) {
   };
 }
 
-export function changeNotesTreeAction({ id, tree, dateCreated, dateModified }) {
+export function changeNotesTreeAction({ tree }) {
   const notesTree = {};
   if (Array.isArray(tree)) {
     notesTree.tree = tree;
   } else {
     notesTree.tree = baseState.notesTree.tree;
   }
-
-  notesTree.dateCreated = Number.isInteger(dateCreated) ? dateCreated : Date.now();
-
-  notesTree.dateModified = Number.isInteger(dateModified) ? dateModified : Date.now();
-
-  notesTree.id = id && typeof id === 'string' ? id : uuid();
 
   return {
     type: notesListActionTypes.CHANGE_NOTES_TREE,
