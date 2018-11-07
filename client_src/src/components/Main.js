@@ -18,7 +18,7 @@ class Main extends React.Component {
     return (
       // <React.StrictMode>
       <Fragment>
-        <SplitPane split="vertical" defaultSize="30%" >
+        <SplitPane split="vertical" defaultSize="60%" >
           <NotesListContainer />
           <EditorContainer options={ editorParams.options }/>
         </SplitPane>
