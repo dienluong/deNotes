@@ -99,7 +99,7 @@ it('should invoke handler when tree node is clicked', () => {
   expect(props.nodeClickHandler).toBeCalledTimes(numberOfNodes);
 });
 
-it('should invoke handlers when toolbar button clicked', () => {
+it('should invoke handlers when toolbar button is clicked', () => {
   const tree = mockedTree;
   const activeNode = baseState.activeNode;
   const activePath = selectTitlesFromActivePath(baseState);
@@ -205,6 +205,51 @@ it('should invoke handler when tree node button is clicked', () => {
       expect(props.deleteNodeBtnHandler).lastCalledWith({ node, path });
       expect(props.deleteNodeBtnHandler).toBeCalledTimes(numberOfFolders);
     }
+  };
+
+  walk({
+    treeData: props.tree,
+    getNodeKey,
+    callback: test,
+    ignoreCollapsed: false,
+  });
+});
+
+it('should invoke handler on node title change', () => {
+  const tree = mockedTree;
+  const activeNode = baseState.activeNode;
+  const activePath = selectTitlesFromActivePath(baseState);
+  const toolbarHandlersMap = new Map();
+  toolbarHandlersMap.set('tool1', jest.fn());
+  toolbarHandlersMap.set('tool2', jest.fn());
+  const props = {
+    tree,
+    activeNode,
+    activePath,
+    treeChangeHandler: jest.fn(),
+    nodeTitleChangeHandler: jest.fn(),
+    nodeClickHandler: jest.fn(),
+    deleteNodeBtnHandler: jest.fn(),
+    addNoteBtnHandler: jest.fn(),
+    pathNavigatorClickHandler: jest.fn(),
+    toolbarHandlersMap,
+    getNodeKey,
+  };
+
+  const { queryAllByValue } = render(<NotesList { ...props }/>);
+
+  let numberOfNodes = 0;
+  const test = ({ node, path }) => {
+    const newTitle = 'new test title';
+    const renderedInputs = queryAllByValue(node.title);
+    expect(renderedInputs).toHaveLength(1);
+    const renderedTitle = renderedInputs[0];
+
+    numberOfNodes += 1;
+    renderedTitle.value = newTitle;
+    fireEvent.blur(renderedTitle);
+    expect(props.nodeTitleChangeHandler).lastCalledWith({ node, path, title: newTitle });
+    expect(props.nodeTitleChangeHandler).toBeCalledTimes(numberOfNodes);
   };
 
   walk({
