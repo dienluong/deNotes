@@ -14,8 +14,12 @@ import {
   addAndSelectNodeThunkAction,
 } from '../redux/actions/notesListActions';
 import NotesListContainer from './NotesListContainer';
+import defaultState from '../redux/misc/initialState';
+import { mockedTree } from '../test-utils/mocks/mockedNotesTree';
 
 it('render correctly', () => {
-  const store = createStore(rootReducer, compose(applyMiddleware(thunk)));
-  render(<Provider store={ store }><NotesListContainer /></Provider>);
+  const mockedNotesTree = { id: '1234', tree: mockedTree, dateCreated: 1111, dateModified: 2222 };
+  const store = createStore(rootReducer, { ...defaultState, notesTree: mockedNotesTree }, compose(applyMiddleware(thunk)));
+  const { container } = render(<Provider store={ store }><NotesListContainer /></Provider>);
+  expect(container).toMatchSnapshot();
 });
