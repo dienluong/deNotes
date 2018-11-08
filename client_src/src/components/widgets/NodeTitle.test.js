@@ -20,6 +20,7 @@ it('renders an element composed of an input with value corresponding to node tit
 
   const { container } = render(<NodeTitle {...props} />);
   expect(container.getElementsByTagName('input')[0]).toHaveAttribute('value', props.node.title);
+  expect(container).toMatchSnapshot();
 });
 
 it('calls handler function w/ the current input value on blur event, if value changed', () => {
