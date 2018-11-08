@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders an element composed of an input with value corresponding to node title 1`] = `
+<div>
+  <form>
+    <input
+      class="dnt__node-title"
+      type="text"
+      value="test-node"
+    />
+  </form>
+</div>
+`;
