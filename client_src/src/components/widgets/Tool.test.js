@@ -9,7 +9,9 @@ it('renders a button with specified label reacting to click event', () => {
   const clickHandler = jest.fn();
   const label = 'test-tool-label';
 
-  const { queryAllByText } = render(<Tool label={ label } onClick={ clickHandler }/>);
+  const { queryAllByText, container } = render(<Tool label={ label } onClick={ clickHandler }/>);
+  expect(container).toMatchSnapshot();
+
   const elements = queryAllByText(label);
   expect(elements).toHaveLength(1);
   expect(elements[0]).toBeVisible();

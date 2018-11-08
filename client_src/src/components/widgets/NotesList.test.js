@@ -35,6 +35,7 @@ it('should render all node titles', () => {
 
   const { container, queryAllByValue } = render(<NotesList { ...props }/>);
 
+  expect(container).toMatchSnapshot();
   const renderedInputs = Array.from(container.getElementsByTagName('input'));
   const renderedTitles = renderedInputs.map(input => input.value);
 

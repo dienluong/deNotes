@@ -1,0 +1,593 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render all node titles 1`] = `
+<div>
+  <button>
+    tool1
+  </button>
+  <button>
+    tool2
+  </button>
+  <nav
+    class="dnt__pathnav"
+  >
+    <ul>
+      <li
+        class="lined dnt__pathnav-segment--active"
+      >
+        <span>
+          /
+          &gt;
+        </span>
+      </li>
+    </ul>
+  </nav>
+  <div
+    class="rst__tree tree"
+    style="height: 100%;"
+  >
+    <div>
+      <div
+        aria-label="grid"
+        aria-readonly="true"
+        class="ReactVirtualized__Grid ReactVirtualized__List rst__virtualScrollOverride"
+        role="grid"
+        style="box-sizing: border-box; direction: ltr; height: 99999px; position: relative; width: 200px; overflow-x: hidden; overflow-y: hidden;"
+        tabindex="0"
+      >
+        <div
+          class="ReactVirtualized__Grid__innerScrollContainer"
+          role="rowgroup"
+          style="width: auto; height: 434px; max-width: 200px; max-height: 434px; overflow: hidden; position: relative;"
+        >
+          <div
+            class="rst__node"
+            style="height: 62px; left: 0px; position: absolute; top: 0px; width: 100%;"
+          >
+            <div
+              class="rst__lineBlock rst__lineHalfHorizontalRight"
+              style="width: 44px;"
+            />
+            <div
+              class="rst__nodeContent"
+              style="left: 44px;"
+            >
+              <div
+                data-testid="folder|^|1"
+                style="height: 100%;"
+                tabindex="0"
+              >
+                <div>
+                  <button
+                    aria-label="Collapse"
+                    class="rst__collapseButton"
+                    style="left: -22px;"
+                    type="button"
+                  />
+                  <div
+                    class="rst__lineChildren"
+                    style="width: 44px;"
+                  />
+                </div>
+                <div
+                  class="rst__rowWrapper"
+                >
+                  <div
+                    class="rst__row dnt__tree-node"
+                    style="opacity: 1;"
+                  >
+                    <div
+                      class="rst__moveHandle"
+                      draggable="true"
+                    />
+                    <div
+                      class="rst__rowContents"
+                    >
+                      <div
+                        class="rst__rowLabel"
+                      >
+                        <span
+                          class="rst__rowTitle"
+                        >
+                          <form>
+                            <input
+                              class="dnt__node-title"
+                              type="text"
+                              value="/"
+                            />
+                          </form>
+                        </span>
+                        
+                      </div>
+                      <div
+                        class="rst__rowToolbar"
+                      >
+                        <div
+                          class="rst__toolbarButton"
+                        >
+                          <button
+                            class="dnt__tree-node-btn"
+                          >
+                            +
+                          </button>
+                        </div>
+                        <div
+                          class="rst__toolbarButton"
+                        >
+                          <button
+                            class="dnt__tree-node-btn"
+                          >
+                            x
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="rst__node"
+            style="height: 62px; left: 0px; position: absolute; top: 62px; width: 100%;"
+          >
+            <div
+              class="rst__lineBlock"
+              style="width: 44px;"
+            />
+            <div
+              class="rst__lineBlock rst__lineHalfHorizontalRight rst__lineFullVertical"
+              style="width: 44px;"
+            />
+            <div
+              class="rst__nodeContent"
+              style="left: 88px;"
+            >
+              <div
+                data-testid="item|^|2"
+                style="height: 100%;"
+                tabindex="0"
+              >
+                <div
+                  class="rst__rowWrapper"
+                >
+                  <div
+                    class="rst__row dnt__tree-node"
+                    style="opacity: 1;"
+                  >
+                    <div
+                      class="rst__moveHandle"
+                      draggable="true"
+                    />
+                    <div
+                      class="rst__rowContents"
+                    >
+                      <div
+                        class="rst__rowLabel"
+                      >
+                        <span
+                          class="rst__rowTitle"
+                        >
+                          <form>
+                            <input
+                              class="dnt__node-title"
+                              type="text"
+                              value="note 1"
+                            />
+                          </form>
+                        </span>
+                        
+                      </div>
+                      <div
+                        class="rst__rowToolbar"
+                      >
+                        <div
+                          class="rst__toolbarButton"
+                        >
+                          <button
+                            class="dnt__tree-node-btn"
+                          >
+                            x
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="rst__node"
+            style="height: 62px; left: 0px; position: absolute; top: 124px; width: 100%;"
+          >
+            <div
+              class="rst__lineBlock"
+              style="width: 44px;"
+            />
+            <div
+              class="rst__lineBlock rst__lineHalfHorizontalRight rst__lineFullVertical"
+              style="width: 44px;"
+            />
+            <div
+              class="rst__nodeContent"
+              style="left: 88px;"
+            >
+              <div
+                data-testid="item|^|3"
+                style="height: 100%;"
+                tabindex="0"
+              >
+                <div
+                  class="rst__rowWrapper"
+                >
+                  <div
+                    class="rst__row dnt__tree-node"
+                    style="opacity: 1;"
+                  >
+                    <div
+                      class="rst__moveHandle"
+                      draggable="true"
+                    />
+                    <div
+                      class="rst__rowContents"
+                    >
+                      <div
+                        class="rst__rowLabel"
+                      >
+                        <span
+                          class="rst__rowTitle"
+                        >
+                          <form>
+                            <input
+                              class="dnt__node-title"
+                              type="text"
+                              value="note 2"
+                            />
+                          </form>
+                        </span>
+                        
+                      </div>
+                      <div
+                        class="rst__rowToolbar"
+                      >
+                        <div
+                          class="rst__toolbarButton"
+                        >
+                          <button
+                            class="dnt__tree-node-btn"
+                          >
+                            x
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="rst__node"
+            style="height: 62px; left: 0px; position: absolute; top: 186px; width: 100%;"
+          >
+            <div
+              class="rst__lineBlock"
+              style="width: 44px;"
+            />
+            <div
+              class="rst__lineBlock rst__lineHalfHorizontalRight rst__lineFullVertical"
+              style="width: 44px;"
+            />
+            <div
+              class="rst__nodeContent"
+              style="left: 88px;"
+            >
+              <div
+                data-testid="folder|^|4"
+                style="height: 100%;"
+                tabindex="0"
+              >
+                <div>
+                  <button
+                    aria-label="Collapse"
+                    class="rst__collapseButton"
+                    style="left: -22px;"
+                    type="button"
+                  />
+                  <div
+                    class="rst__lineChildren"
+                    style="width: 44px;"
+                  />
+                </div>
+                <div
+                  class="rst__rowWrapper"
+                >
+                  <div
+                    class="rst__row dnt__tree-node"
+                    style="opacity: 1;"
+                  >
+                    <div
+                      class="rst__moveHandle"
+                      draggable="true"
+                    />
+                    <div
+                      class="rst__rowContents"
+                    >
+                      <div
+                        class="rst__rowLabel"
+                      >
+                        <span
+                          class="rst__rowTitle"
+                        >
+                          <form>
+                            <input
+                              class="dnt__node-title"
+                              type="text"
+                              value="subfolder 1"
+                            />
+                          </form>
+                        </span>
+                        
+                      </div>
+                      <div
+                        class="rst__rowToolbar"
+                      >
+                        <div
+                          class="rst__toolbarButton"
+                        >
+                          <button
+                            class="dnt__tree-node-btn"
+                          >
+                            +
+                          </button>
+                        </div>
+                        <div
+                          class="rst__toolbarButton"
+                        >
+                          <button
+                            class="dnt__tree-node-btn"
+                          >
+                            x
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="rst__node"
+            style="height: 62px; left: 0px; position: absolute; top: 248px; width: 100%;"
+          >
+            <div
+              class="rst__lineBlock"
+              style="width: 44px;"
+            />
+            <div
+              class="rst__lineBlock rst__lineFullVertical"
+              style="width: 44px;"
+            />
+            <div
+              class="rst__lineBlock rst__lineHalfHorizontalRight rst__lineFullVertical"
+              style="width: 44px;"
+            />
+            <div
+              class="rst__nodeContent"
+              style="left: 132px;"
+            >
+              <div
+                data-testid="item|^|5"
+                style="height: 100%;"
+                tabindex="0"
+              >
+                <div
+                  class="rst__rowWrapper"
+                >
+                  <div
+                    class="rst__row dnt__tree-node"
+                    style="opacity: 1;"
+                  >
+                    <div
+                      class="rst__moveHandle"
+                      draggable="true"
+                    />
+                    <div
+                      class="rst__rowContents"
+                    >
+                      <div
+                        class="rst__rowLabel"
+                      >
+                        <span
+                          class="rst__rowTitle"
+                        >
+                          <form>
+                            <input
+                              class="dnt__node-title"
+                              type="text"
+                              value="subnote 1"
+                            />
+                          </form>
+                        </span>
+                        
+                      </div>
+                      <div
+                        class="rst__rowToolbar"
+                      >
+                        <div
+                          class="rst__toolbarButton"
+                        >
+                          <button
+                            class="dnt__tree-node-btn"
+                          >
+                            x
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="rst__node"
+            style="height: 62px; left: 0px; position: absolute; top: 310px; width: 100%;"
+          >
+            <div
+              class="rst__lineBlock"
+              style="width: 44px;"
+            />
+            <div
+              class="rst__lineBlock rst__lineFullVertical"
+              style="width: 44px;"
+            />
+            <div
+              class="rst__lineBlock rst__lineHalfVerticalTop rst__lineHalfHorizontalRight"
+              style="width: 44px;"
+            />
+            <div
+              class="rst__nodeContent"
+              style="left: 132px;"
+            >
+              <div
+                data-testid="item|^|6"
+                style="height: 100%;"
+                tabindex="0"
+              >
+                <div
+                  class="rst__rowWrapper"
+                >
+                  <div
+                    class="rst__row dnt__tree-node"
+                    style="opacity: 1;"
+                  >
+                    <div
+                      class="rst__moveHandle"
+                      draggable="true"
+                    />
+                    <div
+                      class="rst__rowContents"
+                    >
+                      <div
+                        class="rst__rowLabel"
+                      >
+                        <span
+                          class="rst__rowTitle"
+                        >
+                          <form>
+                            <input
+                              class="dnt__node-title"
+                              type="text"
+                              value="subnote 2"
+                            />
+                          </form>
+                        </span>
+                        
+                      </div>
+                      <div
+                        class="rst__rowToolbar"
+                      >
+                        <div
+                          class="rst__toolbarButton"
+                        >
+                          <button
+                            class="dnt__tree-node-btn"
+                          >
+                            x
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="rst__node"
+            style="height: 62px; left: 0px; position: absolute; top: 372px; width: 100%;"
+          >
+            <div
+              class="rst__lineBlock"
+              style="width: 44px;"
+            />
+            <div
+              class="rst__lineBlock rst__lineHalfVerticalTop rst__lineHalfHorizontalRight"
+              style="width: 44px;"
+            />
+            <div
+              class="rst__nodeContent"
+              style="left: 88px;"
+            >
+              <div
+                data-testid="folder|^|7"
+                style="height: 100%;"
+                tabindex="0"
+              >
+                <div
+                  class="rst__rowWrapper"
+                >
+                  <div
+                    class="rst__row dnt__tree-node"
+                    style="opacity: 1;"
+                  >
+                    <div
+                      class="rst__moveHandle"
+                      draggable="true"
+                    />
+                    <div
+                      class="rst__rowContents"
+                    >
+                      <div
+                        class="rst__rowLabel"
+                      >
+                        <span
+                          class="rst__rowTitle"
+                        >
+                          <form>
+                            <input
+                              class="dnt__node-title"
+                              type="text"
+                              value="subfolder 2"
+                            />
+                          </form>
+                        </span>
+                        
+                      </div>
+                      <div
+                        class="rst__rowToolbar"
+                      >
+                        <div
+                          class="rst__toolbarButton"
+                        >
+                          <button
+                            class="dnt__tree-node-btn"
+                          >
+                            +
+                          </button>
+                        </div>
+                        <div
+                          class="rst__toolbarButton"
+                        >
+                          <button
+                            class="dnt__tree-node-btn"
+                          >
+                            x
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

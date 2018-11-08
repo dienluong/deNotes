@@ -13,6 +13,7 @@ it('renders an element with a label and reacting to a click event', () => {
   };
 
   const { queryAllByText, container } = render(<PathSegment { ...props } />);
+  expect(container).toMatchSnapshot();
   const elements = queryAllByText(props.label, { exact: false });
   expect(elements).toHaveLength(1);
   expect(container.firstChild).toHaveClass(props.className);

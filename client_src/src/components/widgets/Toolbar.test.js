@@ -13,9 +13,11 @@ it('renders a group of tools from list of labels and handlers received', () => {
   for (let i = 1; i <= numButtons; i += 1) {
     tools.set(`${labelPrefix} ${i}`, jest.fn());
   }
-  const { queryAllByText } = render(<Toolbar toolsMap={ tools } />);
 
+  const { queryAllByText, container } = render(<Toolbar toolsMap={ tools } />);
+  expect(container).toMatchSnapshot();
   tools.forEach((ignore, key) => expect(queryAllByText(key)).toHaveLength(1));
+
   const buttons = queryAllByText(labelPrefix, { exact: false });
   expect(buttons).toHaveLength(3);
   buttons.forEach(b => expect(b).toBeVisible());

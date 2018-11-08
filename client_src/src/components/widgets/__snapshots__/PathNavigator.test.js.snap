@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders an element composed of segments w/ labels and with specified segment as "active" 1`] = `
+<div>
+  <nav
+    class="dnt__pathnav"
+  >
+    <ul>
+      <li
+        class="lined"
+      >
+        <span>
+          label1
+          &gt;
+        </span>
+      </li>
+      <li
+        class="lined dnt__pathnav-segment--active"
+      >
+        <span>
+          label2
+          &gt;
+        </span>
+      </li>
+      <li
+        class="lined"
+      >
+        <span>
+          label3
+          &gt;
+        </span>
+      </li>
+    </ul>
+  </nav>
+</div>
+`;

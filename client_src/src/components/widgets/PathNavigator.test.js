@@ -15,6 +15,7 @@ it('renders an element composed of segments w/ labels and with specified segment
 
   const { queryAllByText, container } = render(<PathNavigator { ...props } />);
 
+  expect(container).toMatchSnapshot();
   // expect rendered component to have all specified labels
   props.path.forEach(label => expect(queryAllByText(label, { exact: false })).toHaveLength(1));
 
