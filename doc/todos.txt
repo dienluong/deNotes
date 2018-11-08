@@ -28,9 +28,11 @@ Implement local storage
   x -> save to and load from local storage
   x -> delete from local storage
 
+Use snapshot tests.
 How to handle error (promises) from Observers?
 How to handle offline mode?  Do we let user create/modify notes offline and store them locally? How do we reconciliate the local data with the remote data once connection is back?
 Active node should be the persistent across sessions.
+Clean up, refactor client's index.js
 Should adopt convention for thunk return value:  1) a Promise resolving to an action obj in the successful case or 2) a Promise rejected with an Error obj.
 Upon deleting a note, switch active node to previous note in folder; if no note in folder, switch to folder and disable editor
   -> OR: switch to previous active node.
