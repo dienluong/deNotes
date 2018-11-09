@@ -17,7 +17,6 @@ it('renders an element with a label and reacting to a click event', () => {
   const elements = queryAllByText(props.label, { exact: false });
   expect(elements).toHaveLength(1);
   expect(container.firstChild).toHaveClass(props.className);
-  expect(container.firstChild).toBeVisible();
   fireEvent.click(container.firstChild);
   expect(props.onClick).toBeCalledTimes(1);
 });

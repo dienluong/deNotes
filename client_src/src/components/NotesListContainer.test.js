@@ -2,7 +2,7 @@ import React from 'react';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { render } from 'react-testing-library';
+import { render, prettyDOM } from 'react-testing-library';
 import 'jest-dom/extend-expect';
 import rootReducer from '../redux/reducers';
 import NotesListContainer from './NotesListContainer';
@@ -14,19 +14,21 @@ import pathNavStyles from './widgets/PathNavigator.module.css';
 import notesListStyles from './widgets/NotesList.module.css';
 import nodeTitleStyles from './widgets/NodeTitle.module.css';
 
+import { configure, shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+configure({ adapter: new Adapter() });
+let wrapper;
+
+afterEach(() => {
+  if (typeof wrapper.unmount === 'function') { wrapper.unmount(); }
+});
+
 it('render correctly', () => {
   const mockedNotesTree = { id: '1234', tree: mockedTree, dateCreated: 1111, dateModified: 2222 };
   const store = createStore(rootReducer, { ...defaultState, notesTree: mockedNotesTree }, compose(applyMiddleware(thunk)));
   const { container } = render(<Provider store={ store }><NotesListContainer /></Provider>);
+
+  wrapper = shallow(<Provider store={ store }><div><NotesListContainer /></div></Provider>);
+
   expect(container).toMatchSnapshot();
-  expect(container).toBeVisible();
-  container.querySelectorAll(`.${toolbarStyles.dnt__toolbar}`).forEach(toolbar => expect(toolbar).toBeVisible());
-  container.querySelectorAll(`.${toolStyles.dnt__tool}`).forEach(tool => expect(tool).toBeVisible());
-  container.querySelectorAll(`.${pathNavStyles.dnt__pathnav}`).forEach(nav => expect(nav).toBeVisible());
-  container.querySelectorAll(`.${pathNavStyles['dnt__pathnav-segment']}`).forEach(segment => expect(segment).toBeVisible());
-  container.querySelectorAll(`.${pathNavStyles['dnt__pathnav-segment--active']}`).forEach(segment => expect(segment).toBeVisible());
-  container.querySelectorAll(`.${notesListStyles.dnt__tree}`).forEach(tree => expect(tree).toBeVisible());
-  container.querySelectorAll(`.${notesListStyles['dnt__tree-node']}`).forEach(node => expect(node).toBeVisible());
-  container.querySelectorAll(`.${notesListStyles['dnt__tree-node-btn']}`).forEach(button => expect(button).toBeVisible());
-  container.querySelectorAll(`.${nodeTitleStyles['dnt__node-title']}`).forEach(title => expect(title).toBeVisible());
 });

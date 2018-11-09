@@ -20,7 +20,6 @@ it('renders a group of tools from list of labels and handlers received', () => {
 
   const buttons = queryAllByText(labelPrefix, { exact: false });
   expect(buttons).toHaveLength(3);
-  buttons.forEach(b => expect(b).toBeVisible());
   buttons.forEach(b => fireEvent.click(b));
   tools.forEach(handler => expect(handler).toBeCalledTimes(1));
 });

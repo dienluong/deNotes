@@ -14,7 +14,6 @@ it('renders a button with specified label reacting to click event', () => {
 
   const elements = queryAllByText(label);
   expect(elements).toHaveLength(1);
-  expect(elements[0]).toBeVisible();
   fireEvent.click(elements[0]);
   expect(clickHandler).toBeCalledTimes(1);
 });
