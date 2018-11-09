@@ -31,7 +31,7 @@ exports[`should render all node titles 1`] = `
     </ul>
   </nav>
   <div
-    class="rst__tree dnt__tree"
+    class="rst__tree tree dnt__tree"
     style="height: 100%;"
   >
     <div>

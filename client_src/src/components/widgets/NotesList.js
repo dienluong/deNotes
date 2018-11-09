@@ -77,7 +77,7 @@ function NotesList({
         onClick={ pathNavigatorClickHandler }
       />
       <Tree
-        className={ styles.dnt__tree }
+        className={ 'tree ' + styles.dnt__tree }
         treeData={ tree }
         onChange={ treeChangeHandler }
         getNodeKey={ getNodeKey }
