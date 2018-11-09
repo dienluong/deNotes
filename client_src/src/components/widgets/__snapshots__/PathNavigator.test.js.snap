@@ -7,7 +7,7 @@ exports[`renders an element composed of segments w/ labels and with specified se
   >
     <ul>
       <li
-        class="lined"
+        class="lined dnt__pathnav-segment"
       >
         <span>
           label1
@@ -23,7 +23,7 @@ exports[`renders an element composed of segments w/ labels and with specified se
         </span>
       </li>
       <li
-        class="lined"
+        class="lined dnt__pathnav-segment"
       >
         <span>
           label3

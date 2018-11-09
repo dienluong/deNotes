@@ -2,12 +2,20 @@
 
 exports[`render correctly 1`] = `
 <div>
-  <button>
-    New Folder
-  </button>
-  <button>
-    New Note
-  </button>
+  <div
+    class="dnt__toolbar"
+  >
+    <button
+      class="dnt__tool"
+    >
+      New Folder
+    </button>
+    <button
+      class="dnt__tool"
+    >
+      New Note
+    </button>
+  </div>
   <nav
     class="dnt__pathnav"
   >
@@ -23,7 +31,7 @@ exports[`render correctly 1`] = `
     </ul>
   </nav>
   <div
-    class="rst__tree tree"
+    class="rst__tree dnt__tree"
     style="height: 100%;"
   >
     <div>

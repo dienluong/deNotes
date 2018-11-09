@@ -2,12 +2,20 @@
 
 exports[`should render all node titles 1`] = `
 <div>
-  <button>
-    tool1
-  </button>
-  <button>
-    tool2
-  </button>
+  <div
+    class="dnt__toolbar"
+  >
+    <button
+      class="dnt__tool"
+    >
+      tool1
+    </button>
+    <button
+      class="dnt__tool"
+    >
+      tool2
+    </button>
+  </div>
   <nav
     class="dnt__pathnav"
   >
@@ -23,7 +31,7 @@ exports[`should render all node titles 1`] = `
     </ul>
   </nav>
   <div
-    class="rst__tree tree"
+    class="rst__tree dnt__tree"
     style="height: 100%;"
   >
     <div>
