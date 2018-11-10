@@ -69,7 +69,7 @@ function NotesList({
   // `);
 
   return (
-    <Fragment>
+    <div>
       <Toolbar toolsMap={ toolbarHandlersMap } />
       <PathNavigator
         path={ activePath }
@@ -83,7 +83,7 @@ function NotesList({
         getNodeKey={ getNodeKey }
         generateNodeProps={ buildNodeProps }
       />
-    </Fragment>
+    </div>
   );
 }
 
