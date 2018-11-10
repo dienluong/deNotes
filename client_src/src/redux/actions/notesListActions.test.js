@@ -157,6 +157,10 @@ describe('2. deleteNodeThunkAction', () => {
       ...initialState.notesTree,
       tree: mockedTree,
     },
+    activeNode: {
+      id: mockedTree[0].id,
+      path: [mockedTree[0].id],
+    },
   });
 
   afterEach(() => {

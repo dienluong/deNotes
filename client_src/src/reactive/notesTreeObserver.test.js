@@ -25,7 +25,7 @@ describe('observer', () => {
 
   it('should return rejected Promise if invoked without prior injecting dependency', async() => {
     const notesTree = {
-      ...initialState,
+      ...initialState.notesTree,
       id: 'my-test-tree',
       dateCreated: Date.now() + 100000,
       dateModified: Date.now() + 200000,
@@ -36,7 +36,7 @@ describe('observer', () => {
 
   it('should not save if not modified', async() => {
     const notesTree = {
-      ...initialState,
+      ...initialState.notesTree,
       id: 'my-test-tree',
       dateCreated: Date.now() - 200000,
       dateModified: Date.now() - 100000,
@@ -48,7 +48,7 @@ describe('observer', () => {
 
   it('should save if modified since last saved', async() => {
     const notesTree = {
-      ...initialState,
+      ...initialState.notesTree,
       id: 'my-test-tree',
       dateCreated: Date.now() + 100000,
       dateModified: Date.now() + 200000,
