@@ -13,6 +13,11 @@ import {
 
 import { getNodeKey } from '../utils/treeUtils';
 
+export const TOOLBAR_LABELS = {
+  NEW_FOLDER: 'New Folder',
+  NEW_NOTE: 'New Note',
+};
+
 function mapStateToProps(state) {
   const activePathByTitles = selectTitlesFromActivePath(state);
 
@@ -65,8 +70,8 @@ function mapDispatchToProps(dispatch) {
 
   const toolbarHandlersMap = new Map();
 
-  toolbarHandlersMap.set('New Folder', toolbarNewFolderBtnHandler);
-  toolbarHandlersMap.set('New Note', toolbarNewNoteBtnHandler);
+  toolbarHandlersMap.set(TOOLBAR_LABELS.NEW_FOLDER, toolbarNewFolderBtnHandler);
+  toolbarHandlersMap.set(TOOLBAR_LABELS.NEW_NOTE, toolbarNewNoteBtnHandler);
 
   return {
     treeChangeHandler(tree) {

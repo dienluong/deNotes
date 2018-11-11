@@ -2,6 +2,11 @@ import uuid from 'uuid/v4';
 import { find, getFlatDataFromTree } from 'react-sortable-tree';
 
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
+const DEFAULT_TITLES = {
+  FOLDER: 'New Folder',
+  NOTE: 'New Note',
+};
+
 
 /**
  * Deep comparison of objects (including arrays).
@@ -44,7 +49,7 @@ export const getNodeKey = ({ node }) => node.id;
  * @param {NodeType} type
  * @return {*}
  */
-export function createNode({ title = 'New Note', subtitle = new Date().toLocaleString(), type = 'item' }) {
+export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().toLocaleString(), type = 'item' }) {
   // TODO: remove subtitle = uuid
   const id = uuid();
   const newNode = {
@@ -59,7 +64,7 @@ export function createNode({ title = 'New Note', subtitle = new Date().toLocaleS
 
   if (type === 'folder') {
     newNode.children = [];
-    newNode.title = title === 'New Note' ? 'New Folder' : title;
+    newNode.title = title === DEFAULT_TITLES.NOTE ? DEFAULT_TITLES.FOLDER : title;
   }
 
   return newNode;
