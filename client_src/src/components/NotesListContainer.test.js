@@ -1,6 +1,5 @@
 import React from 'react';
 import createMockStore from 'redux-mock-store';
-// import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { render, cleanup, fireEvent } from 'react-testing-library';
@@ -9,6 +8,7 @@ import NotesListContainer, { TOOLBAR_LABELS } from './NotesListContainer';
 import NotesList from './widgets/NotesList';
 import initialState from '../redux/misc/initialState';
 import { mockedTree } from '../test-utils/mocks/mockedNotesTree';
+import { getNodeKey } from '../utils/treeUtils';
 jest.mock('../redux/actions/notesListActions');
 import {
   selectNodeThunkAction,
@@ -19,13 +19,12 @@ import {
   addAndSelectNodeThunkAction,
 } from '../redux/actions/notesListActions';
 
-import toolbarStyles from './widgets/Toolbar.module.css';
-import toolStyles from './widgets/Tool.module.css';
 import pathNavStyles from './widgets/PathNavigator.module.css';
 import notesListStyles from './widgets/NotesList.module.css';
 import nodeTitleStyles from './widgets/NodeTitle.module.css';
 
-import { configure, mount, shallow } from 'enzyme';
+// Configure Enzyme
+import { configure, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 configure({ adapter: new Adapter() });
 let wrapper = {};
@@ -57,17 +56,13 @@ it('render correctly with props with values taken from redux store', () => {
     tree: [...mockedNotesTree.tree],
     activeNode: { ...mockedInitialState.activeNode },
     activePath: [mockedNotesTree.tree[0].title],
+    getNodeKey,
   };
   const store = createMockStore([thunk])(mockedInitialState);
   const { container } = render(<Provider store={ store }><NotesListContainer /></Provider>);
   expect(container).toMatchSnapshot();
 
   wrapper = shallow(<Provider store={ store }><NotesListContainer /></Provider>).dive({ context: { store } });
-
-  // console.log('\n\n\n');
-  // console.log(wrapper.debug());
-  // console.log(wrapper.props());
-  // console.log('\n\n\n\n\n\n\n\n');
 
   expect(wrapper.find(NotesList).exists()).toBe(true);
   expect(wrapper.find(NotesList).props()).toMatchObject(expectedProps);
@@ -93,13 +88,12 @@ it('react to events by calling proper handlers', () => {
   // const store = createStore((state) => state, mockedInitialState, applyMiddleware(thunk));
 
   const { queryAllByText, container } = render(<Provider store={ store }><NotesListContainer /></Provider>);
-  // wrapper = mount(<Provider store={ store }><NotesListContainer /></Provider>);
 
   // Test toolbar clicks
   let target = queryAllByText(TOOLBAR_LABELS.NEW_FOLDER);
+  // wrapper.find(`.${toolStyles.dnt__tool}[children="New Folder"]`).simulate('click');
   expect(target).toHaveLength(1);
   fireEvent.click(target[0]);
-  // wrapper.find(`.${toolStyles.dnt__tool}[children="New Folder"]`).simulate('click');
   expect(addAndSelectNodeThunkAction).toBeCalledTimes(1);
 
   target = queryAllByText(TOOLBAR_LABELS.NEW_NOTE);
@@ -115,18 +109,22 @@ it('react to events by calling proper handlers', () => {
   expect(navigatePathAction).toBeCalledTimes(1);
 
   // Test node click
-  target = container.querySelectorAll(`.${nodeTitleStyles["dnt__node-title"]}`);
+  target = container.querySelectorAll(`.${notesListStyles["dnt__tree-node"]}`);
   // our choosen mocked tree has more than one node
   expect(target.length).toBeGreaterThan(1);
   // arbitrarily click on second node
   fireEvent.click(target[1]);
   expect(selectNodeThunkAction).toBeCalledTimes(1);
 
+  // Test title change on blur
+  target = container.querySelectorAll(`.${nodeTitleStyles["dnt__node-title"]}`);
+  expect(target.length).toBeGreaterThan(1);
   // change the title of the second node
   target[1].value = 'changed title';
   fireEvent.blur(target[1]);
   expect(changeNodeTitleAction).toBeCalledTimes(1);
 
+  // Test node button '+' click
   target = queryAllByText('+');
   // our mocked tree has more than one node
   expect(target.length).toBeGreaterThan(1);
@@ -134,6 +132,7 @@ it('react to events by calling proper handlers', () => {
   fireEvent.click(target[1]);
   expect(addAndSelectNodeThunkAction).toBeCalledTimes(1);
 
+  // Test node button 'x' click
   target = queryAllByText('x');
   // our mocked tree has more than one node
   expect(target.length).toBeGreaterThan(1);

@@ -5,6 +5,8 @@ import Quill from 'react-quill';
 
 // NOTE: Using uncontrolled component mainly because, as such, loading a note will not trigger a CONTENT_CHANGED action;
 // a CONTENT_CHANGED would have updated the 'modified date' of the note and ultimately resulted in a (unnecessary) content save.
+// Note about use of 'key': defaultValue is only read at the initial creation of the form component. So by default,
+// the component is not re-rendered when defaultValue subsequently changes. Changing the 'key' will allow us to trigger a re-render.
 function Editor({ id, title, delta, content, dateCreated, dateModified, readOnly, contentChangeHandler, options }) {
   return (
     <Quill
