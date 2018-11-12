@@ -1,4 +1,8 @@
 /* NotesList styles */
+.dnt__notes-list {
+  height: 100%;
+}
+
 .dnt__tree {
 
 }
