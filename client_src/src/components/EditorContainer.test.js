@@ -89,15 +89,6 @@ it('call the proper callback on content change', () => {
       readOnly: false,
     },
   };
-  const expectedProps = {
-    id: mockedInitialState.editorContent.id,
-    title: mockedInitialState.editorContent.title,
-    delta: mockedInitialState.editorContent.delta,
-    content: mockedInitialState.editorContent.content,
-    dateCreated: mockedInitialState.editorContent.dateCreated,
-    dateModified: mockedInitialState.editorContent.dateModified,
-    readOnly: mockedInitialState.editorContent.readOnly,
-  };
 
   changeContentAction.mockImplementation(() => ({ type: 'DUMMY_ACTION_TYPE', payload: 'DUMMY_PAYLOAD' }));
   const store = createMockStore([thunk])(mockedInitialState);
