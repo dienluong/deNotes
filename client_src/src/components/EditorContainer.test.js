@@ -5,7 +5,7 @@ import Delta from 'quill-delta';
 import createMockStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { render, cleanup, fireEvent } from 'react-testing-library';
+import { render, cleanup } from 'react-testing-library';
 import 'jest-dom/extend-expect';
 import initialState from '../redux/misc/initialState';
 import { MutationObserver } from '../test-utils/MutationObserver';
@@ -19,6 +19,7 @@ configure({ adapter: new Adapter() });
 let wrapper = {};
 
 beforeAll(() => {
+  // Required for rendering Quill editor
   global.MutationObserver = MutationObserver;
   document.getSelection = function() {
     return {
@@ -72,3 +73,35 @@ it('render correctly with proper component and props', () => {
   expect(wrapper.find(Editor).props()).toMatchObject(expectedProps);
 });
 
+it('call the proper callback on content change', () => {
+  const delta = new Delta([
+    { insert: 'Goodnight!' },
+  ]);
+  const mockedInitialState = {
+    ...initialState,
+    editorContent: {
+      id: 'editor-content-id2',
+      title: 'mocked content title',
+      content: '<p>Goodnight!<br></p>',
+      delta,
+      dateCreated: 3434,
+      dateModified: 9090,
+      readOnly: false,
+    },
+  };
+  const expectedProps = {
+    id: mockedInitialState.editorContent.id,
+    title: mockedInitialState.editorContent.title,
+    delta: mockedInitialState.editorContent.delta,
+    content: mockedInitialState.editorContent.content,
+    dateCreated: mockedInitialState.editorContent.dateCreated,
+    dateModified: mockedInitialState.editorContent.dateModified,
+    readOnly: mockedInitialState.editorContent.readOnly,
+  };
+
+  changeContentAction.mockImplementation(() => ({ type: 'DUMMY_ACTION_TYPE', payload: 'DUMMY_PAYLOAD' }));
+  const store = createMockStore([thunk])(mockedInitialState);
+
+  render(<Provider store={ store }><EditorContainer /></Provider>);
+  expect(changeContentAction).toBeCalledTimes(1);
+});
