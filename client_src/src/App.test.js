@@ -7,6 +7,7 @@ import App from './App';
 import { MutationObserver } from './test-utils/MutationObserver';
 
 beforeAll(() => {
+  // Required for rendering Quill editor
   global.MutationObserver = MutationObserver;
   document.getSelection = function() {
     return {
