@@ -1,0 +1,14 @@
+.lined {
+  display: inline-block;
+}
+
+.dnt__pathnav {
+}
+
+.dnt__pathnav-segment {
+}
+
+.dnt__pathnav-segment--active {
+  color: pink;
+  font-weight: bold;
+}

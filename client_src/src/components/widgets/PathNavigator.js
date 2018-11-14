@@ -1,12 +1,12 @@
 import React from 'react';
 import PathSegment from './PathSegment';
-import './PathNavigator.css';
+import styles from './PathNavigator.module.css';
 
 function PathNavigator({ path, activeSegmentIdx, onClick: clickHandler }) {
   const pathSegments = path.length ?
     path.map((step, idx) =>
       <PathSegment
-        className={ 'lined' + (idx === activeSegmentIdx ? ' active-segment' : '') }
+        className={ styles.lined + ' ' + (idx === activeSegmentIdx ? styles['dnt__pathnav-segment--active'] : styles['dnt__pathnav-segment']) }
         key={ idx }
         label={ step }
         onClick={ () => clickHandler({ idx }) }
@@ -14,7 +14,7 @@ function PathNavigator({ path, activeSegmentIdx, onClick: clickHandler }) {
     [];
 
   return (
-    <nav>
+    <nav className={ styles.dnt__pathnav }>
       <ul>
         { pathSegments }
       </ul>

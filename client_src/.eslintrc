@@ -1,6 +1,7 @@
 {
   "env": {
-    "browser": true
+    "browser": true,
+    "jest": true
   },
   "parserOptions": {
     "ecmaVersion": 6,
@@ -12,6 +13,7 @@
   "rules": {
     "object-curly-spacing": [2, "always"],
     "no-multiple-empty-lines": "off",
-    "brace-style": "off"
+    "brace-style": "off",
+    "quotes": "off"
   }
 }

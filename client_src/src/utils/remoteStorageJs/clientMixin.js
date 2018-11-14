@@ -2,13 +2,18 @@ const clientMixin = function clientMixin(moduleName) {
   return {
     save({ ownerId, id, dataObj }) {
       const path = `${ownerId}/${id}`;
-      return this.storeObject(moduleName, path, dataObj);
+      return this.storeObject(moduleName, path, dataObj)
+        .catch(err => {
+          // remoteStorageJS storeObject()'s Promise rejects to a ValicationError
+          // ValidationError is poorly documented.  It is an object that includes an "error" property, which is an Error object.
+          return Promise.reject(err.error);
+        });
     },
 
     load({ ownerId, id }) {
       if (!id) {
-        // getAll() is extremely poorly documented.
-        // It returns an object containing all the objects stored.
+        // remoteStorageJS getAll() is poorly documented.
+        // It returns an object (that is not an array) containing all the objects stored.
         // The key is the object's path relative to the path provided to getAll().
         // We are converting the object of objects into an array of objects.
         return this.getAll(`${ownerId}/`)

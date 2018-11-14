@@ -1,15 +1,16 @@
-import React, { Fragment } from 'react';
+import React from 'react';
+import styles from './Toolbar.module.css';
 import Tool from './Tool';
 
 function Toolbar({ toolsMap }) {
   const toolsSet = [];
   for (let [label, handler] of toolsMap) {
-    toolsSet.push(<Tool key={label} label={label} onClick={ handler }/>);
+    toolsSet.push(<Tool key={ label } label={ label } onClick={ handler }/>);
   }
   return (
-    <Fragment>
+    <div className={ styles.dnt__toolbar } >
       { toolsSet }
-    </Fragment>
+    </div>
   );
 }
 

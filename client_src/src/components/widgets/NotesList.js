@@ -1,13 +1,13 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import Toolbar from './Toolbar';
 import PathNavigator from './PathNavigator';
 import Tree from 'react-sortable-tree';
 import 'react-sortable-tree/style.css';
-import './NotesList.css';
+import styles from './NotesList.module.css';
 import NodeTitle from './NodeTitle';
 
 function NotesList({
-  notesTree,
+  tree,
   activeNode,
   activePath,
   treeChangeHandler,
@@ -22,20 +22,18 @@ function NotesList({
   function buildNodeProps({ node, path }) {
     return ({
       title: (<NodeTitle node={ node } path={ path } onSubmit={ nodeTitleChangeHandler } />),
-      className: (node.id === activeNode.id) ? 'dnt__active-tree-node' : '',
+      className: (node.id === activeNode.id) ? `${styles['dnt__tree-node']} ${styles['dnt__tree-node--active']}` : styles['dnt__tree-node'],
       buttons: _buildNodeButtons({ node, path }),
       tabIndex: '0',
+      'data-testid': node.id,
       onClick: () => nodeClickHandler({ id: node.id, path }),
-      // TODO: remove
-      // onFocus: () => console.log('Focused: ' + node.title),
-      // onBlur: () => console.log('unFocused: ' + node.title),
     });
   }
 
   function _buildNodeButtons({ node, path }) {
     let buttons = [
       <button
-        className='dnt__tree-node-btn'
+        className={ styles['dnt__tree-node-btn'] }
         onClick={ (event) => {
           event.stopPropagation();
           deleteNodeBtnHandler({ node, path });
@@ -49,7 +47,7 @@ function NotesList({
     if (typeof node.children !== 'undefined') {
       buttons.unshift(
         <button
-          className='dnt__tree-node-btn'
+          className={ styles['dnt__tree-node-btn'] }
           onClick={ (event) => {
             event.stopPropagation();
             addNoteBtnHandler({ path });
@@ -64,14 +62,14 @@ function NotesList({
 
   // TODO: remove
   // console.log(`
-  //   Tree: ${JSON.stringify(notesTree)} \n
+  //   Tree: ${JSON.stringify(tree)} \n
   //   Active ID: ${activeNode.id} \n
   //   Path: ${activeNode.path} \n
   //   ${ activePath }
   // `);
 
   return (
-    <Fragment>
+    <div className={ styles["dnt__notes-list"] }>
       <Toolbar toolsMap={ toolbarHandlersMap } />
       <PathNavigator
         path={ activePath }
@@ -79,13 +77,13 @@ function NotesList({
         onClick={ pathNavigatorClickHandler }
       />
       <Tree
-        className='tree'
-        treeData={ notesTree }
+        className={ 'tree ' + styles.dnt__tree }
+        treeData={ tree }
         onChange={ treeChangeHandler }
         getNodeKey={ getNodeKey }
         generateNodeProps={ buildNodeProps }
       />
-    </Fragment>
+    </div>
   );
 }
 

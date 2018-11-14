@@ -1,5 +1,17 @@
 /* NotesList styles */
-.dnt__active-tree-node {
+.dnt__notes-list {
+  height: 100%;
+}
+
+.dnt__tree {
+
+}
+
+.dnt__tree-node {
+
+}
+
+.dnt__tree-node--active {
   box-shadow: 0 0 0 4px pink;
 }
 

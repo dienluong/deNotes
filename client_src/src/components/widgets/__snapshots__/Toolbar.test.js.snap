@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders a group of tools from list of labels and handlers received 1`] = `
+<div>
+  <div
+    class="dnt__toolbar"
+  >
+    <button
+      class="dnt__tool"
+    >
+      tool 1
+    </button>
+    <button
+      class="dnt__tool"
+    >
+      tool 2
+    </button>
+    <button
+      class="dnt__tool"
+    >
+      tool 3
+    </button>
+  </div>
+</div>
+`;

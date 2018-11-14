@@ -7,12 +7,12 @@ export function inject({ save = _save, load = _load }) {
 }
 
 export function save({ userId, notesTree }) {
-  if (!Array.isArray(notesTree.tree)) {
-    return Promise.reject(new Error('Save aborted. Cause: invalid tree.'));
+  if (!notesTree || !Array.isArray(notesTree.tree) || !notesTree.id) {
+    return Promise.reject(new Error('invalid tree.'));
   }
 
-  if (!userId) {
-    return Promise.reject(new Error('Save aborted. Cause: invalid userId.'));
+  if (!userId || typeof userId !== 'string') {
+    return Promise.reject(new Error('invalid user ID.'));
   }
 
   return _save({
@@ -22,22 +22,22 @@ export function save({ userId, notesTree }) {
     dataObj: {
       'id': notesTree.id,
       'tree': notesTree.tree,
+      'dateCreated': notesTree.dateCreated || 0,
+      'dateModified': notesTree.dateModified || 0,
       'ownerId': userId,
-      'dateCreated': notesTree.dateCreated,
-      'dateModified': notesTree.dateModified,
     },
   });
 }
 
 /**
  * Returns a promise resolving to an object containing the tree, the modified and the created dates.
- * @param id
- * @param userId
+ * @param {string} [id=''] ID of the tree to load (optional)
+ * @param {string} userId
  * @returns {*}
  */
 export function load({ id = '', userId = '' }) {
-  if (!id && !userId) {
-    return Promise.reject(new Error('Load aborted. Cause: invalid parameters.'));
+  if (!userId || typeof id !== 'string' || typeof userId !== 'string') {
+    return Promise.reject(new Error('invalid parameters.'));
   }
 
   return _load({
@@ -45,22 +45,32 @@ export function load({ id = '', userId = '' }) {
     id,
     ownerId: userId,
   }).then(fetchedData => {
+    const propList = ['id', 'tree', 'dateCreated', 'dateModified'];
     let notesTree;
     if (Array.isArray(fetchedData)) {
       if (fetchedData.length) {
         // just take the last tree, if multiple returned.
         notesTree = fetchedData[fetchedData.length - 1];
       } else {
-        // if no tree (noteTrees is empty array)...
-        return {};
+        // if no tree...
+        notesTree = {};
       }
     } else {
-      notesTree = fetchedData;
+      if (fetchedData) {
+        notesTree = fetchedData;
+      } else {
+        notesTree = {};
+      }
     }
 
-    const tree = typeof notesTree.tree === 'string' ? JSON.parse(notesTree.tree) : notesTree.tree;
-    const dateCreated = new Date(notesTree.dateCreated).getTime();
-    const dateModified = new Date(notesTree.dateModified).getTime();
-    return { ...notesTree, tree, dateCreated, dateModified };
+    if (notesTree && (typeof notesTree.hasOwnProperty === 'function') && propList.every(prop => notesTree.hasOwnProperty(prop))) {
+      const tree = typeof notesTree.tree === 'string' ? JSON.parse(notesTree.tree) : notesTree.tree;
+      const dateCreated = new Date(notesTree.dateCreated).getTime();
+      const dateModified = new Date(notesTree.dateModified).getTime();
+      return { ...notesTree, tree, dateCreated, dateModified };
+    } else {
+      const message = `Unrecognized data fetched. ID: ${id}`;
+      return Promise.reject(new Error(message));
+    }
   });
 }

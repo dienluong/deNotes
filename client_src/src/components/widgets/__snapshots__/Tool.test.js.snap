@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders a button with specified label reacting to click event 1`] = `
+<div>
+  <button
+    class="dnt__tool"
+  >
+    test-tool-label
+  </button>
+</div>
+`;

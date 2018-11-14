@@ -1,8 +1,9 @@
 import React from 'react';
+import styles from './Tool.module.css';
 
 function Tool({ label, onClick: clickHandler }) {
   return (
-    <button onClick={ clickHandler }>{ label }</button>
+    <button className={ styles.dnt__tool } onClick={ clickHandler }>{ label }</button>
   );
 }
 

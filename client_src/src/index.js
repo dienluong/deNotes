@@ -9,8 +9,9 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import rootReducer, { selectNotesTreeTree } from './redux/reducers';
-import { fetchNotesTreeThunkAction, selectNodeThunkAction } from './redux/actions/notesListActions';
-import { setUser } from './redux/actions/accountActions';
+import { use as notesListActionsInject, fetchNotesTreeThunkAction, selectNodeThunkAction } from './redux/actions/notesListActions';
+import { use as editorActionsInject } from './redux/actions/editorActions';
+import { setUserAction } from './redux/actions/accountActions';
 import notesListActionTypes from './redux/actions/constants/notesListActionConstants';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/pluck';
@@ -22,9 +23,30 @@ import * as editorContentStorage from './utils/editorContentStorage';
 // import { save as loopbackSave, load as loopbackLoad, remove as loopbackDelete } from './utils/loopbackREST';
 import { save as saveToStorage, load as loadFromStorage, remove as deleteFromStorage } from './utils/offlineStorage';
 
-// Use loopbackREST for loading and saving persisted data
 notesTreeStorage.inject({ save: saveToStorage, load: loadFromStorage });
 editorContentStorage.inject({ save: saveToStorage, load: loadFromStorage, remove: deleteFromStorage });
+
+// Inject dependencies into notesListActions
+notesListActionsInject({
+  notesTreeStorage: {
+    save: notesTreeStorage.save,
+    load: notesTreeStorage.load,
+  },
+  editorContentStorage: {
+    save: editorContentObserver.save,
+    load: editorContentStorage.load,
+    remove: editorContentStorage.remove,
+  },
+});
+
+// Inject dependencies into editorActions
+editorActionsInject({
+  editorContentStorage: {
+    save: editorContentObserver.save,
+    load: editorContentStorage.load,
+    remove: editorContentStorage.remove,
+  },
+});
 
 // TODO: Restrict Devtools in dev-only?
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -32,7 +54,7 @@ const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)))
 
 // TODO: adjust user ID to logged in user
 const userId = process.env.REACT_APP_USER_ID;
-store.dispatch(setUser({ id: userId }));
+store.dispatch(setUserAction({ user: { id: userId } }));
 
 // TODO: replace hardcoded value
 // const noteId = '218013d0-ad79-11e8-bfc8-79a6754f355a';

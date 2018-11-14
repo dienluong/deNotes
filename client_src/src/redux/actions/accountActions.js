@@ -1,6 +1,15 @@
 import accountActionTypes from './constants/accountActionConstants';
 
-export function setUser({ id }) {
+export function setUserAction({ user }) {
+  return {
+    type: accountActionTypes.SET_USER,
+    payload: {
+      user,
+    },
+  };
+}
+
+export function setUserIdAction({ id }) {
   return {
     type: accountActionTypes.SET_USERID,
     payload: {
@@ -8,4 +17,3 @@ export function setUser({ id }) {
     },
   };
 }
-

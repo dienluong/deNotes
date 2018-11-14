@@ -1,7 +1,31 @@
 import Delta from 'quill-delta';
 import editorActionTypes from './constants/editorActionConstants';
-import { load as loadContentFromStorage, remove as removeContentFromStorage } from '../../utils/editorContentStorage';
 
+// TODO: Remove
+// import { load as loadContentFromStorage, remove as removeContentFromStorage } from '../../utils/editorContentStorage';
+
+let _editorContentStorage = {
+  save: () => Promise.reject(new Error('Not implemented.')),
+  load: () => Promise.reject(new Error('Not implemented.')),
+  remove: () => Promise.reject(new Error('Not implemented.')),
+};
+
+export function use({ editorContentStorage }) {
+  const methods = ['save', 'load', 'remove'];
+  if (editorContentStorage && typeof editorContentStorage === 'object') {
+    methods.forEach(m => {
+      if (typeof editorContentStorage[m] === 'function') {
+        _editorContentStorage[m] = editorContentStorage[m];
+      }
+    });
+  }
+}
+
+/**
+ * @param editor
+ * @param content
+ * @return {{type: string, payload: {newContent: {delta: Quill.DeltaStatic | Delta, content: *, dateModified: number}}}}
+ */
 export function changeContentAction({ editor, content }) {
   return {
     type: editorActionTypes.CONTENT_CHANGED,
@@ -15,6 +39,10 @@ export function changeContentAction({ editor, content }) {
   };
 }
 
+/**
+ * @param noteId
+ * @return {function(*, *): Promise<T | never>}
+ */
 export function fetchEditorContentThunkAction({ noteId }) {
   return (dispatch, getState) => {
     const userId = getState().userInfo.id;
@@ -24,31 +52,21 @@ export function fetchEditorContentThunkAction({ noteId }) {
     });
     // TODO: replace hardcoded noteId value
     // id = '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e';
-    return loadContentFromStorage({ userId, id: noteId })
-      .then(content => {
-        if (content && 'body' in content && 'delta' in content) {
-          // Note: the retrieved dates are date-time strings in ISO format; must convert to milliseconds since Unix epoch.
-          const editorContent = {
-            id: noteId,
-            title: content.title,
-            content: content.body,
-            delta: typeof content.delta === 'string' ? new Delta(JSON.parse(content.delta)) : new Delta(content.delta),
-            dateModified: new Date(content.dateModified).getTime(),
-            dateCreated: new Date(content.dateCreated).getTime(),
-            readOnly: false,
-          };
-          return dispatch({
-            type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
-            payload: { editorContent },
-          });
-        } else {
-          const message = `Unrecognized data fetched. ID: ${noteId}`;
-          dispatch({
-            type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILURE,
-            payload: { error: { message, id: noteId } },
-          });
-          return Promise.reject(new Error(message));
-        }
+    return _editorContentStorage.load({ userId, id: noteId })
+      .then(fetched => {
+        const editorContent = {
+          id: fetched.id,
+          title: fetched.title,
+          content: fetched.content,
+          delta: new Delta(fetched.delta),
+          dateModified: fetched.dateModified,
+          dateCreated: fetched.dateCreated,
+          readOnly: false,
+        };
+        return dispatch({
+          type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
+          payload: { editorContent },
+        });
       })
       .catch(err => {
         const message = `${err.message} ID: ${noteId}`;
@@ -61,30 +79,45 @@ export function fetchEditorContentThunkAction({ noteId }) {
   };
 }
 
+/**
+ *
+ * @param ids {string[]}
+ * @return {Function}
+ */
 export function removeNoteThunkAction({ ids }) {
   return (dispatch, getState) => {
     if (!Array.isArray(ids)) {
-      return Promise.reject(new Error('Invalid parameter.'));
-    } else if (!ids.length) {
-      // if ids is empty array, simply return a Promise resolved to an action.
-      return Promise.resolve({
-        type: '',
-        payload: { count: 0 },
+      const message = 'Invalid parameter. Expecting an array.';
+      dispatch({
+        type: editorActionTypes.REMOVE_NOTE_FAILURE,
+        payload: { error: { message, ids } },
       });
+      return Promise.reject(new Error(message));
+    } else if (!ids.length) {
+      const action = {
+        type: editorActionTypes.REMOVE_NOTE_SUCCESS,
+        payload: { ids, count: 0 },
+      };
+      // if ids is empty array, simply dispatch and return a Promise resolved to that action.
+      return Promise.resolve(dispatch(action));
     }
 
-    dispatch({ type: editorActionTypes.REMOVING_NOTE, payload: { ids } });
+    dispatch({
+      type: editorActionTypes.REMOVING_NOTE,
+      payload: { ids },
+    });
     const userId = getState().userInfo.id;
-    return removeContentFromStorage({ userId, ids })
+    return _editorContentStorage.remove({ userId, ids })
       .then(result => {
-        if (result.count) {
-          return dispatch({
-            type: editorActionTypes.REMOVE_NOTE_SUCCESS,
-            payload: { ids, count: result.count },
-          });
-        } else {
-          return Promise.reject(new Error('None deleted.'));
+        let count = 0;
+        if (result && result.count) {
+          count = result.count;
         }
+
+        return dispatch({
+          type: editorActionTypes.REMOVE_NOTE_SUCCESS,
+          payload: { ids, count },
+        });
       })
       .catch(err => {
         const message = `Failed deleting note(s). ${err.message} ID: ${ids}`;

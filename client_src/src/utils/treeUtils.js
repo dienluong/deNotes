@@ -2,6 +2,40 @@ import uuid from 'uuid/v4';
 import { find, getFlatDataFromTree } from 'react-sortable-tree';
 
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
+const DEFAULT_TITLES = {
+  FOLDER: 'New Folder',
+  NOTE: 'New Note',
+};
+
+
+/**
+ * Deep comparison of objects (including arrays).
+ * @param obj1
+ * @param obj2
+ * @return {boolean}
+ * @private
+ */
+export function equals(obj1, obj2) {
+  if ((typeof obj1 !== 'object') || (typeof obj2 !== 'object')) {
+    return Object.is(obj1, obj2);
+  }
+
+  if (obj1 === null || obj2 === null) {
+    return obj1 === obj2;
+  }
+
+  const currentKeys = Object.keys(obj1);
+  const newKeys = Object.keys(obj2);
+
+  if (currentKeys.length !== newKeys.length) { return false; }
+
+  return newKeys.every(key => {
+    const currentVal = obj1[key];
+    const newVal = obj2[key];
+
+    return equals(currentVal, newVal);
+  });
+}
 
 export const getNodeKey = ({ node }) => node.id;
 
@@ -9,13 +43,14 @@ export const getNodeKey = ({ node }) => node.id;
  * Builds a node for a tree.
  * 'uniqid' is a unique ID usually used as a key when storing in a database.
  * 'id' is the combo of type+uniqid; it is the ID used for react-sortable-tree (in the 'path' it returns for example). The node type is included in order to efficiently determine the type of node when we only have its ID.
- * @param title {string}
- * @param subtitle {string}
- * @param type {string}
+ * @param {string} title
+ * @param {string} subtitle
+ * @typedef {("item" | "folder")} NodeType
+ * @param {NodeType} type
  * @return {*}
  */
-export function createNode({ title = 'New Note', subtitle = new Date().toLocaleString(), type = 'item' }) {
-  // TODO: remove
+export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().toLocaleString(), type = 'item' }) {
+  // TODO: remove subtitle = uuid
   const id = uuid();
   const newNode = {
     title,
@@ -29,10 +64,35 @@ export function createNode({ title = 'New Note', subtitle = new Date().toLocaleS
 
   if (type === 'folder') {
     newNode.children = [];
-    newNode.title = title === 'New Note' ? 'New Folder' : title;
+    newNode.title = title === DEFAULT_TITLES.NOTE ? DEFAULT_TITLES.FOLDER : title;
   }
 
   return newNode;
+}
+
+/**
+ * Returns the index of the deepest node of type 'folder' in path.
+ * Returns null if none found.
+ * @param path {Array}
+ * @return {?number}
+ * @private
+ */
+export function findClosestParent(path) {
+  if (!Array.isArray(path) || !path.length) {
+    return null;
+  }
+
+  const lastStep = path[path.length - 1];
+  if (typeof lastStep !== 'string') {
+    return null;
+  }
+
+  if (path.length === 1) {
+    return (lastStep.includes(`folder${ID_DELIMITER}`) ? 0 : null);
+  } else {
+    // If last step in path is not a folder, then the step previous to last must be a folder.
+    return (lastStep.includes(`folder${ID_DELIMITER}`)) ? path.length - 1 : path.length - 2;
+  }
 }
 
 /**
@@ -40,8 +100,10 @@ export function createNode({ title = 'New Note', subtitle = new Date().toLocaleS
  * Example: For ID "folder|^|a9914200-a7d2-11e8-a12b-99205b853de7"
  *          type is "folder"
  *          uniqid is "a9914200-a7d2-11e8-a12b-99205b853de7""
- * @param nodeId {string}
- * @param kind {"uniqid"|"type"}
+ *
+ * Note: possible types are "item" and "folder".
+ * @param {string} nodeId
+ * @param {("uniqid"|"type")} kind
  */
 export function translateNodeIdToInfo({ nodeId, kind = 'uniqid' }) {
   if (typeof nodeId !== 'string') {

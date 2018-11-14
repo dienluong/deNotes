@@ -13,8 +13,13 @@ import {
 
 import { getNodeKey } from '../utils/treeUtils';
 
+export const TOOLBAR_LABELS = {
+  NEW_FOLDER: 'New Folder',
+  NEW_NOTE: 'New Note',
+};
+
 function mapStateToProps(state) {
-  const activePathTitles = selectTitlesFromActivePath(state);
+  const activePathByTitles = selectTitlesFromActivePath(state);
 
   // const activePath = translatePathToInfo({ notesTree: state.notesTree, path: state.activeNode.path, kind: 'title' });
   if (mapStateToProps.cache.notesTree !== rootReducer.selectNotesTree(state)) {
@@ -29,9 +34,9 @@ function mapStateToProps(state) {
   } else {
     console.log('~~~~~~~~~~~~~~~~ Same Active Node');
   }
-  if (mapStateToProps.cache.activePath !== activePathTitles) {
+  if (mapStateToProps.cache.activePath !== activePathByTitles) {
     console.log('~~~~~~~~~~~~~~~~ Active Path Changed');
-    mapStateToProps.cache.activePath = activePathTitles;
+    mapStateToProps.cache.activePath = activePathByTitles;
   } else {
     console.log('~~~~~~~~~~~~~~~~ Same Active Path');
   }
@@ -44,9 +49,9 @@ function mapStateToProps(state) {
   // TODO: Remove ABOVE
 
   return {
-    notesTree: rootReducer.selectNotesTreeTree(state),
+    tree: rootReducer.selectNotesTreeTree(state),
     activeNode: rootReducer.selectActiveNode(state),
-    activePath: activePathTitles,
+    activePath: activePathByTitles,
   };
 }
 
@@ -65,8 +70,8 @@ function mapDispatchToProps(dispatch) {
 
   const toolbarHandlersMap = new Map();
 
-  toolbarHandlersMap.set('New Folder', toolbarNewFolderBtnHandler);
-  toolbarHandlersMap.set('New Note', toolbarNewNoteBtnHandler);
+  toolbarHandlersMap.set(TOOLBAR_LABELS.NEW_FOLDER, toolbarNewFolderBtnHandler);
+  toolbarHandlersMap.set(TOOLBAR_LABELS.NEW_NOTE, toolbarNewNoteBtnHandler);
 
   return {
     treeChangeHandler(tree) {

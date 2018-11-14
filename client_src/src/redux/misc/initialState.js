@@ -19,7 +19,7 @@ const _rootNode = [
 
 const epoch = 0;
 const now = Date.now();
-export default {
+const initialState = {
   userInfo: {
     id: 'default-user',
   },
@@ -43,3 +43,5 @@ export default {
     readOnly: true,
   },
 };
+
+export default initialState;
