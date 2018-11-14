@@ -24,6 +24,7 @@
     "debug": "@powershell -Command $env:DEBUG='*'; react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "coverage": "react-scripts test --coverage",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
@@ -39,5 +40,14 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!**/node_modules/**",
+      "!**/src/test-utils/**",
+      "!**/src/tmp/**",
+      "!**/src/registerServiceWorker.js"
+    ]
+  }
 }
