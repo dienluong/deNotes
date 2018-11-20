@@ -12,13 +12,16 @@ import {
 } from '../redux/actions/notesListActions';
 
 import { getNodeKey } from '../utils/treeUtils';
+import { ThunkDispatch } from "redux-thunk";
+import {AnyAction} from "redux";
 
+type RootStateT = typeof rootReducer.default;
 export const TOOLBAR_LABELS = {
   NEW_FOLDER: 'New Folder',
   NEW_NOTE: 'New Note',
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootStateT) {
   const activePathByTitles = selectTitlesFromActivePath(state);
 
   // const activePath = translatePathToInfo({ notesTree: state.notesTree, path: state.activeNode.path, kind: 'title' });
@@ -57,9 +60,9 @@ function mapStateToProps(state) {
 
 // TODO: Remove
 // Memoization.
-mapStateToProps.cache = {};
+mapStateToProps.cache = {} as { notesTree: any, activeNode: any, activePath: any, editorContent: any };
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: ThunkDispatch<RootStateT, any, AnyAction>) {
   function toolbarNewFolderBtnHandler() {
     return dispatch(addAndSelectNodeThunkAction({ kind: 'folder' }));
   }
@@ -74,29 +77,29 @@ function mapDispatchToProps(dispatch) {
   toolbarHandlersMap.set(TOOLBAR_LABELS.NEW_NOTE, toolbarNewNoteBtnHandler);
 
   return {
-    treeChangeHandler(tree) {
+    treeChangeHandler(tree: Array<object>) {
       return dispatch(changeNotesTreeAction({ tree }));
     },
-    nodeTitleChangeHandler({ node, title, path }) {
+    nodeTitleChangeHandler({ node, title, path } : { node: TreeNodeT, title: string, path: Array<string> }) {
       return dispatch(changeNodeTitleAction({ node, title, path }));
     },
-    pathNavigatorClickHandler({ idx }) {
+    pathNavigatorClickHandler({ idx } : { idx: number }) {
       return dispatch(navigatePathAction({ idx }));
     },
-    nodeClickHandler({ id = '', path = [] }) {
+    nodeClickHandler({ id = '', path = [] } : { id: string, path: Array<string> }) {
       return dispatch(selectNodeThunkAction({ id, path }));
     },
-    deleteNodeBtnHandler({ node, path }) {
+    deleteNodeBtnHandler({ node, path } : { node: TreeNodeT, path: Array<string> }) {
       return dispatch(deleteNodeThunkAction({ node, path }));
     },
-    addNoteBtnHandler({ path }) {
+    addNoteBtnHandler({ path } : { path: Array<string> }) {
       return dispatch(addAndSelectNodeThunkAction({ kind: 'item', path }));
     },
     toolbarHandlersMap: toolbarHandlersMap,
   };
 }
 
-function mergeProps(stateProps, dispatchProps, ownProps) {
+function mergeProps(stateProps: object, dispatchProps: object, ownProps: object) {
   return Object.assign({}, ownProps, stateProps, dispatchProps, { getNodeKey });
 }
 

@@ -6,6 +6,20 @@ import 'react-sortable-tree/style.css';
 import styles from './NotesList.module.css';
 import NodeTitle from './NodeTitle';
 
+type Props = {
+  tree: Array<TreeNodeT>,
+  activeNode: ActiveNodeT,
+  activePath: Array<string>,
+  treeChangeHandler: ({}) => unknown,
+  nodeTitleChangeHandler: ({}) => unknown,
+  nodeClickHandler: ({}) => unknown,
+  deleteNodeBtnHandler: ({}) => unknown,
+  addNoteBtnHandler: ({}) => unknown,
+  pathNavigatorClickHandler: ({}) => unknown,
+  toolbarHandlersMap: Map<string, ({}) => unknown>,
+  getNodeKey: ({}) => unknown,
+};
+
 function NotesList({
   tree,
   activeNode,
@@ -18,8 +32,8 @@ function NotesList({
   pathNavigatorClickHandler,
   toolbarHandlersMap,
   getNodeKey,
-}) {
-  function buildNodeProps({ node, path }) {
+} : Props) {
+  function buildNodeProps({ node, path } : { node: TreeNodeT, path: Array<string> }) {
     return ({
       title: (<NodeTitle node={ node } path={ path } onSubmit={ nodeTitleChangeHandler } />),
       className: (node.id === activeNode.id) ? `${styles['dnt__tree-node']} ${styles['dnt__tree-node--active']}` : styles['dnt__tree-node'],
@@ -30,7 +44,7 @@ function NotesList({
     });
   }
 
-  function _buildNodeButtons({ node, path }) {
+  function _buildNodeButtons({ node, path } : { node: TreeNodeT, path: Array<string> }) {
     let buttons = [
       <button
         className={ styles['dnt__tree-node-btn'] }

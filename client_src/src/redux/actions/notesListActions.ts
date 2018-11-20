@@ -3,43 +3,64 @@ import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
+import {ThunkDispatch} from "redux-thunk";
+import {AnyAction} from "redux";
 
 // TODO: remove
 // import { save as saveEditorContent } from '../../reactive/editorContentObserver';
 // import { load as loadNotesTreeFromStorage } from '../../utils/notesTreeStorage';
 
-let _notesTreeStorage = {
+let _notesTreeStorage: StorageT = {
   save: () => Promise.reject(new Error('Not implemented.')),
   load: () => Promise.reject(new Error('Not implemented.')),
   remove: () => Promise.reject(new Error('Not implemented')),
 };
 
-let _editorContentStorage = {
+let _editorContentStorage: StorageT = {
   save: () => Promise.reject(new Error('Not implemented.')),
   load: () => Promise.reject(new Error('Not implemented.')),
   remove: () => Promise.reject(new Error('Not implemented')),
 };
 
-export function use({ notesTreeStorage, editorContentStorage }) {
-  const methods = ['save', 'load', 'remove'];
-  if (notesTreeStorage && typeof notesTreeStorage === 'object') {
-    methods.forEach(m => {
-      if (typeof notesTreeStorage[m] === 'function') {
-        _notesTreeStorage[m] = notesTreeStorage[m];
-      }
+type StorageMethodNames = 'save' | 'load' | 'remove';
+type StorageMethodSignature = ({ userId }: { userId: string }) => Promise<objetc>;
+type StorageT = {
+  [key in StorageMethodNames ]?: StorageMethodSignature;
+}
+
+export function use({ notesTreeStorage, editorContentStorage } : { notesTreeStorage?: StorageT, editorContentStorage?: StorageT }) {
+  // const methods = ['save', 'load', 'remove'];
+  // if (notesTreeStorage && typeof notesTreeStorage === 'object') {
+  //   methods.forEach(m => {
+  //     if (typeof notesTreeStorage[m] === 'function') {
+  //       _notesTreeStorage[m] = notesTreeStorage[m];
+  //     }
+  //   });
+  // }
+  // if (editorContentStorage && typeof editorContentStorage === 'object') {
+  //   methods.forEach(m => {
+  //     if (typeof editorContentStorage[m] === 'function') {
+  //       _editorContentStorage[m] = editorContentStorage[m];
+  //     }
+  //   });
+  // }
+
+  if (notesTreeStorage) {
+    Object.keys(notesTreeStorage).forEach(m => {
+      // @ts-ignore
+      _notesTreeStorage[m] = notesTreeStorage[m];
     });
   }
-  if (editorContentStorage && typeof editorContentStorage === 'object') {
-    methods.forEach(m => {
-      if (typeof editorContentStorage[m] === 'function') {
-        _editorContentStorage[m] = editorContentStorage[m];
-      }
+  if (editorContentStorage) {
+    Object.keys(editorContentStorage).forEach(m => {
+      // @ts-ignore
+      _editorContentStorage[m] = editorContentStorage[m];
     });
   }
 }
 
-export function selectNodeThunkAction({ id, path }) {
-  return (dispatch, getState) => {
+export function selectNodeThunkAction({ id, path } : { id: string, path: Array<string> }) {
+  return (dispatch: ThunkDispatch<object, any, AnyAction>, getState: () => StateT) => {
     if (typeof id !== 'string' || !id.length) {
       id = getState().activeNode.id;
     }
@@ -53,6 +74,7 @@ export function selectNodeThunkAction({ id, path }) {
       // Immediately save currently opened note
       const currentContent = getState().editorContent;
       if (currentContent.id) {
+        // @ts-ignore
         _editorContentStorage.save(currentContent)
           .catch(err => { console.log(err); }); // TODO: log error?
       }
@@ -124,7 +146,7 @@ export function switchActiveNodeOnDeleteAction({ id, path }) {
   };
 }
 
-export function addAndSelectNodeThunkAction({ kind, path }) {
+export function addAndSelectNodeThunkAction({ kind, path } : { kind: string, path?: Array<string> }) {
   return (dispatch, getState) => {
     // Immediately save currently opened note
     const currentContent = getState().editorContent;

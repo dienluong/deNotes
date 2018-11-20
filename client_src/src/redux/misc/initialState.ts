@@ -1,9 +1,10 @@
 import uuid from 'uuid/v4';
 import Delta from 'quill-delta';
-const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
+const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|';
+// import { TreeNodeT, ActiveNodeT, UserInfoT, NotesTreeT, EditorContentT } from '../../custom-types/global';
 
 // TODO: Is it the best place to define this?
-const _rootNode = [
+const _rootNode: Array<TreeNodeT> = [
   {
     title: '/',
     subtitle: '',
@@ -19,7 +20,7 @@ const _rootNode = [
 
 const epoch = 0;
 const now = Date.now();
-const initialState = {
+const initialState: StateT = {
   userInfo: {
     id: 'default-user',
   },

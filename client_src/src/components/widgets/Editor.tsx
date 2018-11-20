@@ -6,13 +6,13 @@ import Quill from 'react-quill';
 type Props = {
   id: string,
   title: string,
-  delta: Object,
+  delta: DeltaT,
   content?: string,
   dateCreated?: number,
   dateModified?: number,
   readOnly: boolean,
-  contentChangeHandler: Function,
-  options: Object,
+  contentChangeHandler: ({}) => unknown,
+  options: {},
 };
 
 // NOTE: Using uncontrolled component mainly because, as such, loading a note will not trigger a CONTENT_CHANGED action;
