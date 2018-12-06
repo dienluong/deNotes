@@ -1,25 +1,26 @@
-import * as React from 'react';
+import React from 'react';
 import 'react-quill/dist/quill.snow.css';
 import './Editor.css';
 import Quill from 'react-quill';
 
-type Props = {
-  id: string,
-  title: string,
-  delta: DeltaT,
-  content?: string,
-  dateCreated?: number,
-  dateModified?: number,
-  readOnly: boolean,
-  contentChangeHandler: ({}) => unknown,
-  options: {},
+type Delta = import('quill').Delta;
+type PropsT = {
+  id: string;
+  title: string;
+  delta: Delta;
+  content?: string;
+  dateCreated?: number;
+  dateModified?: number;
+  readOnly: boolean;
+  contentChangeHandler: (params: any) => void;
+  options: {};
 };
 
 // NOTE: Using uncontrolled component mainly because, as such, loading a note will not trigger a CONTENT_CHANGED action;
 // a CONTENT_CHANGED would have updated the 'modified date' of the note and ultimately resulted in a (unnecessary) content save.
 // Note about use of 'key': defaultValue is only read at the initial creation of the form component. So by default,
 // the component is not re-rendered when defaultValue subsequently changes. Changing the 'key' will allow us to trigger a re-render.
-function Editor({ id, title, delta, content, dateCreated, dateModified, readOnly, contentChangeHandler, options }: Props) {
+function Editor({ id, title, delta, content, dateCreated, dateModified, readOnly, contentChangeHandler, options }: PropsT) {
   return (
     <Quill
       key={ id }

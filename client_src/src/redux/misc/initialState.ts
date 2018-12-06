@@ -1,9 +1,7 @@
 import uuid from 'uuid/v4';
 import Delta from 'quill-delta';
 const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|';
-// import { TreeNodeT, ActiveNodeT, UserInfoT, NotesTreeT, EditorContentT } from '../../custom-types/global';
 
-// TODO: Is it the best place to define this?
 const _rootNode: Array<TreeNodeT> = [
   {
     title: '/',

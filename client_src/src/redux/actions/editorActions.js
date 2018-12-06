@@ -81,8 +81,9 @@ export function fetchEditorContentThunkAction({ noteId }) {
 
 /**
  *
- * @param ids {string[]}
- * @return {Function}
+ * @param {Object} params
+ * @param {string[]} params.ids
+ * @return {ThunkAction}
  */
 export function removeNoteThunkAction({ ids }) {
   return (dispatch, getState) => {

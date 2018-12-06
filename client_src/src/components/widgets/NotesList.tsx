@@ -6,18 +6,18 @@ import 'react-sortable-tree/style.css';
 import styles from './NotesList.module.css';
 import NodeTitle from './NodeTitle';
 
-type Props = {
+type PropsT = {
   tree: Array<TreeNodeT>,
   activeNode: ActiveNodeT,
   activePath: Array<string>,
-  treeChangeHandler: ({}) => unknown,
-  nodeTitleChangeHandler: ({}) => unknown,
-  nodeClickHandler: ({}) => unknown,
-  deleteNodeBtnHandler: ({}) => unknown,
-  addNoteBtnHandler: ({}) => unknown,
-  pathNavigatorClickHandler: ({}) => unknown,
-  toolbarHandlersMap: Map<string, ({}) => unknown>,
-  getNodeKey: ({}) => unknown,
+  treeChangeHandler: (params:any) => unknown,
+  nodeTitleChangeHandler: (params:any) => unknown,
+  nodeClickHandler: (params:any) => unknown,
+  deleteNodeBtnHandler: (params:any) => unknown,
+  addNoteBtnHandler: (params:any) => unknown,
+  pathNavigatorClickHandler: (params:any) => unknown,
+  toolbarHandlersMap: Map<string, (params:any) => unknown>,
+  getNodeKey: (params:any) => unknown,
 };
 
 function NotesList({
@@ -32,8 +32,8 @@ function NotesList({
   pathNavigatorClickHandler,
   toolbarHandlersMap,
   getNodeKey,
-} : Props) {
-  function buildNodeProps({ node, path } : { node: TreeNodeT, path: Array<string> }) {
+}: PropsT) {
+  function buildNodeProps({ node, path }: { node: TreeNodeT, path: Array<string> }) {
     return ({
       title: (<NodeTitle node={ node } path={ path } onSubmit={ nodeTitleChangeHandler } />),
       className: (node.id === activeNode.id) ? `${styles['dnt__tree-node']} ${styles['dnt__tree-node--active']}` : styles['dnt__tree-node'],
@@ -44,7 +44,7 @@ function NotesList({
     });
   }
 
-  function _buildNodeButtons({ node, path } : { node: TreeNodeT, path: Array<string> }) {
+  function _buildNodeButtons({ node, path }: { node: TreeNodeT, path: Array<string> }) {
     let buttons = [
       <button
         className={ styles['dnt__tree-node-btn'] }
@@ -73,14 +73,6 @@ function NotesList({
 
     return buttons;
   }
-
-  // TODO: remove
-  // console.log(`
-  //   Tree: ${JSON.stringify(tree)} \n
-  //   Active ID: ${activeNode.id} \n
-  //   Path: ${activeNode.path} \n
-  //   ${ activePath }
-  // `);
 
   return (
     <div className={ styles["dnt__notes-list"] }>

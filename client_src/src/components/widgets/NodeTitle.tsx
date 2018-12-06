@@ -1,14 +1,14 @@
-import * as React from 'react';
+import React from 'react';
 import styles from './NodeTitle.module.css';
-import {FormEvent} from "react";
 
-type Props = {
+type PropsT = {
   node: TreeNodeT,
   path: Array<string>,
-  onSubmit: ({}) => unknown,
+  onSubmit: (params:any) => unknown,
 };
+type FormEvent<T> = import('react').FormEvent<T>;
 
-function NodeTitle({ node, path, onSubmit: submitHandler }: Props) {
+function NodeTitle({ node, path, onSubmit: submitHandler }: PropsT) {
   function submit(event: FormEvent<HTMLElement>) {
     // event.target is <input> if the event was onBlur
     // but event.target is *not* <input>, but rather <form>, if the event was onSubmit

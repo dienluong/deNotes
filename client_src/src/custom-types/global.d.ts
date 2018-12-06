@@ -1,18 +1,24 @@
-// TODO: Remove
-// import Delta from 'quill-delta';
-// const delta = new Delta();
-
 declare module '*';
 
-declare type StateT = {
+interface StateT {
   userInfo: UserInfoT,
   notesTree: NotesTreeT,
   activeNode: ActiveNodeT,
   editorContent: EditorContentT,
-};
+}
 
-declare type DeltaT = object;
-declare type TreeNodeT = {
+interface UserInfoT {
+  id: string,
+}
+
+interface NotesTreeT {
+  id: string,
+  tree: Array<TreeNodeT>,
+  dateCreated: number,
+  dateModified: number,
+}
+
+interface TreeNodeT {
   title: string,
   subtitle: string,
   uniqid: string,
@@ -20,30 +26,19 @@ declare type TreeNodeT = {
   type: 'folder' | 'item',
   expanded?: boolean,
   children?: Array<object>,
-};
+}
 
-declare type ActiveNodeT = {
+interface ActiveNodeT {
   id: string,
   path: Array<string>,
-};
+}
 
-declare type UserInfoT = {
-  id: string,
-};
-
-declare type NotesTreeT = {
-  id: string,
-  tree: Array<TreeNodeT>,
-  dateCreated: number,
-  dateModified: number,
-};
-
-declare type EditorContentT = {
+interface EditorContentT {
   id: string,
   title: string,
   content: string,
-  delta: DeltaT,
+  delta: import('quill').Delta,
   dateCreated: number,
   dateModified: number,
   readOnly: boolean,
-};
+}

@@ -12,10 +12,15 @@ import {
 } from '../redux/actions/notesListActions';
 
 import { getNodeKey } from '../utils/treeUtils';
-import { ThunkDispatch } from "redux-thunk";
-import {AnyAction} from "redux";
 
+// TODO: Delete
+// import { ThunkDispatch } from "redux-thunk";
+// import { AnyAction } from "redux";
+
+type ThunkDispatch<S, E, A> = import('redux-thunk').ThunkDispatch<S, E, A>;
+type AnyAction = import('redux').AnyAction;
 type RootStateT = typeof rootReducer.default;
+
 export const TOOLBAR_LABELS = {
   NEW_FOLDER: 'New Folder',
   NEW_NOTE: 'New Note',
@@ -62,7 +67,17 @@ function mapStateToProps(state: RootStateT) {
 // Memoization.
 mapStateToProps.cache = {} as { notesTree: any, activeNode: any, activePath: any, editorContent: any };
 
-function mapDispatchToProps(dispatch: ThunkDispatch<RootStateT, any, AnyAction>) {
+export interface DispatchProps {
+  treeChangeHandler: (tree: Array<TreeNodeT>) => AnyAction;
+  nodeTitleChangeHandler: (params: { node: TreeNodeT, title: string, path: Array<string> }) => AnyAction;
+  pathNavigatorClickHandler: (params: { idx: number }) => AnyAction;
+  nodeClickHandler: (params: { id: string, path: Array<string> }) => Promise<AnyAction>;
+  deleteNodeBtnHandler: (params: { node: TreeNodeT, path: Array<string> }) => Promise<AnyAction>;
+  addNoteBtnHandler: (params: { path: Array<string> }) => AnyAction;
+  toolbarHandlersMap: Map<string, () => AnyAction>;
+}
+
+function mapDispatchToProps(dispatch: ThunkDispatch<RootStateT, any, AnyAction>): DispatchProps {
   function toolbarNewFolderBtnHandler() {
     return dispatch(addAndSelectNodeThunkAction({ kind: 'folder' }));
   }
@@ -77,7 +92,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<RootStateT, any, AnyAction>)
   toolbarHandlersMap.set(TOOLBAR_LABELS.NEW_NOTE, toolbarNewNoteBtnHandler);
 
   return {
-    treeChangeHandler(tree: Array<object>) {
+    treeChangeHandler(tree: Array<TreeNodeT>) {
       return dispatch(changeNotesTreeAction({ tree }));
     },
     nodeTitleChangeHandler({ node, title, path } : { node: TreeNodeT, title: string, path: Array<string> }) {

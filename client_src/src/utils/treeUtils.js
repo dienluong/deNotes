@@ -102,8 +102,9 @@ export function findClosestParent(path) {
  *          uniqid is "a9914200-a7d2-11e8-a12b-99205b853de7""
  *
  * Note: possible types are "item" and "folder".
- * @param {string} nodeId
- * @param {("uniqid"|"type")} kind
+ * @param {Object} params
+ * @param {string} param.nodeId
+ * @param {("uniqid"|"type")} params.kind
  */
 export function translateNodeIdToInfo({ nodeId, kind = 'uniqid' }) {
   if (typeof nodeId !== 'string') {
@@ -185,7 +186,7 @@ export function trimTree(tree) {
 /**
  * Returns an array of all the node's descendants.
  * @param node {Object}
- * @returns {Array}
+ * @return {Array}
  */
 export function getDescendants({ node }) {
   if (typeof node !== 'object') {
@@ -195,6 +196,12 @@ export function getDescendants({ node }) {
   return getFlatDataFromTree({ treeData: [node], getNodeKey, ignoreCollapsed: false }).map(data => data.node);
 }
 
+/**
+ *
+ * @param {Object} params
+ * @param {Object} params.node
+ * @return {Array}
+ */
 export function getDescendantItems({ node }) {
   return getDescendants({ node }).filter(descendant => descendant.type === 'item');
 }

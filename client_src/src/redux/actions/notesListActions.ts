@@ -3,8 +3,9 @@ import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
-import {ThunkDispatch} from "redux-thunk";
-import {AnyAction} from "redux";
+
+type ThunkAction<R, S, E, A> = import('redux-thunk').ThunkAction<R, S, E, A>;
+type AnyAction = import('redux').AnyAction;
 
 // TODO: remove
 // import { save as saveEditorContent } from '../../reactive/editorContentObserver';
@@ -23,12 +24,18 @@ let _editorContentStorage: StorageT = {
 };
 
 type StorageMethodNames = 'save' | 'load' | 'remove';
-type StorageMethodSignature = ({ userId }: { userId: string }) => Promise<objetc>;
+type StorageMethodSignature = (params: { userId: string }) => Promise<any>;
 type StorageT = {
   [key in StorageMethodNames ]?: StorageMethodSignature;
 }
 
-export function use({ notesTreeStorage, editorContentStorage } : { notesTreeStorage?: StorageT, editorContentStorage?: StorageT }) {
+/**
+ *
+ * @param {Object} storage
+ * @param {Object} [storage.notesTreeStorage]
+ * @param {Object} [storage.editorContentStorage]
+ */
+export function use({ notesTreeStorage, editorContentStorage }: { notesTreeStorage?: StorageT, editorContentStorage?: StorageT }) {
   // const methods = ['save', 'load', 'remove'];
   // if (notesTreeStorage && typeof notesTreeStorage === 'object') {
   //   methods.forEach(m => {
@@ -59,9 +66,16 @@ export function use({ notesTreeStorage, editorContentStorage } : { notesTreeStor
   }
 }
 
-export function selectNodeThunkAction({ id, path } : { id: string, path: Array<string> }) {
-  return (dispatch: ThunkDispatch<object, any, AnyAction>, getState: () => StateT) => {
-    if (typeof id !== 'string' || !id.length) {
+/**
+ *
+ * @param {Object} params
+ * @param {string} params.id
+ * @param {string[]} params.path
+ */
+export function selectNodeThunkAction({ id, path }: { id: string, path: Array<string> }): ThunkAction<Promise<AnyAction>, StateT, any, AnyAction> {
+  return (dispatch, getState) => {
+    // if (typeof id !== 'string' || !id.length) {
+    if (!id.length) {
       id = getState().activeNode.id;
     }
     if (!Array.isArray(path) || !path.length) {
@@ -76,7 +90,7 @@ export function selectNodeThunkAction({ id, path } : { id: string, path: Array<s
       if (currentContent.id) {
         // @ts-ignore
         _editorContentStorage.save(currentContent)
-          .catch(err => { console.log(err); }); // TODO: log error?
+          .catch((err: Error) => { console.log(err); }); // TODO: log error?
       }
 
       const returnVal = dispatch({
@@ -104,9 +118,15 @@ export function selectNodeThunkAction({ id, path } : { id: string, path: Array<s
   };
 }
 
-export function deleteNodeThunkAction({ node, path }) {
+/**
+ *
+ * @param {Object} params
+ * @param {Object} params.node
+ * @param {string[]} params.path
+ */
+export function deleteNodeThunkAction({ node, path }: { node: TreeNodeT, path: Array<string> }): ThunkAction<Promise<AnyAction>, StateT, any, AnyAction> {
   return (dispatch) => {
-    let itemIds;
+    let itemIds: Array<string> = [];
 
     // Collect the uniqid of all items to delete.
     if (node.type === 'item') {
@@ -114,13 +134,12 @@ export function deleteNodeThunkAction({ node, path }) {
     } else if (node.type === 'folder') {
       if (node.children && node.children.length) {
         itemIds = getDescendantItems({ node }).map(node => node.uniqid);
-      } else {
-        itemIds = [];
       }
     }
+
     // dispatch action to delete note(s) from storage
     return dispatch(removeNoteThunkAction({ ids: itemIds }))
-      .then(action => {
+      .then((action: AnyAction) => {
         console.log(`Number of notes deleted: ${action.payload.count}`); // TODO: remove
         // if delete from storage succeeded, then delete node from tree
         dispatch({
@@ -130,11 +149,16 @@ export function deleteNodeThunkAction({ node, path }) {
         // then determine if the active node must change.
         return dispatch(switchActiveNodeOnDeleteAction({ id: node.id, path }));
       })
-      .catch((err) => window.alert(`ERROR deleting saved note: ${err.message}`));
+      .catch((err: Error) => window.alert(`ERROR deleting saved note: ${err.message}`));
   };
 }
 
-export function switchActiveNodeOnDeleteAction({ id, path }) {
+/**
+ * @param {Object} params
+ * @param {string} params.id
+ * @param {string[]} params.path
+ */
+export function switchActiveNodeOnDeleteAction({ id, path }: { id: string, path: Array<string> }): AnyAction {
   return {
     type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
     payload: {
@@ -146,13 +170,20 @@ export function switchActiveNodeOnDeleteAction({ id, path }) {
   };
 }
 
-export function addAndSelectNodeThunkAction({ kind, path } : { kind: string, path?: Array<string> }) {
+/**
+ *
+ * @param {Object} params
+ * @param {string} params.kind
+ * @param {string[]} params.path
+ */
+export function addAndSelectNodeThunkAction({ kind, path }: { kind: string, path?: Array<string> }): ThunkAction<AnyAction, StateT, any, AnyAction> {
   return (dispatch, getState) => {
     // Immediately save currently opened note
     const currentContent = getState().editorContent;
     if (currentContent.id) {
+      // @ts-ignore
       _editorContentStorage.save(currentContent)
-        .catch(err => {}); // TODO: log error?
+        .catch((err: Error) => console.log(err)); // TODO: log error?
     }
 
     return dispatch({
@@ -165,13 +196,18 @@ export function addAndSelectNodeThunkAction({ kind, path } : { kind: string, pat
   };
 }
 
-export function fetchNotesTreeThunkAction() {
+/**
+ * return {ThunkAction}
+ */
+export function fetchNotesTreeThunkAction(): ThunkAction<Promise<(AnyAction | Error)>, StateT, any, AnyAction> {
   return (dispatch, getState) => {
     const userId = getState().userInfo.id;
     dispatch({
       type: notesListActionTypes.FETCH_NOTES_TREE,
       payload: { userId },
     });
+
+    // @ts-ignore
     return _notesTreeStorage.load({ userId })
       .then(notesTree => {
         if (Array.isArray(notesTree.tree)) {
@@ -195,13 +231,13 @@ export function fetchNotesTreeThunkAction() {
             },
           });
 
-          return returnVal;
+          return Promise.resolve(returnVal);
         } else {
           const error = new Error('Unrecognized data fetched.');
           return Promise.reject(error);
         }
       })
-      .catch(err => {
+      .catch((err: Error) => {
         // If no tree found for this user, use default tree from initial state and add new node (new blank note)
         const error = new Error(`No tree loaded. Error: ${err.message} Using default tree.`);
         // TODO: Remove
@@ -228,7 +264,11 @@ export function fetchNotesTreeThunkAction() {
   };
 }
 
-export function navigatePathAction({ idx }) {
+/**
+ * @param {Object} params
+ * @param {number} params.idx
+ */
+export function navigatePathAction({ idx }: { idx: number }): AnyAction {
   return {
     type: notesListActionTypes.NAVIGATE_PATH,
     payload: {
@@ -237,8 +277,12 @@ export function navigatePathAction({ idx }) {
   };
 }
 
-export function changeNotesTreeAction({ tree }) {
-  const notesTree = {};
+/**
+ * @param {Object} params
+ * @param {TreeNodeT[]} params.tree
+ */
+export function changeNotesTreeAction({ tree }: { tree: Array<TreeNodeT> }): AnyAction {
+  const notesTree: { tree?: Array<TreeNodeT> } = {};
   if (Array.isArray(tree)) {
     notesTree.tree = tree;
   } else {
@@ -253,7 +297,14 @@ export function changeNotesTreeAction({ tree }) {
   };
 }
 
-export function changeNodeTitleAction({ title, node, path }) {
+/**
+ *
+ * @param {Object} params
+ * @param {string} params.title
+ * @param {TreeNodeT} params.node
+ * @param {string[]>} params.path
+ */
+export function changeNodeTitleAction({ title, node, path }: { title: string, node: TreeNodeT, path: Array<string> }): AnyAction {
   return {
     type: notesListActionTypes.CHANGE_NODE_TITLE,
     payload: {
@@ -263,5 +314,3 @@ export function changeNodeTitleAction({ title, node, path }) {
     },
   };
 }
-
-// TODO: validate arguments on action creators
