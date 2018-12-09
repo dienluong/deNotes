@@ -18,7 +18,7 @@ const _rootNode: Array<TreeNodeT> = [
 
 const epoch = 0;
 const now = Date.now();
-const initialState: StateT = {
+const initialState: AppStateT = {
   userInfo: {
     id: 'default-user',
   },

@@ -4,8 +4,9 @@ import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorAc
 import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
 
-type ThunkAction<R, S, E, A> = import('redux-thunk').ThunkAction<R, S, E, A>;
-type AnyAction = import('redux').AnyAction;
+// Types
+import { ThunkAction } from 'redux-thunk';
+import { AnyAction } from 'redux';
 
 // TODO: remove
 // import { save as saveEditorContent } from '../../reactive/editorContentObserver';
@@ -72,7 +73,7 @@ export function use({ notesTreeStorage, editorContentStorage }: { notesTreeStora
  * @param {string} params.id
  * @param {string[]} params.path
  */
-export function selectNodeThunkAction({ id, path }: { id: string, path: Array<string> }): ThunkAction<Promise<AnyAction>, StateT, any, AnyAction> {
+export function selectNodeThunkAction({ id, path }: { id: string, path: Array<string> }): ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     // if (typeof id !== 'string' || !id.length) {
     if (!id.length) {
@@ -124,7 +125,7 @@ export function selectNodeThunkAction({ id, path }: { id: string, path: Array<st
  * @param {Object} params.node
  * @param {string[]} params.path
  */
-export function deleteNodeThunkAction({ node, path }: { node: TreeNodeT, path: Array<string> }): ThunkAction<Promise<AnyAction>, StateT, any, AnyAction> {
+export function deleteNodeThunkAction({ node, path }: { node: TreeNodeT, path: Array<string> }): ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
   return (dispatch) => {
     let itemIds: Array<string> = [];
 
@@ -176,7 +177,7 @@ export function switchActiveNodeOnDeleteAction({ id, path }: { id: string, path:
  * @param {string} params.kind
  * @param {string[]} params.path
  */
-export function addAndSelectNodeThunkAction({ kind, path }: { kind: string, path?: Array<string> }): ThunkAction<AnyAction, StateT, any, AnyAction> {
+export function addAndSelectNodeThunkAction({ kind, path }: { kind: string, path?: Array<string> }): ThunkAction<AnyAction, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     // Immediately save currently opened note
     const currentContent = getState().editorContent;
@@ -199,7 +200,7 @@ export function addAndSelectNodeThunkAction({ kind, path }: { kind: string, path
 /**
  * return {ThunkAction}
  */
-export function fetchNotesTreeThunkAction(): ThunkAction<Promise<(AnyAction | Error)>, StateT, any, AnyAction> {
+export function fetchNotesTreeThunkAction(): ThunkAction<Promise<(AnyAction | Error)>, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     const userId = getState().userInfo.id;
     dispatch({

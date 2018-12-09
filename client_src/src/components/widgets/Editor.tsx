@@ -3,17 +3,16 @@ import 'react-quill/dist/quill.snow.css';
 import './Editor.css';
 import Quill from 'react-quill';
 
-type Delta = import('quill').Delta;
 type PropsT = {
   id: string;
   title: string;
-  delta: Delta;
+  delta: DeltaT;
   content?: string;
   dateCreated?: number;
   dateModified?: number;
   readOnly: boolean;
-  contentChangeHandler: (params: any) => void;
-  options: {};
+  contentChangeHandler: (...args: any) => any;
+  options: object;
 };
 
 // NOTE: Using uncontrolled component mainly because, as such, loading a note will not trigger a CONTENT_CHANGED action;

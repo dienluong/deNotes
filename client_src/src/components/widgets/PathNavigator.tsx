@@ -2,7 +2,14 @@ import React from 'react';
 import PathSegment from './PathSegment';
 import styles from './PathNavigator.module.css';
 
-function PathNavigator({ path, activeSegmentIdx, onClick: clickHandler }) {
+// Types
+type PropsT = {
+  path: string[];
+  activeSegmentIdx: number;
+  onClick: (params: { idx: number }) => any;
+}
+
+function PathNavigator({ path, activeSegmentIdx, onClick: clickHandler }: PropsT) {
   const pathSegments = path.length ?
     path.map((step, idx) =>
       <PathSegment

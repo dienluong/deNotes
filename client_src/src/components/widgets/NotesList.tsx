@@ -6,18 +6,19 @@ import 'react-sortable-tree/style.css';
 import styles from './NotesList.module.css';
 import NodeTitle from './NodeTitle';
 
+// Types
 type PropsT = {
   tree: Array<TreeNodeT>,
   activeNode: ActiveNodeT,
   activePath: Array<string>,
-  treeChangeHandler: (params:any) => unknown,
-  nodeTitleChangeHandler: (params:any) => unknown,
-  nodeClickHandler: (params:any) => unknown,
-  deleteNodeBtnHandler: (params:any) => unknown,
-  addNoteBtnHandler: (params:any) => unknown,
-  pathNavigatorClickHandler: (params:any) => unknown,
-  toolbarHandlersMap: Map<string, (params:any) => unknown>,
-  getNodeKey: (params:any) => unknown,
+  treeChangeHandler: (...args: any) => any;
+  nodeTitleChangeHandler: (...args: any) => any,
+  nodeClickHandler: (params: { id: TreeNodeT["id"], path: TreeNodePathT }) => unknown,
+  deleteNodeBtnHandler: (params: { node: TreeNodeT, path: TreeNodePathT }) => unknown,
+  addNoteBtnHandler: (params: { path: TreeNodePathT }) => unknown,
+  pathNavigatorClickHandler: (...args: any) => any,
+  toolbarHandlersMap: any,
+  getNodeKey: (...args: any) => any,
 };
 
 function NotesList({
