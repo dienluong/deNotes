@@ -23,13 +23,25 @@ import * as editorContentStorage from './utils/editorContentStorage';
 // import { save as loopbackSave, load as loopbackLoad, remove as loopbackDelete } from './utils/loopbackREST';
 import { save as saveToStorage, load as loadFromStorage, remove as deleteFromStorage } from './utils/offlineStorage';
 
+const userId = process.env.REACT_APP_USER_ID;
+// TODO: replace hardcoded value
+// const noteId = '218013d0-ad79-11e8-bfc8-79a6754f355a';
+const activeId = 'item|^|218013d0-ad79-11e8-bfc8-79a6754f355a';
+// TODO: Restrict Devtools in dev-only?
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
+
 notesTreeStorage.inject({ save: saveToStorage, load: loadFromStorage });
 editorContentStorage.inject({ save: saveToStorage, load: loadFromStorage, remove: deleteFromStorage });
 
+// Create observer for saving notes tree
+const myNotesTreeObserver = notesTreeObserver({ user: userId, storage: notesTreeStorage });
+
 // Inject dependencies into notesListActions
+// We are using the observers (instead of the storage's save()) as the save functions to make use of their extra logics
 notesListActionsInject({
   notesTreeStorage: {
-    save: notesTreeStorage.save,
+    save: myNotesTreeObserver,
     load: notesTreeStorage.load,
   },
   editorContentStorage: {
@@ -48,17 +60,8 @@ editorActionsInject({
   },
 });
 
-// TODO: Restrict Devtools in dev-only?
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
-
 // TODO: adjust user ID to logged in user
-const userId = process.env.REACT_APP_USER_ID;
 store.dispatch(setUserAction({ user: { id: userId } }));
-
-// TODO: replace hardcoded value
-// const noteId = '218013d0-ad79-11e8-bfc8-79a6754f355a';
-const activeId = 'item|^|218013d0-ad79-11e8-bfc8-79a6754f355a';
 
 // Fetch asynchronously
 store.dispatch(fetchNotesTreeThunkAction())
@@ -91,7 +94,6 @@ store.dispatch(fetchNotesTreeThunkAction())
 // Build Reactive Parts
 const notesTree$ = Observable.from(store).pluck('notesTree').auditTime(1000);
 const editorContent$ = Observable.from(store).pluck('editorContent').auditTime(1000);
-const myNotesTreeObserver = notesTreeObserver({ user: userId, storage: notesTreeStorage });
 // const myEditorContentObserver = editorContentObserver({ user: userId, storage: editorContentStorage });
 editorContentObserver.inject({ user: userId, storage: editorContentStorage });
 notesTree$.subscribe(myNotesTreeObserver);
