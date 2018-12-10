@@ -7,6 +7,11 @@ import baseState from '../misc/initialState';
 // Types
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
+type StorageMethodNames = 'save' | 'load' | 'remove';
+type StorageMethodSignature = (params: object) => Promise<any>;
+type StorageT = {
+  [key in StorageMethodNames]: StorageMethodSignature;
+}
 
 // TODO: remove
 // import { save as saveEditorContent } from '../../reactive/editorContentObserver';
@@ -24,19 +29,13 @@ let _editorContentStorage: StorageT = {
   remove: () => Promise.reject(new Error('Not implemented')),
 };
 
-type StorageMethodNames = 'save' | 'load' | 'remove';
-type StorageMethodSignature = (params: { userId: string }) => Promise<any>;
-type StorageT = {
-  [key in StorageMethodNames ]?: StorageMethodSignature;
-}
-
 /**
  *
  * @param {Object} storage
  * @param {Object} [storage.notesTreeStorage]
  * @param {Object} [storage.editorContentStorage]
  */
-export function use({ notesTreeStorage, editorContentStorage }: { notesTreeStorage?: StorageT, editorContentStorage?: StorageT }) {
+export function use({ notesTreeStorage, editorContentStorage }: { notesTreeStorage?: StorageT, editorContentStorage?: StorageT }): void {
   // const methods = ['save', 'load', 'remove'];
   // if (notesTreeStorage && typeof notesTreeStorage === 'object') {
   //   methods.forEach(m => {
@@ -89,7 +88,6 @@ export function selectNodeThunkAction({ id, path }: { id: string, path: Array<st
       // Immediately save currently opened note
       const currentContent = getState().editorContent;
       if (currentContent.id) {
-        // @ts-ignore
         _editorContentStorage.save(currentContent)
           .catch((err: Error) => { console.log(err); }); // TODO: log error?
       }
@@ -182,7 +180,6 @@ export function addAndSelectNodeThunkAction({ kind, path }: { kind: string, path
     // Immediately save currently opened note
     const currentContent = getState().editorContent;
     if (currentContent.id) {
-      // @ts-ignore
       _editorContentStorage.save(currentContent)
         .catch((err: Error) => console.log(err)); // TODO: log error?
     }
@@ -208,7 +205,6 @@ export function fetchNotesTreeThunkAction(): ThunkAction<Promise<(AnyAction | Er
       payload: { userId },
     });
 
-    // @ts-ignore
     return _notesTreeStorage.load({ userId })
       .then(notesTree => {
         if (Array.isArray(notesTree.tree)) {
