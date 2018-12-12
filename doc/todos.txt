@@ -32,7 +32,7 @@ x Use snapshot tests.
 
 => Implement type checking
   -> Annotate the handler functions passed to the React components
-  -> NodeTitle.tsx changed, must retest UI behavior.
+  x -> NodeTitle.tsx changed, must retest UI behavior.
 
 Sanitize (e.g. used input titles)!
 How to handle error (promises) from Observers?

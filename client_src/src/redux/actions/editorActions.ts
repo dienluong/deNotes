@@ -1,6 +1,12 @@
 import Delta from 'quill-delta';
 import editorActionTypes from './constants/editorActionConstants';
 
+// Types
+type StorageMethodNames = 'save' | 'load' | 'remove';
+type StorageMethodSignature = (params: object) => Promise<any>;
+type StorageT = {
+  [key in StorageMethodNames]: StorageMethodSignature;
+}
 // TODO: Remove
 // import { load as loadContentFromStorage, remove as removeContentFromStorage } from '../../utils/editorContentStorage';
 
