@@ -2,6 +2,17 @@ import Delta from 'quill-delta';
 import editorActionTypes from './constants/editorActionConstants';
 
 // Types
+import { AnyAction } from 'redux';
+import { ThunkAction } from 'redux-thunk';
+import { BoundsStatic, RangeStatic, DeltaStatic } from 'quill';
+interface UnprivilegedEditor {
+  getLength(): number;
+  getText(index?: number, length?: number): string;
+  getHTML(): string;
+  getBounds(index: number, length?: number): BoundsStatic;
+  getSelection(focus?: boolean): RangeStatic;
+  getContents(index?: number, length?: number): DeltaStatic;
+}
 type StorageMethodNames = 'save' | 'load' | 'remove';
 type StorageMethodSignature = (params: object) => Promise<any>;
 type StorageT = {
@@ -10,29 +21,35 @@ type StorageT = {
 // TODO: Remove
 // import { load as loadContentFromStorage, remove as removeContentFromStorage } from '../../utils/editorContentStorage';
 
-let _editorContentStorage = {
+let _editorContentStorage: StorageT = {
   save: () => Promise.reject(new Error('Not implemented.')),
   load: () => Promise.reject(new Error('Not implemented.')),
   remove: () => Promise.reject(new Error('Not implemented.')),
 };
 
-export function use({ editorContentStorage }) {
-  const methods = ['save', 'load', 'remove'];
-  if (editorContentStorage && typeof editorContentStorage === 'object') {
-    methods.forEach(m => {
-      if (typeof editorContentStorage[m] === 'function') {
-        _editorContentStorage[m] = editorContentStorage[m];
-      }
-    });
-  }
+export function use({ editorContentStorage }: { editorContentStorage: StorageT })
+  : void {
+  // const methods = ['save', 'load', 'remove'];
+  // if (editorContentStorage && typeof editorContentStorage === 'object') {
+  //   methods.forEach(m => {
+  //     if (typeof editorContentStorage[m] === 'function') {
+  //       _editorContentStorage[m] = editorContentStorage[m];
+  //     }
+  //   });
+  // }
+  Object.keys(editorContentStorage).forEach(m => {
+    // @ts-ignore
+    _editorContentStorage[m] = editorContentStorage[m];
+  });
 }
 
 /**
  * @param editor
  * @param content
- * @return {{type: string, payload: {newContent: {delta: Quill.DeltaStatic | Delta, content: *, dateModified: number}}}}
+ * @return {{type: string, payload: {newContent: {delta: Delta, content: *, dateModified: number}}}}
  */
-export function changeContentAction({ editor, content }) {
+export function changeContentAction({ editor, content }: { editor: UnprivilegedEditor, content: string })
+  : AnyAction {
   return {
     type: editorActionTypes.CONTENT_CHANGED,
     payload: {
@@ -49,7 +66,8 @@ export function changeContentAction({ editor, content }) {
  * @param noteId
  * @return {function(*, *): Promise<T | never>}
  */
-export function fetchEditorContentThunkAction({ noteId }) {
+export function fetchEditorContentThunkAction({ noteId }: { noteId: string })
+  : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     const userId = getState().userInfo.id;
     dispatch({
@@ -76,11 +94,14 @@ export function fetchEditorContentThunkAction({ noteId }) {
       })
       .catch(err => {
         const message = `${err.message} ID: ${noteId}`;
-        dispatch({
+        const action = {
           type: editorActionTypes.FETCH_EDITOR_CONTENT_FAILURE,
           payload: { error: { message, id: noteId } },
-        });
-        return Promise.reject(new Error(message));
+        };
+        dispatch(action);
+        const error = new Error(message);
+        (error as ActionError).action = action;
+        return Promise.reject(error);
       });
   };
 }
@@ -91,15 +112,19 @@ export function fetchEditorContentThunkAction({ noteId }) {
  * @param {string[]} params.ids
  * @return {ThunkAction}
  */
-export function removeNoteThunkAction({ ids }) {
+export function removeNoteThunkAction({ ids }: { ids: string[] })
+  : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     if (!Array.isArray(ids)) {
       const message = 'Invalid parameter. Expecting an array.';
-      dispatch({
+      const action = {
         type: editorActionTypes.REMOVE_NOTE_FAILURE,
         payload: { error: { message, ids } },
-      });
-      return Promise.reject(new Error(message));
+      };
+      dispatch(action);
+      const error = new Error(message);
+      (error as ActionError).action = action;
+      return Promise.reject(error);
     } else if (!ids.length) {
       const action = {
         type: editorActionTypes.REMOVE_NOTE_SUCCESS,
@@ -128,11 +153,14 @@ export function removeNoteThunkAction({ ids }) {
       })
       .catch(err => {
         const message = `Failed deleting note(s). ${err.message} ID: ${ids}`;
-        dispatch({
+        const action = {
           type: editorActionTypes.REMOVE_NOTE_FAILURE,
           payload: { error: { message, ids } },
-        });
-        return Promise.reject(new Error(message));
+        };
+        dispatch(action);
+        const error = new Error(message);
+        (error as ActionError).action = action;
+        return Promise.reject(error);
       });
   };
 }

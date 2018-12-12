@@ -5,8 +5,8 @@ import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils
 import baseState from '../misc/initialState';
 
 // Types
-import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { ThunkAction } from 'redux-thunk';
 type StorageMethodNames = 'save' | 'load' | 'remove';
 type StorageMethodSignature = (params: object) => Promise<any>;
 type StorageT = {
@@ -35,7 +35,8 @@ let _editorContentStorage: StorageT = {
  * @param {Object} [storage.notesTreeStorage]
  * @param {Object} [storage.editorContentStorage]
  */
-export function use({ notesTreeStorage, editorContentStorage }: { notesTreeStorage?: StorageT, editorContentStorage?: StorageT }): void {
+export function use({ notesTreeStorage, editorContentStorage }: { notesTreeStorage?: StorageT, editorContentStorage?: StorageT })
+  : void {
   // const methods = ['save', 'load', 'remove'];
   // if (notesTreeStorage && typeof notesTreeStorage === 'object') {
   //   methods.forEach(m => {
@@ -72,7 +73,8 @@ export function use({ notesTreeStorage, editorContentStorage }: { notesTreeStora
  * @param {string} params.id
  * @param {string[]} params.path
  */
-export function selectNodeThunkAction({ id, path }: { id: string, path: Array<string> }): ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
+export function selectNodeThunkAction({ id, path }: { id: string, path: Array<string> })
+  : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     // if (typeof id !== 'string' || !id.length) {
     if (!id.length) {
@@ -107,12 +109,15 @@ export function selectNodeThunkAction({ id, path }: { id: string, path: Array<st
         const uniqid = translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'uniqid' });
         if (uniqid !== getState().editorContent.id) {
           return dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
-            .catch(err => window.alert(`Error loading saved note content: ${err.message}`)); // TODO: adjust error handling.
+            .catch((err: ActionError) => {
+              window.alert(`Error loading saved note content: ${err.message}`);
+              return err.action;
+            }); // TODO: adjust error handling.
         }
       }
       return Promise.resolve(returnVal);
     } else {
-      return Promise.resolve({});
+      return Promise.resolve({ type: 'NO_OP' });
     }
   };
 }
@@ -123,7 +128,8 @@ export function selectNodeThunkAction({ id, path }: { id: string, path: Array<st
  * @param {Object} params.node
  * @param {string[]} params.path
  */
-export function deleteNodeThunkAction({ node, path }: { node: TreeNodeT, path: Array<string> }): ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
+export function deleteNodeThunkAction({ node, path }: { node: TreeNodeT, path: Array<string> })
+  : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
   return (dispatch) => {
     let itemIds: Array<string> = [];
 
@@ -148,7 +154,10 @@ export function deleteNodeThunkAction({ node, path }: { node: TreeNodeT, path: A
         // then determine if the active node must change.
         return dispatch(switchActiveNodeOnDeleteAction({ id: node.id, path }));
       })
-      .catch((err: Error) => window.alert(`ERROR deleting saved note: ${err.message}`));
+      .catch((err: ActionError) => {
+        window.alert(`ERROR deleting saved note: ${err.message}`);
+        return err.action;
+      });
   };
 }
 
@@ -157,7 +166,8 @@ export function deleteNodeThunkAction({ node, path }: { node: TreeNodeT, path: A
  * @param {string} params.id
  * @param {string[]} params.path
  */
-export function switchActiveNodeOnDeleteAction({ id, path }: { id: string, path: Array<string> }): AnyAction {
+export function switchActiveNodeOnDeleteAction({ id, path }: { id: string, path: Array<string> })
+  : AnyAction {
   return {
     type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
     payload: {
@@ -175,7 +185,8 @@ export function switchActiveNodeOnDeleteAction({ id, path }: { id: string, path:
  * @param {string} params.kind
  * @param {string[]} params.path
  */
-export function addAndSelectNodeThunkAction({ kind, path }: { kind: string, path?: Array<string> }): ThunkAction<AnyAction, AppStateT, any, AnyAction> {
+export function addAndSelectNodeThunkAction({ kind, path }: { kind: string, path?: Array<string> })
+  : ThunkAction<AnyAction, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     // Immediately save currently opened note
     const currentContent = getState().editorContent;
@@ -197,7 +208,8 @@ export function addAndSelectNodeThunkAction({ kind, path }: { kind: string, path
 /**
  * return {ThunkAction}
  */
-export function fetchNotesTreeThunkAction(): ThunkAction<Promise<(AnyAction | Error)>, AppStateT, any, AnyAction> {
+export function fetchNotesTreeThunkAction()
+  : ThunkAction<Promise<(AnyAction | Error)>, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     const userId = getState().userInfo.id;
     dispatch({
@@ -265,7 +277,8 @@ export function fetchNotesTreeThunkAction(): ThunkAction<Promise<(AnyAction | Er
  * @param {Object} params
  * @param {number} params.idx
  */
-export function navigatePathAction({ idx }: { idx: number }): AnyAction {
+export function navigatePathAction({ idx }: { idx: number })
+  : AnyAction {
   return {
     type: notesListActionTypes.NAVIGATE_PATH,
     payload: {
@@ -278,7 +291,8 @@ export function navigatePathAction({ idx }: { idx: number }): AnyAction {
  * @param {Object} params
  * @param {TreeNodeT[]} params.tree
  */
-export function changeNotesTreeAction({ tree }: { tree: Array<TreeNodeT> }): AnyAction {
+export function changeNotesTreeAction({ tree }: { tree: Array<TreeNodeT> })
+  : AnyAction {
   const notesTree: { tree?: Array<TreeNodeT> } = {};
   if (Array.isArray(tree)) {
     notesTree.tree = tree;
@@ -301,7 +315,8 @@ export function changeNotesTreeAction({ tree }: { tree: Array<TreeNodeT> }): Any
  * @param {TreeNodeT} params.node
  * @param {string[]>} params.path
  */
-export function changeNodeTitleAction({ title, node, path }: { title: string, node: TreeNodeT, path: Array<string> }): AnyAction {
+export function changeNodeTitleAction({ title, node, path }: { title: string, node: TreeNodeT, path: Array<string> })
+  : AnyAction {
   return {
     type: notesListActionTypes.CHANGE_NODE_TITLE,
     payload: {

@@ -1,6 +1,10 @@
 import accountActionTypes from './constants/accountActionConstants';
 
-export function setUserAction({ user }) {
+// Types
+import { AnyAction } from 'redux';
+
+export function setUserAction({ user }: { user: UserInfoT })
+  : AnyAction {
   return {
     type: accountActionTypes.SET_USER,
     payload: {
@@ -9,7 +13,8 @@ export function setUserAction({ user }) {
   };
 }
 
-export function setUserIdAction({ id }) {
+export function setUserIdAction({ id }: { id: string })
+  : AnyAction {
   return {
     type: accountActionTypes.SET_USERID,
     payload: {

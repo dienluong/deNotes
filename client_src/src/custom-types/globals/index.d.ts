@@ -6,6 +6,7 @@
  */
 
 import * as Quill from 'quill';
+import { AnyAction } from "redux";
 
 declare global {
   type DeltaT = Quill.Delta;
@@ -53,5 +54,9 @@ declare global {
     dateCreated: number,
     dateModified: number,
     readOnly: boolean,
+  }
+
+  interface ActionError extends Error {
+    action: AnyAction;
   }
 }
