@@ -1,14 +1,15 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
-import {
-  changeNodeAtPath,
-  removeNode,
-} from 'react-sortable-tree';
+import { changeNodeAtPath, removeNode } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
 
+// Types
+import { AnyAction } from 'redux';
+
 const initialTree = baseState.notesTree;
 
-function _changeNodeTitle({ notesTree, title, node, path }) {
+function _changeNodeTitle({ notesTree, title, node, path }: { notesTree: NotesTreeT, title: string, node: TreeNodeT, path: string[] })
+  : NotesTreeT {
   // TODO: remove
   console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
   console.log('-->Tree changed on node title change\n');
@@ -33,7 +34,8 @@ function _changeNodeTitle({ notesTree, title, node, path }) {
   };
 }
 
-function _deleteNode({ notesTree, node, path }) {
+function _deleteNode({ notesTree, node, path }: { notesTree: NotesTreeT, node: TreeNodeT, path: string[] })
+  : NotesTreeT {
   const newTree = removeNode({
     treeData: notesTree.tree,
     getNodeKey,
@@ -47,7 +49,7 @@ function _deleteNode({ notesTree, node, path }) {
   };
 }
 
-export default function notesTreeReducer(state = initialTree, action) {
+export default function notesTreeReducer(state: NotesTreeT = initialTree, action: AnyAction) {
   console.log(`REDUCER: ${action.type}`);
   switch (action.type) {
     case notesListActionTypes.CHANGE_NOTES_TREE:
@@ -73,7 +75,7 @@ export default function notesTreeReducer(state = initialTree, action) {
   }
 }
 
-export const selectTree = (state) => state.tree;
-export const selectTreeId = (state) => state.id;
-export const selectDateModified = (state) => state.dateModified;
-export const selectDateCreated = (state) => state.dateCreated;
+export const selectTree = (state: NotesTreeT) => state.tree;
+export const selectTreeId = (state: NotesTreeT) => state.id;
+export const selectDateModified = (state: NotesTreeT) => state.dateModified;
+export const selectDateCreated = (state: NotesTreeT) => state.dateCreated;

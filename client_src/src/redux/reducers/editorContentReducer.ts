@@ -2,9 +2,13 @@ import editorActionTypes from '../actions/constants/editorActionConstants';
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import baseState from '../misc/initialState';
 
+// Types
+import { AnyAction } from 'redux';
+
 const initialContent = baseState.editorContent;
 
-export default function editorContentReducer(state = initialContent, action) {
+export default function editorContentReducer(state: EditorContentT = initialContent, action: AnyAction)
+  : EditorContentT {
   console.log(`REDUCER: ${action.type}`);
   switch (action.type) {
     case editorActionTypes.CONTENT_CHANGED:

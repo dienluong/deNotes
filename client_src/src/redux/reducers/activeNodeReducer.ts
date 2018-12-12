@@ -2,6 +2,9 @@ import notesListActionTypes from '../actions/constants/notesListActionConstants'
 import baseState from '../misc/initialState';
 import { equals } from '../../utils/treeUtils';
 
+// Types
+import { AnyAction } from 'redux';
+
 const initialActiveNode = baseState.activeNode;
 
 /**
@@ -11,7 +14,8 @@ const initialActiveNode = baseState.activeNode;
  * @returns {*}
  * @private
  */
-function _changeActiveNodeOnPathNavClick({ currentActive, idx }) {
+function _changeActiveNodeOnPathNavClick({ currentActive, idx }: { currentActive: ActiveNodeT, idx: number })
+  : ActiveNodeT {
   if (Number.isSafeInteger(idx) && idx < currentActive.path.length) {
     return {
       ...currentActive,
@@ -23,7 +27,8 @@ function _changeActiveNodeOnPathNavClick({ currentActive, idx }) {
   }
 }
 
-function _changeActiveNodeOnDelete({ currentActive, deletedNode }) {
+function _changeActiveNodeOnDelete({ currentActive, deletedNode }: { currentActive: ActiveNodeT, deletedNode: ActiveNodeT })
+  : ActiveNodeT {
   let returnedActiveNode = currentActive;
   // if deleted node is part of the active path, re-adjust the active node
   const deletedNodeIdx = currentActive.path.lastIndexOf(deletedNode.id);
@@ -59,7 +64,8 @@ function _changeActiveNodeOnDelete({ currentActive, deletedNode }) {
 //   return arr1.every((val, idx) => val === arr2[idx]);
 // }
 
-export default function activeNodeReducer(state = initialActiveNode, action) {
+export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode, action: AnyAction)
+  : ActiveNodeT {
   console.log(`REDUCER: ${action.type}`);
   switch (action.type) {
     case notesListActionTypes.SELECT_NODE: {
@@ -95,4 +101,4 @@ export default function activeNodeReducer(state = initialActiveNode, action) {
   }
 }
 
-export const selectPath = (state) => state.path;
+export const selectPath = (state: ActiveNodeT) => state.path;
