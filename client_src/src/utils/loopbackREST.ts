@@ -5,7 +5,9 @@
  * @param dataObj
  * @return {Promise<Response | never>}
  */
-export function save({ collectionName = '', id = '', ownerId = '', dataObj }) {
+export function save({ collectionName = '', id = '', ownerId = '', dataObj }
+  : { collectionName: string, id: string, ownerId: string, dataObj: object })
+  : Promise<any> {
   if (!collectionName) {
     return Promise.reject(new Error('Save aborted: invalid collection name.'));
   }
@@ -46,7 +48,8 @@ export function save({ collectionName = '', id = '', ownerId = '', dataObj }) {
  * @param ownerId {string}
  * @return {Promise<Response | never>}
  */
-export function load({ collectionName = '', id = '', ownerId = '' }) {
+export function load({ collectionName = '', id = '', ownerId = '' }: { collectionName: string, id: string, ownerId: string })
+  : Promise<any> {
   if (!collectionName) {
     return Promise.reject(new Error('Load aborted: invalid collection name.'));
   }
@@ -69,7 +72,8 @@ export function load({ collectionName = '', id = '', ownerId = '' }) {
   });
 }
 
-export function remove({ collectionName = '', ids = '' }) {
+export function remove({ collectionName = '', ids = '' }: { collectionName: string, ids: string|string[] })
+  : Promise<any> {
   if (!collectionName) {
     return Promise.reject(new Error('Delete aborted: invalid collection name.'));
   }

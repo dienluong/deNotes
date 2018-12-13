@@ -4,14 +4,15 @@ import treesDataModule from './remoteStorageJs/treesDataModule';
 
 const _privateStorageCollection = new Map();
 let _offlineStorage;
-let _save = () => Promise.reject(new Error('Not ready'));
-let _load = () => Promise.reject(new Error('Not ready'));
-let _remove = () => Promise.reject(new Error('Not ready'));
+let _save: Function = () => Promise.reject(new Error('Not ready'));
+let _load: Function = () => Promise.reject(new Error('Not ready'));
+let _remove: Function = () => Promise.reject(new Error('Not ready'));
 
 function _produceMethods() {
   // TODO: remove
   console.log('LOCAL STORAGE READY!');
-  _save = ({ collectionName, id, ownerId, dataObj }) => {
+  _save = ({ collectionName, id, ownerId, dataObj }: { collectionName: string, id: string, ownerId: string, dataObj: object })
+    : Promise<any> => {
     if (!_privateStorageCollection.has(collectionName)) {
       return Promise.reject(new Error('Invalid collection.'));
     }
@@ -23,7 +24,8 @@ function _produceMethods() {
     return _privateStorageCollection.get(collectionName).save({ id, ownerId, dataObj });
   };
 
-  _load = ({ collectionName, id, ownerId }) => {
+  _load = ({ collectionName, id, ownerId }: { collectionName: string, id: string, ownerId: string })
+    : Promise<any> => {
     if (!_privateStorageCollection.has(collectionName)) {
       return Promise.reject(new Error('Invalid collection'));
     }
@@ -35,7 +37,8 @@ function _produceMethods() {
     return _privateStorageCollection.get(collectionName).load({ id, ownerId });
   };
 
-  _remove = ({ collectionName, ownerId, ids }) => {
+  _remove = ({ collectionName, ownerId, ids }: { collectionName: string, ownerId: string, ids: string|string[] })
+    : Promise<any> => {
     if (!_privateStorageCollection.has(collectionName)) {
       return Promise.reject(new Error('Invalid collection'));
     }
@@ -49,7 +52,7 @@ function _produceMethods() {
 }
 
 try {
-  _offlineStorage = create({});
+  _offlineStorage = create({} as any);
   _offlineStorage.addModule(notesDataModule);
   _offlineStorage.addModule(treesDataModule);
   _offlineStorage.access.claim(notesDataModule.name, 'rw');
@@ -68,17 +71,17 @@ try {
 // TODO: To revise.  No on(ready) ?
 _produceMethods();
 
-export function save(paramsObj) {
+export function save(paramsObj: object) {
   return _save(paramsObj);
 }
 
-export function load(paramsObj) {
+export function load(paramsObj: object) {
   return _load(paramsObj);
 }
 
-export function remove(paramsObj) {
+export function remove(paramsObj: object) {
   return _remove(paramsObj)
-    .then(results => {
+    .then((results: string|string[]) => {
       if (typeof results === 'string') {
         return {
           results,
