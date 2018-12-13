@@ -185,7 +185,7 @@ export function switchActiveNodeOnDeleteAction({ id, path }: { id: string, path:
  * @param {string} params.kind
  * @param {string[]} params.path
  */
-export function addAndSelectNodeThunkAction({ kind, path }: { kind: string, path?: Array<string> })
+export function addAndSelectNodeThunkAction({ kind, path }: { kind: NodeTypeT, path?: Array<string> })
   : ThunkAction<AnyAction, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     // Immediately save currently opened note
