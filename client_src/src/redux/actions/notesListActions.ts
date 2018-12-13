@@ -7,11 +7,6 @@ import baseState from '../misc/initialState';
 // Types
 import { AnyAction } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-type StorageMethodNames = 'save' | 'load' | 'remove';
-type StorageMethodSignature = (params: object) => Promise<any>;
-type StorageT = {
-  [key in StorageMethodNames]: StorageMethodSignature;
-}
 
 // TODO: remove
 // import { save as saveEditorContent } from '../../reactive/editorContentObserver';

@@ -13,11 +13,7 @@ interface UnprivilegedEditor {
   getSelection(focus?: boolean): RangeStatic;
   getContents(index?: number, length?: number): DeltaStatic;
 }
-type StorageMethodNames = 'save' | 'load' | 'remove';
-type StorageMethodSignature = (params: object) => Promise<any>;
-type StorageT = {
-  [key in StorageMethodNames]: StorageMethodSignature;
-}
+
 // TODO: Remove
 // import { load as loadContentFromStorage, remove as removeContentFromStorage } from '../../utils/editorContentStorage';
 
