@@ -11,6 +11,11 @@ import { AnyAction } from "redux";
 declare global {
   type DeltaT = Quill.Delta;
   type NodeTypeT = 'folder' | 'item';
+  type StorageMethodNames = 'save' | 'load' | 'remove';
+  type StorageMethodSignature = (params: object) => Promise<any>;
+  type StorageT = {
+    [key in StorageMethodNames]: StorageMethodSignature;
+  }
 
   interface AppStateT {
     userInfo: UserInfoT,
