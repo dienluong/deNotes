@@ -2,6 +2,9 @@ import baseState from '../misc/initialState';
 import accountActionTypes from '../actions/constants/accountActionConstants';
 import { equals } from '../../utils/treeUtils';
 
+// Types
+import { AnyAction } from 'redux';
+
 const initialUser = baseState.userInfo;
 
 // function _equals(currentUser, newUser) {
@@ -13,7 +16,8 @@ const initialUser = baseState.userInfo;
 //   return newKeys.every(key => currentUser[key] === newUser[key]);
 // }
 
-export default function userReducer(state = initialUser, action) {
+export default function userReducer(state: UserInfoT = initialUser, action: AnyAction)
+  : UserInfoT {
   console.log(`REDUCER: ${action.type}`);
   switch (action.type) {
     case accountActionTypes.SET_USER: {
@@ -33,4 +37,4 @@ export default function userReducer(state = initialUser, action) {
 }
 
 // Selects User's ID
-export const selectID = (state) => state.id;
+export const selectID = (state: UserInfoT) => state.id;

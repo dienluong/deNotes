@@ -3,6 +3,9 @@ import { addNodeUnderParent } from 'react-sortable-tree';
 import { getNodeKey, createNode, findClosestParent } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
 
+// Types
+import { AnyAction } from "redux";
+
 const initialState = baseState;
 
 /**
@@ -13,7 +16,8 @@ const initialState = baseState;
  * @returns {{notesTree: *, activeNode: {id: *, path: Array}}}
  * @private
  */
-function _addAndSelectNewNode({ state, kind, path = [] }) {
+function _addAndSelectNewNode({ state, kind, path = [] }: { state: AppStateT, kind: NodeTypeT, path: string[] })
+  : AppStateT {
   let newState, currentActivePath;
   let newActiveNodePath = [];
   let parentKey = null;
@@ -78,7 +82,8 @@ function _addAndSelectNewNode({ state, kind, path = [] }) {
   return newState;
 }
 
-export default function reducedReducer(state = initialState, action) {
+export default function reducedReducer(state: AppStateT = initialState, action: AnyAction)
+  : AppStateT {
   console.log(`REDUCER: ${action.type}`);
   switch (action.type) {
     case notesListActionTypes.ADD_AND_SELECT_NODE:

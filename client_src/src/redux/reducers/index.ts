@@ -10,11 +10,11 @@ const mainReducer = combineReducers({ userInfo, notesTree, activeNode, editorCon
 const rootReducer = reduceReducers(mainReducer, reducedReducer);
 
 export default rootReducer;
-export const selectNotesTree = (state) => state.notesTree;
-export const selectNotesTreeTree = (state) => fromNotesTree.selectTree(state.notesTree);
+export const selectNotesTree = (state: AppStateT) => state.notesTree;
+export const selectNotesTreeTree = (state: AppStateT) => fromNotesTree.selectTree(state.notesTree);
 // export const selectNotesTreeId = (state) => fromNotesTree.selectTreeId(state.notesTree);
 // export const selectNotesTreeDateCreated = (state) => fromNotesTree.selectDateCreated(state.notesTree);
 // export const selectNotesTreeDateModified = (state) => fromNotesTree.selectDateModified(state.notesTree);
-export const selectActiveNode = (state) => state.activeNode;
-export const selectActiveNodePath = (state) => fromActiveNode.selectPath(state.activeNode);
-export const selectEditorContent = (state) => state.editorContent;
+export const selectActiveNode = (state: AppStateT) => state.activeNode;
+export const selectActiveNodePath = (state: AppStateT) => fromActiveNode.selectPath(state.activeNode);
+export const selectEditorContent = (state: AppStateT) => state.editorContent;
