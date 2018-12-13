@@ -1,12 +1,14 @@
-let _save = () => Promise.reject(new Error('Save aborted. Cause: No Storage implementation provided.'));
-let _load = () => Promise.reject(new Error('Load aborted. Cause: No Storage implementation provided.'));
+let _save: Function = () => Promise.reject(new Error('Save aborted. Cause: No Storage implementation provided.'));
+let _load: Function = () => Promise.reject(new Error('Load aborted. Cause: No Storage implementation provided.'));
 
-export function inject({ save = _save, load = _load }) {
+export function inject({ save = _save, load = _load }: { save: Function, load: Function})
+  : void {
   _save = typeof save === 'function' ? save : _save;
   _load = typeof load === 'function' ? load : _load;
 }
 
-export function save({ userId, notesTree }) {
+export function save({ userId, notesTree }: { userId: string, notesTree: NotesTreeT })
+  : Promise<any> {
   if (!notesTree || !Array.isArray(notesTree.tree) || !notesTree.id) {
     return Promise.reject(new Error('invalid tree.'));
   }
@@ -35,7 +37,8 @@ export function save({ userId, notesTree }) {
  * @param {string} userId
  * @returns {*}
  */
-export function load({ id = '', userId = '' }) {
+export function load({ id = '', userId = '' }: { id: string, userId: string })
+  : Promise<NotesTreeT> {
   if (!userId || typeof id !== 'string' || typeof userId !== 'string') {
     return Promise.reject(new Error('invalid parameters.'));
   }
@@ -44,9 +47,9 @@ export function load({ id = '', userId = '' }) {
     collectionName: 'trees',
     id,
     ownerId: userId,
-  }).then(fetchedData => {
+  }).then((fetchedData: any) => {
     const propList = ['id', 'tree', 'dateCreated', 'dateModified'];
-    let notesTree;
+    let notesTree: any;
     if (Array.isArray(fetchedData)) {
       if (fetchedData.length) {
         // just take the last tree, if multiple returned.

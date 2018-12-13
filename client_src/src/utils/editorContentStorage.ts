@@ -1,14 +1,16 @@
-let _save = () => Promise.reject(new Error('Save aborted. Cause: No Storage implementation provided.'));
-let _load = () => Promise.reject(new Error('Load aborted. Cause: No Storage implementation provided.'));
-let _remove = () => Promise.reject(new Error('Delete aborted. Cause: No Storage implementation provided.'));
+let _save: Function = () => Promise.reject(new Error('Save aborted. Cause: No Storage implementation provided.'));
+let _load: Function = () => Promise.reject(new Error('Load aborted. Cause: No Storage implementation provided.'));
+let _remove: Function = () => Promise.reject(new Error('Delete aborted. Cause: No Storage implementation provided.'));
 
-export function inject({ save = _save, load = _load, remove = _remove }) {
+export function inject({ save = _save, load = _load, remove = _remove }: { save: Function, load: Function, remove: Function })
+  : void {
   _save = typeof save === 'function' ? save : _save;
   _load = typeof load === 'function' ? load : _load;
   _remove = typeof remove === 'function' ? remove : _remove;
 }
 
-export function save({ userId, editorContent }) {
+export function save({ userId, editorContent }: { userId: string, editorContent: EditorContentT })
+  : Promise<any> {
   if (!editorContent || !editorContent.content || !editorContent.delta || !editorContent.id) {
     return Promise.reject(new Error('invalid content.'));
   }
@@ -38,7 +40,8 @@ export function save({ userId, editorContent }) {
  * @param noteId
  * @return {Promise<Response | never>}
  */
-export function load({ id = '', userId = '' }) {
+export function load({ id = '', userId = '' }: { id: string, userId: string })
+  : Promise<EditorContentT> {
   if (!id || !userId || typeof id !== 'string' || typeof userId !== 'string') {
     return Promise.reject(new Error('invalid parameters.'));
   }
@@ -47,7 +50,7 @@ export function load({ id = '', userId = '' }) {
     collectionName: 'notes',
     id,
     ownerId: userId,
-  }).then(content => {
+  }).then((content: any) => {
     const propList = ['id', 'title', 'body', 'delta', 'dateCreated', 'dateModified'];
     if (content && (typeof content.hasOwnProperty === 'function') && propList.every(prop => content.hasOwnProperty(prop))) {
       // Note: We convert the retreived dates to milliseconds since Unix epoch.
@@ -66,7 +69,8 @@ export function load({ id = '', userId = '' }) {
   });
 }
 
-export function remove({ ids = '', userId = '' }) {
+export function remove({ ids = '', userId = '' }: { ids: string, userId: string })
+  : Promise<{ results: string|string[], count: number }> {
   if (!ids || !userId || (typeof ids !== 'string' && !Array.isArray(ids)) || (Array.isArray(ids) && !ids.length) || typeof userId !== 'string') {
     return Promise.reject(new Error('invalid parameters.'));
   } else {
