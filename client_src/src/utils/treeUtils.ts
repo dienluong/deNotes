@@ -1,12 +1,11 @@
 import uuid from 'uuid/v4';
 import { find, getFlatDataFromTree } from 'react-sortable-tree';
 
-const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
+const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|^|';
 const DEFAULT_TITLES = {
   FOLDER: 'New Folder',
   NOTE: 'New Note',
 };
-
 
 /**
  * Deep comparison of objects (including arrays).
@@ -15,7 +14,8 @@ const DEFAULT_TITLES = {
  * @return {boolean}
  * @private
  */
-export function equals(obj1, obj2) {
+export function equals(obj1: { [key: string]: any }, obj2: { [key: string]: any })
+  : boolean {
   if ((typeof obj1 !== 'object') || (typeof obj2 !== 'object')) {
     return Object.is(obj1, obj2);
   }
@@ -29,15 +29,15 @@ export function equals(obj1, obj2) {
 
   if (currentKeys.length !== newKeys.length) { return false; }
 
-  return newKeys.every(key => {
-    const currentVal = obj1[key];
+  return newKeys.every((key: string) => {
+    const currentVal = (obj1[key] as any);
     const newVal = obj2[key];
 
     return equals(currentVal, newVal);
   });
 }
 
-export const getNodeKey = ({ node }) => node.id;
+export const getNodeKey = ({ node }: { node: TreeNodeT }): string => node.id;
 
 /**
  * Builds a node for a tree.
@@ -49,10 +49,12 @@ export const getNodeKey = ({ node }) => node.id;
  * @param {NodeType} type
  * @return {*}
  */
-export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().toLocaleString(), type = 'item' }) {
+export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().toLocaleString(), type = 'item' }
+  : { title?: string, subtitle?: string, type?: NodeTypeT })
+  : TreeNodeT {
   // TODO: remove subtitle = uuid
-  const id = uuid();
-  const newNode = {
+  const id: string = uuid();
+  const newNode: TreeNodeT = {
     title,
     subtitle: id,
     type,
@@ -77,7 +79,8 @@ export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().
  * @return {?number}
  * @private
  */
-export function findClosestParent(path) {
+export function findClosestParent(path: string[])
+  : number|null {
   if (!Array.isArray(path) || !path.length) {
     return null;
   }
@@ -103,10 +106,11 @@ export function findClosestParent(path) {
  *
  * Note: possible types are "item" and "folder".
  * @param {Object} params
- * @param {string} param.nodeId
+ * @param {string} params.nodeId
  * @param {("uniqid"|"type")} params.kind
  */
-export function translateNodeIdToInfo({ nodeId, kind = 'uniqid' }) {
+export function translateNodeIdToInfo({ nodeId, kind = 'uniqid' }: { nodeId: string, kind: 'uniqid'|'type'})
+  : string {
   if (typeof nodeId !== 'string') {
     return '';
   }
@@ -129,7 +133,9 @@ export function translateNodeIdToInfo({ nodeId, kind = 'uniqid' }) {
  * @return {Array}
  * @private
  */
-export function translatePathToInfo({ notesTree = [], path = [], kind = 'type' }) {
+export function translatePathToInfo({ notesTree = [], path = [], kind = 'type' }
+  : { notesTree?: TreeNodeT[], path: string[], kind: 'title'|'type'|'uniqid' })
+  : string[] {
   if (!Array.isArray(path) || !path.length) {
     return [];
   }
@@ -141,7 +147,7 @@ export function translatePathToInfo({ notesTree = [], path = [], kind = 'type' }
           getNodeKey,
           treeData: notesTree,
           searchQuery: id,
-          searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
+          searchMethod: ({ node, searchQuery }: { node: TreeNodeT, searchQuery: string }): boolean => searchQuery === node.id,
         }).matches;
         return matches.length ? matches[0].node.title : '';
       });
@@ -156,18 +162,19 @@ export function translatePathToInfo({ notesTree = [], path = [], kind = 'type' }
 
 /**
  * Keep only uniqid and children properties of nodes.
- * @param tree
+ * @param tree {Object[]}
  * @returns {*}
  */
 // TODO To remove
 // https://stackoverflow.com/questions/41312228/filter-nested-tree-object-without-losing-structure
-export function trimTree(tree) {
+export function trimTree(tree: TreeNodeT[])
+  : object[] {
   if (!Array.isArray(tree)) {
     return [];
   }
 
-  return tree.map(node => {
-    const normNode = {
+  return tree.map((node: TreeNodeT) => {
+    const normNode: { uniqid: string, children?: object[] } = {
       uniqid: node.uniqid,
     };
 
@@ -186,14 +193,15 @@ export function trimTree(tree) {
 /**
  * Returns an array of all the node's descendants.
  * @param node {Object}
- * @return {Array}
+ * @return {Object[]}
  */
-export function getDescendants({ node }) {
+export function getDescendants({ node }: { node: TreeNodeT })
+  : TreeNodeT[] {
   if (typeof node !== 'object') {
     return [];
   }
 
-  return getFlatDataFromTree({ treeData: [node], getNodeKey, ignoreCollapsed: false }).map(data => data.node);
+  return getFlatDataFromTree({ treeData: [node], getNodeKey, ignoreCollapsed: false }).map((data: { node: TreeNodeT })  => data.node);
 }
 
 /**
@@ -202,10 +210,12 @@ export function getDescendants({ node }) {
  * @param {Object} params.node
  * @return {Array}
  */
-export function getDescendantItems({ node }) {
+export function getDescendantItems({ node }: { node: TreeNodeT })
+  : TreeNodeT[] {
   return getDescendants({ node }).filter(descendant => descendant.type === 'item');
 }
 
-export function getDescendantFolders({ node }) {
+export function getDescendantFolders({ node }: { node: TreeNodeT })
+  : TreeNodeT[] {
   return getDescendants({ node }).filter(descendant => descendant.type === 'folder');
 }
