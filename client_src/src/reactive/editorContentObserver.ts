@@ -1,15 +1,20 @@
 let _user = '';
-let _storage = {
+let _storage: StorageT = {
   save() { return Promise.reject(new Error('Cannot Save: Storage not available')); },
   load() { return Promise.reject(new Error('Cannot Load: Storage not available')); },
   remove() { return Promise.reject(new Error('Cannot Remove: Storage not available')); },
 };
 let _lastSavedDate = Date.now();
-let _lastContentId = null;
+let _lastContentId: string|null = null;
 
-export function inject({ user, storage }) {
-  _user = typeof user === 'string' ? user : _user;
-  _storage = typeof storage === 'object' && Object.keys(_storage).every(key => ((key in storage) && (typeof storage[key] === 'function'))) ? storage : _storage;
+export function inject({ user, storage }: { user: string, storage: StorageT})
+  : void {
+  // TODO: remove
+  // _user = typeof user === 'string' ? user : _user;
+  _user = user;
+  // @ts-ignore
+  _storage = typeof storage === 'object' && Object.keys(_storage).every(key => ((key in storage) && (typeof storage[key] === 'function')))
+    ? storage : _storage;
 }
 
 /**
@@ -17,8 +22,9 @@ export function inject({ user, storage }) {
  * @param editorContent {Object}
  * @return {Promise} Promise resolving to the saved object or to FALSE if save was skipped; or a Promise rejecting to an Error.
  */
-export function save(editorContent) {
-  let retValue;
+export function save(editorContent: EditorContentT)
+  : Promise<any> {
+  let retValue: Promise<any>;
   // TODO:  Should it save if and only if condition #2 (id = lastContentId && dateModified > lastSavedDate) is met. This would *not* save newly created empty notes.
   // Save 1) if newly created note -OR- 2) if content of opened note changed since last save.
   if (editorContent.dateCreated > _lastSavedDate || (editorContent.id === _lastContentId && editorContent.dateModified > _lastSavedDate)) {

@@ -1,14 +1,27 @@
-export default ({ user, storage }) => {
+interface ObserverT {
+  (notesTree: NotesTreeT): Promise<any>;
+  lastSavedDate: number;
+}
+
+export default ({ user, storage }: { user: string, storage: StorageT })
+  : ObserverT => {
   let _user = '';
-  let _storage = {
+  let _storage: StorageT = {
     save() { return Promise.reject(new Error('Cannot Save: Storage not available')); },
+    load() { return Promise.reject(new Error('Cannot Load: Storage not available')); },
+    remove() { return Promise.reject(new Error('Cannot Remove: Storage not available')); },
   };
 
-  _user = typeof user === 'string' ? user : _user;
-  _storage = typeof storage === 'object' && Object.keys(_storage).every(key => ((key in storage) && (typeof storage[key] === 'function'))) ? storage : _storage;
+  // TODO: Remove
+  // _user = typeof user === 'string' ? user : _user;
 
-  const observer = function observer(notesTree) {
-    const mostRecentDate = notesTree.dateModified > notesTree.dateCreated ? notesTree.dateModified : notesTree.dateCreated;
+  _user = user;
+  // @ts-ignore
+  _storage = typeof storage === 'object' && Object.keys(_storage).every(key => ((key in storage) && (typeof storage[key] === 'function')))
+    ? storage : _storage;
+
+  const observer: ObserverT = function observer(notesTree: NotesTreeT) {
+    const mostRecentDate: number = notesTree.dateModified > notesTree.dateCreated ? notesTree.dateModified : notesTree.dateCreated;
     // Save only if tree was not from initial load and if it changed afterwards
     if (mostRecentDate > observer.lastSavedDate) {
       return _storage.save({ userId: _user, notesTree })
