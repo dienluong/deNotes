@@ -10,6 +10,7 @@ import { AnyAction } from "redux";
 
 declare global {
   type DeltaT = Quill.Delta;
+  type NodeTypeT = 'folder' | 'item';
 
   interface AppStateT {
     userInfo: UserInfoT,
@@ -34,9 +35,9 @@ declare global {
     subtitle: string,
     uniqid: string,
     id: string,
-    type: 'folder' | 'item',
+    type: NodeTypeT,
     expanded?: boolean,
-    children?: Array<object>,
+    children?: Array<TreeNodeT>,
   }
 
   type TreeNodePathT = Array<string>;
