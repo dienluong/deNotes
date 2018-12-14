@@ -17,7 +17,7 @@ export default ({ user, storage }: { user: string, storage: StorageT })
 
   _user = user;
   // @ts-ignore
-  _storage = typeof storage === 'object' && Object.keys(_storage).every(key => ((key in storage) && (typeof storage[key] === 'function')))
+  _storage = storage && typeof storage === 'object' && Object.keys(_storage).every(key => ((key in storage) && (typeof storage[key] === 'function')))
     ? storage : _storage;
 
   const observer: ObserverT = function observer(notesTree: NotesTreeT) {

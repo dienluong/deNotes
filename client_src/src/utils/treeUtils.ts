@@ -197,7 +197,7 @@ export function trimTree(tree: TreeNodeT[])
  */
 export function getDescendants({ node }: { node: TreeNodeT })
   : TreeNodeT[] {
-  if (typeof node !== 'object') {
+  if (!node || typeof node !== 'object') {
     return [];
   }
 

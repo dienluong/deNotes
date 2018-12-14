@@ -13,7 +13,7 @@ export function inject({ user, storage }: { user: string, storage: StorageT})
   // _user = typeof user === 'string' ? user : _user;
   _user = user;
   // @ts-ignore
-  _storage = typeof storage === 'object' && Object.keys(_storage).every(key => ((key in storage) && (typeof storage[key] === 'function')))
+  _storage = storage && typeof storage === 'object' && Object.keys(_storage).every(key => ((key in storage) && (typeof storage[key] === 'function')))
     ? storage : _storage;
 }
 
