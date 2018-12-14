@@ -1,5 +1,12 @@
-const clientMixin = function clientMixin(moduleName) {
-  return {
+// Types
+import { BaseClient } from '.';
+export interface AugmentedError extends Error {
+  caught?: any;
+  id?: string;
+}
+
+const clientMixin = function clientMixin(moduleName: string) {
+  return ({
     save({ ownerId, id, dataObj }) {
       const path = `${ownerId}/${id}`;
       return this.storeObject(moduleName, path, dataObj)
@@ -18,8 +25,10 @@ const clientMixin = function clientMixin(moduleName) {
         // We are converting the object of objects into an array of objects.
         return this.getAll(`${ownerId}/`)
           .then(data => {
-            if (typeof data === 'object') {
+            if (data && typeof data === 'object') {
               return Promise.resolve(Object.keys(data).map(key => data[key]));
+            } else {
+              return Promise.resolve([]);
             }
           });
       }
@@ -41,7 +50,7 @@ const clientMixin = function clientMixin(moduleName) {
             return this.remove(`${ownerId}/${id}`)
               .then(() => id)
               .catch(caught => {
-                const error = new Error('Error while trying to delete. ID: ' + id);
+                const error: AugmentedError = new Error('Error while trying to delete. ID: ' + id);
                 error.caught = caught;
                 error.id = id;
                 return error;
@@ -55,7 +64,7 @@ const clientMixin = function clientMixin(moduleName) {
           .then(() => ids);
       }
     },
-  };
+  } as BaseClient);
 };
 
 export default clientMixin;

@@ -1,7 +1,17 @@
 import RemoteStorage from 'remotestoragejs';
 const logging = !!process.env.REACT_APP_DEBUG;
 
-export function create({ onReadyCb }) {
+export declare interface BaseClient {
+  storeObject(typeAlias: string, path: string, object: object): Promise<any>;
+  getObject(path: string, maxAge?: number): Promise<unknown>;
+  getAll(path: string, maxAge?: number): Promise<any>;
+  remove(path: string): Promise<any>;
+  save({ ownerId, id, dataObj }: { ownerId: string, id: string, dataObj: object }): Promise<any>;
+  load({ ownerId, id }: {ownerId: string, id: string }): Promise<unknown>;
+  destroy({ ownerId, ids }: { ownerId: string, ids: string|string[] }): Promise<any>;
+}
+
+export function create({ onReadyCb }: { onReadyCb: Function }) {
   const storage = new RemoteStorage({ logging });
   if (typeof onReadyCb === 'function') {
     storage.on('ready', onReadyCb);
