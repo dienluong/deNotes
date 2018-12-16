@@ -1,7 +1,10 @@
 import clientMixin from './clientMixin';
 const moduleName = 'trees';
 
-function builder(privateClient) {
+// Types
+import { BaseClient } from '.';
+
+function builder(privateClient: BaseClient) {
   privateClient.declareType(moduleName, {
     'type': 'object',
     'properties': {

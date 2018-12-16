@@ -9,6 +9,7 @@ export declare interface BaseClient {
   save({ ownerId, id, dataObj }: { ownerId: string, id: string, dataObj: object }): Promise<any>;
   load({ ownerId, id }: {ownerId: string, id: string }): Promise<unknown>;
   destroy({ ownerId, ids }: { ownerId: string, ids: string|string[] }): Promise<any>;
+  declareType(alias: string, schema: object): any;
 }
 
 export function create({ onReadyCb }: { onReadyCb: Function }) {
