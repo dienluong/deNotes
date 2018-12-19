@@ -12,7 +12,7 @@ declare global {
   type DeltaT = Quill.Delta;
   type NodeTypeT = 'folder' | 'item';
   type StorageMethodNames = 'save' | 'load' | 'remove';
-  type StorageMethodSignature = (params: object) => Promise<any>;
+  type StorageMethodSignature = (params: { [key: string]: any }) => Promise<any>;
   type StorageT = {
     [key in StorageMethodNames]: StorageMethodSignature;
   }
