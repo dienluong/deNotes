@@ -6,9 +6,9 @@ export declare interface BaseClient {
   getObject(path: string, maxAge?: number): Promise<unknown>;
   getAll(path: string, maxAge?: number): Promise<any>;
   remove(path: string): Promise<any>;
-  save({ ownerId, id, dataObj }: { ownerId: string, id: string, dataObj: object }): Promise<any>;
-  load({ ownerId, id }: {ownerId: string, id: string }): Promise<unknown>;
-  destroy({ ownerId, ids }: { ownerId: string, ids: string|string[] }): Promise<any>;
+  save(params: { ownerId: string, id: string, dataObj: object }): Promise<any>;
+  load(params: { ownerId: string, id: string }): Promise<unknown>;
+  destroy(params: { ownerId: string, ids: string|string[] }): Promise<any>;
   declareType(alias: string, schema: object): any;
 }
 
