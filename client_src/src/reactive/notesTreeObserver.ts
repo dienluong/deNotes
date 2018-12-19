@@ -12,10 +12,8 @@ export default ({ user, storage }: { user: string, storage: StorageT })
     remove() { return Promise.reject(new Error('Cannot Remove: Storage not available')); },
   };
 
-  // TODO: Remove
-  // _user = typeof user === 'string' ? user : _user;
+  _user = typeof user === 'string' ? user : _user;
 
-  _user = user;
   // @ts-ignore
   _storage = storage && typeof storage === 'object' && Object.keys(_storage).every(key => ((key in storage) && (typeof storage[key] === 'function')))
     ? storage : _storage;

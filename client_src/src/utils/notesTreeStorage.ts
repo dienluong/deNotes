@@ -1,10 +1,12 @@
 let _save: Function = () => Promise.reject(new Error('Save aborted. Cause: No Storage implementation provided.'));
 let _load: Function = () => Promise.reject(new Error('Load aborted. Cause: No Storage implementation provided.'));
+let _remove: Function = () => Promise.reject(new Error('Remove aborted. Cause: No Storage implementation provided.'));
 
-export function inject({ save = _save, load = _load }: { save: Function, load: Function})
+export function inject({ save = _save, load = _load, remove = _remove }: { save?: Function, load?: Function, remove?: Function })
   : void {
   _save = typeof save === 'function' ? save : _save;
   _load = typeof load === 'function' ? load : _load;
+  _remove = typeof remove === 'function' ? remove : _remove;
 }
 
 export function save({ userId, notesTree }: { userId: string, notesTree: NotesTreeT })
@@ -76,4 +78,8 @@ export function load({ id = '', userId = '' }: { id: string, userId: string })
       return Promise.reject(new Error(message));
     }
   });
+}
+
+export function remove(...args: any[]) {
+  return _remove(args);
 }
