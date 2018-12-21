@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './NodeTitle.module.css';
+import escape from 'lodash-es/escape';
 
 // Types
 import { FormEvent } from 'react';
@@ -16,9 +17,10 @@ function NodeTitle({ node, path, onSubmit: submitHandler }: PropsT<any>) {
     const inputEl = event.currentTarget.matches('input') ? event.currentTarget : event.currentTarget.getElementsByTagName('input')[0];
     if (inputEl instanceof HTMLInputElement) {
       // TODO: Sanitize the value!
-      if (inputEl.value !== inputEl.defaultValue) {
+      const escapedInput = escape(inputEl.value);
+      if (escapedInput !== inputEl.defaultValue) {
         submitHandler({
-          title: inputEl.value,
+          title: escapedInput,
           node: node,
           path: path,
         });
