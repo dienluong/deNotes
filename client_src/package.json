@@ -24,7 +24,7 @@
     "start": "react-scripts start",
     "debug": "@powershell -Command $env:DEBUG='*'; react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(react-redux))/\"",
     "coverage": "react-scripts test --coverage",
     "eject": "react-scripts eject"
   },
