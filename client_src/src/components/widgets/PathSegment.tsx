@@ -1,4 +1,5 @@
 import React from 'react';
+import unescape from 'lodash-es/unescape';
 
 // Types
 type PropsT = {
@@ -9,7 +10,7 @@ type PropsT = {
 
 function PathSegment({ className, label, onClick: clickCallback }: PropsT) {
   return (
-    <li className={ className } onClick={ clickCallback }><span>{ label }&gt;</span></li>
+    <li className={ className } onClick={ clickCallback }><span>{ unescape(label) }&gt;</span></li>
   );
 }
 
