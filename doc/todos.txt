@@ -28,8 +28,13 @@ Implement local storage
   x -> save to and load from local storage
   x -> delete from local storage
 
-Use snapshot tests.
-Sanitize (e.g. used input titles)!
+x Use snapshot tests.
+
+x Implement type checking
+  x -> Annotate the handler functions passed to the React components
+  x -> NodeTitle.tsx changed, must retest UI behavior.
+
+x Sanitize (e.g. user input titles)!
 How to handle error (promises) from Observers?
 How to handle offline mode?  Do we let user create/modify notes offline and store them locally? How do we reconciliate the local data with the remote data once connection is back?
 Active node should be the persistent across sessions.
