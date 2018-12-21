@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './NodeTitle.module.css';
 import escape from 'lodash-es/escape';
+import unescape from 'lodash-es/unescape';
 
 // Types
 import { FormEvent } from 'react';
@@ -16,7 +17,6 @@ function NodeTitle({ node, path, onSubmit: submitHandler }: PropsT<any>) {
     // but event.currentTarget is *not* <input>, but rather <form>, if the event was onSubmit
     const inputEl = event.currentTarget.matches('input') ? event.currentTarget : event.currentTarget.getElementsByTagName('input')[0];
     if (inputEl instanceof HTMLInputElement) {
-      // TODO: Sanitize the value!
       const escapedInput = escape(inputEl.value);
       if (escapedInput !== inputEl.defaultValue) {
         submitHandler({
@@ -34,7 +34,7 @@ function NodeTitle({ node, path, onSubmit: submitHandler }: PropsT<any>) {
       <input
         className={ styles['dnt__node-title'] }
         type="text"
-        defaultValue={ node.title }
+        defaultValue={ unescape(node.title) }
         onBlur={ submit }
       />
     </form>
