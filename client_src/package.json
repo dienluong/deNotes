@@ -24,7 +24,7 @@
     "start": "react-scripts start",
     "debug": "@powershell -Command $env:DEBUG='*'; react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(react-redux))/\"",
+    "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(lodash-es))/\"",
     "coverage": "react-scripts test --coverage",
     "eject": "react-scripts eject"
   },
