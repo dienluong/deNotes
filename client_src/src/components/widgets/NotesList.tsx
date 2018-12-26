@@ -2,7 +2,7 @@ import React from 'react';
 import Toolbar from './Toolbar';
 import PathNavigator from './PathNavigator';
 import Tree from 'react-sortable-tree';
-import minimalTheme from 'react-sortable-tree-theme-minimal';
+import { mobileTheme } from '../../tree-theme';
 import 'react-sortable-tree/style.css';
 import styles from './NotesList.module.css';
 import NodeTitle from './NodeTitle';
@@ -87,7 +87,7 @@ function NotesList({
       <Tree
         className={ 'tree ' + styles.dnt__tree }
         treeData={ tree }
-        theme={ minimalTheme }
+        theme={ mobileTheme }
         onChange={ treeChangeHandler }
         getNodeKey={ getNodeKey }
         generateNodeProps={ buildNodeProps }
