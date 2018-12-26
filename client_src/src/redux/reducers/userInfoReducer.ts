@@ -30,7 +30,7 @@ export default function userReducer(state: UserInfoT = initialUser, action: AnyA
     }
     default:
       if (process.env.REACT_APP_DEBUG) {
-        console.log(`Current activeNode: ${JSON.stringify(state)}`);
+        console.log(`Current userInfo: ${JSON.stringify(state)}`);
       }
       return state;
   }
