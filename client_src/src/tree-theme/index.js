@@ -13,8 +13,10 @@
 import nodeContentRenderer from './node-content-renderer';
 import treeNodeRenderer from './tree-node-renderer';
 
-module.exports = {
+const mobileTheme = {
   nodeContentRenderer,
   treeNodeRenderer,
   scaffoldBlockPxWidth: 45,
 };
+
+export { mobileTheme };

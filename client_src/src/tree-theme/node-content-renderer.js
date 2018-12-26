@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import styles from './node-content-renderer.scss';
+import styles from './node-content-renderer.module.scss';
 
 function isDescendant(older, younger) {
   return (
@@ -98,8 +98,7 @@ class MinimalThemeNodeContentRenderer extends Component {
               className={
                 node.expanded ? styles.collapseButton : styles.expandButton
               }
-              onClick={() => toggleChildrenVisibility({ node, path, treeIndex })
-              }
+              onClick={() => {} }
             />
 
             {node.expanded && !isDragging && (
