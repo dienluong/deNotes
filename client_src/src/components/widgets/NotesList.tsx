@@ -76,6 +76,7 @@ function NotesList({
     return buttons;
   }
 
+  const treeBranch = tree.length && tree[0].children ? tree[0].children : tree;
   return (
     <div className={ styles["dnt__notes-list"] }>
       <Toolbar toolsMap={ toolbarHandlersMap } />
@@ -86,7 +87,7 @@ function NotesList({
       />
       <Tree
         className={ 'tree ' + styles.dnt__tree }
-        treeData={ tree }
+        treeData={ treeBranch }
         theme={ mobileTheme }
         onChange={ treeChangeHandler }
         getNodeKey={ getNodeKey }

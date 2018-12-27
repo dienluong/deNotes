@@ -5,7 +5,7 @@ import NotesList from './widgets/NotesList';
 import {
   selectNodeThunkAction,
   navigatePathAction,
-  changeNotesTreeAction,
+  changeNotesTreeBranchAction,
   changeNodeTitleAction,
   deleteNodeThunkAction,
   addAndSelectNodeThunkAction,
@@ -88,7 +88,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
 
   return {
     treeChangeHandler(tree) {
-      return dispatch(changeNotesTreeAction({ tree }));
+      return dispatch(changeNotesTreeBranchAction({ branch: tree }));
     },
     nodeTitleChangeHandler({ node, title, path }) {
       return dispatch(changeNodeTitleAction({ node, title, path }));

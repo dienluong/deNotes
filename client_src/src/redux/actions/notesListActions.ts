@@ -286,20 +286,18 @@ export function navigatePathAction({ idx }: { idx: number })
  * @param {Object} params
  * @param {TreeNodeT[]} params.tree
  */
-export function changeNotesTreeAction({ tree }: { tree: Array<TreeNodeT> })
+export function changeNotesTreeBranchAction({ branch }: { branch: Array<TreeNodeT> })
   : AnyAction {
-  const notesTree: { tree?: Array<TreeNodeT> } = {};
-  if (Array.isArray(tree)) {
-    notesTree.tree = tree;
+  const payload: {  branch?: Array<TreeNodeT> } = {};
+  if (Array.isArray(branch)) {
+    payload.branch = branch;
   } else {
-    notesTree.tree = baseState.notesTree.tree;
+    payload.branch = baseState.notesTree.tree;
   }
 
   return {
-    type: notesListActionTypes.CHANGE_NOTES_TREE,
-    payload: {
-      notesTree,
-    },
+    type: notesListActionTypes.CHANGE_NOTES_TREE_BRANCH,
+    payload,
   };
 }
 
