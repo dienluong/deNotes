@@ -38,6 +38,7 @@ x Sanitize (e.g. user input titles)!
 
 => Minimal tree (better suited for mobile)
 
+Convert node type ('item' and 'folder') to enum, or something like that
 How to handle error (promises) from Observers?
 How to handle offline mode?  Do we let user create/modify notes offline and store them locally? How do we reconciliate the local data with the remote data once connection is back?
 Active node should be the persistent across sessions.
