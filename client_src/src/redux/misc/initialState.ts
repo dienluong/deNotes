@@ -2,8 +2,7 @@ import uuid from 'uuid/v4';
 import Delta from 'quill-delta';
 const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|';
 
-const _rootNode: Array<TreeNodeT> = [
-  {
+const _rootNode: TreeNodeT = {
     title: '/',
     subtitle: '',
     uniqid: uuid(),
@@ -13,8 +12,7 @@ const _rootNode: Array<TreeNodeT> = [
     type: 'folder',
     expanded: true,
     children: [],
-  },
-];
+  };
 
 const epoch = 0;
 const now = Date.now();
@@ -24,13 +22,13 @@ const initialState: AppStateT = {
   },
   notesTree: {
     id: uuid(),
-    tree: _rootNode,
+    tree: [_rootNode],
     dateCreated: now,
     dateModified: now,
   },
   activeNode: {
-    id: _rootNode[0].id,
-    path: [_rootNode[0].id],
+    id: _rootNode.id,
+    path: [_rootNode.id],
   },
   editorContent: {
     id: '',
