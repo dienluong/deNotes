@@ -284,7 +284,7 @@ export function navigatePathAction({ idx }: { idx: number })
 
 /**
  * @param {Object} params
- * @param {TreeNodeT[]} params.tree
+ * @param {TreeNodeT[]} params.branch
  */
 export function changeNotesTreeBranchAction({ branch }: { branch: Array<TreeNodeT> })
   : AnyAction {
