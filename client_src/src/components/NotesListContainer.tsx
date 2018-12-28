@@ -11,6 +11,7 @@ import {
   addAndSelectNodeThunkAction,
 } from '../redux/actions/notesListActions';
 
+import { find } from 'react-sortable-tree';
 import { getNodeKey } from '../utils/treeUtils';
 
 // Types
@@ -61,8 +62,15 @@ function mapStateToProps(state: AppStateT) {
   }
   // TODO: Remove ABOVE
 
+  const treeBranch = find({
+    getNodeKey,
+    treeData: rootReducer.selectNotesTreeTree(state),
+    searchQuery:rootReducer.selectActiveNodeId(state),
+    searchMethod: ({ node, searchQuery }: { node: TreeNodeT, searchQuery: string }) => searchQuery === node.id,
+  }).matches[0];
+
   return {
-    tree: rootReducer.selectNotesTreeTree(state),
+    tree: treeBranch,
     activeNode: rootReducer.selectActiveNode(state),
     activePath: activePathByTitles,
   };
