@@ -11,8 +11,8 @@ import {
   addAndSelectNodeThunkAction,
 } from '../redux/actions/notesListActions';
 
-import { find } from 'react-sortable-tree';
-import { getNodeKey } from '../utils/treeUtils';
+import { getNodeAtPath } from 'react-sortable-tree';
+import { getNodeKey, findClosestParent } from '../utils/treeUtils';
 
 // Types
 import { ThunkDispatch } from 'redux-thunk';
@@ -62,15 +62,19 @@ function mapStateToProps(state: AppStateT) {
   }
   // TODO: Remove ABOVE
 
-  const treeBranch = find({
+  const activePath = rootReducer.selectActiveNodePath(state);
+  const parentIdx = findClosestParent(activePath);
+  const parentPath = parentIdx !== null ? activePath.slice(0, parentIdx + 1) : activePath[0];
+  const parentNode = getNodeAtPath({
     getNodeKey,
     treeData: rootReducer.selectNotesTreeTree(state),
-    searchQuery:rootReducer.selectActiveNodeId(state),
-    searchMethod: ({ node, searchQuery }: { node: TreeNodeT, searchQuery: string }) => searchQuery === node.id,
-  }).matches[0];
+    path: parentPath,
+    ignoreCollapsed: false,
+  });
+  const branch = parentNode && parentNode.children ? parentNode.children : [];
 
   return {
-    tree: treeBranch,
+    tree: branch,
     activeNode: rootReducer.selectActiveNode(state),
     activePath: activePathByTitles,
   };
