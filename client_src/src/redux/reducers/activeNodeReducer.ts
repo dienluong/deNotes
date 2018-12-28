@@ -102,3 +102,4 @@ export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode
 }
 
 export const selectPath = (state: ActiveNodeT) => state.path;
+export const selectId = (state: ActiveNodeT) => state.id;

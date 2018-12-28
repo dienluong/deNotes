@@ -17,4 +17,5 @@ export const selectNotesTreeTree = (state: AppStateT) => fromNotesTree.selectTre
 // export const selectNotesTreeDateModified = (state) => fromNotesTree.selectDateModified(state.notesTree);
 export const selectActiveNode = (state: AppStateT) => state.activeNode;
 export const selectActiveNodePath = (state: AppStateT) => fromActiveNode.selectPath(state.activeNode);
+export const selectActiveNodeId = (state: AppStateT) => fromActiveNode.selectId(state.activeNode);
 export const selectEditorContent = (state: AppStateT) => state.editorContent;
