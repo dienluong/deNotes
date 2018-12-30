@@ -1,4 +1,5 @@
 import * as moduleToTest from './treeUtils';
+const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|^|';
 
 describe('1. equals()', () => {
   it('should handle simple non-nested objects and arrays', () => {
@@ -98,5 +99,29 @@ describe('1. equals()', () => {
 
     obj1 = [...obj2, []];
     expect(moduleToTest.equals(obj1, obj2)).toBe(false);
+  });
+});
+
+describe('2. findClosestParent ', () => {
+  it('should return the index of parent node for given path', () => {
+    let testPath = [`folder${ID_DELIMITER}1111`, `item${ID_DELIMITER}2222`];
+    expect(moduleToTest.findClosestParent(testPath)).toBe(0);
+
+    testPath = [`folder${ID_DELIMITER}0000`, `folder${ID_DELIMITER}1111`, `folder${ID_DELIMITER}2222`];
+    expect(moduleToTest.findClosestParent(testPath)).toBe(1);
+  });
+
+  it('should return null if path only has one entry', () => {
+    let testPath = [`folder${ID_DELIMITER}1111`];
+    expect(moduleToTest.findClosestParent(testPath)).toBeNull();
+  });
+
+  it('should return null if invalid path received', () => {
+    let testPath = [];
+    expect(moduleToTest.findClosestParent(testPath)).toBeNull();
+    testPath = [1, 2, `folder${ID_DELIMITER}3333`];
+    expect(moduleToTest.findClosestParent(testPath)).toBeNull();
+    testPath = {};
+    expect(moduleToTest.findClosestParent(testPath)).toBeNull();
   });
 });
