@@ -26,8 +26,11 @@ function _addAndSelectNewNode({ state, kind, path = [] }: { state: AppStateT, ki
   if (Array.isArray(path) && path.length) {
     currentActivePath = path;
   } else {
-    const end = state.activeNode.path.indexOf(state.activeNode.id) + 1;
-    currentActivePath = state.activeNode.path.slice(0, end);
+    // The below manipulation is necessary because the the active node is not necessarily at the very end of the active path
+    // This is because with the path navigator, we can have the active node anywhere in the active path. But this feature will be removed.
+    // TODO: The active node must always be at the very end of the active path.
+    const end = state.activeNode.path.indexOf(state.activeNode.id);
+    currentActivePath = state.activeNode.path.slice(0, end + 1);
   }
 
   const parentIdx = findClosestParent(currentActivePath);
@@ -37,8 +40,9 @@ function _addAndSelectNewNode({ state, kind, path = [] }: { state: AppStateT, ki
     parentKey = currentActivePath[parentIdx];
     newActiveNodePath = [...currentActivePath.slice(0, parentIdx + 1), newNode.id];
   } else {
-    parentKey = null;
-    newActiveNodePath = [newNode.id];
+    // If no parent found, then default to the root folder
+    parentKey = state.activeNode.path[0];
+    newActiveNodePath = [parentKey, newNode.id];
   }
 
   const newNotesTree = {
@@ -82,6 +86,13 @@ function _addAndSelectNewNode({ state, kind, path = [] }: { state: AppStateT, ki
   return newState;
 }
 
+function _changeTreeBranch({ state, branch }: { state: AppStateT, branch: Array<TreeNodeT> })
+  : AppStateT {
+  // TODO To implement
+  window.alert('TODO!!!');
+  return state;
+}
+
 export default function reducedReducer(state: AppStateT = initialState, action: AnyAction)
   : AppStateT {
   console.log(`REDUCER: ${action.type}`);
@@ -91,6 +102,11 @@ export default function reducedReducer(state: AppStateT = initialState, action: 
         state,
         kind: action.payload.kind,
         path: action.payload.path,
+      });
+    case notesListActionTypes.CHANGE_NOTES_TREE_BRANCH:
+      return _changeTreeBranch({
+        state,
+        ...action.payload,
       });
     default:
       if (process.env.REACT_APP_DEBUG) {
