@@ -66,6 +66,7 @@ export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().
 
   if (type === 'folder') {
     newNode.children = [];
+    newNode.expanded = false;
     newNode.title = title === DEFAULT_TITLES.NOTE ? DEFAULT_TITLES.FOLDER : title;
   }
 
@@ -73,10 +74,10 @@ export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().
 }
 
 /**
- * Returns the index of the deepest node of type 'folder' in path.
+ * Returns the index of the node of type 'folder' that is the direct parent of the node referenced by the given path.
  * Returns null if none found.
  * @param path {Array}
- * @return {?number}
+ * @return {number|null}
  * @private
  */
 export function findClosestParent(path: string[])
@@ -85,16 +86,16 @@ export function findClosestParent(path: string[])
     return null;
   }
 
-  const lastStep = path[path.length - 1];
-  if (typeof lastStep !== 'string') {
+  // If path contains only the node, then no parent
+  if (path.length === 1) {
     return null;
   }
 
-  if (path.length === 1) {
-    return (lastStep.includes(`folder${ID_DELIMITER}`) ? 0 : null);
+  const parent = path[path.length - 2];
+  if (typeof parent !== 'string') {
+    return null;
   } else {
-    // If last step in path is not a folder, then the step previous to last must be a folder.
-    return (lastStep.includes(`folder${ID_DELIMITER}`)) ? path.length - 1 : path.length - 2;
+    return (parent.includes(`folder${ID_DELIMITER}`)) ? path.length - 2 : null;
   }
 }
 
