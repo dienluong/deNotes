@@ -80,11 +80,11 @@ store.dispatch(fetchNotesTreeThunkAction())
     }).matches;
 
     if (matches.length) {
-      store.dispatch(selectNodeThunkAction({ id: activeId, path: matches[0].path }));
+      store.dispatch(selectNodeThunkAction({ id: activeId }));
     }
     else {
       const defaultNodeId = notesTree[0].id;
-      store.dispatch(selectNodeThunkAction({ id: defaultNodeId, path: [defaultNodeId] }));
+      store.dispatch(selectNodeThunkAction({ id: defaultNodeId }));
     }
   })
   .catch(err => window.alert(err.message));

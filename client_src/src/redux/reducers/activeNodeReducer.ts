@@ -56,6 +56,22 @@ function _changeActiveNodeOnDelete({ currentActive, deletedNode }: { currentActi
 
   return returnedActiveNode;
 }
+
+function _changeActiveNodeOnSelect({ currentActive, nodeId }: { currentActive: ActiveNodeT, nodeId: string })
+  : ActiveNodeT {
+  let newPath: string[];
+
+  // The length of current active path should always be at least 2: one entry for root folder and one for the active node itself
+  if (currentActive.path.length >= 2) {
+    newPath = [...(currentActive.path.slice(0, -1)), nodeId];
+  } else {
+    newPath = [...currentActive.path];
+  }
+
+  return { id: nodeId, path: newPath };
+}
+
+
 // TODO: remove
 // function _arraysAreEqual(arr1, arr2) {
 //   if (Object.is(arr1, arr2)) { return true; }
@@ -69,8 +85,13 @@ export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode
   console.log(`REDUCER: ${action.type}`);
   switch (action.type) {
     case notesListActionTypes.SELECT_NODE: {
-      if (equals(state, action.payload.activeNode)) { return state; }
-      else { return { ...state, ...action.payload.activeNode }; }
+      const newActiveNode = _changeActiveNodeOnSelect({
+        currentActive: state,
+        nodeId: action.payload.nodeId,
+      });
+
+      if (state.id === action.payload.nodeId) { return state; }
+      else { return newActiveNode; }
     }
 
     case notesListActionTypes.NAVIGATE_PATH: {

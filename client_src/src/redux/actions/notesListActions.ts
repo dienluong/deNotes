@@ -66,21 +66,17 @@ export function use({ notesTreeStorage, editorContentStorage }: { notesTreeStora
  *
  * @param {Object} params
  * @param {string} params.id
- * @param {string[]} params.path
  */
-export function selectNodeThunkAction({ id, path }: { id: string, path: Array<string> })
+export function selectNodeThunkAction({ id }: { id: string })
   : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     // if (typeof id !== 'string' || !id.length) {
     if (!id.length) {
       id = getState().activeNode.id;
     }
-    if (!Array.isArray(path) || !path.length) {
-      path = getState().activeNode.path;
-    }
     // dispatch actions only if selected node actually changed
     if (getState().activeNode.id !== id) {
-      const activeNode = { id, path };
+      const nodeId = id;
 
       // Immediately save currently opened note
       const currentContent = getState().editorContent;
@@ -92,16 +88,16 @@ export function selectNodeThunkAction({ id, path }: { id: string, path: Array<st
       const returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
         payload: {
-          activeNode,
+          nodeId,
         },
       });
 
       // Fetch saved note only if:
       // 1) newly selected node represents a note ('item'), as opposed to a folder.
       // 2) newly selected node is not the already opened note
-      const kind = translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'type' });
+      const kind = translateNodeIdToInfo({ nodeId, kind: 'type' });
       if (kind === 'item') {
-        const uniqid = translateNodeIdToInfo({ nodeId: activeNode.id, kind: 'uniqid' });
+        const uniqid = translateNodeIdToInfo({ nodeId, kind: 'uniqid' });
         if (uniqid !== getState().editorContent.id) {
           return dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
             .catch((err: ActionError) => {
@@ -231,7 +227,7 @@ export function fetchNotesTreeThunkAction()
           dispatch({
             type: notesListActionTypes.SELECT_NODE,
             payload: {
-              activeNode,
+              nodeId: activeNode.id,
             },
           });
 

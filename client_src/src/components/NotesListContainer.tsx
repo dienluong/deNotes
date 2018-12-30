@@ -109,7 +109,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
       return dispatch(navigatePathAction({ idx }));
     },
     nodeClickHandler({ id = '', path = [] }) {
-      return dispatch(selectNodeThunkAction({ id, path }));
+      return dispatch(selectNodeThunkAction({ id }));
     },
     deleteNodeBtnHandler({ node, path }) {
       return dispatch(deleteNodeThunkAction({ node, path }));
