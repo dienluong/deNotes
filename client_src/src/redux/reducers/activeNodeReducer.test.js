@@ -10,51 +10,62 @@ describe('activeNodeReducer', () => {
   it('should return selected node on SELECT_NODE action', () => {
     const currentState = {
       id: 'current-active-id',
-      path: ['current-active-id'],
+      path: ['current-active-parent', 'current-active-id'],
     };
     const newActiveNode = {
-      id: 'new-active-id',
-      path: ['new-active-id'],
+      nodeId: 'new-active-id',
+    };
+    const expectedState = {
+      id: newActiveNode.nodeId,
+      path: [currentState.path[0], newActiveNode.nodeId],
     };
     expect(reducer(currentState, {
       type: notesListActionTypes.SELECT_NODE,
-      payload: { activeNode: newActiveNode },
-    })).toEqual(newActiveNode);
+      payload: newActiveNode,
+    })).toEqual(expectedState);
 
     // If given node is same as current state, return the current state (therefore, using expect.toBe())
     const sameActiveNode = {
-      id: 'current-active-id',
-      path: ['current-active-id'],
+      nodeId: 'current-active-id',
     };
     expect(reducer(currentState, {
       type: notesListActionTypes.SELECT_NODE,
-      payload: { activeNode: sameActiveNode },
+      payload: sameActiveNode,
+    })).toBe(currentState);
+
+    // If payload is invalid, return current state
+    const invalidPayload = {
+      invalidProp: 'current-active-id',
+    };
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SELECT_NODE,
+      payload: invalidPayload,
     })).toBe(currentState);
   });
 
-  it('should change active node on NAVIGATE_PATH action', () => {
+  it('should change active node and path on NAVIGATE_PATH action', () => {
     const currentState = {
       id: 'active1',
-      path: ['segment0', 'segment1', 'segment2', 'active1', 'moreSegment'],
+      path: ['segment0', 'segment1', 'segment2', 'active1'],
     };
 
-    let selectedPathSegment = 1;
+    let selectedPathSegmentIdx = 1;
     expect(reducer(currentState, {
       type: notesListActionTypes.NAVIGATE_PATH,
       payload: {
-        idx: selectedPathSegment,
+        idx: selectedPathSegmentIdx,
       },
     })).toEqual({
-      id: currentState.path[selectedPathSegment],
-      path: currentState.path,
+      id: currentState.path[selectedPathSegmentIdx],
+      path: currentState.path.slice(0, selectedPathSegmentIdx + 1),
     });
 
     // If selected node is same as current state, return current state
-    selectedPathSegment = currentState.path.length - 2;
+    selectedPathSegmentIdx = currentState.path.length - 1;
     expect(reducer(currentState, {
       type: notesListActionTypes.NAVIGATE_PATH,
       payload: {
-        idx: selectedPathSegment,
+        idx: selectedPathSegmentIdx,
       },
     })).toBe(currentState);
   });
@@ -62,7 +73,7 @@ describe('activeNodeReducer', () => {
   it('should switch to appropriate node on SWITCH_NODE_ON_DELETE action, if deleted node is either 1) active node\'s parent or 2) the active node itself.', () => {
     const currentState = {
       id: 'active1',
-      path: ['segment0', 'segment1', 'segment2', 'active1', 'moreSegment', 'notParent'],
+      path: ['segment0', 'segment1', 'segment2', 'active1'],
     };
 
     // Delete one of current active node's parents
@@ -98,7 +109,7 @@ describe('activeNodeReducer', () => {
       path: ['segment0', 'segment1', 'segment2'],
     });
 
-    // Active node ID should not change, only the path does, if deleted node is on the path but not one of current active node's parents
+    // If deleted node is not on current active path, no change to active path, nor active ID
     deletedNode = {
       id: 'notParent',
       path: ['segment0', 'segment1', 'segment2', 'active1', 'moreSegment', 'notParent'],
@@ -109,12 +120,9 @@ describe('activeNodeReducer', () => {
       payload: {
         deletedNode,
       },
-    })).toEqual({
-      id: currentState.id,
-      path: ['segment0', 'segment1', 'segment2', 'active1', 'moreSegment'],
-    });
+    })).toBe(currentState);
 
-    // Both active node ID and path should not change if deleted node is on the active path
+    // If deleted node is not on current active path, no change to active path, nor active ID
     deletedNode = {
       id: 'notInPath',
       path: ['segment0', 'segment1', 'segment2', 'notInPath'],

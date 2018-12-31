@@ -8,7 +8,7 @@ import { AnyAction } from 'redux';
 const initialActiveNode = baseState.activeNode;
 
 /**
- * Sets the active ID to the newly selected node along the active path.  (The active path remains the same.)
+ * Sets the active ID to the newly selected node along the active path. The active path is truncated accordingly.
  * @param currentActive
  * @param idx
  * @returns {*}
@@ -20,37 +20,31 @@ function _changeActiveNodeOnPathNavClick({ currentActive, idx }: { currentActive
     return {
       ...currentActive,
       id: currentActive.path[idx],
-      path: currentActive.path,
+      path: currentActive.path.slice(0, idx + 1),
     };
   } else {
     return currentActive;
   }
 }
 
-function _changeActiveNodeOnDelete({ currentActive, deletedNode }: { currentActive: ActiveNodeT, deletedNode: ActiveNodeT })
+function _changeActiveNodeOnDelete({ currentActive, deletedNodeId }: { currentActive: ActiveNodeT, deletedNodeId: string })
   : ActiveNodeT {
   let returnedActiveNode = currentActive;
   // if deleted node is part of the active path, re-adjust the active node
-  const deletedNodeIdx = currentActive.path.lastIndexOf(deletedNode.id);
+  const deletedNodeIdx = currentActive.path.lastIndexOf(deletedNodeId);
   if (deletedNodeIdx >= 0) {
-    if (deletedNodeIdx === 0) {
-      // TODO: Deleting the root folder should never be allowed.
-      returnedActiveNode = {
-        ...currentActive,
-        id: '',
-        path: [],
-      };
-    } else {
+    if (deletedNodeIdx !== 0) {
       // Since deleted node is part of active path, then truncate the path
-      // Only change the active node (i.e. change the active node ID) if deleted node is one of its parents
-      const currentActiveIdx = currentActive.path.lastIndexOf(currentActive.id);
       const newActivePath = currentActive.path.slice(0, deletedNodeIdx);
-      const newActiveId = currentActiveIdx >= deletedNodeIdx ? newActivePath[newActivePath.length - 1] : currentActive.path[currentActiveIdx];
+      const newActiveId = newActivePath[newActivePath.length - 1];
       returnedActiveNode = {
         ...currentActive,
         id: newActiveId,
         path: newActivePath,
       };
+    } else {
+      // TODO: Deleting the root folder should never occur, or be allowed.
+      return returnedActiveNode;
     }
   }
 
@@ -61,10 +55,15 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId }: { currentActive: A
   : ActiveNodeT {
   let newPath: string[];
 
-  // The length of current active path should always be at least 2: one entry for root folder and one for the active node itself
+  if (!nodeId) {
+    return currentActive;
+  }
+
+  // The length of current active path should always be at least 2: one entry for parent root folder and one for active node itself
   if (currentActive.path.length >= 2) {
     newPath = [...(currentActive.path.slice(0, -1)), nodeId];
   } else {
+    // this case should never occur
     newPath = [...currentActive.path];
   }
 
@@ -82,18 +81,22 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId }: { currentActive: A
 
 export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode, action: AnyAction)
   : ActiveNodeT {
+  if (!action.payload) {
+    return state;
+  }
   console.log(`REDUCER: ${action.type}`);
   switch (action.type) {
     case notesListActionTypes.SELECT_NODE: {
-      const newActiveNode = _changeActiveNodeOnSelect({
-        currentActive: state,
-        nodeId: action.payload.nodeId,
-      });
-
-      if (state.id === action.payload.nodeId) { return state; }
-      else { return newActiveNode; }
+      if (state.id === action.payload.nodeId) {
+        return state;
+      }
+      else {
+        return _changeActiveNodeOnSelect({
+          currentActive: state,
+          nodeId: action.payload.nodeId,
+        });
+      }
     }
-
     case notesListActionTypes.NAVIGATE_PATH: {
       const newActiveNode = _changeActiveNodeOnPathNavClick({
         currentActive: state,
@@ -103,17 +106,18 @@ export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode
       if (equals(state, newActiveNode)) { return state; }
       else { return newActiveNode; }
     }
-
     case notesListActionTypes.SWITCH_NODE_ON_DELETE: {
+      if (!action.payload.deletedNode) {
+        return state;
+      }
       const newActiveNode = _changeActiveNodeOnDelete({
         currentActive: state,
-        deletedNode: action.payload.deletedNode,
+        deletedNodeId: action.payload.deletedNode.id,
       });
 
       if (equals(state, newActiveNode)) { return state; }
       else { return newActiveNode; }
     }
-
     default:
       if (process.env.REACT_APP_DEBUG) {
         console.log(`Current activeNode: ${JSON.stringify(state)}`);
