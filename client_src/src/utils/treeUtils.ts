@@ -86,7 +86,7 @@ export function findClosestParent(path: string[])
     return null;
   }
 
-  // If path contains only the node, then no parent
+  // If path consists only of the node, then no parent
   if (path.length === 1) {
     return null;
   }
@@ -100,7 +100,7 @@ export function findClosestParent(path: string[])
 }
 
 /**
- * Return the info embedded in provided ID.
+ * Returns the info (object with type and uniqid) embedded in provided node ID. Returns null if invalid node ID provided.
  * Example: For ID "folder|^|a9914200-a7d2-11e8-a12b-99205b853de7"
  *          type is "folder"
  *          uniqid is "a9914200-a7d2-11e8-a12b-99205b853de7""
@@ -108,21 +108,26 @@ export function findClosestParent(path: string[])
  * Note: possible types are "item" and "folder".
  * @param {Object} params
  * @param {string} params.nodeId
- * @param {("uniqid"|"type")} params.kind
+ * @return {object|null}
  */
-export function translateNodeIdToInfo({ nodeId, kind = 'uniqid' }: { nodeId: string, kind: 'uniqid'|'type'})
-  : string {
+export function translateNodeIdToInfo({ nodeId }: { nodeId: string })
+  : { type: NodeTypeT, uniqid: string } | null {
   if (typeof nodeId !== 'string') {
-    return '';
+    return null;
   }
 
-  switch (kind) {
-    case 'type':
-      return nodeId.split(ID_DELIMITER)[0];
-    case 'uniqid':
-      return nodeId.split(ID_DELIMITER)[1];
-    default:
-      return '';
+  const info = nodeId.split(ID_DELIMITER);
+  if (info.length < 2) {
+    return null;
+  }
+
+  if (/^(?:item|folder)$/.test(info[0])) {
+    return {
+      type: info[0] as NodeTypeT,
+      uniqid: info[1],
+    };
+  } else {
+    return null;
   }
 }
 
