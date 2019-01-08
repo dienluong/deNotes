@@ -94,10 +94,8 @@ class MinimalThemeNodeContentRenderer extends Component {
           <div>
             <button
               type="button"
-              aria-label={node.expanded ? 'Collapse' : 'Expand'}
-              className={
-                node.expanded ? styles.collapseButton : styles.expandButton
-              }
+              aria-label={ 'Collapse' }
+              className={ styles.expandButton }
               onClick={() => {} }
             />
 

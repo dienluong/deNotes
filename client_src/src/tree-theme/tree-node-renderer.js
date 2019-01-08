@@ -2,7 +2,7 @@ import React, { Component, Children, cloneElement } from 'react';
 import PropTypes from 'prop-types';
 import styles from './tree-node-renderer.module.scss';
 
-class MinimalThemeTreeNodeRenderer extends Component {
+class ModileThemeTreeNodeRenderer extends Component {
   constructor(props) {
     super(props);
 
@@ -73,7 +73,7 @@ class MinimalThemeTreeNodeRenderer extends Component {
     );
   }
 }
-MinimalThemeTreeNodeRenderer.defaultProps = {
+ModileThemeTreeNodeRenderer.defaultProps = {
   swapFrom: null,
   swapDepth: null,
   swapLength: null,
@@ -82,7 +82,7 @@ MinimalThemeTreeNodeRenderer.defaultProps = {
   rowDirection: 'ltr',
 };
 
-MinimalThemeTreeNodeRenderer.propTypes = {
+ModileThemeTreeNodeRenderer.propTypes = {
   treeIndex: PropTypes.number.isRequired,
   swapFrom: PropTypes.number,
   swapDepth: PropTypes.number,
@@ -108,4 +108,4 @@ MinimalThemeTreeNodeRenderer.propTypes = {
   ).isRequired,
 };
 
-export default MinimalThemeTreeNodeRenderer;
+export default ModileThemeTreeNodeRenderer;
