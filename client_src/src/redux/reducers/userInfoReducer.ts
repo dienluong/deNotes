@@ -18,7 +18,10 @@ const initialUser = baseState.userInfo;
 
 export default function userReducer(state: UserInfoT = initialUser, action: AnyAction)
   : UserInfoT {
-  console.log(`REDUCER: ${action.type}`);
+  if (!action.payload) {
+    action.type = '';
+  }
+  console.log(`REDUCER: '${action.type}'`);
   switch (action.type) {
     case accountActionTypes.SET_USER: {
       if (equals(state, action.payload.user)) { return state; }

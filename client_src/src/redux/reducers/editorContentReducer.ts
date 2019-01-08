@@ -9,7 +9,10 @@ const initialContent: EditorContentT = baseState.editorContent;
 
 export default function editorContentReducer(state: EditorContentT = initialContent, action: AnyAction)
   : EditorContentT {
-  console.log(`REDUCER: ${action.type}`);
+  if (!action.payload) {
+    action.type = '';
+  }
+  console.log(`REDUCER: '${action.type}'`);
   switch (action.type) {
     case editorActionTypes.CONTENT_CHANGED:
       return {
@@ -23,7 +26,7 @@ export default function editorContentReducer(state: EditorContentT = initialCont
       };
     case notesListActionTypes.CHANGE_NODE_TITLE:
       // if the changed title belongs to the opened note
-      if (state.id === action.payload.node.uniqid) {
+      if (action.payload.node && (state.id === action.payload.node.uniqid)) {
         return {
           ...state,
           title: action.payload.title,

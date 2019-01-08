@@ -111,7 +111,10 @@ function _switchActiveNodeOnBranchChange({ currentActive, branch }: { currentAct
 
 export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode, action: AnyAction)
   : ActiveNodeT {
-  console.log(`REDUCER: ${action.type}`);
+  if (!action.payload) {
+    action.type = '';
+  }
+  console.log(`REDUCER: '${action.type}'`);
   switch (action.type) {
     case notesListActionTypes.SELECT_NODE: {
       if (state.id === action.payload.nodeId) {

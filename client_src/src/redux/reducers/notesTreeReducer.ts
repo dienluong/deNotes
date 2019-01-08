@@ -117,8 +117,12 @@ function _changeTreeBranch({ notesTree, branch, activePath, now }: { notesTree: 
   }
 }
 
-export default function notesTreeReducer(state: NotesTreeT = initialTree, action: AnyAction) {
-  console.log(`REDUCER: ${action.type}`);
+export default function notesTreeReducer(state: NotesTreeT = initialTree, action: AnyAction)
+  : NotesTreeT {
+  if (!action.payload) {
+    action.type = '';
+  }
+  console.log(`REDUCER: '${action.type}'`);
   switch (action.type) {
     case notesListActionTypes.CHANGE_NOTES_TREE:
       return {
