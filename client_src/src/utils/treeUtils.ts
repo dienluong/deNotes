@@ -1,6 +1,9 @@
 import uuid from 'uuid/v4';
 import { find, getFlatDataFromTree } from 'react-sortable-tree';
 
+// Types
+import { GetNodeKeyFunction, NodeData } from 'react-sortable-tree';
+
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|^|';
 const DEFAULT_TITLES = {
   FOLDER: 'New Folder',
@@ -24,6 +27,11 @@ export function equals(obj1: { [key: string]: any }, obj2: { [key: string]: any 
     return obj1 === obj2;
   }
 
+  // If same object
+  if (obj1 === obj2) {
+    return true;
+  }
+
   const currentKeys = Object.keys(obj1);
   const newKeys = Object.keys(obj2);
 
@@ -37,7 +45,7 @@ export function equals(obj1: { [key: string]: any }, obj2: { [key: string]: any 
   });
 }
 
-export const getNodeKey = ({ node }: { node: TreeNodeT }): string => node.id;
+export const getNodeKey: GetNodeKeyFunction = ({ node }) => node.id;
 
 /**
  * Builds a node for a tree.
@@ -148,14 +156,14 @@ export function translatePathToInfo({ notesTree = [], path = [], kind = 'type' }
 
   switch (kind) {
     case 'title':
-      return path.map((id) => {
-        const matches = find({
+      return path.map((id: string): string => {
+        const matches: NodeData[] = find({
           getNodeKey,
           treeData: notesTree,
           searchQuery: id,
-          searchMethod: ({ node, searchQuery }: { node: TreeNodeT, searchQuery: string }): boolean => searchQuery === node.id,
+          searchMethod: ({ node: treeNode, searchQuery }): boolean => searchQuery === treeNode.id,
         }).matches;
-        return matches.length ? matches[0].node.title : '';
+        return matches.length && matches[0].node.title ? (matches[0].node.title as string) : '';
       });
     case 'type':
       return path.map((step) => String(step).split(ID_DELIMITER)[0]);
@@ -207,7 +215,7 @@ export function getDescendants({ node }: { node: TreeNodeT })
     return [];
   }
 
-  return getFlatDataFromTree({ treeData: [node], getNodeKey, ignoreCollapsed: false }).map((data: { node: TreeNodeT })  => data.node);
+  return getFlatDataFromTree({ treeData: [node], getNodeKey, ignoreCollapsed: false }).map((data) => data.node) as TreeNodeT[];
 }
 
 /**

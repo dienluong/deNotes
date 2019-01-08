@@ -32,12 +32,18 @@ describe('1. equals()', () => {
     };
     expect(moduleToTest.equals(obj1, obj2)).toBe(false);
 
+    obj2 = obj1;
+    expect(moduleToTest.equals(obj1, obj2)).toBe(true);
+
     obj1 = ['a', 2, false, 1.234567, null, undefined];
     obj2 = ['a', 2, false, 1.234567, null, undefined];
     expect(moduleToTest.equals(obj1, obj2)).toBe(true);
 
     obj2 = [...obj2, undefined];
     expect(moduleToTest.equals(obj1, obj2)).toBe(false);
+
+    obj1 = obj2;
+    expect(moduleToTest.equals(obj1, obj2)).toBe(true);
   });
 
   it('should handle nested objects and arrays', () => {
@@ -84,6 +90,8 @@ describe('1. equals()', () => {
     expect(moduleToTest.equals(obj1, obj2)).toBe(false);
 
     obj1 = obj2;
+    expect(moduleToTest.equals(obj1, obj2)).toBe(true);
+
     obj2 = {
       ...obj2,
       aa: [...obj2.aa, false],
