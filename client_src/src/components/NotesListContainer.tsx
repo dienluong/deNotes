@@ -4,8 +4,8 @@ import * as rootReducer from '../redux/reducers';
 import NotesList from './widgets/NotesList';
 import {
   selectNodeThunkAction,
-  navigatePathAction,
-  changeNotesTreeBranchAction,
+  navigatePathThunkAction,
+  changeNotesTreeBranchThunkAction,
   changeNodeTitleAction,
   deleteNodeThunkAction,
   addAndSelectNodeThunkAction,
@@ -18,7 +18,7 @@ import { getNodeKey, findClosestParent } from '../utils/treeUtils';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 interface DispatchProps {
-  treeChangeHandler: (params: any) => AnyAction;
+  treeChangeHandler: (params: any) => Promise<AnyAction>;
   nodeTitleChangeHandler: (params: { node: TreeNodeT, title: string, path: TreeNodePathT }) => AnyAction;
   pathNavigatorClickHandler: (params: { idx: number }) => AnyAction;
   nodeClickHandler: (params: any) => Promise<AnyAction>;
@@ -62,16 +62,21 @@ function mapStateToProps(state: AppStateT) {
   }
   // TODO: Remove ABOVE
 
-  const activePath = rootReducer.selectActiveNodePath(state);
-  const parentIdx = findClosestParent(activePath);
-  const parentPath = parentIdx !== null ? activePath.slice(0, parentIdx + 1) : activePath[0];
-  const parentNode = getNodeAtPath({
+  // Get the branch of the whole tree based on the current active node. This branch will be passed as prop to the component
+  const activePath: string[] = rootReducer.selectActiveNodePath(state);
+  const parentIdx: number | null = findClosestParent(activePath);
+  const parentPath: string[] = parentIdx !== null ? activePath.slice(0, parentIdx + 1) : [activePath[0]];
+  const parentNodeInfo = getNodeAtPath({
     getNodeKey,
     treeData: rootReducer.selectNotesTreeTree(state),
     path: parentPath,
     ignoreCollapsed: false,
   });
-  const branch = parentNode && parentNode.children ? parentNode.children : [];
+
+  let branch: NotesTreeT["tree"] = [];
+  if (parentNodeInfo && parentNodeInfo.node) {
+    branch = (parentNodeInfo.node as TreeNodeT).children || [];
+  }
 
   return {
     tree: branch,
@@ -100,22 +105,30 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
 
   return {
     treeChangeHandler(tree) {
-      return dispatch(changeNotesTreeBranchAction({ branch: tree }));
+      return dispatch(changeNotesTreeBranchThunkAction({ branch: tree }));
     },
     nodeTitleChangeHandler({ node, title, path }) {
-      return dispatch(changeNodeTitleAction({ node, title, path }));
+      // We are not using the path received from the NotesList component because that path is not for the entire tree;
+      // remember that NotesList only receives and renders a given leaf of the whole tree.
+      return dispatch(changeNodeTitleAction({ node, title }));
     },
     pathNavigatorClickHandler({ idx }) {
-      return dispatch(navigatePathAction({ idx }));
+      return dispatch(navigatePathThunkAction({ idx }));
     },
     nodeClickHandler({ id = '', path = [] }) {
+      // We are not using the path received from the NotesList component because that path is not for the entire tree;
+      // remember that NotesList only receives and renders a given leaf of the whole tree.
       return dispatch(selectNodeThunkAction({ id }));
     },
     deleteNodeBtnHandler({ node, path }) {
-      return dispatch(deleteNodeThunkAction({ node, path }));
+      // We are not using the path received from the NotesList component because that path is not for the entire tree;
+      // remember that NotesList only receives and renders a given leaf of the whole tree.
+      return dispatch(deleteNodeThunkAction({ node }));
     },
     addNoteBtnHandler({ path } ) {
-      return dispatch(addAndSelectNodeThunkAction({ kind: 'item', path }));
+      // We are not using the path received from the NotesList component because that path is not for the entire tree;
+      // remember that NotesList only receives and renders a given leaf of the whole tree.
+      return dispatch(addAndSelectNodeThunkAction({ kind: 'item' }));
     },
     toolbarHandlersMap: toolbarHandlersMap,
   };

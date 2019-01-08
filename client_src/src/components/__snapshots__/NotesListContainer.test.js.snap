@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`render correctly with props with values taken from redux store 1`] = `
+exports[`renders correctly with prop values taken from redux store 1`] = `
 <div>
   <div
     class="dnt__notes-list"
@@ -49,110 +49,15 @@ exports[`render correctly with props with values taken from redux store 1`] = `
           <div
             class="ReactVirtualized__Grid__innerScrollContainer"
             role="rowgroup"
-            style="width: auto; height: 434px; max-width: 200px; max-height: 434px; overflow: hidden; position: relative;"
+            style="width: auto; height: 372px; max-width: 200px; max-height: 372px; overflow: hidden; position: relative;"
           >
             <div
-              class="rst__node"
+              class="node"
               style="height: 62px; left: 0px; position: absolute; top: 0px; width: 100%;"
             >
               <div
-                class="rst__lineBlock rst__lineHalfHorizontalRight"
-                style="width: 44px;"
-              />
-              <div
-                class="rst__nodeContent"
-                style="left: 44px;"
-              >
-                <div
-                  data-testid="folder|^|1"
-                  style="height: 100%;"
-                  tabindex="0"
-                >
-                  <div>
-                    <button
-                      aria-label="Collapse"
-                      class="rst__collapseButton"
-                      style="left: -22px;"
-                      type="button"
-                    />
-                    <div
-                      class="rst__lineChildren"
-                      style="width: 44px;"
-                    />
-                  </div>
-                  <div
-                    class="rst__rowWrapper"
-                  >
-                    <div
-                      class="rst__row dnt__tree-node dnt__tree-node--active"
-                      style="opacity: 1;"
-                    >
-                      <div
-                        class="rst__moveHandle"
-                        draggable="true"
-                      />
-                      <div
-                        class="rst__rowContents"
-                      >
-                        <div
-                          class="rst__rowLabel"
-                        >
-                          <span
-                            class="rst__rowTitle"
-                          >
-                            <form>
-                              <input
-                                class="dnt__node-title"
-                                type="text"
-                                value="/"
-                              />
-                            </form>
-                          </span>
-                          
-                        </div>
-                        <div
-                          class="rst__rowToolbar"
-                        >
-                          <div
-                            class="rst__toolbarButton"
-                          >
-                            <button
-                              class="dnt__tree-node-btn"
-                            >
-                              +
-                            </button>
-                          </div>
-                          <div
-                            class="rst__toolbarButton"
-                          >
-                            <button
-                              class="dnt__tree-node-btn"
-                            >
-                              x
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="rst__node"
-              style="height: 62px; left: 0px; position: absolute; top: 62px; width: 100%;"
-            >
-              <div
-                class="rst__lineBlock"
-                style="width: 44px;"
-              />
-              <div
-                class="rst__lineBlock rst__lineHalfHorizontalRight rst__lineFullVertical"
-                style="width: 44px;"
-              />
-              <div
-                class="rst__nodeContent"
-                style="left: 88px;"
+                class="nodeContent"
+                style="padding-left: 0px;"
               >
                 <div
                   data-testid="item|^|2"
@@ -160,24 +65,21 @@ exports[`render correctly with props with values taken from redux store 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="rst__rowWrapper"
+                    class="rowWrapper"
                   >
                     <div
-                      class="rst__row dnt__tree-node"
-                      style="opacity: 1;"
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
                     >
                       <div
-                        class="rst__moveHandle"
+                        class="rowContents"
                         draggable="true"
-                      />
-                      <div
-                        class="rst__rowContents"
                       >
                         <div
-                          class="rst__rowLabel"
+                          class="rowLabel"
                         >
                           <span
-                            class="rst__rowTitle"
+                            class="rowTitle"
                           >
                             <form>
                               <input
@@ -190,10 +92,10 @@ exports[`render correctly with props with values taken from redux store 1`] = `
                           
                         </div>
                         <div
-                          class="rst__rowToolbar"
+                          class="rowToolbar"
                         >
                           <div
-                            class="rst__toolbarButton"
+                            class="toolbarButton"
                           >
                             <button
                               class="dnt__tree-node-btn"
@@ -209,20 +111,12 @@ exports[`render correctly with props with values taken from redux store 1`] = `
               </div>
             </div>
             <div
-              class="rst__node"
-              style="height: 62px; left: 0px; position: absolute; top: 124px; width: 100%;"
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 62px; width: 100%;"
             >
               <div
-                class="rst__lineBlock"
-                style="width: 44px;"
-              />
-              <div
-                class="rst__lineBlock rst__lineHalfHorizontalRight rst__lineFullVertical"
-                style="width: 44px;"
-              />
-              <div
-                class="rst__nodeContent"
-                style="left: 88px;"
+                class="nodeContent"
+                style="padding-left: 0px;"
               >
                 <div
                   data-testid="item|^|3"
@@ -230,24 +124,21 @@ exports[`render correctly with props with values taken from redux store 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="rst__rowWrapper"
+                    class="rowWrapper"
                   >
                     <div
-                      class="rst__row dnt__tree-node"
-                      style="opacity: 1;"
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
                     >
                       <div
-                        class="rst__moveHandle"
+                        class="rowContents"
                         draggable="true"
-                      />
-                      <div
-                        class="rst__rowContents"
                       >
                         <div
-                          class="rst__rowLabel"
+                          class="rowLabel"
                         >
                           <span
-                            class="rst__rowTitle"
+                            class="rowTitle"
                           >
                             <form>
                               <input
@@ -260,10 +151,10 @@ exports[`render correctly with props with values taken from redux store 1`] = `
                           
                         </div>
                         <div
-                          class="rst__rowToolbar"
+                          class="rowToolbar"
                         >
                           <div
-                            class="rst__toolbarButton"
+                            class="toolbarButton"
                           >
                             <button
                               class="dnt__tree-node-btn"
@@ -279,20 +170,12 @@ exports[`render correctly with props with values taken from redux store 1`] = `
               </div>
             </div>
             <div
-              class="rst__node"
-              style="height: 62px; left: 0px; position: absolute; top: 186px; width: 100%;"
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 124px; width: 100%;"
             >
               <div
-                class="rst__lineBlock"
-                style="width: 44px;"
-              />
-              <div
-                class="rst__lineBlock rst__lineHalfHorizontalRight rst__lineFullVertical"
-                style="width: 44px;"
-              />
-              <div
-                class="rst__nodeContent"
-                style="left: 88px;"
+                class="nodeContent"
+                style="padding-left: 0px;"
               >
                 <div
                   data-testid="folder|^|4"
@@ -302,34 +185,30 @@ exports[`render correctly with props with values taken from redux store 1`] = `
                   <div>
                     <button
                       aria-label="Collapse"
-                      class="rst__collapseButton"
-                      style="left: -22px;"
+                      class="expandButton"
                       type="button"
                     />
                     <div
-                      class="rst__lineChildren"
-                      style="width: 44px;"
+                      class="lineChildren"
+                      style="width: 45px;"
                     />
                   </div>
                   <div
-                    class="rst__rowWrapper"
+                    class="rowWrapper"
                   >
                     <div
-                      class="rst__row dnt__tree-node"
-                      style="opacity: 1;"
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
                     >
                       <div
-                        class="rst__moveHandle"
+                        class="rowContents"
                         draggable="true"
-                      />
-                      <div
-                        class="rst__rowContents"
                       >
                         <div
-                          class="rst__rowLabel"
+                          class="rowLabel"
                         >
                           <span
-                            class="rst__rowTitle"
+                            class="rowTitle"
                           >
                             <form>
                               <input
@@ -342,10 +221,10 @@ exports[`render correctly with props with values taken from redux store 1`] = `
                           
                         </div>
                         <div
-                          class="rst__rowToolbar"
+                          class="rowToolbar"
                         >
                           <div
-                            class="rst__toolbarButton"
+                            class="toolbarButton"
                           >
                             <button
                               class="dnt__tree-node-btn"
@@ -354,7 +233,7 @@ exports[`render correctly with props with values taken from redux store 1`] = `
                             </button>
                           </div>
                           <div
-                            class="rst__toolbarButton"
+                            class="toolbarButton"
                           >
                             <button
                               class="dnt__tree-node-btn"
@@ -370,24 +249,12 @@ exports[`render correctly with props with values taken from redux store 1`] = `
               </div>
             </div>
             <div
-              class="rst__node"
-              style="height: 62px; left: 0px; position: absolute; top: 248px; width: 100%;"
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 186px; width: 100%;"
             >
               <div
-                class="rst__lineBlock"
-                style="width: 44px;"
-              />
-              <div
-                class="rst__lineBlock rst__lineFullVertical"
-                style="width: 44px;"
-              />
-              <div
-                class="rst__lineBlock rst__lineHalfHorizontalRight rst__lineFullVertical"
-                style="width: 44px;"
-              />
-              <div
-                class="rst__nodeContent"
-                style="left: 132px;"
+                class="nodeContent"
+                style="padding-left: 45px;"
               >
                 <div
                   data-testid="item|^|5"
@@ -395,24 +262,21 @@ exports[`render correctly with props with values taken from redux store 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="rst__rowWrapper"
+                    class="rowWrapper"
                   >
                     <div
-                      class="rst__row dnt__tree-node"
-                      style="opacity: 1;"
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
                     >
                       <div
-                        class="rst__moveHandle"
+                        class="rowContents"
                         draggable="true"
-                      />
-                      <div
-                        class="rst__rowContents"
                       >
                         <div
-                          class="rst__rowLabel"
+                          class="rowLabel"
                         >
                           <span
-                            class="rst__rowTitle"
+                            class="rowTitle"
                           >
                             <form>
                               <input
@@ -425,10 +289,10 @@ exports[`render correctly with props with values taken from redux store 1`] = `
                           
                         </div>
                         <div
-                          class="rst__rowToolbar"
+                          class="rowToolbar"
                         >
                           <div
-                            class="rst__toolbarButton"
+                            class="toolbarButton"
                           >
                             <button
                               class="dnt__tree-node-btn"
@@ -444,24 +308,12 @@ exports[`render correctly with props with values taken from redux store 1`] = `
               </div>
             </div>
             <div
-              class="rst__node"
-              style="height: 62px; left: 0px; position: absolute; top: 310px; width: 100%;"
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 248px; width: 100%;"
             >
               <div
-                class="rst__lineBlock"
-                style="width: 44px;"
-              />
-              <div
-                class="rst__lineBlock rst__lineFullVertical"
-                style="width: 44px;"
-              />
-              <div
-                class="rst__lineBlock rst__lineHalfVerticalTop rst__lineHalfHorizontalRight"
-                style="width: 44px;"
-              />
-              <div
-                class="rst__nodeContent"
-                style="left: 132px;"
+                class="nodeContent"
+                style="padding-left: 45px;"
               >
                 <div
                   data-testid="item|^|6"
@@ -469,24 +321,21 @@ exports[`render correctly with props with values taken from redux store 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="rst__rowWrapper"
+                    class="rowWrapper"
                   >
                     <div
-                      class="rst__row dnt__tree-node"
-                      style="opacity: 1;"
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
                     >
                       <div
-                        class="rst__moveHandle"
+                        class="rowContents"
                         draggable="true"
-                      />
-                      <div
-                        class="rst__rowContents"
                       >
                         <div
-                          class="rst__rowLabel"
+                          class="rowLabel"
                         >
                           <span
-                            class="rst__rowTitle"
+                            class="rowTitle"
                           >
                             <form>
                               <input
@@ -499,10 +348,10 @@ exports[`render correctly with props with values taken from redux store 1`] = `
                           
                         </div>
                         <div
-                          class="rst__rowToolbar"
+                          class="rowToolbar"
                         >
                           <div
-                            class="rst__toolbarButton"
+                            class="toolbarButton"
                           >
                             <button
                               class="dnt__tree-node-btn"
@@ -518,20 +367,12 @@ exports[`render correctly with props with values taken from redux store 1`] = `
               </div>
             </div>
             <div
-              class="rst__node"
-              style="height: 62px; left: 0px; position: absolute; top: 372px; width: 100%;"
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 310px; width: 100%;"
             >
               <div
-                class="rst__lineBlock"
-                style="width: 44px;"
-              />
-              <div
-                class="rst__lineBlock rst__lineHalfVerticalTop rst__lineHalfHorizontalRight"
-                style="width: 44px;"
-              />
-              <div
-                class="rst__nodeContent"
-                style="left: 88px;"
+                class="nodeContent"
+                style="padding-left: 0px;"
               >
                 <div
                   data-testid="folder|^|7"
@@ -539,24 +380,21 @@ exports[`render correctly with props with values taken from redux store 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="rst__rowWrapper"
+                    class="rowWrapper"
                   >
                     <div
-                      class="rst__row dnt__tree-node"
-                      style="opacity: 1;"
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
                     >
                       <div
-                        class="rst__moveHandle"
+                        class="rowContents"
                         draggable="true"
-                      />
-                      <div
-                        class="rst__rowContents"
                       >
                         <div
-                          class="rst__rowLabel"
+                          class="rowLabel"
                         >
                           <span
-                            class="rst__rowTitle"
+                            class="rowTitle"
                           >
                             <form>
                               <input
@@ -569,10 +407,10 @@ exports[`render correctly with props with values taken from redux store 1`] = `
                           
                         </div>
                         <div
-                          class="rst__rowToolbar"
+                          class="rowToolbar"
                         >
                           <div
-                            class="rst__toolbarButton"
+                            class="toolbarButton"
                           >
                             <button
                               class="dnt__tree-node-btn"
@@ -581,7 +419,7 @@ exports[`render correctly with props with values taken from redux store 1`] = `
                             </button>
                           </div>
                           <div
-                            class="rst__toolbarButton"
+                            class="toolbarButton"
                           >
                             <button
                               class="dnt__tree-node-btn"
