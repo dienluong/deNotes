@@ -21,7 +21,7 @@ function _changeActiveNodeOnPathNavClick({ currentActive, idx }: { currentActive
   : ActiveNodeT {
   // If last entry of the path was selected, then no need to change active node
   if (Number.isSafeInteger(idx) && idx < (currentActive.path.length - 1)) {
-    // Empty string for actieve node ID because we switched parent folder but no node in that folder is selected by default
+    // Empty string for active node ID because we switched parent folder but no node in that folder is selected by default
     return {
       ...currentActive,
       id: '',
