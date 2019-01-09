@@ -1,7 +1,8 @@
 import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
-import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
+import { getNodeKey, translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
+import { getNodeAtPath } from 'react-sortable-tree';
 import baseState from '../misc/initialState';
 
 // Types
@@ -277,23 +278,56 @@ export function fetchNotesTreeThunkAction()
 }
 
 /**
- *
- *
  * @param {Object} params
  * @param {number} params.idx
  */
 export function navigatePathThunkAction({ idx }: { idx: number })
-  : ThunkAction<AnyAction, AppStateT, any, AnyAction> {
-  // TODO To Be Continued...
-  // 1. Switch folder and auto-select first child
+  : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
+  // 1. Switch folder and select first child
   // 2. Fetch note if selected child is a note
   return (dispatch, getState) => {
-    return {
+    let retVal: AnyAction = dispatch({
       type: notesListActionTypes.NAVIGATE_PATH,
       payload: {
         idx,
       },
-    };
+    });
+
+    // Get parent of current active node
+    const parentInfo = getNodeAtPath({
+      treeData: getState().notesTree.tree,
+      path: getState().activeNode.path.slice(0, -1),
+      getNodeKey,
+      ignoreCollapsed: false,
+    });
+
+    // Select a child in parent node
+    if (parentInfo && parentInfo.node && parentInfo.node.children) {
+      retVal = dispatch({
+        type: notesListActionTypes.SWITCH_NODE_ON_TREE_BRANCH_CHANGE,
+        payload: {
+          branch: parentInfo.node.children,
+        }
+      });
+    }
+
+    const activeNodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
+    // Only fetch editor content if new active node is a note, as opposed to a folder.
+    if ( activeNodeInfo && activeNodeInfo.type === 'item') {
+      const uniqid = activeNodeInfo.uniqid;
+      // Fetch new editor content only if not already loaded
+      if (uniqid !== getState().editorContent.id) {
+        return dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
+          .catch((err: ActionError) => {
+            window.alert(`Error loading saved note content: ${err.message}`);
+            return err.action;
+          }); // TODO: adjust error handling.
+      }
+    } else {
+      //TODO: Load blank editor canvas...
+    }
+
+    return Promise.resolve(retVal);
   };
 }
 
@@ -327,7 +361,7 @@ export function changeNotesTreeBranchThunkAction({ branch }: { branch: Array<Tre
     });
 
     const activeNodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
-    // Only change the editor content if new active node is a note, as opposed to a folder.
+    // Only fetch editor content if new active node is a note, as opposed to a folder.
     if ( activeNodeInfo && activeNodeInfo.type === 'item') {
       const uniqid = activeNodeInfo.uniqid;
       // Fetch new editor content only if not already loaded
