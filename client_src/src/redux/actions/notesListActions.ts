@@ -138,11 +138,13 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
       .then((action: AnyAction) => {
         console.log(`Number of notes deleted: ${action.payload.count}`); // TODO: remove
         // if delete from storage succeeded, then delete node from tree
+        // TODO To be continued: should send the active path as payload so that reducer won't need to use find()
         dispatch({
           type: notesListActionTypes.DELETE_NODE,
           payload: { node },
         });
         // then determine if the active node must change.
+        // TODO To be continued: should send the current active branch of tree so that the child node is selected.
         return dispatch(switchActiveNodeOnDeleteAction({ id: node.id }));
       })
       .catch((err: ActionError) => {
