@@ -40,6 +40,7 @@ function _changeActiveNodeOnDelete({ currentActive, deletedNodeId }: { currentAc
   if (deletedNodeIdx >= 0) {
     if (deletedNodeIdx !== 0) {
       // Since deleted node is part of active path, then truncate the path
+      // TODO To be continued... must switch to the next child in folder.
       const newActivePath = currentActive.path.slice(0, deletedNodeIdx);
       const newActiveId = newActivePath[newActivePath.length - 1];
       returnedActiveNode = {
@@ -76,7 +77,7 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentAct
   }
 
   // Expect to receive a path when change to active node was not triggered by user event, for example on load of state from storage.
-  if (path && path.length) {
+  if (Array.isArray(path) && path.length) {
     newPath = path;
   } else {
     // If no path provided, use the current active path
@@ -84,7 +85,7 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentAct
       newPath = [...(currentActive.path.slice(0, -1)), nodeId];
     } else {
       // This should never occur, i.e. having an active path length of 1, which means the selected node is the root folder.
-      newPath = [...(currentActive.path||[]), nodeId];
+      newPath = [...currentActive.path, nodeId];
     }
   }
   return { id: nodeId, path: newPath };
@@ -123,8 +124,7 @@ export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode
       else {
         return _changeActiveNodeOnSelect({
           currentActive: state,
-          nodeId: action.payload.nodeId,
-          path: action.payload.path,
+          ...action.payload,
         });
       }
     }
@@ -135,12 +135,12 @@ export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode
       });
     }
     case notesListActionTypes.SWITCH_NODE_ON_DELETE: {
-      if (!action.payload.deletedNode) {
+      if (!action.payload.deletedNodeId) {
         return state;
       }
       return _changeActiveNodeOnDelete({
         currentActive: state,
-        deletedNodeId: action.payload.deletedNode.id,
+        deletedNodeId: action.payload.deletedNodeId,
       });
     }
     case notesListActionTypes.SWITCH_NODE_ON_TREE_BRANCH_CHANGE:

@@ -65,6 +65,7 @@ export function use({ notesTreeStorage, editorContentStorage }: { notesTreeStora
 
 /**
  *
+ *
  * @param {Object} params
  * @param {string} params.id
  * @param {string[]} [params.path]
@@ -72,14 +73,11 @@ export function use({ notesTreeStorage, editorContentStorage }: { notesTreeStora
 export function selectNodeThunkAction({ id, path }: { id: string, path?: string[] })
   : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
-    // if (typeof id !== 'string' || !id.length) {
-    if (!id.length) {
+    if (typeof id !== 'string' || !id.length) {
       id = getState().activeNode.id;
     }
     // dispatch actions only if selected node actually changed
     if (getState().activeNode.id !== id) {
-      const nodeId = id;
-
       // Immediately save currently opened note
       const currentContent = getState().editorContent;
       if (currentContent.id) {
@@ -90,7 +88,7 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
       const returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
         payload: {
-          nodeId,
+          nodeId: id,
           path,
         },
       });
@@ -98,10 +96,10 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
       // Fetch saved note only if:
       // 1) newly selected node represents a note ('item'), as opposed to a folder.
       // 2) newly selected node is not the already opened note
-      const nodeInfo = translateNodeIdToInfo({ nodeId });
+      const nodeInfo = translateNodeIdToInfo({ nodeId: id });
       if (nodeInfo && nodeInfo.type === 'item') {
         const uniqid = nodeInfo.uniqid;
-        if (uniqid !== getState().editorContent.id) {
+        if (uniqid !== currentContent.id) {
           return dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
             .catch((err: ActionError) => {
               window.alert(`Error loading saved note content: ${err.message}`);
@@ -117,6 +115,7 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
 }
 
 /**
+ *
  *
  * @param {Object} params
  * @param {Object} params.node
@@ -162,9 +161,7 @@ export function switchActiveNodeOnDeleteAction({ id }: { id: string })
   return {
     type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
     payload: {
-      deletedNode: {
-        id,
-      },
+      deletedNodeId: id,
     },
   };
 }
@@ -278,6 +275,8 @@ export function fetchNotesTreeThunkAction()
 }
 
 /**
+ *
+ *
  * @param {Object} params
  * @param {number} params.idx
  */
