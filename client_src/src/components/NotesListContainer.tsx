@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { selectTitlesFromActivePath } from '../redux/selectors';
+import { selectTitlesFromActivePath, selectSiblingsOfActiveNode } from '../redux/selectors';
 import * as rootReducer from '../redux/reducers';
 import NotesList from './widgets/NotesList';
 import {
@@ -11,8 +11,7 @@ import {
   addAndSelectNodeThunkAction,
 } from '../redux/actions/notesListActions';
 
-import { getNodeAtPath } from 'react-sortable-tree';
-import { getNodeKey, findClosestParent } from '../utils/treeUtils';
+import { getNodeKey } from '../utils/treeUtils';
 
 // Types
 import { ThunkDispatch } from 'redux-thunk';
@@ -62,24 +61,10 @@ function mapStateToProps(state: AppStateT) {
   }
   // TODO: Remove ABOVE
 
-  // Get the branch of the whole tree based on the current active node. This branch will be passed as prop to the component
-  const activePath: string[] = rootReducer.selectActiveNodePath(state);
-  const parentIdx: number | null = findClosestParent(activePath);
-  const parentPath: string[] = parentIdx !== null ? activePath.slice(0, parentIdx + 1) : [activePath[0]];
-  const parentNodeInfo = getNodeAtPath({
-    getNodeKey,
-    treeData: rootReducer.selectNotesTreeTree(state),
-    path: parentPath,
-    ignoreCollapsed: false,
-  });
-
-  let branch: NotesTreeT["tree"] = [];
-  if (parentNodeInfo && parentNodeInfo.node) {
-    branch = (parentNodeInfo.node as TreeNodeT).children || [];
-  }
-
+  // Get the siblings of the current active node (including itself). The children will be passed as prop to the component
+  const children = selectSiblingsOfActiveNode(state);
   return {
-    tree: branch,
+    tree: children,
     activeNode: rootReducer.selectActiveNode(state),
     activePath: activePathByTitles,
   };

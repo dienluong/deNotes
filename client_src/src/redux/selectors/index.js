@@ -1,6 +1,6 @@
-import { find } from 'react-sortable-tree';
+import { find, getNodeAtPath } from 'react-sortable-tree';
 import { createSelector } from 'reselect';
-import { getNodeKey } from '../../utils/treeUtils';
+import { getNodeKey, findClosestParent } from '../../utils/treeUtils';
 import { selectNotesTreeTree, selectActiveNodePath } from '../reducers';
 
 // TODO: remove
@@ -9,26 +9,59 @@ import { selectNotesTreeTree, selectActiveNodePath } from '../reducers';
 
 /**
  * For each note ID in path, return the corresponding title.
- * @param notesTree {!Object[]}
- * @param idList {Array}
- * @return {Array}
- * @private
+ * @param {Object[]} notesTree
+ * @param {string[]} idList
+ * @return {string[]}
  */
 export const selectTitlesFromActivePath = createSelector(
   [selectNotesTreeTree, selectActiveNodePath],
-  (notesTree = [], idList = []) => {
-    if (!Array.isArray(idList) || !idList.length) {
+  (tree = [], idList = []) => {
+    if (!Array.isArray(idList) || !idList.length || !Array.isArray(tree)) {
       return [];
     }
 
     return idList.map((id) => {
       const matches = find({
         getNodeKey,
-        treeData: notesTree,
+        treeData: tree,
         searchQuery: id,
         searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
       }).matches;
       return matches.length ? matches[0].node.title : '';
     });
+  }
+);
+
+/**
+ *  Returns siblings of a tree node (including itself) specified by the provided path.
+ *  @param {Object[]} notesTree
+ *  @param {string[]} activePath
+ *  @return {Object[]}
+ */
+export const selectSiblingsOfActiveNode = createSelector(
+  [selectNotesTreeTree, selectActiveNodePath],
+  (tree = [], activePath = []) => {
+    if (!Array.isArray(activePath) || !activePath.length || !Array.isArray(tree)) {
+      return [];
+    }
+
+    const parentIdx = findClosestParent(activePath);
+    if (parentIdx === null) {
+      // if node has no parent, then active node is root node, which means its siblings (including itself) is the tree
+      return tree;
+    }
+    const parentPath = activePath.slice(0, parentIdx + 1);
+    const parentInfo = getNodeAtPath({
+      treeData: tree,
+      path: parentPath,
+      getNodeKey,
+      ignoreCollapsed: false,
+    });
+
+    if ((parentInfo === null) || !parentInfo.node || !Array.isArray(parentInfo.node.children)) {
+      return [];
+    }
+
+    return parentInfo.node.children;
   }
 );

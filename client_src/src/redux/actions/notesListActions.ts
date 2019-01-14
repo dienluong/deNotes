@@ -1,9 +1,9 @@
 import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
-import { getNodeKey, translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
-import { getNodeAtPath } from 'react-sortable-tree';
+import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
+import { selectSiblingsOfActiveNode } from '../selectors';
 
 // Types
 import { AnyAction } from 'redux';
@@ -122,7 +122,7 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
  */
 export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
   : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     let itemIds: Array<string> = [];
 
     // Collect the uniqid of all items to delete.
@@ -137,15 +137,20 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
     return dispatch(removeNoteThunkAction({ ids: itemIds }))
       .then((action: AnyAction) => {
         console.log(`Number of notes deleted: ${action.payload.count}`); // TODO: remove
+        const currentActivePath = getState().activeNode.path;
         // if delete from storage succeeded, then delete node from tree
-        // TODO To be continued: should send the active path as payload so that reducer won't need to use find()
         dispatch({
           type: notesListActionTypes.DELETE_NODE,
-          payload: { node },
+          payload: {
+            nodeToDelete: node,
+            activePath: currentActivePath,
+            now: Date.now(),
+          },
         });
-        // then determine if the active node must change.
         // TODO To be continued: should send the current active branch of tree so that the child node is selected.
-        return dispatch(switchActiveNodeOnDeleteAction({ id: node.id }));
+        let children = selectSiblingsOfActiveNode(getState()) as TreeNodeT[];
+        // determine if the active node must change.
+        return dispatch(switchActiveNodeOnDeleteAction({ id: node.id, children }));
       })
       .catch((err: ActionError) => {
         window.alert(`ERROR deleting saved note: ${err.message}`);
@@ -158,12 +163,13 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
  * @param {Object} params
  * @param {string} params.id
  */
-export function switchActiveNodeOnDeleteAction({ id }: { id: string })
+export function switchActiveNodeOnDeleteAction({ id, children }: { id: string, children: TreeNodeT[] })
   : AnyAction {
   return {
     type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
     payload: {
       deletedNodeId: id,
+      children,
     },
   };
 }
@@ -187,6 +193,7 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
       type: notesListActionTypes.ADD_AND_SELECT_NODE,
       payload: {
         kind,
+        now: Date.now(),
       },
     });
   };
@@ -287,30 +294,21 @@ export function navigatePathThunkAction({ idx }: { idx: number })
   // 1. Switch folder and select first child
   // 2. Fetch note if selected child is a note
   return (dispatch, getState) => {
-    let retVal: AnyAction = dispatch({
+    dispatch({
       type: notesListActionTypes.NAVIGATE_PATH,
       payload: {
         idx,
       },
     });
 
-    // Get parent of current active node
-    const parentInfo = getNodeAtPath({
-      treeData: getState().notesTree.tree,
-      path: getState().activeNode.path.slice(0, -1),
-      getNodeKey,
-      ignoreCollapsed: false,
+    // Select a child of folder user just navigated to
+    const children = selectSiblingsOfActiveNode(getState());
+    let retVal: AnyAction = dispatch({
+      type: notesListActionTypes.SWITCH_NODE_ON_TREE_BRANCH_CHANGE,
+      payload: {
+        branch: children,
+      }
     });
-
-    // Select a child in parent node
-    if (parentInfo && parentInfo.node && parentInfo.node.children) {
-      retVal = dispatch({
-        type: notesListActionTypes.SWITCH_NODE_ON_TREE_BRANCH_CHANGE,
-        payload: {
-          branch: parentInfo.node.children,
-        }
-      });
-    }
 
     const activeNodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
     // Only fetch editor content if new active node is a note, as opposed to a folder.
@@ -393,6 +391,7 @@ export function changeNodeTitleAction({ title, node }: { title: string, node: Tr
     payload: {
       title,
       node,
+      now: Date.now(),
     },
   };
 }
