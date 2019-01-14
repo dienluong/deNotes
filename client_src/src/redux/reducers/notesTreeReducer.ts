@@ -9,7 +9,7 @@ import { TreeItem } from 'react-sortable-tree';
 
 const initialTree = baseState.notesTree;
 
-function _changeNodeTitle({ notesTree, title, node }: { notesTree: NotesTreeT, title: string, node: TreeNodeT })
+function _changeNodeTitle({ notesTree, title, node, now }: { notesTree: NotesTreeT, title: string, node: TreeNodeT, now: number })
   : NotesTreeT {
   // TODO: remove
   console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
@@ -28,45 +28,58 @@ function _changeNodeTitle({ notesTree, title, node }: { notesTree: NotesTreeT, t
   }).matches;
 
   if (nodesFound.length) {
-    const newTree: NotesTreeT['tree'] = changeNodeAtPath({
-      treeData: notesTree.tree,
-      path: nodesFound[0].path,
-      newNode: modifiedNode,
-      getNodeKey,
-      ignoreCollapsed: false,
-    }) as TreeNodeT[];
+    let newTree : NotesTreeT['tree'] = notesTree.tree;
+    try {
+      newTree = changeNodeAtPath({
+        treeData: notesTree.tree,
+        path: nodesFound[0].path,
+        newNode: modifiedNode,
+        getNodeKey,
+        ignoreCollapsed: false,
+      }) as TreeNodeT[];
+    } catch(error) {
+      return notesTree;
+    }
 
     return {
       ...notesTree,
-      tree: newTree || notesTree.tree,
-      dateModified: Date.now(),
+      tree: newTree,
+      dateModified: now,
     };
   } else {
     return notesTree;
   }
 }
 
-function _deleteNode({ notesTree, node }: { notesTree: NotesTreeT, node: TreeNodeT })
+function _deleteNode({ notesTree, nodeToDelete, activePath, now }: { notesTree: NotesTreeT, nodeToDelete: TreeNodeT, activePath: ActiveNodeT['path'], now: number })
   : NotesTreeT {
-  const nodesFound: Array<{ node: TreeItem, path: (string|number)[], treeIndex: number }> = find({
-    getNodeKey,
-    treeData: notesTree.tree,
-    searchQuery: node.id,
-    searchMethod: ({ node: treeNode, searchQuery }) => searchQuery === treeNode.id,
-  }).matches;
-
-  if (nodesFound.length) {
-    const newTree: NotesTreeT['tree'] = removeNodeAtPath({
-      treeData: notesTree.tree,
-      path: nodesFound[0].path,
-      getNodeKey,
-      ignoreCollapsed: false,
-    }) as TreeNodeT[];
+  // TODO Remove
+  // const nodesFound: Array<{ node: TreeItem, path: (string|number)[], treeIndex: number }> = find({
+  //   getNodeKey,
+  //   treeData: notesTree.tree,
+  //   searchQuery: node.id,
+  //   searchMethod: ({ node: treeNode, searchQuery }) => searchQuery === treeNode.id,
+  // }).matches;
+  //
+  const parentFolderIdx: number | null = findClosestParent(activePath);
+  if (parentFolderIdx !== null) {
+    const nodeToDeletePath: ActiveNodeT['path'] = [...activePath.slice(0, parentFolderIdx + 1), nodeToDelete.id];
+    let newTree: NotesTreeT['tree'] = notesTree.tree;
+    try {
+      newTree = removeNodeAtPath({
+        treeData: notesTree.tree,
+        path: nodeToDeletePath,
+        getNodeKey,
+        ignoreCollapsed: false,
+      }) as TreeNodeT[];
+    } catch(error) {
+      return notesTree;
+    }
 
     return {
       ...notesTree,
-      tree: newTree || notesTree.tree,
-      dateModified: Date.now(),
+      tree: newTree,
+      dateModified: now,
     };
   } else {
     return notesTree;
@@ -76,15 +89,15 @@ function _deleteNode({ notesTree, node }: { notesTree: NotesTreeT, node: TreeNod
 function _changeTreeBranch({ notesTree, branch, activePath, now }: { notesTree: NotesTreeT, branch: TreeNodeT[], activePath: ActiveNodeT['path'], now: number })
   : NotesTreeT {
   const currentTreeData: NotesTreeT['tree'] = notesTree.tree;
-  let newTree: NotesTreeT['tree'] = currentTreeData;
+  let newTreeData: NotesTreeT['tree'] = currentTreeData;
 
   if (!Array.isArray(branch)) {
-    branch = [];
+    return notesTree;
   }
   const parentIdx: number|null = findClosestParent(activePath);
-  // If no parent, use default tree as parent
+  // If no parent...
   if (parentIdx === null) {
-    newTree = [{...initialTree.tree[0], children: branch }];
+    newTreeData = branch;
   } else {
     const parentPath: ActiveNodeT['path'] = activePath.slice(0, parentIdx + 1);
     const parentNodeInfo = getNodeAtPath({
@@ -97,13 +110,18 @@ function _changeTreeBranch({ notesTree, branch, activePath, now }: { notesTree: 
     if (parentNodeInfo && parentNodeInfo.node && parentNodeInfo.node.type === 'folder') {
       // create new parent node with the new branch as its children and change corresponding parent node on the tree
       const newParentNode = {...parentNodeInfo.node, children: branch};
-      newTree = changeNodeAtPath({
-        treeData: currentTreeData,
-        path: parentPath,
-        newNode: newParentNode,
-        getNodeKey,
-        ignoreCollapsed: false,
-      }) as TreeNodeT[];
+      try {
+        newTreeData = changeNodeAtPath({
+          treeData: currentTreeData,
+          path: parentPath,
+          newNode: newParentNode,
+          getNodeKey,
+          ignoreCollapsed: false,
+        }) as TreeNodeT[];
+      } catch(error) {
+        // if change of tree branch failed
+        return notesTree;
+      }
     } else {
       // if parent node not found
       return notesTree;
@@ -112,7 +130,7 @@ function _changeTreeBranch({ notesTree, branch, activePath, now }: { notesTree: 
 
   return {
     ...notesTree,
-    tree: newTree,
+    tree: newTreeData,
     dateModified: now,
   }
 }

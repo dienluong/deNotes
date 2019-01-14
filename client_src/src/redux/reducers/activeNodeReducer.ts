@@ -32,7 +32,7 @@ function _changeActiveNodeOnPathNavClick({ currentActive, idx }: { currentActive
   }
 }
 
-function _changeActiveNodeOnDelete({ currentActive, deletedNodeId }: { currentActive: ActiveNodeT, deletedNodeId: string })
+function _changeActiveNodeOnDelete({ currentActive, deletedNodeId, children }: { currentActive: ActiveNodeT, deletedNodeId: string, children: TreeNodeT[]})
   : ActiveNodeT {
   let returnedActiveNode: ActiveNodeT = currentActive;
   // if deleted node is part of the active path, re-adjust the active node
@@ -97,12 +97,9 @@ function _switchActiveNodeOnBranchChange({ currentActive, branch }: { currentAct
   // If active node no longer present after branch changed, switch active node to first child of the branch
   if (!getNodeAtPath({ treeData: branch, path: [activePath[activePath.length - 1]], getNodeKey, ignoreCollapsed: false })) {
     const parentIdx: number|null = findClosestParent(activePath);
-    if (parentIdx === null) {
-      return currentActive;
-    }
-    const parentPath: ActiveNodeT['path'] = activePath.slice(0, parentIdx + 1);
+    const parentPath: ActiveNodeT['path'] = parentIdx !== null ? activePath.slice(0, parentIdx + 1) : [];
     const newActiveNode: ActiveNodeT = { ...currentActive };
-    newActiveNode.id = branch[0] ? branch[0].id : '';
+    newActiveNode.id = Array.isArray(branch) && branch[0] ? branch[0].id : '';
     newActiveNode.path = [...parentPath, newActiveNode.id];
     return newActiveNode;
   }
@@ -140,7 +137,7 @@ export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode
       }
       return _changeActiveNodeOnDelete({
         currentActive: state,
-        deletedNodeId: action.payload.deletedNodeId,
+        ...action.payload,
       });
     }
     case notesListActionTypes.SWITCH_NODE_ON_TREE_BRANCH_CHANGE:
