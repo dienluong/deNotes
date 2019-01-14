@@ -30,7 +30,7 @@ export default function editorContentReducer(state: EditorContentT = initialCont
         return {
           ...state,
           title: action.payload.title,
-          dateModified: Date.now(),
+          dateModified: action.payload.now,
         };
       } else {
         return state;

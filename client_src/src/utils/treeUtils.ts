@@ -86,7 +86,6 @@ export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().
  * Returns null if none found.
  * @param path {Array}
  * @return {number|null}
- * @private
  */
 export function findClosestParent(path: string[])
   : number|null {

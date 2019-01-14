@@ -8,6 +8,7 @@ import styles from './NotesList.module.css';
 import NodeTitle from './NodeTitle';
 
 // Types
+import { TreeItem } from 'react-sortable-tree';
 type PropsT = {
   tree: Array<TreeNodeT>,
   activeNode: ActiveNodeT,
@@ -21,6 +22,7 @@ type PropsT = {
   toolbarHandlersMap: any,
   getNodeKey: (...args: any) => any,
 };
+type generateNodePropsT = ({ node, path }: { node: TreeItem, path: (string|number)[] }) => object;
 
 function NotesList({
   tree,
@@ -87,10 +89,10 @@ function NotesList({
       <Tree
         className={ 'tree ' + styles.dnt__tree }
         treeData={ tree }
-        theme={ mobileTheme }
+        theme={ mobileTheme as any }
         onChange={ treeChangeHandler }
         getNodeKey={ getNodeKey }
-        generateNodeProps={ buildNodeProps }
+        generateNodeProps={ buildNodeProps as generateNodePropsT }
       />
     </div>
   );

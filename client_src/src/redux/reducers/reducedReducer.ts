@@ -14,13 +14,12 @@ import { AnyAction } from "redux";
  * @returns {{notesTree: *, activeNode: {id: *, path: Array}}}
  * @private
  */
-function _addAndSelectNewNode({ state, kind }: { state: AppStateT, kind: NodeTypeT })
+function _addAndSelectNewNode({ state, kind, now }: { state: AppStateT, kind: NodeTypeT, now: number })
   : AppStateT {
   let newActiveNodePath: ActiveNodeT["path"] = [];
   let parentKey: string|null = null;
 
   const newNode: TreeNodeT = createNode({ type: kind });
-
   const currentActivePath: ActiveNodeT["path"] = state.activeNode.path;
   const parentIdx: number|null = findClosestParent(currentActivePath);
 
@@ -35,17 +34,24 @@ function _addAndSelectNewNode({ state, kind }: { state: AppStateT, kind: NodeTyp
     newActiveNodePath = [parentKey, newNode.id];
   }
 
-  const now = Date.now();
-  const newNotesTree: NotesTreeT = {
-    ...state.notesTree,
-    tree: addNodeUnderParent({
+  let newTreeData: NotesTreeT['tree'];
+  try {
+    newTreeData = addNodeUnderParent({
       treeData: state.notesTree.tree,
       newNode,
       parentKey,
       getNodeKey,
       expandParent: true,
       ignoreCollapsed: false,
-    }).treeData as TreeNodeT[],
+    }).treeData as TreeNodeT[];
+  } catch(error) {
+    // if adding of node failed, return state unchanged
+    return state;
+  }
+
+  const newNotesTree: NotesTreeT = {
+    ...state.notesTree,
+    tree: newTreeData,
     dateModified: now,
   };
 
@@ -155,7 +161,7 @@ export default function reducedReducer(state: AppStateT = initialState, action: 
     case notesListActionTypes.ADD_AND_SELECT_NODE:
       return _addAndSelectNewNode({
         state,
-        kind: action.payload.kind,
+        ...action.payload,
       });
     default:
       if (process.env.REACT_APP_DEBUG) {
