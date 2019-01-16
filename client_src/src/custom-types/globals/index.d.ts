@@ -30,7 +30,7 @@ declare global {
 
   interface NotesTreeT {
     id: string;
-    tree: Array<TreeNodeT>;
+    tree: TreeNodeT[];
     dateCreated: number;
     dateModified: number;
   }
@@ -42,14 +42,14 @@ declare global {
     id: string;
     type: NodeTypeT;
     expanded?: boolean;
-    children?: Array<TreeNodeT>;
+    children?: TreeNodeT[];
   }
 
-  type TreeNodePathT = Array<string>;
+  type TreeNodePathT = (TreeNodeT['id'])[];
 
   interface ActiveNodeT {
-    id: string;
-    path: Array<string>;
+    id: TreeNodeT['id'];
+    path: TreeNodePathT;
   }
 
   interface EditorContentT {
