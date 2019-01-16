@@ -2,7 +2,6 @@ import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
-import baseState from '../misc/initialState';
 import { selectSiblingsOfActiveNode } from '../selectors';
 
 // Types
@@ -26,7 +25,6 @@ let _editorContentStorage: StorageT = {
 };
 
 /**
- *
  * @param {Object} storage
  * @param {Object} [storage.notesTreeStorage]
  * @param {Object} [storage.editorContentStorage]
@@ -64,8 +62,7 @@ export function use({ notesTreeStorage, editorContentStorage }: { notesTreeStora
 }
 
 /**
- *
- *
+ * ...
  * @param {Object} params
  * @param {string} params.id
  * @param {string[]} [params.path]
@@ -74,14 +71,14 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
   : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     if (typeof id !== 'string' || !id.length) {
-      id = getState().activeNode.id;
+      return Promise.resolve({ type: 'NO_OP' });
     }
     // dispatch actions only if selected node actually changed
     if (getState().activeNode.id !== id) {
       // Immediately save currently opened note
-      const currentContent = getState().editorContent;
-      if (currentContent.id) {
-        _editorContentStorage.save(currentContent)
+      const currentEditorContent = getState().editorContent;
+      if (currentEditorContent.id) {
+        _editorContentStorage.save(currentEditorContent)
           .catch((err: Error) => { console.log(err); }); // TODO: log error?
       }
 
@@ -93,13 +90,13 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
         },
       });
 
-      // Fetch saved note only if:
+      // Fetch note content only if:
       // 1) newly selected node represents a note ('item'), as opposed to a folder.
       // 2) newly selected node is not the already opened note
       const nodeInfo = translateNodeIdToInfo({ nodeId: id });
       if (nodeInfo && nodeInfo.type === 'item') {
         const uniqid = nodeInfo.uniqid;
-        if (uniqid !== currentContent.id) {
+        if (uniqid !== currentEditorContent.id) {
           return dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
             .catch((err: ActionError) => {
               window.alert(`Error loading saved note content: ${err.message}`);
@@ -107,6 +104,7 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
             }); // TODO: adjust error handling.
         }
       }
+
       return Promise.resolve(returnVal);
     } else {
       return Promise.resolve({ type: 'NO_OP' });
@@ -115,8 +113,7 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
 }
 
 /**
- *
- *
+ * ...
  * @param {Object} params
  * @param {Object} params.node
  */
@@ -137,20 +134,39 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
     return dispatch(removeNoteThunkAction({ ids: itemIds }))
       .then((action: AnyAction) => {
         console.log(`Number of notes deleted: ${action.payload.count}`); // TODO: remove
-        const currentActivePath = getState().activeNode.path;
-        // if delete from storage succeeded, then delete node from tree
-        dispatch({
+        // if delete from storage succeeded, then remove node from tree
+        const retVal = dispatch({
           type: notesListActionTypes.DELETE_NODE,
           payload: {
             nodeToDelete: node,
-            activePath: currentActivePath,
+            activePath: getState().activeNode.path,
             now: Date.now(),
           },
         });
-        // TODO To be continued: should send the current active branch of tree so that the child node is selected.
-        let children = selectSiblingsOfActiveNode(getState()) as TreeNodeT[];
-        // determine if the active node must change.
-        return dispatch(switchActiveNodeOnDeleteAction({ id: node.id, children }));
+
+        // Retrieve the children (siblings of active node) of current folder.
+        const children = selectSiblingsOfActiveNode(getState()) as TreeNodeT[];
+        // After node deletion, select a node amongst the children nodes
+        dispatch(switchActiveNodeOnDeleteAction({ deletedNodeId: node.id, children }));
+
+        // Fetch note content only if:
+        // 1) newly selected node represents a note ('item'), as opposed to a folder.
+        // 2) newly selected node is not the already opened note
+        const nodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
+        if (nodeInfo && nodeInfo.type === 'item') {
+          const uniqid = nodeInfo.uniqid;
+          if (uniqid !== getState().editorContent.id) {
+            dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
+              .catch((err: ActionError) => {
+                window.alert(`Error loading saved note content: ${err.message}`);
+                return err.action;
+              }); // TODO: adjust error handling.
+          }
+        } else {
+          // TODO Load blank editor canvas
+        }
+
+        return retVal;
       })
       .catch((err: ActionError) => {
         window.alert(`ERROR deleting saved note: ${err.message}`);
@@ -160,22 +176,24 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
 }
 
 /**
+ * ...
  * @param {Object} params
- * @param {string} params.id
+ * @param {string} params.deletedNodeId
+ * @param {Object[]} params.children
  */
-export function switchActiveNodeOnDeleteAction({ id, children }: { id: string, children: TreeNodeT[] })
+export function switchActiveNodeOnDeleteAction({ deletedNodeId, children }: { deletedNodeId: TreeNodeT['id'], children: TreeNodeT[] })
   : AnyAction {
   return {
     type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
     payload: {
-      deletedNodeId: id,
+      deletedNodeId: deletedNodeId,
       children,
     },
   };
 }
 
 /**
- *
+ * ...
  * @param {Object} params
  * @param {string} params.kind
  */
@@ -200,6 +218,7 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
 }
 
 /**
+ * ...
  * return {ThunkAction}
  */
 export function fetchNotesTreeThunkAction()
@@ -212,11 +231,13 @@ export function fetchNotesTreeThunkAction()
     });
 
     return _notesTreeStorage.load({ userId })
-      .then(notesTree => {
-        if (Array.isArray(notesTree.tree)) {
-          const activeNode = {
-            id: notesTree.tree[0].id,
-            path: [notesTree.tree[0].id], // TODO: adjust activeNode to where user left off
+      .then((notesTree: NotesTreeT) => {
+        if (notesTree && Array.isArray(notesTree.tree)) {
+          const tree = notesTree.tree;
+          const activeNodeId = tree.length ? tree[0].id : '';
+          const activeNode: ActiveNodeT = {
+            id: activeNodeId,
+            path: [activeNodeId], // TODO: adjust activeNode to where user left off
           };
           const returnVal = dispatch({
             type: notesListActionTypes.FETCH_NOTES_TREE_SUCCESS,
@@ -245,7 +266,7 @@ export function fetchNotesTreeThunkAction()
         }
       })
       .catch((err: Error) => {
-        // If no tree found for this user, use default tree from initial state and add new node (new blank note)
+        // If no tree found for this user, use default empty tree and add new node (new blank note)
         const error = new Error(`No tree loaded. Error: ${err.message} Using default tree.`);
         // TODO: Remove
         console.log(error);
@@ -254,8 +275,9 @@ export function fetchNotesTreeThunkAction()
           payload: { error },
         });
         const now = Date.now();
+        // Default tree is empty
         const defaultNotesTree: NotesTreeT = {
-          ...baseState.notesTree,
+          tree: [],
           id: uuid(),
           dateCreated: now,
           dateModified: now,
@@ -266,16 +288,14 @@ export function fetchNotesTreeThunkAction()
             notesTree: defaultNotesTree,
           },
         });
+        // To represent no node selected, use empty string
         dispatch({
           type: notesListActionTypes.SELECT_NODE,
           payload: {
-            nodeId: defaultNotesTree.tree[0].id,
-            path: [defaultNotesTree.tree[0].id],
+            nodeId: '',
+            path: [''],
           },
         });
-
-        //TODO: To be continued.  This might not work with the root foder selected... verify _addAndSelectNewNode in reducedReducer
-        // What are the other possible operations, such as delete, while root is selected?
 
         // Add a "note" node (an item) to the root of the tree
         return dispatch(addAndSelectNodeThunkAction({ kind: 'item' }));
@@ -284,8 +304,7 @@ export function fetchNotesTreeThunkAction()
 }
 
 /**
- *
- *
+ * ...
  * @param {Object} params
  * @param {number} params.idx
  */
@@ -301,7 +320,7 @@ export function navigatePathThunkAction({ idx }: { idx: number })
       },
     });
 
-    // Select a child of folder user just navigated to
+    // Select a child of folder the user just navigated to
     const children = selectSiblingsOfActiveNode(getState());
     let retVal: AnyAction = dispatch({
       type: notesListActionTypes.SWITCH_NODE_ON_TREE_BRANCH_CHANGE,
@@ -311,10 +330,10 @@ export function navigatePathThunkAction({ idx }: { idx: number })
     });
 
     const activeNodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
-    // Only fetch editor content if new active node is a note, as opposed to a folder.
+    // Fetch note content if newly selected node is a note, as opposed to a folder.
     if ( activeNodeInfo && activeNodeInfo.type === 'item') {
       const uniqid = activeNodeInfo.uniqid;
-      // Fetch new editor content only if not already loaded
+      // Fetch note content only if not already loaded
       if (uniqid !== getState().editorContent.id) {
         return dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
           .catch((err: ActionError) => {
@@ -331,19 +350,18 @@ export function navigatePathThunkAction({ idx }: { idx: number })
 }
 
 /**
- *
- *
+ * ...
  * @param {Object} params
  * @param {TreeNodeT[]} params.branch
  */
-export function changeNotesTreeBranchThunkAction({ branch }: { branch: Array<TreeNodeT> })
+export function changeNotesTreeBranchThunkAction({ branch }: { branch: TreeNodeT[] })
   : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     if (!Array.isArray(branch)) {
       branch = [];
     }
 
-    dispatch({
+    const retVal = dispatch({
       type: notesListActionTypes.CHANGE_NOTES_TREE_BRANCH,
       payload: {
         branch,
@@ -352,7 +370,7 @@ export function changeNotesTreeBranchThunkAction({ branch }: { branch: Array<Tre
       },
     });
 
-    const retVal = dispatch({
+    dispatch({
       type: notesListActionTypes.SWITCH_NODE_ON_TREE_BRANCH_CHANGE,
       payload: {
         branch,
@@ -360,10 +378,10 @@ export function changeNotesTreeBranchThunkAction({ branch }: { branch: Array<Tre
     });
 
     const activeNodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
-    // Only fetch editor content if new active node is a note, as opposed to a folder.
+    // Fetch note content if newly selected node is a note, as opposed to a folder.
     if ( activeNodeInfo && activeNodeInfo.type === 'item') {
       const uniqid = activeNodeInfo.uniqid;
-      // Fetch new editor content only if not already loaded
+      // Fetch note content only if not already loaded
       if (uniqid !== getState().editorContent.id) {
         return dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
           .catch((err: ActionError) => {
@@ -371,6 +389,8 @@ export function changeNotesTreeBranchThunkAction({ branch }: { branch: Array<Tre
             return err.action;
           }); // TODO: adjust error handling.
       }
+    } else {
+      //TODO: Load blank editor canvas...
     }
 
     return Promise.resolve(retVal);
@@ -378,8 +398,7 @@ export function changeNotesTreeBranchThunkAction({ branch }: { branch: Array<Tre
 }
 
 /**
- *
- *
+ * ...
  * @param {Object} params
  * @param {string} params.title
  * @param {TreeNodeT} params.node

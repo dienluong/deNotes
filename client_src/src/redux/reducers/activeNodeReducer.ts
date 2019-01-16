@@ -1,7 +1,7 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import baseState from '../misc/initialState';
 import { getNodeAtPath } from 'react-sortable-tree';
-import { getNodeKey, findClosestParent } from '../../utils/treeUtils';
+import { getNodeKey } from '../../utils/treeUtils';
 
 // Types
 import { AnyAction } from 'redux';
@@ -10,7 +10,6 @@ const initialActiveNode = baseState.activeNode;
 
 /**
  * Sets the active ID to the newly selected node along the active path. The active path is truncated accordingly.
- *
  *
  * @param currentActive
  * @param idx
@@ -38,37 +37,28 @@ function _changeActiveNodeOnDelete({ currentActive, deletedNodeId, children }: {
   // if deleted node is part of the active path, re-adjust the active node
   const deletedNodeIdx = currentActive.path.lastIndexOf(deletedNodeId);
   if (deletedNodeIdx >= 0) {
-    if (deletedNodeIdx !== 0) {
-      // Since deleted node is part of active path, then truncate the path
-      // TODO To be continued... must switch to the next child in folder.
-      const newActivePath = currentActive.path.slice(0, deletedNodeIdx);
-      const newActiveId = newActivePath[newActivePath.length - 1];
+      // New active node is the first child
+      const newActiveId: TreeNodeT['id'] = Array.isArray(children) && children.length ? children[0].id : '';
+      // Since deleted node is part of active path, truncate the path and concat the selected child's ID
+      const newActivePath: ActiveNodeT['path'] = [...(currentActive.path.slice(0, deletedNodeIdx)), newActiveId];
       returnedActiveNode = {
         ...currentActive,
         id: newActiveId,
         path: newActivePath,
       };
-    } else {
-      // TODO: Deleting the root folder should never occur, or be allowed.
-      return {
-        id: '',
-        path: [''],
-      };
-    }
   }
 
   return returnedActiveNode;
 }
 
 /**
- *
  * @param {object} currentActive
  * @param {string} nodeId
  * @param {string[]} [path]
  * @return {object}
  * @private
  */
-function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentActive: ActiveNodeT, nodeId: string, path?: string[] })
+function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentActive: ActiveNodeT, nodeId: TreeNodeT['id'], path?: TreeNodePathT })
   : ActiveNodeT {
   let newPath: string[];
 
@@ -81,12 +71,7 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentAct
     newPath = path;
   } else {
     // If no path provided, use the current active path
-    if (currentActive.path.length > 1) {
       newPath = [...(currentActive.path.slice(0, -1)), nodeId];
-    } else {
-      // This should never occur, i.e. having an active path length of 1, which means the selected node is the root folder.
-      newPath = [...currentActive.path, nodeId];
-    }
   }
   return { id: nodeId, path: newPath };
 }
@@ -96,8 +81,7 @@ function _switchActiveNodeOnBranchChange({ currentActive, branch }: { currentAct
   const activePath = currentActive.path;
   // If active node no longer present after branch changed, switch active node to first child of the branch
   if (!getNodeAtPath({ treeData: branch, path: [activePath[activePath.length - 1]], getNodeKey, ignoreCollapsed: false })) {
-    const parentIdx: number|null = findClosestParent(activePath);
-    const parentPath: ActiveNodeT['path'] = parentIdx !== null ? activePath.slice(0, parentIdx + 1) : [];
+    const parentPath: ActiveNodeT['path'] = activePath.slice(0, -1);
     const newActiveNode: ActiveNodeT = { ...currentActive };
     newActiveNode.id = Array.isArray(branch) && branch[0] ? branch[0].id : '';
     newActiveNode.path = [...parentPath, newActiveNode.id];

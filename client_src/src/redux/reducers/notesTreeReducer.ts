@@ -15,6 +15,9 @@ function _changeNodeTitle({ notesTree, title, node, now }: { notesTree: NotesTre
   console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
   console.log('-->Tree changed on node title change\n');
 
+  if (!node || (typeof node !== "object")) {
+    return notesTree;
+  }
   // Cannot use _createNode for creating a new node (with a new ID) as it is breaking the tree.
   // This is because react-sortable-tree treats it as a new standalone node due to new ID (not reusing the ID of the old node)
   // So using { ...node, title } to keep the ID intact and only change the title
@@ -62,28 +65,30 @@ function _deleteNode({ notesTree, nodeToDelete, activePath, now }: { notesTree: 
   // }).matches;
   //
   const parentFolderIdx: number | null = findClosestParent(activePath);
+  let nodeToDeletePath: ActiveNodeT['path'];
   if (parentFolderIdx !== null) {
-    const nodeToDeletePath: ActiveNodeT['path'] = [...activePath.slice(0, parentFolderIdx + 1), nodeToDelete.id];
-    let newTree: NotesTreeT['tree'] = notesTree.tree;
-    try {
-      newTree = removeNodeAtPath({
-        treeData: notesTree.tree,
-        path: nodeToDeletePath,
-        getNodeKey,
-        ignoreCollapsed: false,
-      }) as TreeNodeT[];
-    } catch(error) {
-      return notesTree;
-    }
-
-    return {
-      ...notesTree,
-      tree: newTree,
-      dateModified: now,
-    };
+    nodeToDeletePath = [...activePath.slice(0, parentFolderIdx + 1), nodeToDelete.id];
   } else {
+    nodeToDeletePath = [nodeToDelete.id];
+  }
+
+  let newTree: NotesTreeT['tree'] = notesTree.tree;
+  try {
+    newTree = removeNodeAtPath({
+      treeData: notesTree.tree,
+      path: nodeToDeletePath,
+      getNodeKey,
+      ignoreCollapsed: false,
+    }) as TreeNodeT[];
+  } catch(error) {
     return notesTree;
   }
+
+  return {
+    ...notesTree,
+    tree: newTree,
+    dateModified: now,
+  };
 }
 
 function _changeTreeBranch({ notesTree, branch, activePath, now }: { notesTree: NotesTreeT, branch: TreeNodeT[], activePath: ActiveNodeT['path'], now: number })
@@ -123,7 +128,7 @@ function _changeTreeBranch({ notesTree, branch, activePath, now }: { notesTree: 
         return notesTree;
       }
     } else {
-      // if parent node not found
+      // if parent folder not found
       return notesTree;
     }
   }

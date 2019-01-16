@@ -1,37 +1,33 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import { addNodeUnderParent } from 'react-sortable-tree';
-import { getNodeKey, createNode, findClosestParent } from '../../utils/treeUtils';
+import { getNodeKey, createNode } from '../../utils/treeUtils';
 import initialState from '../misc/initialState';
 
 // Types
 import { AnyAction } from "redux";
 
 /**
- * Create new node, switch to it and set editor content to blank page. The new node is added to the folder of the current active node, if no path was given.
+ * Create new node, switch to it and set editor content to blank page. The new node is added to the folder of the current active node.
  * @param state
  * @param kind
- * @param path {string[]}
+ * @param now {number}
  * @returns {{notesTree: *, activeNode: {id: *, path: Array}}}
  * @private
  */
 function _addAndSelectNewNode({ state, kind, now }: { state: AppStateT, kind: NodeTypeT, now: number })
   : AppStateT {
-  let newActiveNodePath: ActiveNodeT["path"] = [];
-  let parentKey: string|null = null;
-
+  const parentPath: ActiveNodeT['path'] = state.activeNode.path.slice(0, -1);
   const newNode: TreeNodeT = createNode({ type: kind });
-  const currentActivePath: ActiveNodeT["path"] = state.activeNode.path;
-  const parentIdx: number|null = findClosestParent(currentActivePath);
+  const newActiveNodePath: ActiveNodeT['path'] = [...parentPath, newNode.id];
+  let parentKey: string|null|undefined = null;
 
-  // if parent found
-  if (parentIdx !== null) {
-    parentKey = currentActivePath[parentIdx];
-    newActiveNodePath = [...(currentActivePath.slice(0, parentIdx + 1)), newNode.id];
+  if (parentPath.length) {
+    parentKey = parentPath[parentPath.length - 1];
   } else {
-    // If no parent found, then default to the root folder
-    // This could happen with a brand new empty tree.
-    parentKey = state.notesTree.tree[0].id;
-    newActiveNodePath = [parentKey, newNode.id];
+    // If path to parent node is [], then it means the active node is at the very root of the tree.
+    // Explicitly set parent key to undefined instead of null due to how addNodeUnderParent() is annotated in TypeScript
+    // A parentKey of null (or undefined) tells addNodeUnderParent() to put new node in root of tree
+    parentKey = undefined;
   }
 
   let newTreeData: NotesTreeT['tree'];
@@ -82,6 +78,7 @@ function _addAndSelectNewNode({ state, kind, now }: { state: AppStateT, kind: No
   return newState;
 }
 
+// TODO remove
 // function _changeTreeBranch({ state, branch }: { state: AppStateT, branch: TreeNodeT[] })
 //   : AppStateT {
 //   // TODO To implement
