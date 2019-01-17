@@ -133,7 +133,7 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
     // dispatch action to delete note(s) from storage
     return dispatch(removeNoteThunkAction({ ids: itemIds }))
       .then((action: AnyAction) => {
-        console.log(`Number of notes deleted: ${action.payload.count}`); // TODO: remove
+        console.log(`Number of notes deleted: ${ action.payload.count }`); // TODO: remove
         // if delete from storage succeeded, then remove node from tree
         const retVal = dispatch({
           type: notesListActionTypes.DELETE_NODE,
@@ -144,32 +144,35 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
           },
         });
 
-        // Retrieve the children (siblings of active node) of current folder.
-        const children = selectSiblingsOfActiveNode(getState()) as TreeNodeT[];
-        // After node deletion, select a node amongst the children nodes
-        dispatch(switchActiveNodeOnDeleteAction({ deletedNodeId: node.id, children }));
+        // If deleted node is part of the active path, then switch to a new active node
+        if (getState().activeNode.path.lastIndexOf(node.id) >= 0) {
+          // Retrieve the children (siblings of active node) of current folder.
+          const children = selectSiblingsOfActiveNode(getState()) as TreeNodeT[];
+          // After node deletion, select a node amongst the children nodes
+          dispatch(switchActiveNodeOnDeleteAction({ deletedNodeId: node.id, children }));
 
-        // Fetch note content only if:
-        // 1) newly selected node represents a note ('item'), as opposed to a folder.
-        // 2) newly selected node is not the already opened note
-        const nodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
-        if (nodeInfo && nodeInfo.type === 'item') {
-          const uniqid = nodeInfo.uniqid;
-          if (uniqid !== getState().editorContent.id) {
-            dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
-              .catch((err: ActionError) => {
-                window.alert(`Error loading saved note content: ${err.message}`);
-                return err.action;
-              }); // TODO: adjust error handling.
+          // Fetch note content only if:
+          // 1) newly selected node represents a note ('item'), as opposed to a folder.
+          // 2) newly selected node is not the already opened note
+          const nodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
+          if (nodeInfo && nodeInfo.type === 'item') {
+            const uniqid = nodeInfo.uniqid;
+            if (uniqid !== getState().editorContent.id) {
+              dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
+                .catch((err: ActionError) => {
+                  window.alert(`Error loading saved note content: ${ err.message }`);
+                  return err.action;
+                }); // TODO: adjust error handling.
+            }
+          } else {
+            // TODO Load blank editor canvas
           }
-        } else {
-          // TODO Load blank editor canvas
         }
 
         return retVal;
       })
       .catch((err: ActionError) => {
-        window.alert(`ERROR deleting saved note: ${err.message}`);
+        window.alert(`ERROR deleting saved note: ${ err.message }`);
         return err.action;
       });
   };
