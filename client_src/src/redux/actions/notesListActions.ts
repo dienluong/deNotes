@@ -68,10 +68,10 @@ export function use({ notesTreeStorage, editorContentStorage }: { notesTreeStora
  * @param {string[]} [params.path]
  */
 export function selectNodeThunkAction({ id, path }: { id: string, path?: string[] })
-  : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
+  : ThunkAction<AnyAction, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     if (typeof id !== 'string' || !id.length) {
-      return Promise.resolve({ type: 'NO_OP' });
+      return { type: 'NO_OP' };
     }
     // dispatch actions only if selected node actually changed
     if (getState().activeNode.id !== id) {
@@ -97,7 +97,7 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
       if (nodeInfo && nodeInfo.type === 'item') {
         const uniqid = nodeInfo.uniqid;
         if (uniqid !== currentEditorContent.id) {
-          return dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
+          dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
             .catch((err: ActionError) => {
               window.alert(`Error loading saved note content: ${err.message}`);
               return err.action;
@@ -105,9 +105,9 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
         }
       }
 
-      return Promise.resolve(returnVal);
+      return returnVal;
     } else {
-      return Promise.resolve({ type: 'NO_OP' });
+      return { type: 'NO_OP' };
     }
   };
 }
