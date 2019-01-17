@@ -14,11 +14,13 @@ jest.mock('./editorActions');
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { mockedContent } from '../../test-utils/mocks/mockedEditorContent';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
+import { find } from 'react-sortable-tree';
+import { getNodeKey } from '../../utils/treeUtils';
 
 /**
  * selectNodeThunkAction
  */
-describe('1. selectNodeThunkAction', () => {
+describe('1. selectNodeThunkAction ', () => {
   const RealAlert = global.alert;
   const mockedStore = setupMockStore([thunk])({
     ...initialState,
@@ -46,7 +48,7 @@ describe('1. selectNodeThunkAction', () => {
     mockedSave.mockClear();
   });
 
-  it('should 1) dispatch "select node", 2) save content, 3) return Promise w/ dispatched action, when Folder selected', async() => {
+  it('should 1) dispatch "select node", 2) save content, 3) return Promise w/ dispatched action, when Folder selected', () => {
     const id = 'folder' + ID_DELIMITER + uuid();
     const pathSeg1 = uuid();
     const pathSeg2 = uuid();
@@ -64,13 +66,12 @@ describe('1. selectNodeThunkAction', () => {
     mockedSave.mockImplementation(() => Promise.resolve({}));
 
     expect.assertions(3);
-    await expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path })))
-      .resolves.toMatchObject(expectedActions[0]);
+    expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path }))).toMatchObject(expectedActions[0]);
     expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
-  it('should 1) dispatch "select node", 2) save, 3) fetch, 4) return Promise w/ last action, when Item selected', async() => {
+  it('should 1) dispatch "select node", 2) save, 3) fetch, 4) return Promise w/ last action, when Item selected', () => {
     const uniqId = uuid();
     const id = 'item' + ID_DELIMITER + uniqId;
     const pathSeg1 = 'folder' + ID_DELIMITER + uuid();
@@ -96,14 +97,13 @@ describe('1. selectNodeThunkAction', () => {
 
     expect.assertions(4);
     // selectNodeThunkAction is expected to return a Promise resolving to the last action, the fetch action in this case.
-    await expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path })))
-      .resolves.toMatchObject(fetchAction);
+    expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path }))).toMatchObject(expectedActions[0]);
     expect(mockedStore.getActions()).toEqual(expectedActions);
     expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
     expect(fetchEditorContentThunkAction).lastCalledWith({ noteId: uniqId });
   });
 
-  it('should *not* fetch if note selected was already loaded', async() => {
+  it('should *not* fetch if note selected was already loaded', () => {
     // select the note that's already loaded in the editor
     const uniqId = mockedStore.getState().editorContent.id;
     const id = 'item' + ID_DELIMITER + uniqId;
@@ -126,14 +126,13 @@ describe('1. selectNodeThunkAction', () => {
 
     expect.assertions(4);
     // selectNodeThunkAction is expected to return a Promise resolving to the last action, the fetch action in this case.
-    await expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path })))
-      .resolves.toMatchObject(expectedActions[0]);
+    expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path }))).toMatchObject(expectedActions[0]);
     expect(mockedStore.getActions()).toEqual(expectedActions);
     expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
     expect(fetchEditorContentThunkAction).not.toBeCalled();
   });
 
-  it('should *not* dispatch any action if selected node did not change', async() => {
+  it('should *not* dispatch any action if selected node did not change', () => {
     // select the node that is currently the active (i.e. selected) one
     const id = mockedStore.getState().activeNode.id;
     const pathSeg1 = uuid();
@@ -143,8 +142,7 @@ describe('1. selectNodeThunkAction', () => {
     mockedSave.mockImplementation(() => Promise.resolve({}));
 
     expect.assertions(3);
-    await expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path })))
-      .resolves.toMatchObject({});
+    expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path }))).toMatchObject({});
     expect(mockedSave).not.toBeCalled();
     expect(mockedStore.getActions()).toEqual([]);
   });
@@ -153,19 +151,10 @@ describe('1. selectNodeThunkAction', () => {
 /**
  * deleteNodeThunkAction
  */
-describe('2. deleteNodeThunkAction', () => {
+describe('2. deleteNodeThunkAction ', () => {
   const RealDate = global.Date;
-  const mockedStore = setupMockStore([thunk])({
-    ...initialState,
-    notesTree: {
-      ...initialState.notesTree,
-      tree: mockedTree,
-    },
-    activeNode: {
-      id: mockedTree[0].children[2].id,
-      path: [mockedTree[0].id, mockedTree[0].children[2].id],
-    },
-  });
+  const mockStore = setupMockStore([thunk]);
+  let mockedStore = mockStore({});
 
   afterEach(() => {
     global.Date = RealDate;
@@ -174,21 +163,40 @@ describe('2. deleteNodeThunkAction', () => {
     fetchEditorContentThunkAction.mockClear();
   });
 
-  it('should dispatch actions to delete node and switch to new active node. (Node is folder with content.)', async() => {
+  it('should dispatch actions to delete node and child nodes, and switch to new active node. (Node is folder with content.)', async() => {
     const expectedDate = 12345;
     global.Date = class extends RealDate {
       constructor() {
         super(expectedDate);
       }
-
       static now() {
         return expectedDate;
       }
     };
 
-    const nodeToDelete = mockedTree[0].children[2];
-    const notesExpectedToBeDeleted = ['5', '6'];
+    // arbitrarily select a node in mocked tree
+    const selectedNode = mockedTree[0].children[2];
     const siblings = mockedTree[0].children;
+    const selectedNodeInfo = find({
+      getNodeKey,
+      treeData: mockedTree,
+      searchQuery: selectedNode.id,
+      searchMethod: ({ node, searchQuery }) => node.id === searchQuery,
+    }).matches[0];
+    mockedStore = mockStore({
+      ...initialState,
+      notesTree: {
+        ...initialState.notesTree,
+        tree: mockedTree,
+      },
+      activeNode: {
+        id: selectedNodeInfo.node.id,
+        path: selectedNodeInfo.path,
+      },
+    });
+
+    const nodeToDelete = selectedNodeInfo.node;
+    const notesExpectedToBeDeleted = nodeToDelete.children.map(child => child.uniqid);
     const expectedActions = [
       {
         type: notesListActionTypes.DELETE_NODE,
@@ -220,25 +228,54 @@ describe('2. deleteNodeThunkAction', () => {
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
-  it('should dispatch actions to delete node and switch to new active node. (Node is an item, i.e. note).', async() => {
-    const nodeToDelete = mockedTree[0].children[1];
-    const pathToNode = ['1', '3'];
-    const notesExpectedToBeDeleted = ['3'];
+  it('should dispatch actions to delete node, switch to new active node and load its content. (Node is an item, i.e. note).', async() => {
+    const expectedDate = 67890;
+    global.Date = class extends RealDate {
+      constructor() {
+        super(expectedDate);
+      }
+      static now() {
+        return expectedDate;
+      }
+    };
+
+    // arbitrarily select a node in mocked tree
+    const selectedNode = mockedTree[0].children[2].children[0];
+    const siblings = mockedTree[0].children[2].children;
+    const selectedNodeInfo = find({
+      getNodeKey,
+      treeData: mockedTree,
+      searchQuery: selectedNode.id,
+      searchMethod: ({ node, searchQuery }) => node.id === searchQuery,
+    }).matches[0];
+    mockedStore = mockStore({
+      ...initialState,
+      notesTree: {
+        ...initialState.notesTree,
+        tree: mockedTree,
+      },
+      activeNode: {
+        id: selectedNodeInfo.node.id,
+        path: selectedNodeInfo.path,
+      },
+    });
+
+    const nodeToDelete = selectedNode;
+    const notesExpectedToBeDeleted = [nodeToDelete.uniqid];
     const expectedActions = [
       {
         type: notesListActionTypes.DELETE_NODE,
         payload: {
-          node: nodeToDelete,
-          path: pathToNode,
+          nodeToDelete,
+          activePath: mockedStore.getState().activeNode.path,
+          now: expectedDate,
         },
       },
       {
         type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
         payload: {
-          deletedNode: {
-            id: nodeToDelete.id,
-            path: pathToNode,
-          },
+          deletedNodeId: nodeToDelete.id,
+          children: siblings,
         },
       },
     ];
@@ -248,11 +285,17 @@ describe('2. deleteNodeThunkAction', () => {
       payload: { ids: notesExpectedToBeDeleted, count: 1 },
     }));
 
-    expect.assertions(3);
+    fetchEditorContentThunkAction.mockImplementation(() => () => Promise.resolve({
+      type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
+      payload: {},
+    }));
+
+    expect.assertions(4);
 
     await expect(mockedStore.dispatch(moduleToTest.deleteNodeThunkAction({ node: nodeToDelete })))
-      .resolves.toMatchObject(expectedActions[1]);
+      .resolves.toMatchObject(expectedActions[0]);
     expect(removeNoteThunkAction).lastCalledWith({ ids: notesExpectedToBeDeleted });
+    expect(fetchEditorContentThunkAction).toBeCalled();
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
@@ -296,7 +339,7 @@ describe('2. deleteNodeThunkAction', () => {
 /**
  * addAndSelectNodeThunkAction
  */
-describe('3. addAndSelectNodeThunkAction', () => {
+describe('3. addAndSelectNodeThunkAction ', () => {
   const mockedStore = setupMockStore([thunk])({
     ...initialState,
     editorContent: {
@@ -341,7 +384,7 @@ describe('3. addAndSelectNodeThunkAction', () => {
 /**
  * fetchNotesTreeThunkAction
  */
-describe('4. fetchNotesTreeThunkAction', () => {
+describe('4. fetchNotesTreeThunkAction ', () => {
   const mockedStore = setupMockStore([thunk])({
     ...initialState,
     userInfo: {
