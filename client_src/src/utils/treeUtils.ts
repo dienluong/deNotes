@@ -10,6 +10,8 @@ const DEFAULT_TITLES = {
   NOTE: 'New Note',
 };
 
+export const getNodeKey: GetNodeKeyFunction = ({ node }) => node.id;
+
 /**
  * Deep comparison of objects (including arrays).
  * @param obj1
@@ -44,8 +46,6 @@ export function equals(obj1: { [key: string]: any }, obj2: { [key: string]: any 
     return equals(currentVal, newVal);
   });
 }
-
-export const getNodeKey: GetNodeKeyFunction = ({ node }) => node.id;
 
 /**
  * Builds a node for a tree.
