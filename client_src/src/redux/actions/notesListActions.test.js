@@ -375,16 +375,9 @@ describe('2. deleteNodeThunkAction ', () => {
  * addAndSelectNodeThunkAction
  */
 describe('3. addAndSelectNodeThunkAction ', () => {
-  const mockedStore = setupMockStore([thunk])({
-    ...initialState,
-    editorContent: {
-      ...initialState.editorContent,
-      id: uuid(),
-      dateModified: Date.now(),
-      dateCreated: Date.now(),
-    },
-  });
-
+  const RealDate = global.Date;
+  const mockStore = setupMockStore([thunk]);
+  let mockedStore = mockStore({});
   let mockedSave = jest.fn();
 
   beforeEach(() => {
@@ -393,25 +386,48 @@ describe('3. addAndSelectNodeThunkAction ', () => {
   });
 
   afterEach(() => {
+    global.Date = RealDate;
     mockedStore.clearActions();
     mockedSave.mockClear();
   });
 
   it('should save the current content before adding an item to the tree and switching to that item', () => {
+    const editorContent = {
+      ...initialState.editorContent,
+      id: uuid(),
+      title: 'test note',
+      dateModified: Date.now(),
+      dateCreated: Date.now(),
+    };
+    mockedStore = mockStore({
+      ...initialState,
+      editorContent,
+    });
+    const expectedDate = 12345;
+    global.Date = class extends RealDate {
+      constructor() {
+        super(expectedDate);
+      }
+      static now() {
+        return expectedDate;
+      }
+    };
     const kind = 'item';
-    const path = ['1', '2', '3'];
     const expectedAction = [
       {
         type: notesListActionTypes.ADD_AND_SELECT_NODE,
-        payload: { kind, path },
+        payload: {
+          kind,
+          now: expectedDate,
+        },
       },
     ];
 
     mockedSave.mockImplementation(() => Promise.resolve('Saved'));
 
     expect.assertions(3);
-    expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind, path }))).toMatchObject(expectedAction[0]);
-    expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
+    expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
+    expect(mockedSave).lastCalledWith(editorContent);
     expect(mockedStore.getActions()).toEqual(expectedAction);
   });
 });
