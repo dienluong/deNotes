@@ -128,6 +128,8 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
     } else if (node.type === 'folder') {
       if (node.children && node.children.length) {
         itemIds = getDescendantItems({ node }).map(node => node.uniqid);
+      } else {
+        itemIds = [];
       }
     }
     // dispatch action to delete note(s) from storage

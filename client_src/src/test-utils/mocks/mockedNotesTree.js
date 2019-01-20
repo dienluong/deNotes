@@ -2,7 +2,7 @@ const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
 export const mockedTree = [
   {
-    title: '/',
+    title: 'root-folder 1',
     subtitle: '',
     uniqid: '1',
     type: 'folder',
@@ -71,5 +71,25 @@ export const mockedTree = [
         children: [],
       },
     ],
+  },
+  {
+    title: 'root-note 1',
+    subtitle: '',
+    uniqid: '8',
+    type: 'item',
+    get id() {
+      return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
+    },
+  },
+  {
+    title: 'root-folder 2',
+    subtitle: '',
+    uniqid: '9',
+    type: 'folder',
+    get id() {
+      return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
+    },
+    expanded: false,
+    children: [],
   },
 ];
