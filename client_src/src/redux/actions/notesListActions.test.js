@@ -436,14 +436,15 @@ describe('3. addAndSelectNodeThunkAction ', () => {
  * fetchNotesTreeThunkAction
  */
 describe('4. fetchNotesTreeThunkAction ', () => {
+  const RealDate = global.Date;
   const mockedStore = setupMockStore([thunk])({
     ...initialState,
     userInfo: {
-      id: 'test-user',
+      id: 'Just the ID of current user',
     },
     notesTree: {
       ...initialState.notesTree,
-      id: uuid(),
+      id: 'id of tree',
       tree: [],
     },
   });
@@ -456,16 +457,17 @@ describe('4. fetchNotesTreeThunkAction ', () => {
   });
 
   afterEach(() => {
+    global.Date = RealDate;
     mockedStore.clearActions();
     mockedLoad.mockClear();
   });
 
-  it('should dispatch SUCCESS-type action w/ fetched tree as payload, select a node in tree and then return Promise w/ FETCH SUCCESS action', async() => {
-    const userId = mockedStore.getState().userInfo.id;
+  it('should dispatch FETCH action, CHANGE-TREE action, SELECT-NODE action and then return Promise w/ FETCH-SUCCESS action', async() => {
+    const expectedUserId = mockedStore.getState().userInfo.id;
     const dateCreated = 1;
     const dateModified = 2;
-    const treeId = uuid();
-    const ownerId = uuid();
+    const treeId = 'ID of test tree';
+    const ownerId = 'ID of test tree owner';
     const fetchedTreeData = {
       id: treeId,
       tree: mockedTree,
@@ -476,7 +478,7 @@ describe('4. fetchNotesTreeThunkAction ', () => {
     const expectedActions = [
       {
         type: notesListActionTypes.FETCH_NOTES_TREE,
-        payload: { userId },
+        payload: { userId: expectedUserId },
       },
       {
         type: notesListActionTypes.FETCH_NOTES_TREE_SUCCESS,
@@ -493,10 +495,8 @@ describe('4. fetchNotesTreeThunkAction ', () => {
       {
         type: notesListActionTypes.SELECT_NODE,
         payload: {
-          activeNode: {
-            id: mockedTree[0].id,
-            path: [mockedTree[0].id],
-          },
+          nodeId: mockedTree[0].id,
+          path: [mockedTree[0].id],
         },
       },
     ];
@@ -506,85 +506,120 @@ describe('4. fetchNotesTreeThunkAction ', () => {
     expect.assertions(3);
     await expect(mockedStore.dispatch(moduleToTest.fetchNotesTreeThunkAction()))
       .resolves.toMatchObject(expectedActions[1]);
-    expect(mockedLoad).lastCalledWith({ userId });
+    expect(mockedLoad).lastCalledWith({ userId: expectedUserId });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
-  it('should 1) dispatch FAILURE-type action when fetch returns no tree, 2) use default tree and 3) return Promise w/ last action', async() => {
-    const userId = mockedStore.getState().userInfo.id;
+  it('should 1) dispatch FETCH-FAILURE action when fetch returns no tree, 2) use empty tree, 3) return last action', async() => {
+    const expectedDate = 24680;
+    global.Date = class extends RealDate {
+      constructor() {
+        super(expectedDate);
+      }
+      static now() {
+        return expectedDate;
+      }
+    };
+    const expectedDefaultTree = {
+      id: expect.any(String),
+      tree: [],
+      dateCreated: expectedDate,
+      dateModified: expectedDate,
+    };
+    const expectedUserId = mockedStore.getState().userInfo.id;
+    const errorMsg = 'No tree';
     const expectedActions = [
       {
         type: notesListActionTypes.FETCH_NOTES_TREE,
-        payload: { userId },
+        payload: { userId: expectedUserId },
       },
       {
         type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
         payload: {
           // Note from Jest doc: .toEqual won't perform a deep equality check for two errors.
           // Only the message property of an Error is considered for equality.
-          error: new Error('No tree loaded. Error: No tree. Using default tree.'),
+          error: new Error(`No tree loaded. Error: "${errorMsg}" Using default tree.`),
         },
       },
       {
         type: notesListActionTypes.CHANGE_NOTES_TREE,
         payload: {
-          notesTree: {
-            id: expect.any(String),
-            tree: initialState.notesTree.tree,
-            dateCreated: expect.any(Number),
-            dateModified: expect.any(Number),
-          },
+          notesTree: expectedDefaultTree,
+        },
+      },
+      {
+        type: notesListActionTypes.SELECT_NODE,
+        payload: {
+          nodeId: '',
+          path: [''],
         },
       },
       {
         type: notesListActionTypes.ADD_AND_SELECT_NODE,
         payload: {
           kind: 'item',
-          path: [initialState.notesTree.tree[0].id],
+          now: expectedDate,
         },
       },
     ];
 
-    mockedLoad.mockImplementation(() => Promise.reject(new Error('No tree.')));
+    mockedLoad.mockImplementation(() => Promise.reject(new Error(errorMsg)));
 
     expect.assertions(3);
     await expect(mockedStore.dispatch(moduleToTest.fetchNotesTreeThunkAction()))
-      .resolves.toMatchObject(expectedActions[3]);
-    expect(mockedLoad).lastCalledWith({ userId });
+      .resolves.toMatchObject(expectedActions[expectedActions.length - 1]);
+    expect(mockedLoad).lastCalledWith({ userId: expectedUserId });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
-  it('should 1) dispatch FAILURE-type action when fetch returns unknown format, 2) use default tree and 3) return Promise w/ last action', async() => {
-    const userId = mockedStore.getState().userInfo.id;
+  it('should 1) dispatch FETCH-FAILURE action when fetch returns unknown format, 2) use empty tree and 3) return last action', async() => {
+    const expectedDate = 13579;
+    global.Date = class extends RealDate {
+      constructor() {
+        super(expectedDate);
+      }
+      static now() {
+        return expectedDate;
+      }
+    };
+    const expectedDefaultTree = {
+      id: expect.any(String),
+      tree: [],
+      dateCreated: expectedDate,
+      dateModified: expectedDate,
+    };
+    const expectedUserId = mockedStore.getState().userInfo.id;
     const expectedActions = [
       {
         type: notesListActionTypes.FETCH_NOTES_TREE,
-        payload: { userId },
+        payload: { userId: expectedUserId },
       },
       {
         type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
         payload: {
           // Note from Jest doc: .toEqual won't perform a deep equality check for two errors.
           // Only the message property of an Error is considered for equality.
-          error: new Error('No tree loaded. Error: Unrecognized data fetched. Using default tree.'),
+          error: new Error('No tree loaded. Error: "Unrecognized data fetched" Using default tree.'),
         },
       },
       {
         type: notesListActionTypes.CHANGE_NOTES_TREE,
         payload: {
-          notesTree: {
-            id: expect.any(String),
-            tree: initialState.notesTree.tree,
-            dateCreated: expect.any(Number),
-            dateModified: expect.any(Number),
-          },
+          notesTree: expectedDefaultTree,
+        },
+      },
+      {
+        type: notesListActionTypes.SELECT_NODE,
+        payload: {
+          nodeId: '',
+          path: [''],
         },
       },
       {
         type: notesListActionTypes.ADD_AND_SELECT_NODE,
         payload: {
           kind: 'item',
-          path: [initialState.notesTree.tree[0].id],
+          now: expectedDate,
         },
       },
     ];
@@ -593,8 +628,8 @@ describe('4. fetchNotesTreeThunkAction ', () => {
     expect.assertions(3);
 
     await expect(mockedStore.dispatch(moduleToTest.fetchNotesTreeThunkAction()))
-      .resolves.toMatchObject(expectedActions[3]);
-    expect(mockedLoad).lastCalledWith({ userId });
+      .resolves.toMatchObject(expectedActions[expectedActions.length - 1]);
+    expect(mockedLoad).lastCalledWith({ userId: expectedUserId });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 });
