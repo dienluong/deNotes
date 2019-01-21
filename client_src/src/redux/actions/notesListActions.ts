@@ -314,11 +314,20 @@ export function fetchNotesTreeThunkAction()
  * @param {number} params.idx
  */
 export function navigatePathThunkAction({ idx }: { idx: number })
-  : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
-  // 1. Switch folder and select first child
-  // 2. Fetch note if selected child is a note
+  : ThunkAction<AnyAction, AppStateT, any, AnyAction> {
+  // 1. Save current editor content
+  // 2. Switch folder
+  // 3. Select first child of folder
+  // 4. Fetch note if selected child is a note
   return (dispatch, getState) => {
-    dispatch({
+    // immediately save currently opened note
+    const currentContent = getState().editorContent;
+    if (currentContent.id) {
+      _editorContentStorage.save(currentContent)
+        .catch((err: Error) => console.log(err)); // TODO: log error?
+    }
+
+    let retVal: AnyAction = dispatch({
       type: notesListActionTypes.NAVIGATE_PATH,
       payload: {
         idx,
@@ -327,7 +336,7 @@ export function navigatePathThunkAction({ idx }: { idx: number })
 
     // Select a child of folder the user just navigated to
     const children = selectSiblingsOfActiveNode(getState());
-    let retVal: AnyAction = dispatch({
+    dispatch({
       type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
       payload: {
         folder: children,
@@ -340,7 +349,7 @@ export function navigatePathThunkAction({ idx }: { idx: number })
       const uniqid = activeNodeInfo.uniqid;
       // Fetch note content only if not already loaded
       if (uniqid !== getState().editorContent.id) {
-        return dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
+        dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
           .catch((err: ActionError) => {
             window.alert(`Error loading saved note content: ${err.message}`);
             return err.action;
@@ -350,7 +359,7 @@ export function navigatePathThunkAction({ idx }: { idx: number })
       //TODO: Load blank editor canvas...
     }
 
-    return Promise.resolve(retVal);
+    return retVal;
   };
 }
 
@@ -360,10 +369,17 @@ export function navigatePathThunkAction({ idx }: { idx: number })
  * @param {TreeNodeT[]} params.folder
  */
 export function changeNotesFolderThunkAction({ folder }: { folder: TreeNodeT[] })
-  : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
+  : ThunkAction<AnyAction, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     if (!Array.isArray(folder)) {
       folder = [];
+    }
+
+    // immediately save currently opened note
+    const currentContent = getState().editorContent;
+    if (currentContent.id) {
+      _editorContentStorage.save(currentContent)
+        .catch((err: Error) => console.log(err)); // TODO: log error?
     }
 
     const retVal = dispatch({
@@ -388,7 +404,7 @@ export function changeNotesFolderThunkAction({ folder }: { folder: TreeNodeT[] }
       const uniqid = activeNodeInfo.uniqid;
       // Fetch note content only if not already loaded
       if (uniqid !== getState().editorContent.id) {
-        return dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
+        dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
           .catch((err: ActionError) => {
             window.alert(`Error loading saved note content: ${err.message}`);
             return err.action;
@@ -398,7 +414,7 @@ export function changeNotesFolderThunkAction({ folder }: { folder: TreeNodeT[] }
       //TODO: Load blank editor canvas...
     }
 
-    return Promise.resolve(retVal);
+    return retVal;
   };
 }
 
