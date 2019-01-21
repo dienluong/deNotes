@@ -81,14 +81,14 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentAct
   return { id: nodeId, path: newPath };
 }
 
-function _switchActiveNodeOnBranchChange({ currentActive, branch }: { currentActive: ActiveNodeT, branch: TreeNodeT[] } )
+function _switchActiveNodeOnFolderChange({ currentActive, folder }: { currentActive: ActiveNodeT, folder: TreeNodeT[] } )
   : ActiveNodeT {
   const activePath = currentActive.path;
-  // If active node no longer present after branch changed, switch active node to first child of the branch
-  if (!getNodeAtPath({ treeData: branch, path: [activePath[activePath.length - 1]], getNodeKey, ignoreCollapsed: false })) {
+  // If active node no longer present after folder changed, switch active node to first child of the folder
+  if (!getNodeAtPath({ treeData: folder, path: [activePath[activePath.length - 1]], getNodeKey, ignoreCollapsed: false })) {
     const parentPath: ActiveNodeT['path'] = activePath.slice(0, -1);
     const newActiveNode: ActiveNodeT = { ...currentActive };
-    newActiveNode.id = Array.isArray(branch) && branch[0] ? branch[0].id : '';
+    newActiveNode.id = Array.isArray(folder) && folder[0] ? folder[0].id : '';
     newActiveNode.path = [...parentPath, newActiveNode.id];
     return newActiveNode;
   }
@@ -129,8 +129,8 @@ export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode
         ...action.payload,
       });
     }
-    case notesListActionTypes.SWITCH_NODE_ON_TREE_BRANCH_CHANGE:
-      return _switchActiveNodeOnBranchChange({
+    case notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE:
+      return _switchActiveNodeOnFolderChange({
         currentActive: state,
         ...action.payload,
       });

@@ -5,7 +5,7 @@ import NotesList from './widgets/NotesList';
 import {
   selectNodeThunkAction,
   navigatePathThunkAction,
-  changeNotesTreeBranchThunkAction,
+  changeNotesFolderThunkAction,
   changeNodeTitleAction,
   deleteNodeThunkAction,
   addAndSelectNodeThunkAction,
@@ -20,7 +20,7 @@ interface DispatchProps {
   treeChangeHandler: (params: any) => Promise<AnyAction>;
   nodeTitleChangeHandler: (params: { node: TreeNodeT, title: string, path: TreeNodePathT }) => AnyAction;
   pathNavigatorClickHandler: (params: { idx: number }) => Promise<AnyAction>;
-  nodeClickHandler: (params: any) => Promise<AnyAction>;
+  nodeClickHandler: (params: any) => AnyAction;
   deleteNodeBtnHandler: (params: any) => Promise<AnyAction>;
   addNoteBtnHandler: (params: any) => AnyAction;
   toolbarHandlersMap: Map<string, () => AnyAction>;
@@ -90,7 +90,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
 
   return {
     treeChangeHandler(tree) {
-      return dispatch(changeNotesTreeBranchThunkAction({ branch: tree }));
+      return dispatch(changeNotesFolderThunkAction({ folder: tree }));
     },
     nodeTitleChangeHandler({ node, title, path }) {
       // We are not using the path received from the NotesList component because that path is not for the entire tree;

@@ -328,9 +328,9 @@ export function navigatePathThunkAction({ idx }: { idx: number })
     // Select a child of folder the user just navigated to
     const children = selectSiblingsOfActiveNode(getState());
     let retVal: AnyAction = dispatch({
-      type: notesListActionTypes.SWITCH_NODE_ON_TREE_BRANCH_CHANGE,
+      type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
       payload: {
-        branch: children,
+        folder: children,
       }
     });
 
@@ -357,28 +357,28 @@ export function navigatePathThunkAction({ idx }: { idx: number })
 /**
  * ...
  * @param {Object} params
- * @param {TreeNodeT[]} params.branch
+ * @param {TreeNodeT[]} params.folder
  */
-export function changeNotesTreeBranchThunkAction({ branch }: { branch: TreeNodeT[] })
+export function changeNotesFolderThunkAction({ folder }: { folder: TreeNodeT[] })
   : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
-    if (!Array.isArray(branch)) {
-      branch = [];
+    if (!Array.isArray(folder)) {
+      folder = [];
     }
 
     const retVal = dispatch({
-      type: notesListActionTypes.CHANGE_NOTES_TREE_BRANCH,
+      type: notesListActionTypes.CHANGE_NOTES_TREE_FOLDER,
       payload: {
-        branch,
+        folder,
         activePath: getState().activeNode.path,
         now: Date.now(),
       },
     });
 
     dispatch({
-      type: notesListActionTypes.SWITCH_NODE_ON_TREE_BRANCH_CHANGE,
+      type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
       payload: {
-        branch,
+        folder,
       },
     });
 

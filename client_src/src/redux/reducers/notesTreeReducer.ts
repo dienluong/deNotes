@@ -91,18 +91,18 @@ function _deleteNode({ notesTree, nodeToDelete, activePath, now }: { notesTree: 
   };
 }
 
-function _changeTreeBranch({ notesTree, branch, activePath, now }: { notesTree: NotesTreeT, branch: TreeNodeT[], activePath: ActiveNodeT['path'], now: number })
+function _changeTreeFolder({ notesTree, folder, activePath, now }: { notesTree: NotesTreeT, folder: TreeNodeT[], activePath: ActiveNodeT['path'], now: number })
   : NotesTreeT {
   const currentTreeData: NotesTreeT['tree'] = notesTree.tree;
   let newTreeData: NotesTreeT['tree'] = currentTreeData;
 
-  if (!Array.isArray(branch)) {
+  if (!Array.isArray(folder)) {
     return notesTree;
   }
   const parentIdx: number|null = findClosestParent(activePath);
   // If no parent...
   if (parentIdx === null) {
-    newTreeData = branch;
+    newTreeData = folder;
   } else {
     const parentPath: ActiveNodeT['path'] = activePath.slice(0, parentIdx + 1);
     const parentNodeInfo = getNodeAtPath({
@@ -113,8 +113,8 @@ function _changeTreeBranch({ notesTree, branch, activePath, now }: { notesTree: 
     });
 
     if (parentNodeInfo && parentNodeInfo.node && parentNodeInfo.node.type === 'folder') {
-      // create new parent node with the new branch as its children and change corresponding parent node on the tree
-      const newParentNode = {...parentNodeInfo.node, children: branch};
+      // create new parent node with the new folder as its children and change corresponding parent node on the tree
+      const newParentNode = {...parentNodeInfo.node, children: folder};
       try {
         newTreeData = changeNodeAtPath({
           treeData: currentTreeData,
@@ -124,7 +124,7 @@ function _changeTreeBranch({ notesTree, branch, activePath, now }: { notesTree: 
           ignoreCollapsed: false,
         }) as TreeNodeT[];
       } catch(error) {
-        // if change of tree branch failed
+        // if change of node failed
         return notesTree;
       }
     } else {
@@ -162,8 +162,8 @@ export default function notesTreeReducer(state: NotesTreeT = initialTree, action
         notesTree: state,
         ...action.payload,
       });
-    case notesListActionTypes.CHANGE_NOTES_TREE_BRANCH:
-      return _changeTreeBranch({
+    case notesListActionTypes.CHANGE_NOTES_TREE_FOLDER:
+      return _changeTreeFolder({
         notesTree: state,
         ...action.payload,
       });
