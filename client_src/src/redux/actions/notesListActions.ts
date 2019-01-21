@@ -266,13 +266,13 @@ export function fetchNotesTreeThunkAction()
 
           return Promise.resolve(returnVal);
         } else {
-          const error = new Error('Unrecognized data fetched.');
+          const error = new Error('Unrecognized data fetched');
           return Promise.reject(error);
         }
       })
       .catch((err: Error) => {
         // If no tree found for this user, use default empty tree and add new node (new blank note)
-        const error = new Error(`No tree loaded. Error: ${err.message} Using default tree.`);
+        const error = new Error(`No tree loaded. Error: "${err.message}" Using default tree.`);
         // TODO: Remove
         console.log(error);
         dispatch({
