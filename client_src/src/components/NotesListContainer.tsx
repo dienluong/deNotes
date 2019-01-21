@@ -17,9 +17,9 @@ import { getNodeKey } from '../utils/treeUtils';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 interface DispatchProps {
-  treeChangeHandler: (params: any) => Promise<AnyAction>;
+  treeChangeHandler: (params: any) => AnyAction;
   nodeTitleChangeHandler: (params: { node: TreeNodeT, title: string, path: TreeNodePathT }) => AnyAction;
-  pathNavigatorClickHandler: (params: { idx: number }) => Promise<AnyAction>;
+  pathNavigatorClickHandler: (params: { idx: number }) => AnyAction;
   nodeClickHandler: (params: any) => AnyAction;
   deleteNodeBtnHandler: (params: any) => Promise<AnyAction>;
   addNoteBtnHandler: (params: any) => AnyAction;
