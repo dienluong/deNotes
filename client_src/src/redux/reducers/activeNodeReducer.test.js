@@ -52,7 +52,7 @@ describe('activeNodeReducer', () => {
       payload: invalidPayload,
     })).toBe(currentState);
 
-    // Use provided path instead of current active path, when provided one
+    // If provided, use path instead of current active path
     const payloadWithPath = {
       nodeId: 'another-new-active-id',
       path: ['another-new-active-id'],
@@ -66,7 +66,7 @@ describe('activeNodeReducer', () => {
     });
   });
 
-  it('should change active node and path on NAVIGATE_PATH action', () => {
+  it('should change active path and set ID to empty string, on NAVIGATE_PATH action', () => {
     const currentState = {
       id: 'active1',
       path: ['segment0', 'segment1', 'segment2', 'active1'],
@@ -79,8 +79,8 @@ describe('activeNodeReducer', () => {
         idx: selectedPathSegmentIdx,
       },
     })).toEqual({
-      id: currentState.path[selectedPathSegmentIdx],
-      path: currentState.path.slice(0, selectedPathSegmentIdx + 1),
+      id: '',
+      path: [...currentState.path.slice(0, selectedPathSegmentIdx + 1), ''],
     });
 
     // If selected node is same as current state, return current state
@@ -93,69 +93,63 @@ describe('activeNodeReducer', () => {
     })).toBe(currentState);
   });
 
-  it('should switch to appropriate node on SWITCH_NODE_ON_DELETE action, if deleted node is either 1) active node\'s parent or 2) the active node itself.', () => {
+  it('should switch to 1st child of folder on SWITCH_NODE_ON_DELETE action, if deleted node is the active node or its parent.', () => {
     const currentState = {
       id: 'active1',
       path: ['segment0', 'segment1', 'segment2', 'active1'],
     };
 
     // Delete one of current active node's parents
-    let deletedNode = {
-      id: 'segment1',
-      path: ['segment0', 'segment1', 'segment2'],
+    let payload = {
+      deletedNodeId: currentState.path[1],
+      children: [{ id: 'child0' }, { id: 'child1' }, { id: 'child2' }],
     };
 
     expect(reducer(currentState, {
       type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
-      payload: {
-        deletedNode,
-      },
+      payload,
     })).toEqual({
-      id: 'segment0',
-      path: ['segment0'],
+      id: payload.children[0].id,
+      path: ['segment0', payload.children[0].id],
     });
 
     // Delete active node itself
-    deletedNode = {
-      id: 'active1',
-      path: ['segment0', 'segment1', 'segment2', 'active1'],
-
+    payload = {
+      deletedNodeId: currentState.id,
+      children: [{ id: 'child0' }, { id: 'child1' }, { id: 'child2' }],
     };
 
     expect(reducer(currentState, {
       type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
-      payload: {
-        deletedNode,
-      },
+      payload,
     })).toEqual({
-      id: 'segment2',
-      path: ['segment0', 'segment1', 'segment2'],
+      id: payload.children[0].id,
+      path: [...currentState.path.slice(0, -1), payload.children[0].id],
     });
 
     // If deleted node is not on current active path, no change to active path, nor active ID
-    deletedNode = {
-      id: 'notParent',
-      path: ['segment0', 'segment1', 'segment2', 'active1', 'moreSegment', 'notParent'],
+    payload = {
+      deletedNodeId: 'not-currently-active',
+      children: [{ id: 'child0' }, { id: 'child1' }, { id: 'child2' }],
     };
 
     expect(reducer(currentState, {
       type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
-      payload: {
-        deletedNode,
-      },
+      payload,
     })).toBe(currentState);
 
-    // If deleted node is not on current active path, no change to active path, nor active ID
-    deletedNode = {
-      id: 'notInPath',
-      path: ['segment0', 'segment1', 'segment2', 'notInPath'],
+    // If folder becomes empty, then empty string for active ID
+    payload = {
+      deletedNodeId: 'active1',
+      children: [],
     };
 
     expect(reducer(currentState, {
       type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
-      payload: {
-        deletedNode,
-      },
-    })).toBe(currentState);
+      payload,
+    })).toEqual({
+      id: '',
+      path: [...currentState.path.slice(0, -1), ''],
+    });
   });
 });
