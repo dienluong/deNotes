@@ -4,10 +4,20 @@ import initialState from '../misc/initialState';
 
 describe('activeNodeReducer', () => {
   it('should return initial state by default', () => {
-    expect(reducer(undefined, {})).toEqual(initialState.activeNode);
+    expect(reducer(undefined, {})).toBe(initialState.activeNode);
   });
 
-  it('should return selected node on SELECT_NODE action', () => {
+  it('should return current state if no payload', () => {
+    const currentState = {
+      id: 'default-active-id',
+      path: ['default-active-parent-1', 'default-active-parent-2', 'default-active-id'],
+    };
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SELECT_NODE,
+    })).toBe(currentState);
+  });
+
+  it('should return active node on SELECT_NODE action', () => {
     const currentState = {
       id: 'current-active-id',
       path: ['current-active-parent', 'current-active-id'],
@@ -24,9 +34,9 @@ describe('activeNodeReducer', () => {
       payload: newActiveNode,
     })).toEqual(expectedState);
 
-    // If given node is same as current state, return the current state (therefore, using expect.toBe())
+    // If selected node is same as current state, return the current state (therefore, using expect.toBe())
     const sameActiveNode = {
-      nodeId: 'current-active-id',
+      nodeId: currentState.id,
     };
     expect(reducer(currentState, {
       type: notesListActionTypes.SELECT_NODE,
@@ -41,6 +51,19 @@ describe('activeNodeReducer', () => {
       type: notesListActionTypes.SELECT_NODE,
       payload: invalidPayload,
     })).toBe(currentState);
+
+    // Use provided path instead of current active path, when provided one
+    const payloadWithPath = {
+      nodeId: 'another-new-active-id',
+      path: ['another-new-active-id'],
+    };
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SELECT_NODE,
+      payload: payloadWithPath,
+    })).toEqual({
+      id: payloadWithPath.nodeId,
+      path: payloadWithPath.path,
+    });
   });
 
   it('should change active node and path on NAVIGATE_PATH action', () => {
