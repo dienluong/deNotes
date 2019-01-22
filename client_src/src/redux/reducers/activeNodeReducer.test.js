@@ -2,7 +2,7 @@ import reducer from './activeNodeReducer';
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import initialState from '../misc/initialState';
 
-describe('activeNodeReducer', () => {
+describe('activeNodeReducer ', () => {
   it('should return initial state by default', () => {
     expect(reducer(undefined, {})).toBe(initialState.activeNode);
   });
@@ -138,7 +138,7 @@ describe('activeNodeReducer', () => {
       payload,
     })).toBe(currentState);
 
-    // If folder becomes empty, then empty string for active ID
+    // If folder is empty, then empty string for active ID
     payload = {
       deletedNodeId: 'active1',
       children: [],
@@ -151,5 +151,44 @@ describe('activeNodeReducer', () => {
       id: '',
       path: [...currentState.path.slice(0, -1), ''],
     });
+  });
+
+  it('should switch active node to first child in folder on SWITCH_NODE_ON_TREE_FOLDER_CHANGE action', () => {
+    const currentState = {
+      id: 'current-active-id',
+      path: ['seg0', 'seg1', 'seg2', 'current-active-id'],
+    };
+    let newFolder = [{ id: 'child0' }, { id: 'child1' }, { id: 'child2' }];
+
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
+      payload: {
+        folder: newFolder,
+      },
+    })).toEqual({
+      id: newFolder[0].id,
+      path: [...currentState.path.slice(0, -1), newFolder[0].id],
+    });
+
+    // If no child in folder, then empty string as active ID
+    newFolder = [];
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
+      payload: {
+        folder: newFolder,
+      },
+    })).toEqual({
+      id: '',
+      path: [...currentState.path.slice(0, -1), ''],
+    });
+
+    // If current active node is still in changed folder, it remains the active node
+    newFolder = [{ id: currentState.id }, { id: 'some-other-child-id' }, { id: 'another-child-id' }];
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
+      payload: {
+        folder: newFolder,
+      },
+    })).toBe(currentState);
   });
 });
