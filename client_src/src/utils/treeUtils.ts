@@ -102,7 +102,7 @@ export function findClosestParent(path: string[])
   if (typeof parent !== 'string') {
     return null;
   } else {
-    return (parent.includes(`folder${ID_DELIMITER}`)) ? path.length - 2 : null;
+    return (/^folder/.test(parent)) ? path.length - 2 : null;
   }
 }
 

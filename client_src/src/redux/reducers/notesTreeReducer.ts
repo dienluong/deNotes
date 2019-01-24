@@ -11,17 +11,9 @@ const initialTree = baseState.notesTree;
 
 function _changeNodeTitle({ notesTree, title, node, now }: { notesTree: NotesTreeT, title: string, node: TreeNodeT, now: number })
   : NotesTreeT {
-  // TODO: remove
-  console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
-  console.log('-->Tree changed on node title change\n');
-
-  if (!node || (typeof node !== "object")) {
+  if (!node || (typeof node !== "object") || Array.isArray(node)) {
     return notesTree;
   }
-  // Cannot use _createNode for creating a new node (with a new ID) as it is breaking the tree.
-  // This is because react-sortable-tree treats it as a new standalone node due to new ID (not reusing the ID of the old node)
-  // So using { ...node, title } to keep the ID intact and only change the title
-  const modifiedNode: TreeNodeT = { ...node, title };
 
   const nodesFound: Array<{ node: TreeItem, path: (string|number)[], treeIndex: number }> = find({
     getNodeKey,
@@ -31,6 +23,10 @@ function _changeNodeTitle({ notesTree, title, node, now }: { notesTree: NotesTre
   }).matches;
 
   if (nodesFound.length) {
+    // Cannot use _createNode for creating a new node (with a new ID) as it is breaking the tree.
+    // This is because react-sortable-tree treats it as a new standalone node due to new ID (not reusing the ID of the old node)
+    // So using { ...node, title } to keep the ID intact and only change the title
+    const modifiedNode: TreeNodeT = { ...node, title };
     let newTree : NotesTreeT['tree'] = notesTree.tree;
     try {
       newTree = changeNodeAtPath({
@@ -43,6 +39,10 @@ function _changeNodeTitle({ notesTree, title, node, now }: { notesTree: NotesTre
     } catch(error) {
       return notesTree;
     }
+
+    // TODO: remove
+    console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
+    console.log('-->Tree changed on node title change\n');
 
     return {
       ...notesTree,
@@ -100,7 +100,7 @@ function _changeTreeFolder({ notesTree, folder, activePath, now }: { notesTree: 
     return notesTree;
   }
   const parentIdx: number|null = findClosestParent(activePath);
-  // If no parent...
+  // If no parent, then the current node is at the root.
   if (parentIdx === null) {
     newTreeData = folder;
   } else {
