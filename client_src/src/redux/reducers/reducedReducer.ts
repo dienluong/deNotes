@@ -19,8 +19,8 @@ function _addAndSelectNewNode({ state, kind, now }: { state: AppStateT, kind: No
   const parentPath: ActiveNodeT['path'] = state.activeNode.path.slice(0, -1);
   const newNode: TreeNodeT = createNode({ type: kind });
   const newActiveNodePath: ActiveNodeT['path'] = [...parentPath, newNode.id];
-  let parentKey: string|null|undefined = null;
 
+  let parentKey: string|null|undefined = null;
   if (parentPath.length) {
     parentKey = parentPath[parentPath.length - 1];
   } else {
