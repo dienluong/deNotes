@@ -7,6 +7,11 @@ describe('userInfoReducer', () => {
     expect(reducer(undefined, {})).toEqual(initialState.userInfo);
   });
 
+  it('should return current state if no payload', () => {
+    const currentState = { id: 'current-user-id' };
+    expect(reducer(currentState, { type: accountActionTypes.SET_USER })).toBe(currentState);
+  });
+
   it('should, on SET_USER, return an entire new state', () => {
     const currentState = {
       id: 'current-user-id',
