@@ -13,7 +13,7 @@ jest.mock('../redux/actions/notesListActions');
 import {
   selectNodeThunkAction,
   navigatePathThunkAction,
-  changeNotesTreeBranchThunkAction,
+  changeNotesFolderThunkAction,
   changeNodeTitleAction,
   deleteNodeThunkAction,
   addAndSelectNodeThunkAction,
@@ -39,7 +39,7 @@ afterEach(() => {
   selectNodeThunkAction.mockClear();
   changeNodeTitleAction.mockClear();
   deleteNodeThunkAction.mockClear();
-  changeNotesTreeBranchThunkAction.mockClear();
+  changeNotesFolderThunkAction.mockClear();
 });
 
 it('renders correctly with prop values taken from redux store', () => {
