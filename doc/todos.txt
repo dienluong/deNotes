@@ -42,6 +42,8 @@ The active path must always lead to the selected child of the folder, of which t
 
 Do we really need a default root node?!
 
+REMOVE resolution in package.json that temp fix for https://github.com/facebook/jest/issues/7709
+
 Make reducers pure functions by removing UUID creation, calls to Date.now(), etc.
 Define typescript type ActionPayload for action object with a payload property.
 Use state selectors instead of getState().<sliceOfState>
