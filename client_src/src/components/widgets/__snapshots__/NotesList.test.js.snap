@@ -603,3 +603,651 @@ exports[`should render all node titles 1`] = `
   </div>
 </div>
 `;
+
+exports[`should render all node titles in the first level of the received tree 1`] = `
+<div>
+  <div
+    class="dnt__notes-list"
+  >
+    <div
+      class="dnt__toolbar"
+    >
+      <button
+        class="dnt__tool"
+      >
+        tool1
+      </button>
+      <button
+        class="dnt__tool"
+      >
+        tool2
+      </button>
+    </div>
+    <nav
+      class="dnt__pathnav"
+    >
+      <ul>
+        <li
+          class="lined dnt__pathnav-segment--active"
+        >
+          <span>
+            /
+            &gt;
+          </span>
+        </li>
+      </ul>
+    </nav>
+    <div
+      class="rst__tree tree dnt__tree"
+      style="height: 100%;"
+    >
+      <div>
+        <div
+          aria-label="grid"
+          aria-readonly="true"
+          class="ReactVirtualized__Grid ReactVirtualized__List rst__virtualScrollOverride"
+          role="grid"
+          style="box-sizing: border-box; direction: ltr; height: 99999px; position: relative; width: 200px; overflow-x: hidden; overflow-y: hidden;"
+          tabindex="0"
+        >
+          <div
+            class="ReactVirtualized__Grid__innerScrollContainer"
+            role="rowgroup"
+            style="width: auto; height: 558px; max-width: 200px; max-height: 558px; overflow: hidden; position: relative;"
+          >
+            <div
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 0px; width: 100%;"
+            >
+              <div
+                class="nodeContent"
+                style="padding-left: 0px;"
+              >
+                <div
+                  data-testid="folder|^|1"
+                  style="height: 100%;"
+                  tabindex="0"
+                >
+                  <div>
+                    <button
+                      aria-label="Collapse"
+                      class="expandButton"
+                      type="button"
+                    />
+                    <div
+                      class="lineChildren"
+                      style="width: 45px;"
+                    />
+                  </div>
+                  <div
+                    class="rowWrapper"
+                  >
+                    <div
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
+                    >
+                      <div
+                        class="rowContents"
+                        draggable="true"
+                      >
+                        <div
+                          class="rowLabel"
+                        >
+                          <span
+                            class="rowTitle"
+                          >
+                            <form>
+                              <input
+                                class="dnt__node-title"
+                                type="text"
+                                value="root-folder 1"
+                              />
+                            </form>
+                          </span>
+                          
+                        </div>
+                        <div
+                          class="rowToolbar"
+                        >
+                          <div
+                            class="toolbarButton"
+                          >
+                            <button
+                              class="dnt__tree-node-btn"
+                            >
+                              +
+                            </button>
+                          </div>
+                          <div
+                            class="toolbarButton"
+                          >
+                            <button
+                              class="dnt__tree-node-btn"
+                            >
+                              x
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 62px; width: 100%;"
+            >
+              <div
+                class="nodeContent"
+                style="padding-left: 45px;"
+              >
+                <div
+                  data-testid="item|^|2"
+                  style="height: 100%;"
+                  tabindex="0"
+                >
+                  <div
+                    class="rowWrapper"
+                  >
+                    <div
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
+                    >
+                      <div
+                        class="rowContents"
+                        draggable="true"
+                      >
+                        <div
+                          class="rowLabel"
+                        >
+                          <span
+                            class="rowTitle"
+                          >
+                            <form>
+                              <input
+                                class="dnt__node-title"
+                                type="text"
+                                value="note 1"
+                              />
+                            </form>
+                          </span>
+                          
+                        </div>
+                        <div
+                          class="rowToolbar"
+                        >
+                          <div
+                            class="toolbarButton"
+                          >
+                            <button
+                              class="dnt__tree-node-btn"
+                            >
+                              x
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 124px; width: 100%;"
+            >
+              <div
+                class="nodeContent"
+                style="padding-left: 45px;"
+              >
+                <div
+                  data-testid="item|^|3"
+                  style="height: 100%;"
+                  tabindex="0"
+                >
+                  <div
+                    class="rowWrapper"
+                  >
+                    <div
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
+                    >
+                      <div
+                        class="rowContents"
+                        draggable="true"
+                      >
+                        <div
+                          class="rowLabel"
+                        >
+                          <span
+                            class="rowTitle"
+                          >
+                            <form>
+                              <input
+                                class="dnt__node-title"
+                                type="text"
+                                value="note 2"
+                              />
+                            </form>
+                          </span>
+                          
+                        </div>
+                        <div
+                          class="rowToolbar"
+                        >
+                          <div
+                            class="toolbarButton"
+                          >
+                            <button
+                              class="dnt__tree-node-btn"
+                            >
+                              x
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 186px; width: 100%;"
+            >
+              <div
+                class="nodeContent"
+                style="padding-left: 45px;"
+              >
+                <div
+                  data-testid="folder|^|4"
+                  style="height: 100%;"
+                  tabindex="0"
+                >
+                  <div>
+                    <button
+                      aria-label="Collapse"
+                      class="expandButton"
+                      type="button"
+                    />
+                    <div
+                      class="lineChildren"
+                      style="width: 45px;"
+                    />
+                  </div>
+                  <div
+                    class="rowWrapper"
+                  >
+                    <div
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
+                    >
+                      <div
+                        class="rowContents"
+                        draggable="true"
+                      >
+                        <div
+                          class="rowLabel"
+                        >
+                          <span
+                            class="rowTitle"
+                          >
+                            <form>
+                              <input
+                                class="dnt__node-title"
+                                type="text"
+                                value="subfolder 1"
+                              />
+                            </form>
+                          </span>
+                          
+                        </div>
+                        <div
+                          class="rowToolbar"
+                        >
+                          <div
+                            class="toolbarButton"
+                          >
+                            <button
+                              class="dnt__tree-node-btn"
+                            >
+                              +
+                            </button>
+                          </div>
+                          <div
+                            class="toolbarButton"
+                          >
+                            <button
+                              class="dnt__tree-node-btn"
+                            >
+                              x
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 248px; width: 100%;"
+            >
+              <div
+                class="nodeContent"
+                style="padding-left: 90px;"
+              >
+                <div
+                  data-testid="item|^|5"
+                  style="height: 100%;"
+                  tabindex="0"
+                >
+                  <div
+                    class="rowWrapper"
+                  >
+                    <div
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
+                    >
+                      <div
+                        class="rowContents"
+                        draggable="true"
+                      >
+                        <div
+                          class="rowLabel"
+                        >
+                          <span
+                            class="rowTitle"
+                          >
+                            <form>
+                              <input
+                                class="dnt__node-title"
+                                type="text"
+                                value="subnote 1"
+                              />
+                            </form>
+                          </span>
+                          
+                        </div>
+                        <div
+                          class="rowToolbar"
+                        >
+                          <div
+                            class="toolbarButton"
+                          >
+                            <button
+                              class="dnt__tree-node-btn"
+                            >
+                              x
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 310px; width: 100%;"
+            >
+              <div
+                class="nodeContent"
+                style="padding-left: 90px;"
+              >
+                <div
+                  data-testid="item|^|6"
+                  style="height: 100%;"
+                  tabindex="0"
+                >
+                  <div
+                    class="rowWrapper"
+                  >
+                    <div
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
+                    >
+                      <div
+                        class="rowContents"
+                        draggable="true"
+                      >
+                        <div
+                          class="rowLabel"
+                        >
+                          <span
+                            class="rowTitle"
+                          >
+                            <form>
+                              <input
+                                class="dnt__node-title"
+                                type="text"
+                                value="subnote 2"
+                              />
+                            </form>
+                          </span>
+                          
+                        </div>
+                        <div
+                          class="rowToolbar"
+                        >
+                          <div
+                            class="toolbarButton"
+                          >
+                            <button
+                              class="dnt__tree-node-btn"
+                            >
+                              x
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 372px; width: 100%;"
+            >
+              <div
+                class="nodeContent"
+                style="padding-left: 45px;"
+              >
+                <div
+                  data-testid="folder|^|7"
+                  style="height: 100%;"
+                  tabindex="0"
+                >
+                  <div
+                    class="rowWrapper"
+                  >
+                    <div
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
+                    >
+                      <div
+                        class="rowContents"
+                        draggable="true"
+                      >
+                        <div
+                          class="rowLabel"
+                        >
+                          <span
+                            class="rowTitle"
+                          >
+                            <form>
+                              <input
+                                class="dnt__node-title"
+                                type="text"
+                                value="subfolder 2"
+                              />
+                            </form>
+                          </span>
+                          
+                        </div>
+                        <div
+                          class="rowToolbar"
+                        >
+                          <div
+                            class="toolbarButton"
+                          >
+                            <button
+                              class="dnt__tree-node-btn"
+                            >
+                              +
+                            </button>
+                          </div>
+                          <div
+                            class="toolbarButton"
+                          >
+                            <button
+                              class="dnt__tree-node-btn"
+                            >
+                              x
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 434px; width: 100%;"
+            >
+              <div
+                class="nodeContent"
+                style="padding-left: 0px;"
+              >
+                <div
+                  data-testid="item|^|8"
+                  style="height: 100%;"
+                  tabindex="0"
+                >
+                  <div
+                    class="rowWrapper"
+                  >
+                    <div
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
+                    >
+                      <div
+                        class="rowContents"
+                        draggable="true"
+                      >
+                        <div
+                          class="rowLabel"
+                        >
+                          <span
+                            class="rowTitle"
+                          >
+                            <form>
+                              <input
+                                class="dnt__node-title"
+                                type="text"
+                                value="root-note 1"
+                              />
+                            </form>
+                          </span>
+                          
+                        </div>
+                        <div
+                          class="rowToolbar"
+                        >
+                          <div
+                            class="toolbarButton"
+                          >
+                            <button
+                              class="dnt__tree-node-btn"
+                            >
+                              x
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 496px; width: 100%;"
+            >
+              <div
+                class="nodeContent"
+                style="padding-left: 0px;"
+              >
+                <div
+                  data-testid="folder|^|9"
+                  style="height: 100%;"
+                  tabindex="0"
+                >
+                  <div
+                    class="rowWrapper"
+                  >
+                    <div
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
+                    >
+                      <div
+                        class="rowContents"
+                        draggable="true"
+                      >
+                        <div
+                          class="rowLabel"
+                        >
+                          <span
+                            class="rowTitle"
+                          >
+                            <form>
+                              <input
+                                class="dnt__node-title"
+                                type="text"
+                                value="root-folder 2"
+                              />
+                            </form>
+                          </span>
+                          
+                        </div>
+                        <div
+                          class="rowToolbar"
+                        >
+                          <div
+                            class="toolbarButton"
+                          >
+                            <button
+                              class="dnt__tree-node-btn"
+                            >
+                              +
+                            </button>
+                          </div>
+                          <div
+                            class="toolbarButton"
+                          >
+                            <button
+                              class="dnt__tree-node-btn"
+                            >
+                              x
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
