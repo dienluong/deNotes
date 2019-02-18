@@ -12,7 +12,7 @@ const _rootNode: TreeNodeT = {
     type: 'folder',
     expanded: true,
     children: [],
-  };
+};
 
 const epoch = 0;
 const now = Date.now();

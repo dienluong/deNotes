@@ -19,4 +19,4 @@ const mobileTheme = {
   scaffoldBlockPxWidth: 45,
 };
 
-export { mobileTheme };
+export default mobileTheme;
