@@ -2,7 +2,7 @@ import React from 'react';
 import Toolbar from './Toolbar';
 import PathNavigator from './PathNavigator';
 import Tree from 'react-sortable-tree';
-import { mobileTheme } from '../../tree-theme';
+import mobileTheme from '../../tree-theme';
 import 'react-sortable-tree/style.css';
 import styles from './NotesList.module.css';
 import NodeTitle from './NodeTitle';

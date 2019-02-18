@@ -2,7 +2,7 @@ import React from 'react';
 import NotesList from './NotesList';
 import notesListStyles from './NotesList.module.css';
 import pathNavStyles from './PathNavigator.module.css';
-import { render, cleanup, fireEvent, within } from 'react-testing-library';
+import { render, cleanup, fireEvent, within, getNodeText } from 'react-testing-library';
 import 'jest-dom/extend-expect';
 import { walk, find, getFlatDataFromTree } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/treeUtils';
@@ -12,7 +12,7 @@ import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
 
 afterEach(cleanup);
 
-it('should render all node titles', () => {
+it('should render all node titles in the first level of the received tree', () => {
   const tree = mockedTree;
   const activeNode = baseState.activeNode;
   const activePath = selectTitlesFromActivePath(baseState);
@@ -38,22 +38,27 @@ it('should render all node titles', () => {
   expect(container).toMatchSnapshot();
   const renderedInputs = Array.from(container.getElementsByTagName('input'));
   const renderedTitles = renderedInputs.map(input => input.value);
+  // const renderedTitles = renderedInputs.map(getNodeText);
+  console.log(renderedTitles);
 
-  const test = ({ node }) => {
+  const test = (node) => {
     expect(queryAllByValue(node.title)).toHaveLength(1);
     expect(renderedTitles.includes(node.title)).toBe(true);
   };
 
-  walk({
-    treeData: props.tree,
-    getNodeKey,
-    callback: test,
-    ignoreCollapsed: false,
-  });
+  props.tree.forEach(test);
+
+  // walk({
+  //   treeData: props.tree,
+  //   getNodeKey,
+  //   callback: test,
+  //   ignoreCollapsed: false,
+  // });
 
   const numOfRenderedTreeNodeElements = container.getElementsByClassName(notesListStyles['dnt__tree-node']).length;
-  const numOfNodesInSourceTree = getFlatDataFromTree({ treeData: props.tree, getNodeKey, ignoreCollapsed: false }).length;
-  expect(numOfNodesInSourceTree).toEqual(numOfRenderedTreeNodeElements);
+  // const numOfNodesInSourceTree = getFlatDataFromTree({ treeData: props.tree, getNodeKey, ignoreCollapsed: false }).length;
+  const numOfNodesInSourceTree = props.tree.length;
+  expect(numOfRenderedTreeNodeElements).toEqual(numOfNodesInSourceTree);
 });
 
 it('should invoke handler when tree node is clicked', () => {
