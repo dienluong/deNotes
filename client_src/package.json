@@ -12,7 +12,6 @@
     "react-redux": "^5.0.7",
     "react-scripts": "2.1.5",
     "react-sortable-tree": "^2.3.0",
-    "react-sortable-tree-theme-minimal": "0.0.14",
     "react-split-pane": "^0.1.77",
     "reduce-reducers": "^0.4.3",
     "redux": "^4.0.0",
