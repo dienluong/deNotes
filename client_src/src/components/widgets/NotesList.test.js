@@ -12,9 +12,12 @@ import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
 
 afterEach(cleanup);
 
-it('should render all node titles in the first level of the received tree', () => {
+it('should render all node titles in the first level of the received tree and highlight the active node', () => {
   const tree = mockedTree;
-  const activeNode = baseState.activeNode;
+  const activeNode = {
+    id: mockedTree[0].id,
+    path: [mockedTree[0].id],
+  };
   const activePath = selectTitlesFromActivePath(baseState);
   const toolbarHandlersMap = new Map();
   toolbarHandlersMap.set('tool1', jest.fn());
@@ -38,25 +41,22 @@ it('should render all node titles in the first level of the received tree', () =
   expect(container).toMatchSnapshot();
   const renderedInputs = Array.from(container.getElementsByTagName('input'));
   const renderedTitles = renderedInputs.map(input => input.value);
-  // const renderedTitles = renderedInputs.map(getNodeText);
-  console.log(renderedTitles);
 
   const test = (node) => {
+    if (node.id === activeNode.id) {
+      const highlightedNodes = container.getElementsByClassName(notesListStyles['dnt__tree-node--active']);
+      // should expect only one highlighted node
+      expect(highlightedNodes.length).toEqual(1);
+      expect(highlightedNodes[0].querySelector('input').value).toEqual(node.title);
+    }
     expect(queryAllByValue(node.title)).toHaveLength(1);
     expect(renderedTitles.includes(node.title)).toBe(true);
   };
 
+  // For each node in the tree sent to NotesList component, run test...
   props.tree.forEach(test);
 
-  // walk({
-  //   treeData: props.tree,
-  //   getNodeKey,
-  //   callback: test,
-  //   ignoreCollapsed: false,
-  // });
-
   const numOfRenderedTreeNodeElements = container.getElementsByClassName(notesListStyles['dnt__tree-node']).length;
-  // const numOfNodesInSourceTree = getFlatDataFromTree({ treeData: props.tree, getNodeKey, ignoreCollapsed: false }).length;
   const numOfNodesInSourceTree = props.tree.length;
   expect(numOfRenderedTreeNodeElements).toEqual(numOfNodesInSourceTree);
 });
