@@ -43,11 +43,12 @@ The active path must always lead to the selected child of the folder, of which t
 Do we really need a default root node?!
 
 REMOVE resolution in package.json that temp fix for https://github.com/facebook/jest/issues/7709
+Set expanded = false for every folder node created.
 
 Make reducers pure functions by removing UUID creation, calls to Date.now(), etc.
 Define typescript type ActionPayload for action object with a payload property.
 Use state selectors instead of getState().<sliceOfState>
-Convert node type ('item' and 'folder') to enum, or something like that
+Convert use of node type literals ('item' and 'folder') to enum or constants, or something similar.
 How to handle error (promises) from Observers?
 How to handle offline mode?  Do we let user create/modify notes offline and store them locally? How do we reconciliate the local data with the remote data once connection is back?
 Active node should be the persistent across sessions.

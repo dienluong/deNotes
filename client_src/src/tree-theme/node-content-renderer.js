@@ -96,7 +96,8 @@ class MinimalThemeNodeContentRenderer extends Component {
               type="button"
               aria-label={ 'Collapse' }
               className={ styles.expandButton }
-              onClick={() => {} }
+              onClick={ () => {} }
+              // onClick={ () => toggleChildrenVisibility({ node, path, treeIndex }) }
             />
 
             {node.expanded && !isDragging && (
