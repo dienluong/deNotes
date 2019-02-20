@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
-import { selectTitlesFromActivePath } from '../redux/selectors';
+import { selectTitlesFromActivePath, selectSiblingsOfActiveNode } from '../redux/selectors';
 import * as rootReducer from '../redux/reducers';
 import NotesList from './widgets/NotesList';
 import {
   selectNodeThunkAction,
-  navigatePathAction,
-  changeNotesTreeAction,
+  navigatePathThunkAction,
+  changeNotesFolderThunkAction,
   changeNodeTitleAction,
   deleteNodeThunkAction,
   addAndSelectNodeThunkAction,
@@ -20,7 +20,7 @@ interface DispatchProps {
   treeChangeHandler: (params: any) => AnyAction;
   nodeTitleChangeHandler: (params: { node: TreeNodeT, title: string, path: TreeNodePathT }) => AnyAction;
   pathNavigatorClickHandler: (params: { idx: number }) => AnyAction;
-  nodeClickHandler: (params: any) => Promise<AnyAction>;
+  nodeClickHandler: (params: any) => AnyAction;
   deleteNodeBtnHandler: (params: any) => Promise<AnyAction>;
   addNoteBtnHandler: (params: any) => AnyAction;
   toolbarHandlersMap: Map<string, () => AnyAction>;
@@ -61,8 +61,10 @@ function mapStateToProps(state: AppStateT) {
   }
   // TODO: Remove ABOVE
 
+  // Get the siblings of the current active node (including itself). The children will be passed as prop to the component
+  const children = selectSiblingsOfActiveNode(state);
   return {
-    tree: rootReducer.selectNotesTreeTree(state),
+    tree: children,
     activeNode: rootReducer.selectActiveNode(state),
     activePath: activePathByTitles,
   };
@@ -88,22 +90,30 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
 
   return {
     treeChangeHandler(tree) {
-      return dispatch(changeNotesTreeAction({ tree }));
+      return dispatch(changeNotesFolderThunkAction({ folder: tree }));
     },
     nodeTitleChangeHandler({ node, title, path }) {
-      return dispatch(changeNodeTitleAction({ node, title, path }));
+      // We are not using the path received from the NotesList component because that path is not for the entire tree;
+      // remember that NotesList only receives and renders a given leaf of the whole tree.
+      return dispatch(changeNodeTitleAction({ node, title }));
     },
     pathNavigatorClickHandler({ idx }) {
-      return dispatch(navigatePathAction({ idx }));
+      return dispatch(navigatePathThunkAction({ idx }));
     },
     nodeClickHandler({ id = '', path = [] }) {
-      return dispatch(selectNodeThunkAction({ id, path }));
+      // We are not using the path received from the NotesList component because that path is not for the entire tree;
+      // remember that NotesList only receives and renders a given leaf of the whole tree.
+      return dispatch(selectNodeThunkAction({ id }));
     },
     deleteNodeBtnHandler({ node, path }) {
-      return dispatch(deleteNodeThunkAction({ node, path }));
+      // We are not using the path received from the NotesList component because that path is not for the entire tree;
+      // remember that NotesList only receives and renders a given leaf of the whole tree.
+      return dispatch(deleteNodeThunkAction({ node }));
     },
     addNoteBtnHandler({ path } ) {
-      return dispatch(addAndSelectNodeThunkAction({ kind: 'item', path }));
+      // We are not using the path received from the NotesList component because that path is not for the entire tree;
+      // remember that NotesList only receives and renders a given leaf of the whole tree.
+      return dispatch(addAndSelectNodeThunkAction({ kind: 'item' }));
     },
     toolbarHandlersMap: toolbarHandlersMap,
   };

@@ -4,7 +4,7 @@ import notesListStyles from './NotesList.module.css';
 import pathNavStyles from './PathNavigator.module.css';
 import { render, cleanup, fireEvent, within } from 'react-testing-library';
 import 'jest-dom/extend-expect';
-import { walk, find, getFlatDataFromTree } from 'react-sortable-tree';
+import { walk, find } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/treeUtils';
 import baseState from '../../redux/misc/initialState';
 import { selectTitlesFromActivePath } from '../../redux/selectors';
@@ -12,10 +12,13 @@ import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
 
 afterEach(cleanup);
 
-it('should render all node titles', () => {
+it('should render all node titles in the first level of the received tree and highlight the active node', () => {
   const tree = mockedTree;
-  const activeNode = baseState.activeNode;
-  const activePath = selectTitlesFromActivePath(baseState);
+  const activeNode = {
+    id: mockedTree[0].id,
+    path: [mockedTree[0].id],
+  };
+  const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
   const toolbarHandlersMap = new Map();
   toolbarHandlersMap.set('tool1', jest.fn());
   toolbarHandlersMap.set('tool2', jest.fn());
@@ -39,27 +42,32 @@ it('should render all node titles', () => {
   const renderedInputs = Array.from(container.getElementsByTagName('input'));
   const renderedTitles = renderedInputs.map(input => input.value);
 
-  const test = ({ node }) => {
+  const test = (node) => {
+    if (node.id === activeNode.id) {
+      const highlightedNodes = container.getElementsByClassName(notesListStyles['dnt__tree-node--active']);
+      // should expect only one highlighted node
+      expect(highlightedNodes.length).toEqual(1);
+      expect(highlightedNodes[0].querySelector('input').value).toEqual(node.title);
+    }
     expect(queryAllByValue(node.title)).toHaveLength(1);
     expect(renderedTitles.includes(node.title)).toBe(true);
   };
 
-  walk({
-    treeData: props.tree,
-    getNodeKey,
-    callback: test,
-    ignoreCollapsed: false,
-  });
+  // For each node in the tree sent to NotesList component, run test...
+  props.tree.forEach(test);
 
   const numOfRenderedTreeNodeElements = container.getElementsByClassName(notesListStyles['dnt__tree-node']).length;
-  const numOfNodesInSourceTree = getFlatDataFromTree({ treeData: props.tree, getNodeKey, ignoreCollapsed: false }).length;
-  expect(numOfNodesInSourceTree).toEqual(numOfRenderedTreeNodeElements);
+  const numOfNodesInSourceTree = props.tree.length;
+  expect(numOfRenderedTreeNodeElements).toEqual(numOfNodesInSourceTree);
 });
 
 it('should invoke handler when tree node is clicked', () => {
   const tree = mockedTree;
-  const activeNode = baseState.activeNode;
-  const activePath = selectTitlesFromActivePath(baseState);
+  const activeNode = {
+    id: mockedTree[0].id,
+    path: [mockedTree[0].id],
+  };
+  const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
   const toolbarHandlersMap = new Map();
   toolbarHandlersMap.set('tool1', jest.fn());
   toolbarHandlersMap.set('tool2', jest.fn());
@@ -96,14 +104,17 @@ it('should invoke handler when tree node is clicked', () => {
     expect(props.nodeClickHandler).lastCalledWith({ id: correspondingNode[0].node.id, path: correspondingNode[0].path });
   });
 
-  const numberOfNodes = getFlatDataFromTree({ treeData: props.tree, getNodeKey, ignoreCollapsed: false }).length;
+  const numberOfNodes = props.tree.length;
   expect(props.nodeClickHandler).toBeCalledTimes(numberOfNodes);
 });
 
-it('should invoke handlers when toolbar button is clicked', () => {
+it('should invoke handler when toolbar button is clicked', () => {
   const tree = mockedTree;
-  const activeNode = baseState.activeNode;
-  const activePath = selectTitlesFromActivePath(baseState);
+  const activeNode = {
+    id: mockedTree[0].id,
+    path: [mockedTree[0].id],
+  };
+  const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
   const toolbarHandlersMap = new Map();
   toolbarHandlersMap.set('tool1', jest.fn());
   toolbarHandlersMap.set('tool2', jest.fn());
@@ -136,8 +147,11 @@ it('should invoke handlers when toolbar button is clicked', () => {
 
 it('should invoke handler when segment in path navigator is clicked', () => {
   const tree = mockedTree;
-  const activeNode = baseState.activeNode;
-  const activePath = selectTitlesFromActivePath(baseState);
+  const activeNode = {
+    id: mockedTree[0].id,
+    path: [mockedTree[0].id],
+  };
+  const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
   const toolbarHandlersMap = new Map();
   toolbarHandlersMap.set('tool1', jest.fn());
   toolbarHandlersMap.set('tool2', jest.fn());
@@ -162,13 +176,17 @@ it('should invoke handler when segment in path navigator is clicked', () => {
     const renderedPathSegment = within(renderedPathNav).getByText(new RegExp(`${segment}`));
     fireEvent.click(renderedPathSegment);
     expect(props.pathNavigatorClickHandler).lastCalledWith({ idx });
+    expect(props.pathNavigatorClickHandler).toBeCalledTimes(1);
   });
 });
 
 it('should invoke handler when tree node button is clicked', () => {
   const tree = mockedTree;
-  const activeNode = baseState.activeNode;
-  const activePath = selectTitlesFromActivePath(baseState);
+  const activeNode = {
+    id: mockedTree[0].id,
+    path: [mockedTree[0].id],
+  };
+  const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
   const toolbarHandlersMap = new Map();
   toolbarHandlersMap.set('tool1', jest.fn());
   toolbarHandlersMap.set('tool2', jest.fn());
@@ -212,14 +230,17 @@ it('should invoke handler when tree node button is clicked', () => {
     treeData: props.tree,
     getNodeKey,
     callback: test,
-    ignoreCollapsed: false,
+    ignoreCollapsed: true,
   });
 });
 
 it('should invoke handler on node title change', () => {
   const tree = mockedTree;
-  const activeNode = baseState.activeNode;
-  const activePath = selectTitlesFromActivePath(baseState);
+  const activeNode = {
+    id: mockedTree[0].id,
+    path: [mockedTree[0].id],
+  };
+  const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
   const toolbarHandlersMap = new Map();
   toolbarHandlersMap.set('tool1', jest.fn());
   toolbarHandlersMap.set('tool2', jest.fn());
@@ -257,6 +278,6 @@ it('should invoke handler on node title change', () => {
     treeData: props.tree,
     getNodeKey,
     callback: test,
-    ignoreCollapsed: false,
+    ignoreCollapsed: true,
   });
 });

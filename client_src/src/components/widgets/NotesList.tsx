@@ -2,15 +2,17 @@ import React from 'react';
 import Toolbar from './Toolbar';
 import PathNavigator from './PathNavigator';
 import Tree from 'react-sortable-tree';
+import mobileTheme from '../../tree-theme';
 import 'react-sortable-tree/style.css';
 import styles from './NotesList.module.css';
 import NodeTitle from './NodeTitle';
 
 // Types
+import { TreeItem } from 'react-sortable-tree';
 type PropsT = {
-  tree: Array<TreeNodeT>,
+  tree: TreeNodeT[],
   activeNode: ActiveNodeT,
-  activePath: Array<string>,
+  activePath: string[],
   treeChangeHandler: (...args: any) => any;
   nodeTitleChangeHandler: (...args: any) => any,
   nodeClickHandler: (params: { id: TreeNodeT["id"], path: TreeNodePathT }) => unknown,
@@ -20,6 +22,7 @@ type PropsT = {
   toolbarHandlersMap: any,
   getNodeKey: (...args: any) => any,
 };
+type generateNodePropsT = ({ node, path }: { node: TreeItem, path: (string|number)[] }) => object;
 
 function NotesList({
   tree,
@@ -34,7 +37,7 @@ function NotesList({
   toolbarHandlersMap,
   getNodeKey,
 }: PropsT) {
-  function buildNodeProps({ node, path }: { node: TreeNodeT, path: Array<string> }) {
+  function buildNodeProps({ node, path }: { node: TreeNodeT, path: string[] }) {
     return ({
       title: (<NodeTitle node={ node } path={ path } onSubmit={ nodeTitleChangeHandler } />),
       className: (node.id === activeNode.id) ? `${styles['dnt__tree-node']} ${styles['dnt__tree-node--active']}` : styles['dnt__tree-node'],
@@ -45,7 +48,7 @@ function NotesList({
     });
   }
 
-  function _buildNodeButtons({ node, path }: { node: TreeNodeT, path: Array<string> }) {
+  function _buildNodeButtons({ node, path }: { node: TreeNodeT, path: string[] }) {
     let buttons = [
       <button
         className={ styles['dnt__tree-node-btn'] }
@@ -75,6 +78,16 @@ function NotesList({
     return buttons;
   }
 
+  function _collapseAllParents({ tree }: { tree: TreeNodeT[] }): TreeNodeT[] {
+    return tree.map((node): TreeNodeT => {
+      if (node.type === 'folder') {
+        return { ...node, expanded: false };
+      } else {
+        return node;
+      }
+    });
+  }
+
   return (
     <div className={ styles["dnt__notes-list"] }>
       <Toolbar toolsMap={ toolbarHandlersMap } />
@@ -85,10 +98,11 @@ function NotesList({
       />
       <Tree
         className={ 'tree ' + styles.dnt__tree }
-        treeData={ tree }
+        treeData={ _collapseAllParents({ tree }) }
+        theme={ mobileTheme as any }
         onChange={ treeChangeHandler }
         getNodeKey={ getNodeKey }
-        generateNodeProps={ buildNodeProps }
+        generateNodeProps={ buildNodeProps as generateNodePropsT }
       />
     </div>
   );

@@ -1,6 +1,7 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import baseState from '../misc/initialState';
-import { equals } from '../../utils/treeUtils';
+import { getNodeAtPath } from 'react-sortable-tree';
+import { getNodeKey } from '../../utils/treeUtils';
 
 // Types
 import { AnyAction } from 'redux';
@@ -8,7 +9,8 @@ import { AnyAction } from 'redux';
 const initialActiveNode = baseState.activeNode;
 
 /**
- * Sets the active ID to the newly selected node along the active path.  (The active path remains the same.)
+ * Sets the active ID to the newly selected node along the active path. The active path is truncated accordingly.
+ *
  * @param currentActive
  * @param idx
  * @returns {*}
@@ -16,83 +18,122 @@ const initialActiveNode = baseState.activeNode;
  */
 function _changeActiveNodeOnPathNavClick({ currentActive, idx }: { currentActive: ActiveNodeT, idx: number })
   : ActiveNodeT {
-  if (Number.isSafeInteger(idx) && idx < currentActive.path.length) {
+  // If last entry of the path was selected, then no need to change active node
+  if (Number.isSafeInteger(idx) && idx < (currentActive.path.length - 1)) {
+    // Empty string for active node ID because we switched parent folder but no node in that folder is selected by default
     return {
       ...currentActive,
-      id: currentActive.path[idx],
-      path: currentActive.path,
+      id: '',
+      path: [...currentActive.path.slice(0, idx + 1), ''],
     };
   } else {
     return currentActive;
   }
 }
 
-function _changeActiveNodeOnDelete({ currentActive, deletedNode }: { currentActive: ActiveNodeT, deletedNode: ActiveNodeT })
+function _changeActiveNodeOnDelete({ currentActive, deletedNodeId, children }: { currentActive: ActiveNodeT, deletedNodeId: string, children: TreeNodeT[]})
   : ActiveNodeT {
-  let returnedActiveNode = currentActive;
+  let returnedActiveNode: ActiveNodeT = currentActive;
   // if deleted node is part of the active path, re-adjust the active node
-  const deletedNodeIdx = currentActive.path.lastIndexOf(deletedNode.id);
+  const deletedNodeIdx = currentActive.path.lastIndexOf(deletedNodeId);
   if (deletedNodeIdx >= 0) {
-    if (deletedNodeIdx === 0) {
-      // TODO: Deleting the root folder should never be allowed.
-      returnedActiveNode = {
-        ...currentActive,
-        id: '',
-        path: [],
-      };
-    } else {
-      // Since deleted node is part of active path, then truncate the path
-      // Only change the active node (i.e. change the active node ID) if deleted node is one of its parents
-      const currentActiveIdx = currentActive.path.lastIndexOf(currentActive.id);
-      const newActivePath = currentActive.path.slice(0, deletedNodeIdx);
-      const newActiveId = currentActiveIdx >= deletedNodeIdx ? newActivePath[newActivePath.length - 1] : currentActive.path[currentActiveIdx];
+      // New active node is the first child
+      const newActiveId: TreeNodeT['id'] = Array.isArray(children) && children.length ? children[0].id : '';
+      // Since deleted node is part of active path, truncate the path and concat the selected child's ID
+      const newActivePath: ActiveNodeT['path'] = [...(currentActive.path.slice(0, deletedNodeIdx)), newActiveId];
       returnedActiveNode = {
         ...currentActive,
         id: newActiveId,
         path: newActivePath,
       };
-    }
   }
 
   return returnedActiveNode;
 }
-// TODO: remove
-// function _arraysAreEqual(arr1, arr2) {
-//   if (Object.is(arr1, arr2)) { return true; }
-//   if (!(Array.isArray(arr1) && Array.isArray(arr2))) { return false; }
-//   if (arr1.length !== arr2.length) { return false; }
-//   return arr1.every((val, idx) => val === arr2[idx]);
-// }
+
+/**
+ * @param {object} currentActive
+ * @param {string} nodeId
+ * @param {string[]} [path]
+ * @return {object}
+ * @private
+ */
+function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentActive: ActiveNodeT, nodeId: TreeNodeT['id'], path?: TreeNodePathT })
+  : ActiveNodeT {
+  let newPath: string[];
+
+  if (!nodeId) {
+    return currentActive;
+  }
+
+  // Expect to receive a path when change to active node was not triggered by user event, for example on load of state from storage.
+  if (Array.isArray(path) && path.length) {
+    // A proper path should at least end with the ID of the referred node
+    if (path[path.length - 1] === nodeId) {
+      newPath = path;
+    } else {
+      return currentActive;
+    }
+  } else {
+    // If no path provided, use the current active path
+      newPath = [...(currentActive.path.slice(0, -1)), nodeId];
+  }
+  return { id: nodeId, path: newPath };
+}
+
+function _switchActiveNodeOnFolderChange({ currentActive, folder }: { currentActive: ActiveNodeT, folder: TreeNodeT[] } )
+  : ActiveNodeT {
+  const activePath = currentActive.path;
+  // If active node no longer present after folder changed, switch active node to first child of the folder
+  if (!getNodeAtPath({ treeData: folder, path: [activePath[activePath.length - 1]], getNodeKey, ignoreCollapsed: false })) {
+    const parentPath: ActiveNodeT['path'] = activePath.slice(0, -1);
+    const newActiveNode: ActiveNodeT = { ...currentActive };
+    newActiveNode.id = Array.isArray(folder) && folder[0] ? folder[0].id : '';
+    newActiveNode.path = [...parentPath, newActiveNode.id];
+    return newActiveNode;
+  }
+
+  return currentActive;
+}
 
 export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode, action: AnyAction)
   : ActiveNodeT {
-  console.log(`REDUCER: ${action.type}`);
+  if (!action.payload) {
+    action.type = '';
+  }
+  console.log(`REDUCER: '${action.type}'`);
   switch (action.type) {
     case notesListActionTypes.SELECT_NODE: {
-      if (equals(state, action.payload.activeNode)) { return state; }
-      else { return { ...state, ...action.payload.activeNode }; }
+      if (state.id === action.payload.nodeId) {
+        return state;
+      }
+      else {
+        return _changeActiveNodeOnSelect({
+          currentActive: state,
+          ...action.payload,
+        });
+      }
     }
-
     case notesListActionTypes.NAVIGATE_PATH: {
-      const newActiveNode = _changeActiveNodeOnPathNavClick({
+      return _changeActiveNodeOnPathNavClick({
         currentActive: state,
         idx: action.payload.idx,
       });
-
-      if (equals(state, newActiveNode)) { return state; }
-      else { return newActiveNode; }
     }
-
     case notesListActionTypes.SWITCH_NODE_ON_DELETE: {
-      const newActiveNode = _changeActiveNodeOnDelete({
+      if (!action.payload.deletedNodeId) {
+        return state;
+      }
+      return _changeActiveNodeOnDelete({
         currentActive: state,
-        deletedNode: action.payload.deletedNode,
+        ...action.payload,
       });
-
-      if (equals(state, newActiveNode)) { return state; }
-      else { return newActiveNode; }
     }
-
+    case notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE:
+      return _switchActiveNodeOnFolderChange({
+        currentActive: state,
+        ...action.payload,
+      });
     default:
       if (process.env.REACT_APP_DEBUG) {
         console.log(`Current activeNode: ${JSON.stringify(state)}`);
@@ -102,3 +143,4 @@ export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode
 }
 
 export const selectPath = (state: ActiveNodeT) => state.path;
+export const selectId = (state: ActiveNodeT) => state.id;

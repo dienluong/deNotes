@@ -15,7 +15,14 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "typeRoots": ["./src/custom-types"]
+    "typeRoots": [
+      "./src/custom-types"
+    ],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ]
   },
   "include": [
     "src"

@@ -1,66 +1,63 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import { addNodeUnderParent } from 'react-sortable-tree';
-import { getNodeKey, createNode, findClosestParent } from '../../utils/treeUtils';
-import baseState from '../misc/initialState';
+import { getNodeKey, createNode } from '../../utils/treeUtils';
+import initialState from '../misc/initialState';
 
 // Types
 import { AnyAction } from "redux";
 
-const initialState = baseState;
-
 /**
- * Create new node, switch to it and set editor content to blank page. The new node is added to the folder of the current active node, if no path was given.
+ * Create new node, switch to it and set editor content to blank page. The new node is added to the folder of the current active node.
  * @param state
  * @param kind
- * @param path {string[]}
+ * @param now {number}
  * @returns {{notesTree: *, activeNode: {id: *, path: Array}}}
  * @private
  */
-function _addAndSelectNewNode({ state, kind, path = [] }: { state: AppStateT, kind: NodeTypeT, path: string[] })
+function _addAndSelectNewNode({ state, kind, now }: { state: AppStateT, kind: NodeTypeT, now: number })
   : AppStateT {
-  let newState, currentActivePath;
-  let newActiveNodePath = [];
-  let parentKey = null;
-  const newNode = createNode({ type: kind });
+  const parentPath: ActiveNodeT['path'] = state.activeNode.path.slice(0, -1);
+  const newNode: TreeNodeT = createNode({ type: kind });
+  const newActiveNodePath: ActiveNodeT['path'] = [...parentPath, newNode.id];
 
-  if (Array.isArray(path) && path.length) {
-    currentActivePath = path;
+  let parentKey: string|null|undefined = null;
+  if (parentPath.length) {
+    parentKey = parentPath[parentPath.length - 1];
   } else {
-    const end = state.activeNode.path.indexOf(state.activeNode.id) + 1;
-    currentActivePath = state.activeNode.path.slice(0, end);
+    // If path to parent node is [], then it means the active node is at the very root of the tree.
+    // Explicitly set parent key to undefined instead of null due to how addNodeUnderParent() is annotated in TypeScript
+    // A parentKey of null (or undefined) tells addNodeUnderParent() to put new node in root of tree
+    parentKey = undefined;
   }
 
-  const parentIdx = findClosestParent(currentActivePath);
-
-  // if parent found
-  if (parentIdx !== null) {
-    parentKey = currentActivePath[parentIdx];
-    newActiveNodePath = [...currentActivePath.slice(0, parentIdx + 1), newNode.id];
-  } else {
-    parentKey = null;
-    newActiveNodePath = [newNode.id];
-  }
-
-  const newNotesTree = {
-    ...state.notesTree,
-    tree: addNodeUnderParent({
+  let newTreeData: NotesTreeT['tree'];
+  try {
+    newTreeData = addNodeUnderParent({
       treeData: state.notesTree.tree,
       newNode,
       parentKey,
       getNodeKey,
       expandParent: true,
       ignoreCollapsed: false,
-    }).treeData,
-    dateModified: Date.now(),
+    }).treeData as TreeNodeT[];
+  } catch(error) {
+    // if adding of node failed, return state unchanged
+    return state;
+  }
+
+  const newNotesTree: NotesTreeT = {
+    ...state.notesTree,
+    tree: newTreeData,
+    dateModified: now,
   };
 
-  const newActiveNode = {
+  const newActiveNode: ActiveNodeT = {
     ...state.activeNode,
     id: newNode.id,
     path: newActiveNodePath,
   };
 
-  newState = {
+  const newState: AppStateT = {
     ...state,
     notesTree: newNotesTree,
     activeNode: newActiveNode,
@@ -68,7 +65,6 @@ function _addAndSelectNewNode({ state, kind, path = [] }: { state: AppStateT, ki
 
   // Only change the editorContent state if newly added node is a note, as opposed to a folder.
   if (kind === 'item') {
-    const now = Date.now();
     newState.editorContent = {
       ...initialState.editorContent,
       id: newNode.uniqid,
@@ -84,13 +80,15 @@ function _addAndSelectNewNode({ state, kind, path = [] }: { state: AppStateT, ki
 
 export default function reducedReducer(state: AppStateT = initialState, action: AnyAction)
   : AppStateT {
-  console.log(`REDUCER: ${action.type}`);
+  if (!action.payload) {
+    action.type = '';
+  }
+  console.log(`REDUCER: '${action.type}'`);
   switch (action.type) {
     case notesListActionTypes.ADD_AND_SELECT_NODE:
       return _addAndSelectNewNode({
         state,
-        kind: action.payload.kind,
-        path: action.payload.path,
+        ...action.payload,
       });
     default:
       if (process.env.REACT_APP_DEBUG) {

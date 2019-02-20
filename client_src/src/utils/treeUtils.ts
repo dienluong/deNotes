@@ -1,11 +1,16 @@
 import uuid from 'uuid/v4';
 import { find, getFlatDataFromTree } from 'react-sortable-tree';
 
+// Types
+import { GetNodeKeyFunction, NodeData } from 'react-sortable-tree';
+
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|^|';
 const DEFAULT_TITLES = {
   FOLDER: 'New Folder',
   NOTE: 'New Note',
 };
+
+export const getNodeKey: GetNodeKeyFunction = ({ node }) => node.id;
 
 /**
  * Deep comparison of objects (including arrays).
@@ -24,6 +29,11 @@ export function equals(obj1: { [key: string]: any }, obj2: { [key: string]: any 
     return obj1 === obj2;
   }
 
+  // If same object
+  if (obj1 === obj2) {
+    return true;
+  }
+
   const currentKeys = Object.keys(obj1);
   const newKeys = Object.keys(obj2);
 
@@ -36,8 +46,6 @@ export function equals(obj1: { [key: string]: any }, obj2: { [key: string]: any 
     return equals(currentVal, newVal);
   });
 }
-
-export const getNodeKey = ({ node }: { node: TreeNodeT }): string => node.id;
 
 /**
  * Builds a node for a tree.
@@ -66,6 +74,7 @@ export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().
 
   if (type === 'folder') {
     newNode.children = [];
+    newNode.expanded = false;
     newNode.title = title === DEFAULT_TITLES.NOTE ? DEFAULT_TITLES.FOLDER : title;
   }
 
@@ -73,11 +82,10 @@ export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().
 }
 
 /**
- * Returns the index of the deepest node of type 'folder' in path.
+ * Returns the index of the node of type 'folder' that is the direct parent of the node referenced by the given path.
  * Returns null if none found.
  * @param path {Array}
- * @return {?number}
- * @private
+ * @return {number|null}
  */
 export function findClosestParent(path: string[])
   : number|null {
@@ -85,21 +93,21 @@ export function findClosestParent(path: string[])
     return null;
   }
 
-  const lastStep = path[path.length - 1];
-  if (typeof lastStep !== 'string') {
+  // If path consists only of the node, then no parent
+  if (path.length === 1) {
     return null;
   }
 
-  if (path.length === 1) {
-    return (lastStep.includes(`folder${ID_DELIMITER}`) ? 0 : null);
+  const parent = path[path.length - 2];
+  if (typeof parent !== 'string') {
+    return null;
   } else {
-    // If last step in path is not a folder, then the step previous to last must be a folder.
-    return (lastStep.includes(`folder${ID_DELIMITER}`)) ? path.length - 1 : path.length - 2;
+    return (/^folder/.test(parent)) ? path.length - 2 : null;
   }
 }
 
 /**
- * Return the info embedded in provided ID.
+ * Returns the info (object with type and uniqid) embedded in provided node ID. Returns null if invalid node ID provided.
  * Example: For ID "folder|^|a9914200-a7d2-11e8-a12b-99205b853de7"
  *          type is "folder"
  *          uniqid is "a9914200-a7d2-11e8-a12b-99205b853de7""
@@ -107,21 +115,26 @@ export function findClosestParent(path: string[])
  * Note: possible types are "item" and "folder".
  * @param {Object} params
  * @param {string} params.nodeId
- * @param {("uniqid"|"type")} params.kind
+ * @return {object|null}
  */
-export function translateNodeIdToInfo({ nodeId, kind = 'uniqid' }: { nodeId: string, kind: 'uniqid'|'type'})
-  : string {
+export function translateNodeIdToInfo({ nodeId }: { nodeId: string })
+  : { type: NodeTypeT, uniqid: string } | null {
   if (typeof nodeId !== 'string') {
-    return '';
+    return null;
   }
 
-  switch (kind) {
-    case 'type':
-      return nodeId.split(ID_DELIMITER)[0];
-    case 'uniqid':
-      return nodeId.split(ID_DELIMITER)[1];
-    default:
-      return '';
+  const info = nodeId.split(ID_DELIMITER);
+  if (info.length < 2) {
+    return null;
+  }
+
+  if (/^(?:item|folder)$/.test(info[0])) {
+    return {
+      type: info[0] as NodeTypeT,
+      uniqid: info[1],
+    };
+  } else {
+    return null;
   }
 }
 
@@ -142,14 +155,14 @@ export function translatePathToInfo({ notesTree = [], path = [], kind = 'type' }
 
   switch (kind) {
     case 'title':
-      return path.map((id) => {
-        const matches = find({
+      return path.map((id: string): string => {
+        const matches: NodeData[] = find({
           getNodeKey,
           treeData: notesTree,
           searchQuery: id,
-          searchMethod: ({ node, searchQuery }: { node: TreeNodeT, searchQuery: string }): boolean => searchQuery === node.id,
+          searchMethod: ({ node: treeNode, searchQuery }): boolean => searchQuery === treeNode.id,
         }).matches;
-        return matches.length ? matches[0].node.title : '';
+        return matches.length && matches[0].node.title ? (matches[0].node.title as string) : '';
       });
     case 'type':
       return path.map((step) => String(step).split(ID_DELIMITER)[0]);
@@ -201,7 +214,7 @@ export function getDescendants({ node }: { node: TreeNodeT })
     return [];
   }
 
-  return getFlatDataFromTree({ treeData: [node], getNodeKey, ignoreCollapsed: false }).map((data: { node: TreeNodeT })  => data.node);
+  return getFlatDataFromTree({ treeData: [node], getNodeKey, ignoreCollapsed: false }).map((data) => data.node) as TreeNodeT[];
 }
 
 /**

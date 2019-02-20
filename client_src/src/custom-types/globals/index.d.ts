@@ -18,48 +18,48 @@ declare global {
   }
 
   interface AppStateT {
-    userInfo: UserInfoT,
-    notesTree: NotesTreeT,
-    activeNode: ActiveNodeT,
-    editorContent: EditorContentT,
+    userInfo: UserInfoT;
+    notesTree: NotesTreeT;
+    activeNode: ActiveNodeT;
+    editorContent: EditorContentT;
   }
 
   interface UserInfoT {
-    id: string,
+    id: string;
   }
 
   interface NotesTreeT {
-    id: string,
-    tree: Array<TreeNodeT>,
-    dateCreated: number,
-    dateModified: number,
+    id: string;
+    tree: TreeNodeT[];
+    dateCreated: number;
+    dateModified: number;
   }
 
   interface TreeNodeT {
-    title: string,
-    subtitle: string,
-    uniqid: string,
-    id: string,
-    type: NodeTypeT,
-    expanded?: boolean,
-    children?: Array<TreeNodeT>,
+    title: string;
+    subtitle: string;
+    uniqid: string;
+    id: string;
+    type: NodeTypeT;
+    expanded?: boolean;
+    children?: TreeNodeT[];
   }
 
-  type TreeNodePathT = Array<string>;
+  type TreeNodePathT = (TreeNodeT['id'])[];
 
   interface ActiveNodeT {
-    id: string,
-    path: Array<string>,
+    id: TreeNodeT['id'];
+    path: TreeNodePathT;
   }
 
   interface EditorContentT {
-    id: string,
-    title: string,
-    content: string,
-    delta: DeltaT,
-    dateCreated: number,
-    dateModified: number,
-    readOnly: boolean,
+    id: string;
+    title: string;
+    content: string;
+    delta: DeltaT;
+    dateCreated: number;
+    dateModified: number;
+    readOnly: boolean;
   }
 
   interface ActionError extends Error {

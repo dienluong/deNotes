@@ -12,8 +12,8 @@ import { getNodeKey } from '../utils/treeUtils';
 jest.mock('../redux/actions/notesListActions');
 import {
   selectNodeThunkAction,
-  navigatePathAction,
-  changeNotesTreeAction,
+  navigatePathThunkAction,
+  changeNotesFolderThunkAction,
   changeNodeTitleAction,
   deleteNodeThunkAction,
   addAndSelectNodeThunkAction,
@@ -35,14 +35,14 @@ afterEach(() => {
   }
   cleanup();
   addAndSelectNodeThunkAction.mockClear();
-  navigatePathAction.mockClear();
+  navigatePathThunkAction.mockClear();
   selectNodeThunkAction.mockClear();
   changeNodeTitleAction.mockClear();
   deleteNodeThunkAction.mockClear();
-  changeNotesTreeAction.mockClear();
+  changeNotesFolderThunkAction.mockClear();
 });
 
-it('render correctly with props with values taken from redux store', () => {
+it('renders correctly with prop values taken from redux store', () => {
   const mockedNotesTree = { id: '1234', tree: mockedTree, dateCreated: 1111, dateModified: 2222 };
   const mockedInitialState = {
     ...initialState,
@@ -68,7 +68,7 @@ it('render correctly with props with values taken from redux store', () => {
   expect(wrapper.find(NotesList).props()).toMatchObject(expectedProps);
 });
 
-it('react to events by calling proper handlers', () => {
+it('reacts to events by calling proper handlers', () => {
   const mockedNotesTree = { id: '1234', tree: mockedTree, dateCreated: 1111, dateModified: 2222 };
   const mockedInitialState = {
     ...initialState,
@@ -79,7 +79,7 @@ it('react to events by calling proper handlers', () => {
     },
   };
   addAndSelectNodeThunkAction.mockImplementation(() => ({ type: 'DUMMY_ACTION', payload: 'DUMMY_PAYLOAD' }));
-  navigatePathAction.mockImplementation(() => ({ type: 'DUMMY_ACTION', payload: 'DUMMY_PAYLOAD' }));
+  navigatePathThunkAction.mockImplementation(() => ({ type: 'DUMMY_ACTION', payload: 'DUMMY_PAYLOAD' }));
   selectNodeThunkAction.mockImplementation(() => ({ type: 'DUMMY_ACTION', payload: 'DUMMY_PAYLOAD' }));
   changeNodeTitleAction.mockImplementation(() => ({ type: 'DUMMY_ACTION', payload: 'DUMMY_PAYLOAD' }));
   deleteNodeThunkAction.mockImplementation(() => ({ type: 'DUMMY_ACTION', payload: 'DUMMY_PAYLOAD' }));
@@ -106,7 +106,7 @@ it('react to events by calling proper handlers', () => {
   target = container.querySelectorAll(`.${pathNavStyles["dnt__pathnav-segment--active"]}`);
   expect(target).toHaveLength(1);
   fireEvent.click(target[0]);
-  expect(navigatePathAction).toBeCalledTimes(1);
+  expect(navigatePathThunkAction).toBeCalledTimes(1);
 
   // Test node click
   target = container.querySelectorAll(`.${notesListStyles["dnt__tree-node"]}`);
