@@ -27,7 +27,7 @@ exports[`should render all node titles in the first level of the received tree a
           class="lined dnt__pathnav-segment--active"
         >
           <span>
-            /
+            root-folder 1
             &gt;
           </span>
         </li>
