@@ -21,6 +21,7 @@ interface DispatchProps {
   nodeTitleChangeHandler: (params: { node: TreeNodeT, title: string, path: TreeNodePathT }) => AnyAction;
   pathNavigatorClickHandler: (params: { idx: number }) => AnyAction;
   nodeClickHandler: (params: any) => AnyAction;
+  nodeDoubleClickHandler: (params: any) => AnyAction;
   deleteNodeBtnHandler: (params: any) => Promise<AnyAction>;
   addNoteBtnHandler: (params: any) => AnyAction;
   toolbarHandlersMap: Map<string, () => AnyAction>;
@@ -104,6 +105,9 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
       // We are not using the path received from the NotesList component because that path is not for the entire tree;
       // remember that NotesList only receives and renders a given leaf of the whole tree.
       return dispatch(selectNodeThunkAction({ id }));
+    },
+    nodeDoubleClickHandler({ id, path }) {
+      return dispatch(selectNodeThunkAction({ id }))
     },
     deleteNodeBtnHandler({ node, path }) {
       // We are not using the path received from the NotesList component because that path is not for the entire tree;
