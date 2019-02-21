@@ -108,6 +108,54 @@ it('should invoke handler when tree node is clicked', () => {
   expect(props.nodeClickHandler).toBeCalledTimes(numberOfNodes);
 });
 
+it('should invoke handler when double-click on node', () => {
+  const tree = mockedTree;
+  const activeNode = {
+    id: mockedTree[0].id,
+    path: [mockedTree[0].id],
+  };
+  const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
+  const toolbarHandlersMap = new Map();
+  toolbarHandlersMap.set('tool1', jest.fn());
+  toolbarHandlersMap.set('tool2', jest.fn());
+  const props = {
+    tree,
+    activeNode,
+    activePath,
+    treeChangeHandler: jest.fn(),
+    nodeTitleChangeHandler: jest.fn(),
+    nodeClickHandler: jest.fn(),
+    nodeDoubleClickHandler: jest.fn(),
+    deleteNodeBtnHandler: jest.fn(),
+    addNoteBtnHandler: jest.fn(),
+    pathNavigatorClickHandler: jest.fn(),
+    toolbarHandlersMap,
+    getNodeKey,
+  };
+
+  const { container } = render(<NotesList { ...props }/>);
+
+  const renderedTreeNodeElements = [...container.getElementsByClassName(notesListStyles['dnt__tree-node'])];
+  renderedTreeNodeElements.forEach(element => {
+    const elementTitle = element.getElementsByTagName('input')[0].value;
+    const correspondingNode = find({
+      treeData: props.tree,
+      getNodeKey,
+      searchQuery: elementTitle,
+      searchMethod: ({ node, searchQuery }) => node.title === searchQuery,
+    }).matches;
+    // This assertion is NOT the actual test. For each rendered element, we should have one and only one corresponding node in the treeData.
+    expect(correspondingNode).toHaveLength(1);
+
+    fireEvent.dblClick(element);
+    // this assertion is the actual test
+    expect(props.nodeDoubleClickHandler).lastCalledWith({ id: correspondingNode[0].node.id, path: correspondingNode[0].path });
+  });
+
+  const numberOfNodes = props.tree.length;
+  expect(props.nodeDoubleClickHandler).toBeCalledTimes(numberOfNodes);
+});
+
 it('should invoke handler when toolbar button is clicked', () => {
   const tree = mockedTree;
   const activeNode = {

@@ -16,6 +16,7 @@ type PropsT = {
   treeChangeHandler: (...args: any) => any;
   nodeTitleChangeHandler: (...args: any) => any,
   nodeClickHandler: (params: { id: TreeNodeT["id"], path: TreeNodePathT }) => unknown,
+  nodeDoubleClickHandler: (params: { id: TreeNodeT["id"], path: TreeNodePathT }) => unknown,
   deleteNodeBtnHandler: (params: { node: TreeNodeT, path: TreeNodePathT }) => unknown,
   addNoteBtnHandler: (params: { path: TreeNodePathT }) => unknown,
   pathNavigatorClickHandler: (...args: any) => any,
@@ -31,6 +32,7 @@ function NotesList({
   treeChangeHandler,
   nodeTitleChangeHandler,
   nodeClickHandler,
+  nodeDoubleClickHandler,
   deleteNodeBtnHandler,
   addNoteBtnHandler,
   pathNavigatorClickHandler,
@@ -45,6 +47,7 @@ function NotesList({
       tabIndex: '0',
       'data-testid': node.id,
       onClick: () => nodeClickHandler({ id: node.id, path }),
+      onDoubleClick: () => nodeDoubleClickHandler({ id: node.id, path }),
     });
   }
 
