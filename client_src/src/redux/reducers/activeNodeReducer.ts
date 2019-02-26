@@ -54,7 +54,7 @@ function _changeActiveNodeOnDelete({ currentActive, deletedNodeId, children }: {
 /**
  * @param {object} currentActive
  * @param {string} nodeId
- * @param {string[]} [path]
+ * @param {string[]} [path] Path is given if selected node is from path different from current active one.
  * @return {object}
  * @private
  */
@@ -68,7 +68,7 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentAct
 
   // Expect to receive a path when change to active node was not triggered by user event, for example on load of state from storage.
   if (Array.isArray(path) && path.length) {
-    // A proper path should at least end with the ID of the referred node
+    // A proper path must end with the ID of the referred node
     if (path[path.length - 1] === nodeId) {
       newPath = path;
     } else {
