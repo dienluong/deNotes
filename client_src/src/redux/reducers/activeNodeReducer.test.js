@@ -181,8 +181,20 @@ describe('activeNodeReducer ', () => {
       id: '',
       path: [...currentState.path.slice(0, -1), ''],
     });
+    // should also work if current active node is empty string
+    currentState.id = '';
+    currentState.path = [''];
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
+      payload: {
+        folder: newFolder,
+      },
+    })).toEqual({
+      id: '',
+      path: [...currentState.path.slice(0, -1), ''],
+    });
 
-    // If current active node is still in changed folder, it remains the active node
+    // If current active node is still in folder after folder change, it remains the active node
     newFolder = [{ id: currentState.id }, { id: 'some-other-child-id' }, { id: 'another-child-id' }];
     expect(reducer(currentState, {
       type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
