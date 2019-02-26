@@ -14,22 +14,13 @@ import { find } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/treeUtils';
 
 const mockStore = setupMockStore([thunk]);
+
 /**
  * selectNodeThunkAction
  */
 describe('1. selectNodeThunkAction ', () => {
   const RealAlert = global.alert;
-  const mockedStore = mockStore({
-    ...initialState,
-    editorContent: {
-      ...initialState.editorContent,
-      id: uuid(),
-      dateModified: Date.now(),
-      dateCreated: Date.now(),
-    },
-  });
-
-  let mockedSave = jest.fn();
+  const mockedSave = jest.fn();
 
   beforeEach(() => {
     // inject mocked dependency
@@ -40,7 +31,6 @@ describe('1. selectNodeThunkAction ', () => {
 
   afterEach(() => {
     global.alert = RealAlert;
-    mockedStore.clearActions();
     fetchEditorContentThunkAction.mockClear();
     mockedSave.mockClear();
   });
@@ -58,9 +48,9 @@ describe('1. selectNodeThunkAction ', () => {
       },
       editorContent: {
         ...initialState.editorContent,
-        id: uuid(),
-        dateModified: Date.now(),
-        dateCreated: Date.now(),
+        id: 123123123,
+        dateModified: 4321,
+        dateCreated: 1234,
       },
     };
     const selectedFolderId = mockedTree[0].id;
@@ -136,9 +126,9 @@ describe('1. selectNodeThunkAction ', () => {
       },
       editorContent: {
         ...initialState.editorContent,
-        id: uuid(),
-        dateModified: Date.now(),
-        dateCreated: Date.now(),
+        id: 111000222,
+        dateModified: 4321,
+        dateCreated: 1234,
       },
     };
     const selectedItem = mockedTree[1];
@@ -185,31 +175,41 @@ describe('1. selectNodeThunkAction ', () => {
   });
 
   it('should *not* fetch if note selected was already loaded', () => {
-    // select the note that's already loaded in the editor
-    const uniqId = mockedStore.getState().editorContent.id;
-    const id = 'item' + ID_DELIMITER + uniqId;
-    const pathSeg1 = 'folder' + ID_DELIMITER + uuid();
-    const pathSeg2 = 'folder' + ID_DELIMITER + uuid();
-    const pathSeg3 = 'folder' + ID_DELIMITER + uuid();
-    const path = [pathSeg1, pathSeg2, pathSeg3, id];
+    // In this test, we select a note, not a folder
+    const itemToSelect = mockedTree[1];
+    // To simulate note already loaded, create state with active node ID and editor content ID from the item selected in test
+    const mockedState = {
+      ...initialState,
+      notesTree: {
+        ...initialState.notesTree,
+        tree: mockedTree,
+      },
+      activeNode: {
+        id: itemToSelect.id,
+        path: [itemToSelect.id],
+      },
+      editorContent: {
+        ...initialState.editorContent,
+        id: itemToSelect.uniqid,
+        dateModified: 4321,
+        dateCreated: 1234,
+      },
+    };
+    const mockedStore = mockStore(mockedState);
     const expectedActions = [
       {
         type: notesListActionTypes.SELECT_NODE,
-        payload: {
-          nodeId: id,
-          path,
-        },
+        payload: { nodeId: itemToSelect.id, path: [itemToSelect.id] },
       },
     ];
 
-    fetchEditorContentThunkAction.mockImplementation(() => () => Promise.resolve({}));
     mockedSave.mockImplementation(() => Promise.resolve({}));
+    fetchEditorContentThunkAction.mockImplementation(() => () => {});
 
     expect.assertions(4);
-    // selectNodeThunkAction is expected to return a Promise resolving to the last action, the fetch action in this case.
-    expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path }))).toMatchObject(expectedActions[0]);
-    expect(mockedStore.getActions()).toEqual(expectedActions);
+    expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id: itemToSelect.id, path: [itemToSelect.id] }))).toMatchObject(expectedActions[0]);
     expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
+    expect(mockedStore.getActions()).toEqual(expectedActions);
     expect(fetchEditorContentThunkAction).not.toBeCalled();
   });
 });
@@ -458,10 +458,10 @@ describe('3. addAndSelectNodeThunkAction ', () => {
   it('should save the current content before adding an item to the tree and switching to that item', () => {
     const editorContent = {
       ...initialState.editorContent,
-      id: uuid(),
+      id: 345345345,
       title: 'test note',
-      dateModified: Date.now(),
-      dateCreated: Date.now(),
+      dateModified: 98765,
+      dateCreated: 56789,
     };
     mockedStore = mockStore({
       ...initialState,
