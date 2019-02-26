@@ -45,7 +45,7 @@ describe('1. selectNodeThunkAction ', () => {
     mockedSave.mockClear();
   });
 
-  it('should 1) save content, 2) switch folder, 3) load children and select first one, 4) load content and 4) return Promise(action), when Folder selected', () => {
+  it('should 1) save content, 2) switch folder, 3) select first children, 4) load content and 5) return Promise(action), when Folder selected', () => {
     const mockedState = {
       ...initialState,
       notesTree: {
@@ -123,40 +123,65 @@ describe('1. selectNodeThunkAction ', () => {
     mockedStore.clearActions();
   });
 
-  it('should 1) dispatch "select node", 2) save, 3) fetch, 4) return Promise w/ last action, when Item selected', () => {
-    const uniqId = uuid();
-    const id = 'item' + ID_DELIMITER + uniqId;
-    const pathSeg1 = 'folder' + ID_DELIMITER + uuid();
-    const pathSeg2 = 'folder' + ID_DELIMITER + uuid();
-    const pathSeg3 = 'folder' + ID_DELIMITER + uuid();
-    const path = [pathSeg1, pathSeg2, pathSeg3, id];
-    const fetchAction = {
-      type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
-      payload: { editorContent: mockedContent },
+  it('should 1) save content, 2) dispatch "select node", 3) fetch content and 4) return Promise(action), when Item selected', () => {
+    const mockedState = {
+      ...initialState,
+      notesTree: {
+        ...initialState.notesTree,
+        tree: mockedTree,
+      },
+      activeNode: {
+        id: mockedTree[0].id,
+        path: [mockedTree[0].id],
+      },
+      editorContent: {
+        ...initialState.editorContent,
+        id: uuid(),
+        dateModified: Date.now(),
+        dateCreated: Date.now(),
+      },
     };
+    const selectedItem = mockedTree[1];
+    // create a mocked store that returns a state based on type of the last action
+    const mockedStore = mockStore(
+      actions => {
+        const lastAction = actions.length ? actions[actions.length - 1] : { type: '' };
+        switch (lastAction.type) {
+          case notesListActionTypes.SELECT_NODE:
+            return {
+              ...mockedState,
+              activeNode: {
+                id: lastAction.payload.nodeId,
+                path: lastAction.payload.path,
+              },
+            };
+          default:
+            return mockedState;
+        }
+      }
+    );
     const expectedActions = [
       {
         type: notesListActionTypes.SELECT_NODE,
-        payload: {
-          nodeId: id,
-          path,
-        },
+        payload: { nodeId: selectedItem.id, path: [selectedItem.id] },
       },
-      fetchAction,
+      {
+        type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
+        payload: { editorContent: mockedContent },
+      },
     ];
 
-    fetchEditorContentThunkAction.mockImplementation(() => () => {
-      mockedStore.dispatch(fetchAction);
-      return Promise.resolve(fetchAction);
-    });
     mockedSave.mockImplementation(() => Promise.resolve({}));
+    fetchEditorContentThunkAction.mockImplementation(() => () => {
+      mockedStore.dispatch(expectedActions[1]);
+      return Promise.resolve(expectedActions[1]);
+    });
 
     expect.assertions(4);
-    // selectNodeThunkAction is expected to return a Promise resolving to the last action, the fetch action in this case.
-    expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path }))).toMatchObject(expectedActions[0]);
-    expect(mockedStore.getActions()).toEqual(expectedActions);
+    expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id: selectedItem.id, path: [selectedItem.id] }))).toMatchObject(expectedActions[0]);
     expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
-    expect(fetchEditorContentThunkAction).lastCalledWith({ noteId: uniqId });
+    expect(fetchEditorContentThunkAction).lastCalledWith({ noteId: selectedItem.uniqid });
+    expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
   it('should *not* fetch if note selected was already loaded', () => {
