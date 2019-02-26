@@ -6,10 +6,6 @@ import * as moduleToTest from './notesListActions';
 import thunk from 'redux-thunk';
 import setupMockStore from 'redux-mock-store';
 import initialState from '../misc/initialState';
-// jest.mock('../../reactive/editorContentObserver');
-// import { save } from '../../reactive/editorContentObserver';
-// jest.mock('../../utils/notesTreeStorage');
-// import { load as loadTree } from '../../utils/notesTreeStorage';
 jest.mock('./editorActions');
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { mockedContent } from '../../test-utils/mocks/mockedEditorContent';
@@ -49,27 +45,82 @@ describe('1. selectNodeThunkAction ', () => {
     mockedSave.mockClear();
   });
 
-  it('should 1) dispatch "select node", 2) save content, 3) return Promise w/ dispatched action, when Folder selected', () => {
-    const id = 'folder' + ID_DELIMITER + uuid();
-    const pathSeg1 = uuid();
-    const pathSeg2 = uuid();
-    const pathSeg3 = uuid();
-    const path = [pathSeg1, pathSeg2, pathSeg3, id];
+  it('should 1) save content, 2) switch folder, 3) load children and select first one, 4) load content and 4) return Promise(action), when Folder selected', () => {
+    const mockedState = {
+      ...initialState,
+      notesTree: {
+        ...initialState.notesTree,
+        tree: mockedTree,
+      },
+      activeNode: {
+        id: mockedTree[0].id,
+        path: [mockedTree[0].id],
+      },
+      editorContent: {
+        ...initialState.editorContent,
+        id: uuid(),
+        dateModified: Date.now(),
+        dateCreated: Date.now(),
+      },
+    };
+    const selectedFolderId = mockedTree[0].id;
+    const selectedFolderChildren = mockedTree[0].children;
+    // create a mocked store that returns a state based on type of the last action
+    const mockedStore = mockStore(
+      actions => {
+        const lastAction = actions.length ? actions[actions.length - 1] : { type: '' };
+        switch (lastAction.type) {
+          case notesListActionTypes.SELECT_NODE:
+            return {
+              ...mockedState,
+              activeNode: {
+                id: lastAction.payload.nodeId,
+                path: lastAction.payload.path,
+              },
+            };
+          case notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE:
+            return {
+              ...mockedState,
+              activeNode: {
+                id: selectedFolderChildren[0].id,
+                path: [selectedFolderChildren[0].id],
+              },
+            };
+          default:
+            return mockedState;
+        }
+      }
+    );
     const expectedActions = [
       {
         type: notesListActionTypes.SELECT_NODE,
-        payload: {
-          nodeId: id,
-          path,
-        },
+        payload: { nodeId: '', path: [selectedFolderId, ''] },
+      },
+      {
+        type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
+        payload: { folder: selectedFolderChildren },
+      },
+      {
+        type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
+        payload: { editorContent: mockedContent },
       },
     ];
-    mockedSave.mockImplementation(() => Promise.resolve({}));
 
-    expect.assertions(3);
-    expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path }))).toMatchObject(expectedActions[0]);
+    mockedSave.mockImplementation(() => Promise.resolve({}));
+    fetchEditorContentThunkAction.mockImplementation(() => () => {
+      mockedStore.dispatch(expectedActions[2]);
+      return Promise.resolve(expectedActions[2]);
+    });
+
+    expect.assertions(4);
+    expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id: selectedFolderId, path: [selectedFolderId] }))).toMatchObject(expectedActions[0]);
+    // expect content to be saved
     expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
+    // expect loading content of the first child
+    expect(fetchEditorContentThunkAction).lastCalledWith({ noteId: selectedFolderChildren[0].uniqid });
     expect(mockedStore.getActions()).toEqual(expectedActions);
+
+    mockedStore.clearActions();
   });
 
   it('should 1) dispatch "select node", 2) save, 3) fetch, 4) return Promise w/ last action, when Item selected', () => {
@@ -79,6 +130,10 @@ describe('1. selectNodeThunkAction ', () => {
     const pathSeg2 = 'folder' + ID_DELIMITER + uuid();
     const pathSeg3 = 'folder' + ID_DELIMITER + uuid();
     const path = [pathSeg1, pathSeg2, pathSeg3, id];
+    const fetchAction = {
+      type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
+      payload: { editorContent: mockedContent },
+    };
     const expectedActions = [
       {
         type: notesListActionTypes.SELECT_NODE,
@@ -87,13 +142,13 @@ describe('1. selectNodeThunkAction ', () => {
           path,
         },
       },
+      fetchAction,
     ];
-    const fetchAction = {
-      type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
-      payload: { editorContent: mockedContent },
-    };
 
-    fetchEditorContentThunkAction.mockImplementation(() => () => Promise.resolve(fetchAction));
+    fetchEditorContentThunkAction.mockImplementation(() => () => {
+      mockedStore.dispatch(fetchAction);
+      return Promise.resolve(fetchAction);
+    });
     mockedSave.mockImplementation(() => Promise.resolve({}));
 
     expect.assertions(4);
@@ -131,21 +186,6 @@ describe('1. selectNodeThunkAction ', () => {
     expect(mockedStore.getActions()).toEqual(expectedActions);
     expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
     expect(fetchEditorContentThunkAction).not.toBeCalled();
-  });
-
-  it('should *not* dispatch any action if selected node did not change', () => {
-    // select the node that is currently the active (i.e. selected) one
-    const id = mockedStore.getState().activeNode.id;
-    const pathSeg1 = uuid();
-    const pathSeg2 = uuid();
-    const pathSeg3 = uuid();
-    const path = [pathSeg1, pathSeg2, pathSeg3, id];
-    mockedSave.mockImplementation(() => Promise.resolve({}));
-
-    expect.assertions(3);
-    expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id, path }))).toMatchObject({});
-    expect(mockedSave).not.toBeCalled();
-    expect(mockedStore.getActions()).toEqual([]);
   });
 });
 

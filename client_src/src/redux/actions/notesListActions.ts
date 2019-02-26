@@ -65,7 +65,7 @@ export function use({ notesTreeStorage, editorContentStorage }: { notesTreeStora
  * ...
  * @param {Object} params
  * @param {string} params.id
- * @param {string[]} [params.path]
+ * @param {string[]} [params.path] If path not provided, then selected node is assumed to be in current active path.
  */
 export function selectNodeThunkAction({ id, path }: { id: string, path?: string[] })
   : ThunkAction<AnyAction, AppStateT, any, AnyAction> {
@@ -73,42 +73,69 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
     if (typeof id !== 'string' || !id.length) {
       return { type: 'NO_OP' };
     }
-    // dispatch actions only if selected node actually changed
-    if (getState().activeNode.id !== id) {
-      // Immediately save currently opened note
-      const currentEditorContent = getState().editorContent;
-      if (currentEditorContent.id) {
-        _editorContentStorage.save(currentEditorContent)
-          .catch((err: Error) => { console.log(err); }); // TODO: log error?
-      }
+    // Immediately save currently opened note
+    const currentEditorContent = getState().editorContent;
+    if (currentEditorContent.id) {
+      _editorContentStorage.save(currentEditorContent)
+        .catch((err: Error) => { console.log(err); }); // TODO: log error?
+    }
 
-      const returnVal = dispatch({
+    let returnVal = { type: 'NO_OP' };
+
+    // If selected node is an item and if its content is not already open, then fetch its content
+    // If selected node is a folder, then select its first child. If the child is an item, then fetch its content
+    const nodeInfo = translateNodeIdToInfo({ nodeId: id });
+    if (nodeInfo && nodeInfo.type === 'item') {
+      returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
         payload: {
           nodeId: id,
           path,
         },
       });
+      const uniqid = nodeInfo.uniqid;
+      if (uniqid !== getState().editorContent.id) {
+        dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
+          .catch((err: ActionError) => {
+            window.alert(`Error loading saved note content: ${err.message}`);
+            return err.action;
+          }); // TODO: adjust error handling.
+      }
+    } else if (nodeInfo && nodeInfo.type === 'folder'){
+      returnVal = dispatch({
+        type: notesListActionTypes.SELECT_NODE,
+        payload: {
+          nodeId: '',
+          path: [...(path||[]), ''],
+        },
+      });
+      // Select a child of folder the user just navigated to
+      const children = selectSiblingsOfActiveNode(getState());
+      dispatch({
+        type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
+        payload: {
+          folder: children,
+        }
+      });
 
-      // Fetch note content only if:
-      // 1) newly selected node represents a note ('item'), as opposed to a folder.
-      // 2) newly selected node is not the already opened note
-      const nodeInfo = translateNodeIdToInfo({ nodeId: id });
-      if (nodeInfo && nodeInfo.type === 'item') {
-        const uniqid = nodeInfo.uniqid;
-        if (uniqid !== currentEditorContent.id) {
+      const activeNodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
+      // Fetch note content if newly selected node is a note, as opposed to a folder.
+      if ( activeNodeInfo && activeNodeInfo.type === 'item') {
+        const uniqid = activeNodeInfo.uniqid;
+        // Fetch note content only if not already loaded
+        if (uniqid !== getState().editorContent.id) {
           dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
             .catch((err: ActionError) => {
               window.alert(`Error loading saved note content: ${err.message}`);
               return err.action;
             }); // TODO: adjust error handling.
         }
+      } else {
+        //TODO: Load blank editor canvas...
       }
-
-      return returnVal;
-    } else {
-      return { type: 'NO_OP' };
     }
+
+    return returnVal;
   };
 }
 
@@ -391,6 +418,7 @@ export function changeNotesFolderThunkAction({ folder }: { folder: TreeNodeT[] }
       },
     });
 
+    // Select a child of folder the user just navigated to
     dispatch({
       type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
       payload: {
