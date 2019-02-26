@@ -83,9 +83,10 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
     let returnVal = { type: 'NO_OP' };
 
     // If selected node is a folder, then select its first child.
-    // If selected node is an item, then select it
+    // If selected node is an item, then simply select it
     const nodeInfo = translateNodeIdToInfo({ nodeId: id });
     if (nodeInfo && nodeInfo.type === 'folder') {
+      /* A folder was selected */
       returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
         payload: {
@@ -102,6 +103,7 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
         }
       });
     } else if (nodeInfo && nodeInfo.type === 'item') {
+      /* An item (note) was selected */
       returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
         payload: {
