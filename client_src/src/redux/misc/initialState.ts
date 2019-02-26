@@ -31,7 +31,7 @@ const initialState: AppStateT = {
     path: [_rootNode.id],
   },
   editorContent: {
-    id: '',
+    id: 'default',
     title: '',
     content: '<p><br></p>',
     delta: new Delta(),
