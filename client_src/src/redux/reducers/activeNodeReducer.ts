@@ -2,6 +2,7 @@ import notesListActionTypes from '../actions/constants/notesListActionConstants'
 import baseState from '../misc/initialState';
 import { getNodeAtPath } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/treeUtils';
+import { NONE_SELECTED } from '../../utils/appCONSTANTS';
 
 // Types
 import { AnyAction } from 'redux';
@@ -20,11 +21,11 @@ function _changeActiveNodeOnPathNavClick({ currentActive, idx }: { currentActive
   : ActiveNodeT {
   // If last entry of the path was selected, then no need to change active node
   if (Number.isSafeInteger(idx) && idx < (currentActive.path.length - 1)) {
-    // Empty string for active node ID because we switched parent folder but no node in that folder is selected by default
+    // Active node ID set to NONE_SELECTED because we switched parent folder but no node in that folder is selected by default
     return {
       ...currentActive,
-      id: '',
-      path: [...currentActive.path.slice(0, idx + 1), ''],
+      id: NONE_SELECTED,
+      path: [...currentActive.path.slice(0, idx + 1), NONE_SELECTED],
     };
   } else {
     return currentActive;
@@ -38,7 +39,7 @@ function _changeActiveNodeOnDelete({ currentActive, deletedNodeId, children }: {
   const deletedNodeIdx = currentActive.path.lastIndexOf(deletedNodeId);
   if (deletedNodeIdx >= 0) {
       // New active node is the first child
-      const newActiveId: TreeNodeT['id'] = Array.isArray(children) && children.length ? children[0].id : '';
+      const newActiveId: TreeNodeT['id'] = Array.isArray(children) && children.length ? children[0].id : NONE_SELECTED;
       // Since deleted node is part of active path, truncate the path and concat the selected child's ID
       const newActivePath: ActiveNodeT['path'] = [...(currentActive.path.slice(0, deletedNodeIdx)), newActiveId];
       returnedActiveNode = {
@@ -87,7 +88,7 @@ function _switchActiveNodeOnFolderChange({ currentActive, folder }: { currentAct
   if (!getNodeAtPath({ treeData: folder, path: [currentActive.id], getNodeKey, ignoreCollapsed: false })) {
     const parentPath: ActiveNodeT['path'] = currentActive.path.slice(0, -1);
     // Take ID of first child in folder
-    const newId = Array.isArray(folder) && folder[0] ? folder[0].id : '';
+    const newId = Array.isArray(folder) && folder[0] ? folder[0].id : NONE_SELECTED;
     const newPath = [...parentPath, newId];
     return  { ...currentActive, id: newId, path: newPath };
   }

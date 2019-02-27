@@ -4,6 +4,7 @@ import initialState from '../misc/initialState';
 import uuid from 'uuid/v4';
 jest.mock('uuid/v4');
 import { createNode } from '../../utils/treeUtils';
+import { NONE_SELECTED } from '../../utils/appCONSTANTS';
 
 describe('reducedReducer', () => {
   // Use the actual uuid implementation for now...
@@ -28,8 +29,8 @@ describe('reducedReducer', () => {
 
   // no active node since the folder is empty
   const activeNode = {
-    id: '',
-    path: [currentTree[0].id, currentTree[0].children[1].id, ''],
+    id: NONE_SELECTED,
+    path: [currentTree[0].id, currentTree[0].children[1].id, NONE_SELECTED],
   };
 
   const currentState = {

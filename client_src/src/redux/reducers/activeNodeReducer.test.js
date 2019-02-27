@@ -1,6 +1,7 @@
 import reducer from './activeNodeReducer';
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import initialState from '../misc/initialState';
+import { NONE_SELECTED } from '../../utils/appCONSTANTS';
 
 describe('activeNodeReducer ', () => {
   it('should return initial state by default', () => {
@@ -66,7 +67,7 @@ describe('activeNodeReducer ', () => {
     });
   });
 
-  it('should change active path and set ID to empty string, on NAVIGATE_PATH action', () => {
+  it('should change active path and set ID to NONE_SELECTED, on NAVIGATE_PATH action', () => {
     const currentState = {
       id: 'active1',
       path: ['segment0', 'segment1', 'segment2', 'active1'],
@@ -79,8 +80,8 @@ describe('activeNodeReducer ', () => {
         idx: selectedPathSegmentIdx,
       },
     })).toEqual({
-      id: '',
-      path: [...currentState.path.slice(0, selectedPathSegmentIdx + 1), ''],
+      id: NONE_SELECTED,
+      path: [...currentState.path.slice(0, selectedPathSegmentIdx + 1), NONE_SELECTED],
     });
 
     // If selected node is same as current state, return current state
@@ -138,7 +139,7 @@ describe('activeNodeReducer ', () => {
       payload,
     })).toBe(currentState);
 
-    // If folder is empty, then empty string for active ID
+    // If folder is empty, then NONE_SELECTED for active ID
     payload = {
       deletedNodeId: 'active1',
       children: [],
@@ -148,8 +149,8 @@ describe('activeNodeReducer ', () => {
       type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
       payload,
     })).toEqual({
-      id: '',
-      path: [...currentState.path.slice(0, -1), ''],
+      id: NONE_SELECTED,
+      path: [...currentState.path.slice(0, -1), NONE_SELECTED],
     });
   });
 
@@ -170,7 +171,7 @@ describe('activeNodeReducer ', () => {
       path: [...currentState.path.slice(0, -1), newFolder[0].id],
     });
 
-    // If no child in folder, then empty string as active ID
+    // If no child in folder, then NONE_SELECTED as active ID
     newFolder = [];
     expect(reducer(currentState, {
       type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
@@ -178,20 +179,20 @@ describe('activeNodeReducer ', () => {
         folder: newFolder,
       },
     })).toEqual({
-      id: '',
-      path: [...currentState.path.slice(0, -1), ''],
+      id: NONE_SELECTED,
+      path: [...currentState.path.slice(0, -1), NONE_SELECTED],
     });
-    // should also work if current active node is empty string
-    currentState.id = '';
-    currentState.path = [''];
+    // should also work if no current active node selected
+    currentState.id = NONE_SELECTED;
+    currentState.path = [NONE_SELECTED];
     expect(reducer(currentState, {
       type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
       payload: {
         folder: newFolder,
       },
     })).toEqual({
-      id: '',
-      path: [...currentState.path.slice(0, -1), ''],
+      id: NONE_SELECTED,
+      path: [...currentState.path.slice(0, -1), NONE_SELECTED],
     });
 
     // If current active node is still in folder after folder change, it remains the active node

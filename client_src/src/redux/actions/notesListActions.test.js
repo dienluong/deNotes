@@ -1,5 +1,4 @@
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
-import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
 import editorActionTypes from './constants/editorActionConstants';
 import * as moduleToTest from './notesListActions';
@@ -12,6 +11,7 @@ import { mockedContent } from '../../test-utils/mocks/mockedEditorContent';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
 import { find } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/treeUtils';
+import { NONE_SELECTED } from '../../utils/appCONSTANTS';
 
 const mockStore = setupMockStore([thunk]);
 
@@ -84,7 +84,7 @@ describe('1. selectNodeThunkAction ', () => {
     const expectedActions = [
       {
         type: notesListActionTypes.SELECT_NODE,
-        payload: { nodeId: '', path: [selectedFolderId, ''] },
+        payload: { nodeId: NONE_SELECTED, path: [selectedFolderId, NONE_SELECTED] },
       },
       {
         type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
@@ -614,8 +614,8 @@ describe('4. fetchNotesTreeThunkAction ', () => {
       {
         type: notesListActionTypes.SELECT_NODE,
         payload: {
-          nodeId: '',
-          path: [''],
+          nodeId: NONE_SELECTED,
+          path: [NONE_SELECTED],
         },
       },
       {
@@ -675,8 +675,8 @@ describe('4. fetchNotesTreeThunkAction ', () => {
       {
         type: notesListActionTypes.SELECT_NODE,
         payload: {
-          nodeId: '',
-          path: [''],
+          nodeId: NONE_SELECTED,
+          path: [NONE_SELECTED],
         },
       },
       {

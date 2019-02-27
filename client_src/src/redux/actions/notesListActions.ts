@@ -3,6 +3,7 @@ import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
 import { selectSiblingsOfActiveNode } from '../selectors';
+import { NONE_SELECTED } from '../../utils/appCONSTANTS';
 
 // Types
 import { AnyAction } from 'redux';
@@ -90,8 +91,8 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
       returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
         payload: {
-          nodeId: '',
-          path: [...(path || []), ''],
+          nodeId: NONE_SELECTED,
+          path: [...(path || []), NONE_SELECTED],
         },
       });
       // Select a child of folder the user just navigated to
@@ -262,7 +263,7 @@ export function fetchNotesTreeThunkAction()
       .then((notesTree: NotesTreeT) => {
         if (notesTree && Array.isArray(notesTree.tree)) {
           const tree = notesTree.tree;
-          const activeNodeId = tree.length ? tree[0].id : '';
+          const activeNodeId = tree.length ? tree[0].id : NONE_SELECTED;
           const activeNode: ActiveNodeT = {
             id: activeNodeId,
             path: [activeNodeId], // TODO: adjust activeNode to where user left off
@@ -316,12 +317,12 @@ export function fetchNotesTreeThunkAction()
             notesTree: defaultNotesTree,
           },
         });
-        // To represent no node selected, use empty string
+        // To represent no node selected, set to NONE_SELECTED
         dispatch({
           type: notesListActionTypes.SELECT_NODE,
           payload: {
-            nodeId: '',
-            path: [''],
+            nodeId: NONE_SELECTED,
+            path: [NONE_SELECTED],
           },
         });
 
