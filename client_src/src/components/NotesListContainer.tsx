@@ -12,6 +12,7 @@ import {
 } from '../redux/actions/notesListActions';
 
 import { getNodeKey } from '../utils/treeUtils';
+import { nodeTypes } from '../utils/appCONSTANTS';
 
 // Types
 import { ThunkDispatch } from 'redux-thunk';
@@ -77,11 +78,11 @@ mapStateToProps.cache = {} as { notesTree: any, activeNode: any, activePath: any
 
 function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>): DispatchProps {
   function toolbarNewFolderBtnHandler() {
-    return dispatch(addAndSelectNodeThunkAction({ kind: 'folder' }));
+    return dispatch(addAndSelectNodeThunkAction({ kind: nodeTypes.FOLDER }));
   }
 
   function toolbarNewNoteBtnHandler() {
-    return dispatch(addAndSelectNodeThunkAction({ kind: 'item' }));
+    return dispatch(addAndSelectNodeThunkAction({ kind: nodeTypes.ITEM }));
   }
 
   const toolbarHandlersMap = new Map();
@@ -117,7 +118,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
     addNoteBtnHandler({ path } ) {
       // We are not using the path received from the NotesList component because that path is not for the entire tree;
       // remember that NotesList only receives and renders a given leaf of the whole tree.
-      return dispatch(addAndSelectNodeThunkAction({ kind: 'item' }));
+      return dispatch(addAndSelectNodeThunkAction({ kind: nodeTypes.ITEM }));
     },
     toolbarHandlersMap: toolbarHandlersMap,
   };

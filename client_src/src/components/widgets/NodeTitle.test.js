@@ -2,6 +2,7 @@ import NodeTitle from './NodeTitle';
 import React from 'react';
 import { render, cleanup, fireEvent } from 'react-testing-library';
 import 'jest-dom/extend-expect';
+import { nodeTypes } from '../../utils/appCONSTANTS';
 
 afterEach(cleanup);
 
@@ -10,7 +11,7 @@ it('renders an element composed of an input with value corresponding to node tit
     node: {
       title: 'test-node',
       id: 'test-node-id',
-      type: 'folder',
+      type: nodeTypes.FOLDER,
       expanded: true,
       children: [],
     },
@@ -28,7 +29,7 @@ it('calls handler function w/ the current input value on blur event, if value ch
     node: {
       title: 'test-node',
       id: 'test-node-id',
-      type: 'folder',
+      type: nodeTypes.FOLDER,
       expanded: true,
       children: [],
     },
@@ -51,7 +52,7 @@ it('calls handler function w/ the current input value on submit event, if value 
     node: {
       title: 'test-node',
       id: 'test-node-id',
-      type: 'folder',
+      type: nodeTypes.FOLDER,
       expanded: true,
       children: [],
     },
@@ -74,7 +75,7 @@ it('does not call handler function, if value did not change', () => {
     node: {
       title: 'test-node',
       id: 'test-node-id',
-      type: 'folder',
+      type: nodeTypes.FOLDER,
       expanded: true,
       children: [],
     },

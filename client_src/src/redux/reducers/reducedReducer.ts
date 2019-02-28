@@ -1,6 +1,7 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import { addNodeUnderParent } from 'react-sortable-tree';
 import { getNodeKey, createNode } from '../../utils/treeUtils';
+import { nodeTypes } from '../../utils/appCONSTANTS';
 import initialState from '../misc/initialState';
 
 // Types
@@ -64,7 +65,7 @@ function _addAndSelectNewNode({ state, kind, now }: { state: AppStateT, kind: No
   };
 
   // Only change the editorContent state if newly added node is a note, as opposed to a folder.
-  if (kind === 'item') {
+  if (kind === nodeTypes.ITEM) {
     newState.editorContent = {
       ...initialState.editorContent,
       id: newNode.uniqid,

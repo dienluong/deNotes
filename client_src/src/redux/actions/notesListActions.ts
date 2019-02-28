@@ -3,7 +3,7 @@ import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
 import { selectSiblingsOfActiveNode } from '../selectors';
-import { NONE_SELECTED } from '../../utils/appCONSTANTS';
+import { NONE_SELECTED, nodeTypes } from '../../utils/appCONSTANTS';
 
 // Types
 import { AnyAction } from 'redux';
@@ -83,10 +83,10 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
 
     let returnVal = { type: 'NO_OP' };
 
-    // If selected node is a folder, then select its first child.
-    // If selected node is an item, then simply select it
+    // If selected node is a FOLDER, then select its first child.
+    // If selected node is an ITEM, then simply select it
     const nodeInfo = translateNodeIdToInfo({ nodeId: id });
-    if (nodeInfo && nodeInfo.type === 'folder') {
+    if (nodeInfo && nodeInfo.type === nodeTypes.FOLDER) {
       /* A folder was selected */
       returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
@@ -103,8 +103,8 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
           folder: children,
         }
       });
-    } else if (nodeInfo && nodeInfo.type === 'item') {
-      /* An item (note) was selected */
+    } else if (nodeInfo && nodeInfo.type === nodeTypes.ITEM) {
+      /* An ITEM (note) was selected */
       returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
         payload: {
@@ -116,9 +116,9 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
       return returnVal;
     }
 
-    // If new active node is an item (note) and if its content is not already open, then fetch its content
+    // If new active node is an ITEM (note) and if its content is not already open, then fetch its content
     const activeNodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
-    if ( activeNodeInfo && activeNodeInfo.type === 'item') {
+    if ( activeNodeInfo && activeNodeInfo.type === nodeTypes.ITEM) {
       const uniqid = activeNodeInfo.uniqid;
       // Fetch note content only if not already loaded
       if (uniqid !== getState().editorContent.id) {
@@ -147,9 +147,9 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
     let itemIds: Array<string> = [];
 
     // Collect the uniqid of all items to delete.
-    if (node.type === 'item') {
+    if (node.type === nodeTypes.ITEM) {
       itemIds = [node.uniqid];
-    } else if (node.type === 'folder') {
+    } else if (node.type === nodeTypes.FOLDER) {
       if (node.children && node.children.length) {
         itemIds = getDescendantItems({ node }).map(node => node.uniqid);
       } else {
@@ -178,10 +178,10 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
           dispatch(switchActiveNodeOnDeleteAction({ deletedNodeId: node.id, children }));
 
           // Fetch note content only if:
-          // 1) newly selected node represents a note ('item'), as opposed to a folder.
+          // 1) newly selected node represents a note (type=ITEM), as opposed to a folder.
           // 2) newly selected node is not the already opened note
           const nodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
-          if (nodeInfo && nodeInfo.type === 'item') {
+          if (nodeInfo && nodeInfo.type === nodeTypes.ITEM) {
             const uniqid = nodeInfo.uniqid;
             if (uniqid !== getState().editorContent.id) {
               dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
@@ -326,8 +326,8 @@ export function fetchNotesTreeThunkAction()
           },
         });
 
-        // Add a "note" node (an item) to the root of the tree
-        return dispatch(addAndSelectNodeThunkAction({ kind: 'item' }));
+        // Add a "note" node (an ITEM) to the root of the tree
+        return dispatch(addAndSelectNodeThunkAction({ kind: nodeTypes.ITEM }));
       });
   };
 }
@@ -369,7 +369,7 @@ export function navigatePathThunkAction({ idx }: { idx: number })
 
     const activeNodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
     // Fetch note content if newly selected node is a note, as opposed to a folder.
-    if ( activeNodeInfo && activeNodeInfo.type === 'item') {
+    if ( activeNodeInfo && activeNodeInfo.type === nodeTypes.ITEM) {
       const uniqid = activeNodeInfo.uniqid;
       // Fetch note content only if not already loaded
       if (uniqid !== getState().editorContent.id) {
@@ -425,7 +425,7 @@ export function changeNotesFolderThunkAction({ folder }: { folder: TreeNodeT[] }
 
     const activeNodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
     // Fetch note content if newly selected node is a note, as opposed to a folder.
-    if ( activeNodeInfo && activeNodeInfo.type === 'item') {
+    if ( activeNodeInfo && activeNodeInfo.type === nodeTypes.ITEM) {
       const uniqid = activeNodeInfo.uniqid;
       // Fetch note content only if not already loaded
       if (uniqid !== getState().editorContent.id) {

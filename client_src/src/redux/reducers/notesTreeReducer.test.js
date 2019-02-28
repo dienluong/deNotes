@@ -1,6 +1,7 @@
 import reducer from './notesTreeReducer';
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import initialState from '../misc/initialState';
+import { nodeTypes } from '../../utils/appCONSTANTS';
 
 describe('notesTreeReducer ', () => {
   const currentTree = [
@@ -11,7 +12,7 @@ describe('notesTreeReducer ', () => {
       get id() {
         return `${this.type}-${this.uniqid}`;
       },
-      type: 'folder',
+      type: nodeTypes.FOLDER,
       expanded: true,
       children: [
         {
@@ -21,7 +22,7 @@ describe('notesTreeReducer ', () => {
           get id() {
             return `${this.type}-${this.uniqid}`;
           },
-          type: 'item',
+          type: nodeTypes.ITEM,
         },
         {
           title: 'test child 1',
@@ -30,7 +31,7 @@ describe('notesTreeReducer ', () => {
           get id() {
             return `${this.type}-${this.uniqid}`;
           },
-          type: 'folder',
+          type: nodeTypes.FOLDER,
           expanded: true,
           children: [
             {
@@ -40,7 +41,7 @@ describe('notesTreeReducer ', () => {
               get id() {
                 return `${this.type}-${this.uniqid}`;
               },
-              type: 'item',
+              type: nodeTypes.ITEM,
             },
           ],
         },
@@ -51,7 +52,7 @@ describe('notesTreeReducer ', () => {
           get id() {
             return `${this.type}-${this.uniqid}`;
           },
-          type: 'item',
+          type: nodeTypes.ITEM,
         },
       ],
     },
@@ -62,7 +63,7 @@ describe('notesTreeReducer ', () => {
       get id() {
         return `${this.type}-${this.uniqid}`;
       },
-      type: 'item',
+      type: nodeTypes.ITEM,
     },
   ];
 
@@ -96,7 +97,7 @@ describe('notesTreeReducer ', () => {
         get id() {
           return `${this.type}-${this.uniqid}`;
         },
-        type: 'folder',
+        type: nodeTypes.FOLDER,
         expanded: true,
         children: [
           {
@@ -106,7 +107,7 @@ describe('notesTreeReducer ', () => {
             get id() {
               return `${this.type}-${this.uniqid}`;
             },
-            type: 'folder',
+            type: nodeTypes.FOLDER,
             expanded: false,
             children: [],
           },
@@ -117,7 +118,7 @@ describe('notesTreeReducer ', () => {
             get id() {
               return `${this.type}-${this.uniqid}`;
             },
-            type: 'item',
+            type: nodeTypes.ITEM,
           },
         ],
       },
@@ -233,7 +234,7 @@ describe('notesTreeReducer ', () => {
         get id() {
           return `${this.type}-${this.uniqid}`;
         },
-        type: 'item',
+        type: nodeTypes.ITEM,
       },
       {
         title: 'new test grandchild 1',
@@ -242,7 +243,7 @@ describe('notesTreeReducer ', () => {
         get id() {
           return `${this.type}-${this.uniqid}`;
         },
-        type: 'item',
+        type: nodeTypes.ITEM,
       },
       {
         title: 'new test grandchild 2',
@@ -251,7 +252,7 @@ describe('notesTreeReducer ', () => {
         get id() {
           return `${this.type}-${this.uniqid}`;
         },
-        type: 'item',
+        type: nodeTypes.ITEM,
       },
     ];
     let newTree = [
@@ -314,7 +315,7 @@ describe('notesTreeReducer ', () => {
 
     // should return current state if given path does not lead to folder in tree
     newFolder = [];
-    let invalidActivePath = [currentTree[0].id, 'folder-non-existent-id', currentTree[0].children[1].children[0].id];
+    let invalidActivePath = [currentTree[0].id, `${nodeTypes.FOLDER}-non-existent-id`, currentTree[0].children[1].children[0].id];
     expect(reducer(currentState, {
       type: notesListActionTypes.CHANGE_NOTES_TREE_FOLDER,
       payload: {

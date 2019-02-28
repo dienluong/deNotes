@@ -83,7 +83,7 @@ function NotesList({
 
   function _collapseAllParents({ tree }: { tree: TreeNodeT[] }): TreeNodeT[] {
     return tree.map((node): TreeNodeT => {
-      if (node.type === 'folder') {
+      if (node && node.children) {
         return { ...node, expanded: false };
       } else {
         return node;

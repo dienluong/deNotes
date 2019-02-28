@@ -1,8 +1,9 @@
-interface nodeTypesT {
+interface nodeTypesInt {
   FOLDER: Readonly<string>;
   ITEM: Readonly<string>;
 }
-export const nodeTypes: Readonly<nodeTypesT> = {
+
+export const nodeTypes: Readonly<nodeTypesInt> = {
   FOLDER: 'FOLDER_NODE',
   ITEM: 'ITEM_NODE',
 };

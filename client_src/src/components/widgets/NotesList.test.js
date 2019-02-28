@@ -6,6 +6,7 @@ import { render, cleanup, fireEvent, within } from 'react-testing-library';
 import 'jest-dom/extend-expect';
 import { walk, find } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/treeUtils';
+import { nodeTypes } from '../../utils/appCONSTANTS';
 import baseState from '../../redux/misc/initialState';
 import { selectTitlesFromActivePath } from '../../redux/selectors';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
@@ -256,7 +257,7 @@ it('should invoke handler when tree node button is clicked', () => {
 
   let numberOfFolders = 0;
   const test = ({ node, path }) => {
-    if (node.type === 'folder') {
+    if (node.type === nodeTypes.FOLDER) {
       numberOfFolders += 1;
       const renderedTreeNode = getByTestId(node.id);
       const renderedTitles = within(renderedTreeNode).queryAllByValue(node.title);

@@ -11,7 +11,7 @@ import { mockedContent } from '../../test-utils/mocks/mockedEditorContent';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
 import { find } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/treeUtils';
-import { NONE_SELECTED } from '../../utils/appCONSTANTS';
+import { NONE_SELECTED, nodeTypes } from '../../utils/appCONSTANTS';
 
 const mockStore = setupMockStore([thunk]);
 
@@ -113,7 +113,7 @@ describe('1. selectNodeThunkAction ', () => {
     mockedStore.clearActions();
   });
 
-  it('should 1) save content, 2) dispatch "select node", 3) fetch content and 4) return Promise(action), when Item selected', () => {
+  it('should 1) save content, 2) dispatch "select node", 3) fetch content and 4) return Promise(action), when ITEM selected', () => {
     const mockedState = {
       ...initialState,
       notesTree: {
@@ -305,7 +305,7 @@ describe('2. deleteNodeThunkAction ', () => {
       }
     };
 
-    // Choose active node in mocked tree that is a note (type=item)
+    // Choose active node in mocked tree that is a note (type=ITEM)
     const selectedNodeId = mockedTree[1].id;
     const siblings = mockedTree;
     const selectedNodeInfo = find({
@@ -476,7 +476,7 @@ describe('3. addAndSelectNodeThunkAction ', () => {
         return expectedDate;
       }
     };
-    const kind = 'item';
+    const kind = nodeTypes.ITEM;
     const expectedAction = [
       {
         type: notesListActionTypes.ADD_AND_SELECT_NODE,
@@ -621,7 +621,7 @@ describe('4. fetchNotesTreeThunkAction ', () => {
       {
         type: notesListActionTypes.ADD_AND_SELECT_NODE,
         payload: {
-          kind: 'item',
+          kind: nodeTypes.ITEM,
           now: expectedDate,
         },
       },
@@ -682,7 +682,7 @@ describe('4. fetchNotesTreeThunkAction ', () => {
       {
         type: notesListActionTypes.ADD_AND_SELECT_NODE,
         payload: {
-          kind: 'item',
+          kind: nodeTypes.ITEM,
           now: expectedDate,
         },
       },
@@ -808,7 +808,7 @@ describe('6. changeNotesFolderThunkAction ', () => {
         title: 'new root-folder',
         subtitle: '',
         uniqid: '9999',
-        type: 'folder',
+        type: nodeTypes.FOLDER,
         get id() {
           return `${this.type}${ID_DELIMITER}${this.uniqid}`;
         },
@@ -818,7 +818,7 @@ describe('6. changeNotesFolderThunkAction ', () => {
             title: 'new sub-note 1',
             subtitle: '',
             uniqid: '10101010',
-            type: 'item',
+            type: nodeTypes.ITEM,
             get id() {
               return `${this.type}${ID_DELIMITER}${this.uniqid}`;
             },

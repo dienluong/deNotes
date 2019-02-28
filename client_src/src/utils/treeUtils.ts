@@ -1,5 +1,6 @@
 import uuid from 'uuid/v4';
 import { find, getFlatDataFromTree } from 'react-sortable-tree';
+import { nodeTypes } from './appCONSTANTS';
 
 // Types
 import { GetNodeKeyFunction, NodeData } from 'react-sortable-tree';
@@ -53,11 +54,11 @@ export function equals(obj1: { [key: string]: any }, obj2: { [key: string]: any 
  * 'id' is the combo of type+uniqid; it is the ID used for react-sortable-tree (in the 'path' it returns for example). The node type is included in order to efficiently determine the type of node when we only have its ID.
  * @param {string} title
  * @param {string} subtitle
- * @typedef {("item" | "folder")} NodeType
+ * @typedef {("ITEM" | "FOLDER")} NodeType
  * @param {NodeType} type
  * @return {*}
  */
-export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().toLocaleString(), type = 'item' }
+export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().toLocaleString(), type = nodeTypes.ITEM }
   : { title?: string, subtitle?: string, type?: NodeTypeT })
   : TreeNodeT {
   // TODO: remove subtitle = uuid
@@ -72,7 +73,7 @@ export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().
     },
   };
 
-  if (type === 'folder') {
+  if (type === nodeTypes.FOLDER) {
     newNode.children = [];
     newNode.expanded = false;
     newNode.title = title === DEFAULT_TITLES.NOTE ? DEFAULT_TITLES.FOLDER : title;
@@ -82,7 +83,7 @@ export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().
 }
 
 /**
- * Returns the index of the node of type 'folder' that is the direct parent of the node referenced by the given path.
+ * Returns the index of the node of type FOLDER that is the direct parent of the node referenced by the given path.
  * Returns null if none found.
  * @param path {Array}
  * @return {number|null}
@@ -102,7 +103,8 @@ export function findClosestParent(path: string[])
   if (typeof parent !== 'string') {
     return null;
   } else {
-    return (/^folder/.test(parent)) ? path.length - 2 : null;
+    const re = new RegExp(`^${nodeTypes.FOLDER}`);
+    return (re.test(parent)) ? path.length - 2 : null;
   }
 }
 
@@ -112,7 +114,7 @@ export function findClosestParent(path: string[])
  *          type is "folder"
  *          uniqid is "a9914200-a7d2-11e8-a12b-99205b853de7""
  *
- * Note: possible types are "item" and "folder".
+ * Note: possible types defined in appCONSTANTS module.
  * @param {Object} params
  * @param {string} params.nodeId
  * @return {object|null}
@@ -128,7 +130,8 @@ export function translateNodeIdToInfo({ nodeId }: { nodeId: string })
     return null;
   }
 
-  if (/^(?:item|folder)$/.test(info[0])) {
+  const re = new RegExp(`^(?:${nodeTypes.ITEM}|${nodeTypes.FOLDER})$`);
+  if (re.test(info[0])) {
     return {
       type: info[0] as NodeTypeT,
       uniqid: info[1],
@@ -225,10 +228,10 @@ export function getDescendants({ node }: { node: TreeNodeT })
  */
 export function getDescendantItems({ node }: { node: TreeNodeT })
   : TreeNodeT[] {
-  return getDescendants({ node }).filter(descendant => descendant.type === 'item');
+  return getDescendants({ node }).filter(descendant => descendant.type === nodeTypes.ITEM);
 }
 
 export function getDescendantFolders({ node }: { node: TreeNodeT })
   : TreeNodeT[] {
-  return getDescendants({ node }).filter(descendant => descendant.type === 'folder');
+  return getDescendants({ node }).filter(descendant => descendant.type === nodeTypes.FOLDER);
 }

@@ -1,4 +1,5 @@
 import uuid from 'uuid/v1';
+import { nodeTypes } from '../utils/appCONSTANTS';
 
 function randomDateString(start, end) {
   return new Date(start.getTime() +
@@ -17,7 +18,7 @@ export default [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
-    type: 'folder',
+    type: nodeTypes.FOLDER,
     expanded: true,
     children: [
       {
@@ -27,7 +28,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        type: 'folder',
+        type: nodeTypes.FOLDER,
         children: [
           {
             title: 'node.js',
@@ -36,7 +37,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            type: 'item',
+            type: nodeTypes.ITEM,
           },
           {
             title: 'react-ui-tree.css',
@@ -45,7 +46,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            type: 'item',
+            type: nodeTypes.ITEM,
           },
           {
             title: 'react-ui-tree.js',
@@ -54,7 +55,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            type: 'item',
+            type: nodeTypes.ITEM,
           },
           {
             title: 'tree.js',
@@ -63,7 +64,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            type: 'item',
+            type: nodeTypes.ITEM,
           },
         ],
       },
@@ -74,7 +75,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        type: 'folder',
+        type: nodeTypes.FOLDER,
         children: [
           {
             title: 'app.js',
@@ -83,7 +84,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            type: 'item',
+            type: nodeTypes.ITEM,
           },
           {
             title: 'app.less',
@@ -92,7 +93,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            type: 'item',
+            type: nodeTypes.ITEM,
           },
           {
             title: 'index.html',
@@ -101,7 +102,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            type: 'item',
+            type: nodeTypes.ITEM,
           },
         ],
       },
@@ -112,7 +113,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        type: 'folder',
+        type: nodeTypes.FOLDER,
         children: [
           {
             title: 'node.js',
@@ -121,7 +122,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            type: 'item',
+            type: nodeTypes.ITEM,
           },
           {
             title: 'react-ui-tree.js',
@@ -130,7 +131,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            type: 'item',
+            type: nodeTypes.ITEM,
           },
           {
             title: 'react-ui-tree.less',
@@ -139,7 +140,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            type: 'item',
+            type: nodeTypes.ITEM,
           },
           {
             title: 'tree.js',
@@ -148,7 +149,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            type: 'item',
+            type: nodeTypes.ITEM,
           },
         ],
       },
@@ -159,7 +160,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        type: 'item',
+        type: nodeTypes.ITEM,
       },
       {
         title: 'index.js',
@@ -168,7 +169,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        type: 'item',
+        type: nodeTypes.ITEM,
       },
       {
         title: 'LICENSE',
@@ -177,7 +178,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        type: 'item',
+        type: nodeTypes.ITEM,
       },
       {
         title: 'Makefile',
@@ -186,7 +187,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        type: 'item',
+        type: nodeTypes.ITEM,
       },
       {
         title: 'package.json',
@@ -195,7 +196,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        type: 'item',
+        type: nodeTypes.ITEM,
       },
       {
         title: 'README.md',
@@ -204,7 +205,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        type: 'item',
+        type: nodeTypes.ITEM,
       },
       {
         title: 'webpack.config.js',
@@ -213,7 +214,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        type: 'item',
+        type: nodeTypes.ITEM,
       },
     ],
   },
@@ -224,7 +225,7 @@ export default [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
-    type: 'folder',
+    type: nodeTypes.FOLDER,
     children: [],
   },
   {
@@ -234,7 +235,7 @@ export default [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
-    type: 'item',
+    type: nodeTypes.ITEM,
   },
 ];
 

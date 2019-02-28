@@ -1,3 +1,5 @@
+import { nodeTypes } from '../../utils/appCONSTANTS';
+
 const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
 export const mockedTree = [
@@ -5,7 +7,7 @@ export const mockedTree = [
     title: 'root-folder 1',
     subtitle: '',
     uniqid: '1',
-    type: 'folder',
+    type: nodeTypes.FOLDER,
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
@@ -15,7 +17,7 @@ export const mockedTree = [
         title: 'note 1',
         subtitle: '',
         uniqid: '2',
-        type: 'item',
+        type: nodeTypes.ITEM,
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
@@ -24,7 +26,7 @@ export const mockedTree = [
         title: 'note 2',
         subtitle: '',
         uniqid: '3',
-        type: 'item',
+        type: nodeTypes.ITEM,
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
@@ -33,7 +35,7 @@ export const mockedTree = [
         title: 'subfolder 1',
         subtitle: '',
         uniqid: '4',
-        type: 'folder',
+        type: nodeTypes.FOLDER,
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
@@ -43,7 +45,7 @@ export const mockedTree = [
             title: 'subnote 1',
             subtitle: '',
             uniqid: '5',
-            type: 'item',
+            type: nodeTypes.ITEM,
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
@@ -52,7 +54,7 @@ export const mockedTree = [
             title: 'subnote 2',
             subtitle: '',
             uniqid: '6',
-            type: 'item',
+            type: nodeTypes.ITEM,
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
@@ -63,7 +65,7 @@ export const mockedTree = [
         title: 'subfolder 2',
         subtitle: '',
         uniqid: '7',
-        type: 'folder',
+        type: nodeTypes.FOLDER,
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
@@ -76,7 +78,7 @@ export const mockedTree = [
     title: 'root-note 1',
     subtitle: '',
     uniqid: '8',
-    type: 'item',
+    type: nodeTypes.ITEM,
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
@@ -85,7 +87,7 @@ export const mockedTree = [
     title: 'root-folder 2',
     subtitle: '',
     uniqid: '9',
-    type: 'folder',
+    type: nodeTypes.FOLDER,
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },

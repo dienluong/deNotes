@@ -1,5 +1,7 @@
 import uuid from 'uuid/v4';
 import Delta from 'quill-delta';
+import { nodeTypes } from '../../utils/appCONSTANTS';
+
 const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|';
 
 const _rootNode: TreeNodeT = {
@@ -9,7 +11,7 @@ const _rootNode: TreeNodeT = {
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
-    type: 'folder',
+    type: nodeTypes.FOLDER,
     expanded: true,
     children: [],
 };

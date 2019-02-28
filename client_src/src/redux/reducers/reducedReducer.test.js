@@ -4,16 +4,16 @@ import initialState from '../misc/initialState';
 import uuid from 'uuid/v4';
 jest.mock('uuid/v4');
 import { createNode } from '../../utils/treeUtils';
-import { NONE_SELECTED } from '../../utils/appCONSTANTS';
+import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
 
 describe('reducedReducer', () => {
   // Use the actual uuid implementation for now...
   uuid.mockImplementation(() => {
     return require.requireActual('uuid/v4')();
   });
-  const parentFolder = createNode({ title: 'test root', type: 'folder' });
-  const children = [createNode({ title: 'test child 1', type: 'folder' }), createNode({ title: 'test child 2', type: 'folder' })];
-  const grandChild = [createNode({ title: 'test grandchild 1', type: 'item' })];
+  const parentFolder = createNode({ title: 'test root', type: nodeTypes.FOLDER });
+  const children = [createNode({ title: 'test child 1', type: nodeTypes.FOLDER }), createNode({ title: 'test child 2', type: nodeTypes.FOLDER })];
+  const grandChild = [createNode({ title: 'test grandchild 1', type: nodeTypes.ITEM })];
   parentFolder.children = children;
   children[0].children = grandChild;
   const currentTree = [
@@ -53,7 +53,7 @@ describe('reducedReducer', () => {
 
   it('should, on ADD_AND_SELECT_NODE, return state w/ new tree, a new active node and editor content for newly added node', () => {
     const expectedDate = 4004;
-    let newNodeKind = 'item';
+    let newNodeKind = nodeTypes.ITEM;
 
     // Now we mock the uuid implementation to return a predictable ID we can verify with the assertion.
     uuid.mockImplementation(() => 'newly-created-node-uniqid');
@@ -118,7 +118,7 @@ describe('reducedReducer', () => {
         path: [currentTree[0].id],
       },
     };
-    let newNodeKind = 'folder';
+    let newNodeKind = nodeTypes.FOLDER;
     // Now we mock the uuid implementation to return a predictable ID we can verify with the assertion.
     uuid.mockImplementation(() => 'newly-created-node-uniqid');
     let expectedNewNode = createNode({ type: newNodeKind });
