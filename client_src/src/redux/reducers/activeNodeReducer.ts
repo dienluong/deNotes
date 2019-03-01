@@ -19,7 +19,6 @@ const initialActiveNode = baseState.activeNode;
  */
 function _changeActiveNodeOnPathNavClick({ currentActive, idx }: { currentActive: ActiveNodeT, idx: number })
   : ActiveNodeT {
-  // If last entry of the path was selected, then no need to change active node
   if (Number.isSafeInteger(idx) && idx < (currentActive.path.length - 1)) {
     // Active node ID set to NONE_SELECTED because we switched parent folder but no node in that folder is selected by default
     return {
@@ -28,6 +27,7 @@ function _changeActiveNodeOnPathNavClick({ currentActive, idx }: { currentActive
       path: [...currentActive.path.slice(0, idx + 1), NONE_SELECTED],
     };
   } else {
+    // If last entry of the path was selected, then no need to change active node
     return currentActive;
   }
 }
@@ -55,7 +55,7 @@ function _changeActiveNodeOnDelete({ currentActive, deletedNodeId, children }: {
 /**
  * @param {object} currentActive
  * @param {string} nodeId
- * @param {string[]} [path] Path is given if selected node is from path different from current active one.
+ * @param {string[]} [path] Path is given if selected node is in path different from current active one.
  * @return {object}
  * @private
  */
@@ -69,7 +69,7 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentAct
 
   // Expect to receive a path when change to active node was not triggered by user event, for example on load of state from storage.
   if (Array.isArray(path) && path.length) {
-    // A proper path must end with the ID of the referred node
+    // A proper path must end with the ID of the active node
     if (path[path.length - 1] === nodeId) {
       newPath = path;
     } else {
@@ -82,6 +82,8 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentAct
   return { id: nodeId, path: newPath };
 }
 
+
+/*
 function _switchActiveNodeOnFolderChange({ currentActive, folder }: { currentActive: ActiveNodeT, folder: TreeNodeT[] } )
   : ActiveNodeT {
   // If active node no longer present after folder changed, switch active node to first child of the folder
@@ -95,6 +97,7 @@ function _switchActiveNodeOnFolderChange({ currentActive, folder }: { currentAct
 
   return currentActive;
 }
+*/
 
 export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode, action: AnyAction)
   : ActiveNodeT {
@@ -129,11 +132,11 @@ export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode
         ...action.payload,
       });
     }
-    case notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE:
-      return _switchActiveNodeOnFolderChange({
-        currentActive: state,
-        ...action.payload,
-      });
+    // case notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE:
+    //   return _switchActiveNodeOnFolderChange({
+    //     currentActive: state,
+    //     ...action.payload,
+    //   });
     default:
       if (process.env.REACT_APP_DEBUG) {
         console.log(`Current activeNode: ${JSON.stringify(state)}`);

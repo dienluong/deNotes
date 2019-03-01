@@ -154,6 +154,7 @@ describe('activeNodeReducer ', () => {
     });
   });
 
+/*
   it('should switch active node to first child in folder on SWITCH_NODE_ON_TREE_FOLDER_CHANGE action', () => {
     const currentState = {
       id: 'current-active-id',
@@ -204,4 +205,5 @@ describe('activeNodeReducer ', () => {
       },
     })).toBe(currentState);
   });
+*/
 });
