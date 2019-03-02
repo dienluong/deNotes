@@ -51,7 +51,7 @@ describe('reducedReducer', () => {
     expect(reducer(currentState, { type: notesListActionTypes.ADD_AND_SELECT_NODE })).toBe(currentState);
   });
 
-  it('should, on ADD_AND_SELECT_NODE, return state w/ new tree, a new active node and editor content for newly added node', () => {
+  it('should, on ADD_AND_SELECT_NODE, return state w/ 1) new tree, 2) new active node and 3) editor content for newly added note', () => {
     const expectedDate = 4004;
     let newNodeKind = nodeTypes.ITEM;
 
@@ -109,7 +109,7 @@ describe('reducedReducer', () => {
     })).toEqual(expectedNewState);
   });
 
-  it('should, on ADD_AND_SELECT_NODE, add node to root folder if active node is at root but editor content is unchanged since added node is a folder', () => {
+  it('should, on ADD_AND_SELECT_NODE, add node to active folder but editor content is unchanged since added node is a folder', () => {
     const expectedDate = 4004;
     const modifiedCurrentState = {
       ...currentState,
@@ -119,7 +119,7 @@ describe('reducedReducer', () => {
       },
     };
     let newNodeKind = nodeTypes.FOLDER;
-    // Now we mock the uuid implementation to return a predictable ID we can verify with the assertion.
+    // We mock the uuid implementation to return a predictable ID we can verify with the assertion.
     uuid.mockImplementation(() => 'newly-created-node-uniqid');
     let expectedNewNode = createNode({ type: newNodeKind });
     let newTree = [
@@ -133,11 +133,11 @@ describe('reducedReducer', () => {
     };
 
     let expectedActiveNode = {
-      id: expectedNewNode.id,
-      path: [...modifiedCurrentState.activeNode.path.slice(0, -1), expectedNewNode.id],
+      id: NONE_SELECTED,
+      path: [...modifiedCurrentState.activeNode.path.slice(0, -1), expectedNewNode.id, NONE_SELECTED],
     };
 
-    // Note: since we are adding a folder node this time, content editor does not change
+    // Note: since we are adding a folder node, loaded content editor does not change
     let expectedNewState = {
       ...modifiedCurrentState,
       notesTree: expectedNotesTree,

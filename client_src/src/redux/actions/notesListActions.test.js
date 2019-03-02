@@ -201,10 +201,9 @@ describe('2. deleteNodeThunkAction ', () => {
     global.Date = RealDate;
     mockedStore.clearActions();
     removeNoteThunkAction.mockClear();
-    fetchEditorContentThunkAction.mockClear();
   });
 
-  it('should dispatch actions to delete node and child nodes, and switch to new active node. Deleted node is folder.', async() => {
+  it('should dispatch actions to delete node and child nodes, and switch active node. Deleted node is a selected folder.', async() => {
     const expectedDate = 12345;
     global.Date = class extends RealDate {
       constructor() {
@@ -217,7 +216,6 @@ describe('2. deleteNodeThunkAction ', () => {
 
     // Choose a folder node in mocked tree as active node
     const selectedNodeId = mockedTree[0].children[2].id;
-    const siblings = mockedTree[0].children;
     const selectedNodeInfo = find({
       getNodeKey,
       treeData: mockedTree,
@@ -236,7 +234,7 @@ describe('2. deleteNodeThunkAction ', () => {
       },
     });
 
-    // Choose a folder node to delete
+    // The folder node to delete is the selected one
     const nodeToDelete = selectedNodeInfo.node;
     const notesExpectedToBeDeleted = nodeToDelete.children.map(child => child.uniqid);
     const expectedActions = [
@@ -252,7 +250,6 @@ describe('2. deleteNodeThunkAction ', () => {
         type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
         payload: {
           deletedNodeId: nodeToDelete.id,
-          children: siblings,
         },
       },
     ];
@@ -270,7 +267,7 @@ describe('2. deleteNodeThunkAction ', () => {
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
-  it('should dispatch actions to delete node, switch to new active node and load its content. Deleted node is a note.', async() => {
+  it('should dispatch actions to delete node and switch to new active node. Deleted node is a note.', async() => {
     const expectedDate = 67890;
     global.Date = class extends RealDate {
       constructor() {
@@ -283,7 +280,6 @@ describe('2. deleteNodeThunkAction ', () => {
 
     // Choose active node in mocked tree that is a note (type=ITEM)
     const selectedNodeId = mockedTree[1].id;
-    const siblings = mockedTree;
     const selectedNodeInfo = find({
       getNodeKey,
       treeData: mockedTree,
@@ -306,7 +302,7 @@ describe('2. deleteNodeThunkAction ', () => {
       },
     });
 
-    // Choose a 'note' node to delete
+    // The 'note' to delete is the selected node
     const nodeToDelete = selectedNodeInfo.node;
     const notesExpectedToBeDeleted = [nodeToDelete.uniqid];
     const expectedActions = [
@@ -322,28 +318,20 @@ describe('2. deleteNodeThunkAction ', () => {
         type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
         payload: {
           deletedNodeId: nodeToDelete.id,
-          children: siblings,
         },
       },
     ];
-    const noteToFetchUniqid = selectedNodeInfo.node.uniqid;
 
     removeNoteThunkAction.mockImplementation(() => () => Promise.resolve({
       type: editorActionTypes.REMOVE_NOTE_SUCCESS,
       payload: { ids: notesExpectedToBeDeleted, count: notesExpectedToBeDeleted.length },
     }));
 
-    fetchEditorContentThunkAction.mockImplementation(() => () => Promise.resolve({
-      type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
-      payload: {},
-    }));
-
-    expect.assertions(4);
+    expect.assertions(3);
 
     await expect(mockedStore.dispatch(moduleToTest.deleteNodeThunkAction({ node: nodeToDelete })))
       .resolves.toMatchObject(expectedActions[0]);
     expect(removeNoteThunkAction).lastCalledWith({ ids: notesExpectedToBeDeleted });
-    expect(fetchEditorContentThunkAction).lastCalledWith({ noteId: noteToFetchUniqid });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 

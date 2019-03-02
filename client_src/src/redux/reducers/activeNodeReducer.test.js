@@ -94,7 +94,7 @@ describe('activeNodeReducer ', () => {
     })).toBe(currentState);
   });
 
-  it('should switch to 1st child of folder on SWITCH_NODE_ON_DELETE action, if deleted node is the active node or its parent.', () => {
+  it('should switch to parent folder on SWITCH_NODE_ON_DELETE action, if deleted node is the active node or is part of its path.', () => {
     const currentState = {
       id: 'active1',
       path: ['segment0', 'segment1', 'segment2', 'active1'],
@@ -103,46 +103,19 @@ describe('activeNodeReducer ', () => {
     // Delete one of current active node's parents
     let payload = {
       deletedNodeId: currentState.path[1],
-      children: [{ id: 'child0' }, { id: 'child1' }, { id: 'child2' }],
     };
 
     expect(reducer(currentState, {
       type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
       payload,
     })).toEqual({
-      id: payload.children[0].id,
-      path: ['segment0', payload.children[0].id],
+      id: NONE_SELECTED,
+      path: [currentState.path[0], NONE_SELECTED],
     });
 
     // Delete active node itself
     payload = {
       deletedNodeId: currentState.id,
-      children: [{ id: 'child0' }, { id: 'child1' }, { id: 'child2' }],
-    };
-
-    expect(reducer(currentState, {
-      type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
-      payload,
-    })).toEqual({
-      id: payload.children[0].id,
-      path: [...currentState.path.slice(0, -1), payload.children[0].id],
-    });
-
-    // If deleted node is not on current active path, no change to active path, nor active ID
-    payload = {
-      deletedNodeId: 'not-currently-active',
-      children: [{ id: 'child0' }, { id: 'child1' }, { id: 'child2' }],
-    };
-
-    expect(reducer(currentState, {
-      type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
-      payload,
-    })).toBe(currentState);
-
-    // If folder is empty, then NONE_SELECTED for active ID
-    payload = {
-      deletedNodeId: 'active1',
-      children: [],
     };
 
     expect(reducer(currentState, {
@@ -152,6 +125,16 @@ describe('activeNodeReducer ', () => {
       id: NONE_SELECTED,
       path: [...currentState.path.slice(0, -1), NONE_SELECTED],
     });
+
+    // If deleted node is not on current active path, no change to active path, nor active ID
+    payload = {
+      deletedNodeId: 'not-currently-active',
+    };
+
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
+      payload,
+    })).toBe(currentState);
   });
 
 /*
