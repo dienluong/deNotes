@@ -30,19 +30,17 @@ function _changeActiveNodeOnPathNavClick({ currentActive, idx }: { currentActive
   }
 }
 
-function _changeActiveNodeOnDelete({ currentActive, deletedNodeId, children }: { currentActive: ActiveNodeT, deletedNodeId: string, children: TreeNodeT[]})
+function _changeActiveNodeOnDelete({ currentActive, deletedNodeId }: { currentActive: ActiveNodeT, deletedNodeId: string })
   : ActiveNodeT {
   let returnedActiveNode: ActiveNodeT = currentActive;
   // if deleted node is part of the active path, re-adjust the active node
   const deletedNodeIdx = currentActive.path.lastIndexOf(deletedNodeId);
   if (deletedNodeIdx >= 0) {
-      // New active node is the first child
-      const newActiveId: TreeNodeT['id'] = Array.isArray(children) && children.length ? children[0].id : NONE_SELECTED;
-      // Since deleted node is part of active path, truncate the path and concat the selected child's ID
-      const newActivePath: ActiveNodeT['path'] = [...(currentActive.path.slice(0, deletedNodeIdx)), newActiveId];
+      // Since deleted node is part of active path, truncate the path to find parent folder
+      const newActivePath: ActiveNodeT['path'] = [...(currentActive.path.slice(0, deletedNodeIdx)), NONE_SELECTED];
       returnedActiveNode = {
         ...currentActive,
-        id: newActiveId,
+        id: NONE_SELECTED,
         path: newActivePath,
       };
   }

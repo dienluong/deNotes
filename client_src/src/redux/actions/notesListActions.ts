@@ -2,7 +2,6 @@ import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
-import { selectSiblingsOfActiveNode } from '../selectors';
 import { NONE_SELECTED, nodeTypes } from '../../utils/appCONSTANTS';
 
 // Types
@@ -162,27 +161,8 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
 
         // If deleted node is part of the active path, then switch to a new active node
         if (getState().activeNode.path.lastIndexOf(node.id) >= 0) {
-          // Retrieve the children (siblings of active node) of current folder.
-          const children = selectSiblingsOfActiveNode(getState()) as TreeNodeT[];
-          // After node deletion, select a node amongst the children nodes
-          dispatch(switchActiveNodeOnDeleteAction({ deletedNodeId: node.id, children }));
-
-          // Fetch note content only if:
-          // 1) newly selected node represents a note (type=ITEM), as opposed to a folder.
-          // 2) newly selected node is not the already opened note
-          const nodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
-          if (nodeInfo && nodeInfo.type === nodeTypes.ITEM) {
-            const uniqid = nodeInfo.uniqid;
-            if (uniqid !== getState().editorContent.id) {
-              dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
-                .catch((err: ActionError) => {
-                  window.alert(`Error loading saved note content: ${ err.message }`);
-                  return err.action;
-                }); // TODO: adjust error handling.
-            }
-          } else {
-            // TODO Load blank editor canvas
-          }
+          dispatch(switchActiveNodeOnDeleteAction({ deletedNodeId: node.id }));
+          // TODO Load blank editor canvas
         }
 
         return retVal;
@@ -198,15 +178,13 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
  * ...
  * @param {Object} params
  * @param {string} params.deletedNodeId
- * @param {Object[]} params.children
  */
-export function switchActiveNodeOnDeleteAction({ deletedNodeId, children }: { deletedNodeId: TreeNodeT['id'], children: TreeNodeT[] })
+export function switchActiveNodeOnDeleteAction({ deletedNodeId }: { deletedNodeId: TreeNodeT['id'] })
   : AnyAction {
   return {
     type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
     payload: {
       deletedNodeId: deletedNodeId,
-      children,
     },
   };
 }
