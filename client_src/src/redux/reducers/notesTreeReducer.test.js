@@ -302,7 +302,7 @@ describe('notesTreeReducer ', () => {
       },
     })).toEqual(newState);
 
-    // should return current state if folder is invalid
+    // should return current state if folder is invalid (valid folder must be an array)
     newFolder = { id: 'invalid folder' };
     expect(reducer(currentState, {
       type: notesListActionTypes.CHANGE_NOTES_TREE_FOLDER,
