@@ -1,7 +1,7 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import { addNodeUnderParent } from 'react-sortable-tree';
 import { getNodeKey, createNode } from '../../utils/treeUtils';
-import { nodeTypes } from '../../utils/appCONSTANTS';
+import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
 import initialState from '../misc/initialState';
 
 // Types
@@ -19,7 +19,16 @@ function _addAndSelectNewNode({ state, kind, now }: { state: AppStateT, kind: No
   : AppStateT {
   const parentPath: ActiveNodeT['path'] = state.activeNode.path.slice(0, -1);
   const newNode: TreeNodeT = createNode({ type: kind });
-  const newActiveNodePath: ActiveNodeT['path'] = [...parentPath, newNode.id];
+
+  let newActiveNodePath: ActiveNodeT['path'];
+  let newActiveNodeId: ActiveNodeT['id'];
+  if (kind === nodeTypes.ITEM) {
+    newActiveNodePath = [...parentPath, newNode.id];
+    newActiveNodeId = newNode.id;
+  } else {
+    newActiveNodePath = [...parentPath, newNode.id, NONE_SELECTED];
+    newActiveNodeId = NONE_SELECTED;
+  }
 
   let parentKey: string|null|undefined = null;
   if (parentPath.length) {
@@ -54,7 +63,7 @@ function _addAndSelectNewNode({ state, kind, now }: { state: AppStateT, kind: No
 
   const newActiveNode: ActiveNodeT = {
     ...state.activeNode,
-    id: newNode.id,
+    id: newActiveNodeId,
     path: newActiveNodePath,
   };
 
