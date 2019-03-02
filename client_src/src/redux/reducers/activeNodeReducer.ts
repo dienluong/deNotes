@@ -1,7 +1,5 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import baseState from '../misc/initialState';
-import { getNodeAtPath } from 'react-sortable-tree';
-import { getNodeKey } from '../../utils/treeUtils';
 import { NONE_SELECTED } from '../../utils/appCONSTANTS';
 
 // Types
