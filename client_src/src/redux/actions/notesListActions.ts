@@ -87,11 +87,12 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
     const nodeInfo = translateNodeIdToInfo({ nodeId: id });
     if (nodeInfo && nodeInfo.type === nodeTypes.FOLDER) {
       /* A folder was selected */
+      const defaultPath = [...getState().activeNode.path.slice(0, -1), id];
       returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
         payload: {
           nodeId: NONE_SELECTED,
-          path: [...(path || []), NONE_SELECTED],
+          path: [...(path || defaultPath), NONE_SELECTED],
         },
       });
     } else if (nodeInfo && nodeInfo.type === nodeTypes.ITEM) {

@@ -55,24 +55,8 @@ describe('1. selectNodeThunkAction ', () => {
     };
     const selectedFolderId = mockedTree[0].id;
     // create a mocked store that returns a state based on type of the last action
-    const mockedStore = mockStore(
-      actions => {
-        const lastAction = actions.length ? actions[actions.length - 1] : { type: '' };
-        switch (lastAction.type) {
-          case notesListActionTypes.SELECT_NODE:
-            return {
-              ...mockedState,
-              activeNode: {
-                id: lastAction.payload.nodeId,
-                path: lastAction.payload.path,
-              },
-            };
-          default:
-            return mockedState;
-        }
-      }
-    );
-    const expectedActions = [
+    let mockedStore = mockStore(mockedState);
+    let expectedActions = [
       {
         type: notesListActionTypes.SELECT_NODE,
         payload: { nodeId: NONE_SELECTED, path: [selectedFolderId, NONE_SELECTED] },
@@ -81,8 +65,21 @@ describe('1. selectNodeThunkAction ', () => {
 
     mockedSave.mockImplementation(() => Promise.resolve({}));
 
-    expect.assertions(4);
     expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id: selectedFolderId, path: [selectedFolderId] }))).toMatchObject(expectedActions[0]);
+    // expect content to be saved
+    expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
+    expect(mockedStore.getActions()).toEqual(expectedActions);
+    expect(fetchEditorContentThunkAction).not.toBeCalled();
+    mockedStore.clearActions();
+
+    // Should work when path not provided; in this case SELECT_NODE's path is based on active node path.
+    expectedActions = [
+      {
+        type: notesListActionTypes.SELECT_NODE,
+        payload: { nodeId: NONE_SELECTED, path: [...mockedStore.getState().activeNode.path.slice(0, -1), selectedFolderId, NONE_SELECTED] },
+      },
+    ];
+    expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id: selectedFolderId }))).toMatchObject(expectedActions[0]);
     // expect content to be saved
     expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
     expect(mockedStore.getActions()).toEqual(expectedActions);
