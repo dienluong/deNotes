@@ -26,7 +26,7 @@ describe('activeNodeReducer ', () => {
     const newActiveNode = {
       nodeId: 'new-active-id',
     };
-    const expectedState = {
+    let expectedState = {
       id: newActiveNode.nodeId,
       path: [currentState.path[0], newActiveNode.nodeId],
     };
@@ -35,7 +35,7 @@ describe('activeNodeReducer ', () => {
       payload: newActiveNode,
     })).toEqual(expectedState);
 
-    // If selected node is same as current state, return the current state (therefore, using expect.toBe())
+    // If selected node ID is same as current state ID but do not equal NONE_SELECTED, simply return the current state (therefore, using expect.toBe())
     const sameActiveNode = {
       nodeId: currentState.id,
     };
@@ -43,6 +43,22 @@ describe('activeNodeReducer ', () => {
       type: notesListActionTypes.SELECT_NODE,
       payload: sameActiveNode,
     })).toBe(currentState);
+
+    // If selected node ID and active node ID are the same *BUT* equal NONE_SELECTED, compute new state, i.e. does not simply return current state.
+    currentState.id = NONE_SELECTED;
+    currentState.path = [currentState.path[0], NONE_SELECTED];
+    const noneSelected = {
+      nodeId: NONE_SELECTED,
+      path: [currentState.path[0], 'parent1', NONE_SELECTED],
+    };
+    expectedState = {
+      id: noneSelected.nodeId,
+      path: noneSelected.path,
+    };
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SELECT_NODE,
+      payload: noneSelected,
+    })).toEqual(expectedState);
 
     // If payload is invalid, return current state
     const invalidPayload = {

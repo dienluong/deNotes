@@ -75,6 +75,7 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentAct
     // If no path provided, use the current active path
       newPath = [...(currentActive.path.slice(0, -1)), nodeId];
   }
+
   return { id: nodeId, path: newPath };
 }
 
@@ -103,7 +104,7 @@ export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode
   console.log(`REDUCER: '${action.type}'`);
   switch (action.type) {
     case notesListActionTypes.SELECT_NODE: {
-      if (state.id && (state.id === action.payload.nodeId)) {
+      if (state.id && (state.id !== NONE_SELECTED) && (state.id === action.payload.nodeId)) {
         return state;
       }
       else {
