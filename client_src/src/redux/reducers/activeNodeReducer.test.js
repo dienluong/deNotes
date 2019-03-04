@@ -144,8 +144,8 @@ describe('activeNodeReducer ', () => {
       type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
       payload,
     })).toEqual({
-      id: NONE_SELECTED,
-      path: [currentState.path[0], NONE_SELECTED],
+      id: currentState.path[0],
+      path: [currentState.path[0]],
     });
 
     // Delete active node itself
@@ -157,9 +157,23 @@ describe('activeNodeReducer ', () => {
       type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
       payload,
     })).toEqual({
-      id: NONE_SELECTED,
-      path: [...currentState.path.slice(0, -1), NONE_SELECTED],
+      id: currentState.path[2],
+      path: [...currentState.path.slice(0, -1)],
     });
+
+    // Deleting the parent folder at the root
+    payload = {
+      deletedNodeId: currentState.path[0],
+    };
+
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
+      payload,
+    })).toEqual({
+      id: NONE_SELECTED,
+      path: [NONE_SELECTED],
+    });
+
 
     // If deleted node is not on current active path, no change to active path, nor active ID
     payload = {

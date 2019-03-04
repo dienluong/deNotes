@@ -39,6 +39,7 @@ function _changeActiveNodeOnDelete({ currentActive, deletedNodeId }: { currentAc
   if (deletedNodeIdx >= 0) {
       // Since deleted node is part of active path, truncate the path to find parent folder
       const newActivePath: ActiveNodeT['path'] = [...(currentActive.path.slice(0, deletedNodeIdx))];
+      // If the deleted node was at the root, then use NONE_SELECTED as new active node.
       if (!newActivePath.length) {
         newActivePath[0] = NONE_SELECTED;
       }
