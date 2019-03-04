@@ -35,7 +35,7 @@ describe('1. selectNodeThunkAction ', () => {
     mockedSave.mockClear();
   });
 
-  it('should 1) save content, 2) SELECT_NODE to NONE_SELECTED w/ selected folder as parent and 3) return Promise(action), when FOLDER node is selected', () => {
+  it('should 1) save content, 2) dispatch SELECT_NODE and 3) return Promise(action), when FOLDER node is selected', () => {
     const mockedState = {
       ...initialState,
       notesTree: {
@@ -54,12 +54,11 @@ describe('1. selectNodeThunkAction ', () => {
       },
     };
     const selectedFolderId = mockedTree[0].id;
-    // create a mocked store that returns a state based on type of the last action
     let mockedStore = mockStore(mockedState);
     let expectedActions = [
       {
         type: notesListActionTypes.SELECT_NODE,
-        payload: { nodeId: NONE_SELECTED, path: [selectedFolderId, NONE_SELECTED] },
+        payload: { nodeId: selectedFolderId, path: [selectedFolderId]},
       },
     ];
 
@@ -76,7 +75,7 @@ describe('1. selectNodeThunkAction ', () => {
     expectedActions = [
       {
         type: notesListActionTypes.SELECT_NODE,
-        payload: { nodeId: NONE_SELECTED, path: [...mockedStore.getState().activeNode.path.slice(0, -1), selectedFolderId, NONE_SELECTED] },
+        payload: { nodeId: selectedFolderId },
       },
     ];
     expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id: selectedFolderId }))).toMatchObject(expectedActions[0]);
@@ -86,7 +85,7 @@ describe('1. selectNodeThunkAction ', () => {
     expect(fetchEditorContentThunkAction).not.toBeCalled();
   });
 
-  it('should 1) save content, 2) set new active node, 3) fetch content and 4) return Promise(action), when ITEM node is selected', () => {
+  it('should 1) save content, 2) dispatch SELECT_NODE, 3) fetch content and 4) return Promise(action), when ITEM node is selected', () => {
     const mockedState = {
       ...initialState,
       notesTree: {

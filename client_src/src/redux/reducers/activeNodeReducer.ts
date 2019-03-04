@@ -1,6 +1,7 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
+import { translateNodeIdToInfo } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
-import { NONE_SELECTED } from '../../utils/appCONSTANTS';
+import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
 
 // Types
 import { AnyAction } from 'redux';
@@ -37,10 +38,13 @@ function _changeActiveNodeOnDelete({ currentActive, deletedNodeId }: { currentAc
   const deletedNodeIdx = currentActive.path.lastIndexOf(deletedNodeId);
   if (deletedNodeIdx >= 0) {
       // Since deleted node is part of active path, truncate the path to find parent folder
-      const newActivePath: ActiveNodeT['path'] = [...(currentActive.path.slice(0, deletedNodeIdx)), NONE_SELECTED];
+      const newActivePath: ActiveNodeT['path'] = [...(currentActive.path.slice(0, deletedNodeIdx))];
+      if (!newActivePath.length) {
+        newActivePath[0] = NONE_SELECTED;
+      }
       returnedActiveNode = {
         ...currentActive,
-        id: NONE_SELECTED,
+        id: newActivePath[newActivePath.length - 1],
         path: newActivePath,
       };
   }
@@ -73,7 +77,15 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentAct
     }
   } else {
     // If no path provided, use the current active path
+    const nodeInfo = translateNodeIdToInfo({ nodeId: currentActive.id });
+    if (nodeInfo && nodeInfo.type === nodeTypes.FOLDER) {
+      newPath = [...currentActive.path, nodeId];
+    } else if (nodeInfo && nodeInfo.type === nodeTypes.ITEM){
+      // If current active node is an item, use its parent folder to build new active node.
       newPath = [...(currentActive.path.slice(0, -1)), nodeId];
+    } else {
+      return currentActive;
+    }
   }
 
   return { id: nodeId, path: newPath };

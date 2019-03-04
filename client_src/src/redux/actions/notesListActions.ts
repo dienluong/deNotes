@@ -80,45 +80,25 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
         .catch((err: Error) => { console.log(err); }); // TODO: log error?
     }
 
-    let returnVal = { type: 'NO_OP' };
+    let returnVal = dispatch({
+      type: notesListActionTypes.SELECT_NODE,
+      payload: {
+        nodeId: id,
+        path,
+      },
+    });
 
-    // If selected node is a FOLDER, then don't select any node.
-    // If selected node is an ITEM, then simply select it
-    const nodeInfo = translateNodeIdToInfo({ nodeId: id });
-    if (nodeInfo && nodeInfo.type === nodeTypes.FOLDER) {
-      /* A folder was selected */
-      const defaultPath = [...getState().activeNode.path.slice(0, -1), id];
-      returnVal = dispatch({
-        type: notesListActionTypes.SELECT_NODE,
-        payload: {
-          nodeId: NONE_SELECTED,
-          path: [...(path || defaultPath), NONE_SELECTED],
-        },
-      });
-    } else if (nodeInfo && nodeInfo.type === nodeTypes.ITEM) {
-      /* An ITEM (note) was selected */
-      returnVal = dispatch({
-        type: notesListActionTypes.SELECT_NODE,
-        payload: {
-          nodeId: id,
-          path,
-        },
-      });
-
-      // If new active node is an ITEM (note) and if its content is not already open, then fetch its content
-      const activeNodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
-      if ( activeNodeInfo && activeNodeInfo.type === nodeTypes.ITEM) {
-        const uniqid = activeNodeInfo.uniqid;
-        // Fetch note content only if not already loaded
-        if (uniqid !== getState().editorContent.id) {
-          dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
-            .catch((err: ActionError) => {
-              window.alert(`Error loading saved note content: ${err.message}`);
-              return err.action;
-            }); // TODO: adjust error handling.
-        }
-      } else {
-        //TODO: Load blank editor canvas...
+    // If new active node is an ITEM (note) and if its content is not already open, then fetch its content
+    const activeNodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
+    if ( activeNodeInfo && activeNodeInfo.type === nodeTypes.ITEM) {
+      const uniqid = activeNodeInfo.uniqid;
+      // Fetch note content only if not already loaded
+      if (uniqid !== getState().editorContent.id) {
+        dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
+          .catch((err: ActionError) => {
+            window.alert(`Error loading saved note content: ${err.message}`);
+            return err.action;
+          }); // TODO: adjust error handling.
       }
     }
 
@@ -232,10 +212,12 @@ export function fetchNotesTreeThunkAction()
       .then((notesTree: NotesTreeT) => {
         if (notesTree && Array.isArray(notesTree.tree)) {
           const tree = notesTree.tree;
+          // Select the first node in root
+          // TODO: adjust activeNode to where user left off
           const activeNodeId = tree.length ? tree[0].id : NONE_SELECTED;
           const activeNode: ActiveNodeT = {
             id: activeNodeId,
-            path: [activeNodeId], // TODO: adjust activeNode to where user left off
+            path: [activeNodeId],
           };
           const returnVal = dispatch({
             type: notesListActionTypes.FETCH_NOTES_TREE_SUCCESS,
