@@ -7,10 +7,11 @@
 
 import * as Quill from 'quill';
 import { AnyAction } from "redux";
+import { nodeTypes } from '../../utils/appCONSTANTS';
 
 declare global {
   type DeltaT = Quill.Delta;
-  type NodeTypeT = 'folder' | 'item';
+  type NodeTypeT = typeof nodeTypes.FOLDER | typeof nodeTypes.ITEM;
   type StorageMethodNames = 'save' | 'load' | 'remove';
   type StorageMethodSignature = (params: { [key: string]: any }) => Promise<any>;
   type StorageT = {

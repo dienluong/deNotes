@@ -2,6 +2,7 @@ import notesListActionTypes from '../actions/constants/notesListActionConstants'
 import { changeNodeAtPath, removeNodeAtPath, find, getNodeAtPath } from 'react-sortable-tree';
 import { getNodeKey, findClosestParent } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
+import { nodeTypes } from '../../utils/appCONSTANTS';
 
 // Types
 import { AnyAction } from 'redux';
@@ -100,7 +101,7 @@ function _changeTreeFolder({ notesTree, folder, activePath, now }: { notesTree: 
     return notesTree;
   }
   const parentIdx: number|null = findClosestParent(activePath);
-  // If no parent, then the current node is at the root.
+  // If no parent, then active node is at the root; therefore, the new folder is the root content, i.e. the entire tree.
   if (parentIdx === null) {
     newTreeData = folder;
   } else {
@@ -112,7 +113,7 @@ function _changeTreeFolder({ notesTree, folder, activePath, now }: { notesTree: 
       ignoreCollapsed: false,
     });
 
-    if (parentNodeInfo && parentNodeInfo.node && parentNodeInfo.node.type === 'folder') {
+    if (parentNodeInfo && parentNodeInfo.node && parentNodeInfo.node.type === nodeTypes.FOLDER) {
       // create new parent node with the new folder as its children and change corresponding parent node on the tree
       const newParentNode = {...parentNodeInfo.node, children: folder};
       try {
@@ -128,7 +129,7 @@ function _changeTreeFolder({ notesTree, folder, activePath, now }: { notesTree: 
         return notesTree;
       }
     } else {
-      // if parent folder not found
+      // if parent node not found in tree
       return notesTree;
     }
   }

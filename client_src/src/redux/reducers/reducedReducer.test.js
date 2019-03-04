@@ -4,15 +4,16 @@ import initialState from '../misc/initialState';
 import uuid from 'uuid/v4';
 jest.mock('uuid/v4');
 import { createNode } from '../../utils/treeUtils';
+import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
 
 describe('reducedReducer', () => {
   // Use the actual uuid implementation for now...
   uuid.mockImplementation(() => {
     return require.requireActual('uuid/v4')();
   });
-  const parentFolder = createNode({ title: 'test root', type: 'folder' });
-  const children = [createNode({ title: 'test child 1', type: 'folder' }), createNode({ title: 'test child 2', type: 'folder' })];
-  const grandChild = [createNode({ title: 'test grandchild 1', type: 'item' })];
+  const parentFolder = createNode({ title: 'test root', type: nodeTypes.FOLDER });
+  const children = [createNode({ title: 'test child 1', type: nodeTypes.FOLDER }), createNode({ title: 'test child 2', type: nodeTypes.FOLDER })];
+  const grandChild = [createNode({ title: 'test grandchild 1', type: nodeTypes.ITEM })];
   parentFolder.children = children;
   children[0].children = grandChild;
   const currentTree = [
@@ -28,8 +29,8 @@ describe('reducedReducer', () => {
 
   // no active node since the folder is empty
   const activeNode = {
-    id: '',
-    path: [currentTree[0].id, currentTree[0].children[1].id, ''],
+    id: NONE_SELECTED,
+    path: [currentTree[0].id, currentTree[0].children[1].id, NONE_SELECTED],
   };
 
   const currentState = {
@@ -50,9 +51,9 @@ describe('reducedReducer', () => {
     expect(reducer(currentState, { type: notesListActionTypes.ADD_AND_SELECT_NODE })).toBe(currentState);
   });
 
-  it('should, on ADD_AND_SELECT_NODE, return state w/ new tree, a new active node and editor content for newly added node', () => {
+  it('should, on ADD_AND_SELECT_NODE, return state w/ 1) new tree, 2) new active node and 3) editor content for newly added note', () => {
     const expectedDate = 4004;
-    let newNodeKind = 'item';
+    let newNodeKind = nodeTypes.ITEM;
 
     // Now we mock the uuid implementation to return a predictable ID we can verify with the assertion.
     uuid.mockImplementation(() => 'newly-created-node-uniqid');
@@ -108,7 +109,7 @@ describe('reducedReducer', () => {
     })).toEqual(expectedNewState);
   });
 
-  it('should, on ADD_AND_SELECT_NODE, add node to root folder if active node is at root but editor content is unchanged since added node is a folder', () => {
+  it('should, on ADD_AND_SELECT_NODE, add node to active folder but editor content is unchanged since added node is a folder', () => {
     const expectedDate = 4004;
     const modifiedCurrentState = {
       ...currentState,
@@ -117,8 +118,8 @@ describe('reducedReducer', () => {
         path: [currentTree[0].id],
       },
     };
-    let newNodeKind = 'folder';
-    // Now we mock the uuid implementation to return a predictable ID we can verify with the assertion.
+    let newNodeKind = nodeTypes.FOLDER;
+    // We mock the uuid implementation to return a predictable ID we can verify with the assertion.
     uuid.mockImplementation(() => 'newly-created-node-uniqid');
     let expectedNewNode = createNode({ type: newNodeKind });
     let newTree = [
@@ -132,11 +133,11 @@ describe('reducedReducer', () => {
     };
 
     let expectedActiveNode = {
-      id: expectedNewNode.id,
-      path: [...modifiedCurrentState.activeNode.path.slice(0, -1), expectedNewNode.id],
+      id: NONE_SELECTED,
+      path: [...modifiedCurrentState.activeNode.path.slice(0, -1), expectedNewNode.id, NONE_SELECTED],
     };
 
-    // Note: since we are adding a folder node this time, content editor does not change
+    // Note: since we are adding a folder node, loaded content editor does not change
     let expectedNewState = {
       ...modifiedCurrentState,
       notesTree: expectedNotesTree,

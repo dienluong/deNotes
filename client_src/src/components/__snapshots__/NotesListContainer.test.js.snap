@@ -60,7 +60,7 @@ exports[`renders correctly with prop values taken from redux store 1`] = `
                 style="padding-left: 0px;"
               >
                 <div
-                  data-testid="folder|^|1"
+                  data-testid="FOLDER_NODE|^|1"
                   style="height: 100%;"
                   tabindex="0"
                 >
@@ -135,7 +135,7 @@ exports[`renders correctly with prop values taken from redux store 1`] = `
                 style="padding-left: 0px;"
               >
                 <div
-                  data-testid="item|^|8"
+                  data-testid="ITEM_NODE|^|8"
                   style="height: 100%;"
                   tabindex="0"
                 >
@@ -194,7 +194,7 @@ exports[`renders correctly with prop values taken from redux store 1`] = `
                 style="padding-left: 0px;"
               >
                 <div
-                  data-testid="folder|^|9"
+                  data-testid="FOLDER_NODE|^|9"
                   style="height: 100%;"
                   tabindex="0"
                 >

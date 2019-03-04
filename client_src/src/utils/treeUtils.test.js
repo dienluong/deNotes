@@ -1,4 +1,5 @@
 import * as moduleToTest from './treeUtils';
+import { nodeTypes } from '../utils/appCONSTANTS';
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|^|';
 
 describe('1. equals()', () => {
@@ -112,22 +113,22 @@ describe('1. equals()', () => {
 
 describe('2. findClosestParent ', () => {
   it('should return the index of parent node for given path', () => {
-    let testPath = [`folder${ID_DELIMITER}1111`, `item${ID_DELIMITER}2222`];
+    let testPath = [`${nodeTypes.FOLDER}${ID_DELIMITER}1111`, `${nodeTypes.ITEM}${ID_DELIMITER}2222`];
     expect(moduleToTest.findClosestParent(testPath)).toBe(0);
 
-    testPath = [`folder${ID_DELIMITER}0000`, `folder${ID_DELIMITER}1111`, `folder${ID_DELIMITER}2222`];
+    testPath = [`${nodeTypes.FOLDER}${ID_DELIMITER}0000`, `${nodeTypes.FOLDER}${ID_DELIMITER}1111`, `${nodeTypes.FOLDER}${ID_DELIMITER}2222`];
     expect(moduleToTest.findClosestParent(testPath)).toBe(1);
   });
 
   it('should return null if path only has one entry', () => {
-    let testPath = [`folder${ID_DELIMITER}1111`];
+    let testPath = [`${nodeTypes.FOLDER}${ID_DELIMITER}1111`];
     expect(moduleToTest.findClosestParent(testPath)).toBeNull();
   });
 
   it('should return null if invalid path received', () => {
     let testPath = [];
     expect(moduleToTest.findClosestParent(testPath)).toBeNull();
-    testPath = [1, 2, `folder${ID_DELIMITER}3333`];
+    testPath = [1, 2, `${nodeTypes.FOLDER}${ID_DELIMITER}3333`];
     expect(moduleToTest.findClosestParent(testPath)).toBeNull();
     testPath = {};
     expect(moduleToTest.findClosestParent(testPath)).toBeNull();
@@ -136,7 +137,7 @@ describe('2. findClosestParent ', () => {
 
 describe('3. translateNodeIdToInfo', () => {
   it('should return an object with type and uniqid', () => {
-    let type = 'item';
+    let type = nodeTypes.ITEM;
     let uniqid = '1234';
     let testNodeId = `${type}${ID_DELIMITER}${uniqid}`;
     let expectedResult = {
@@ -148,12 +149,12 @@ describe('3. translateNodeIdToInfo', () => {
 
   it('should return null for invalid node ID', () => {
     // ID with wrong delimiter
-    let invalidNodeId = 'folder|~|7890';
+    let invalidNodeId = `${nodeTypes.FOLDER}|~|7890`;
     expect(moduleToTest.translateNodeIdToInfo({ nodeId: invalidNodeId })).toBeNull();
     // Not a string
     invalidNodeId = 1234;
     expect(moduleToTest.translateNodeIdToInfo({ nodeId: invalidNodeId })).toBeNull();
-    // Wrong node type embedded -- must be 'item' or 'folder'
+    // Wrong node type embedded -- must be one of nodeTypes members from appCONSTANTS.ts
     invalidNodeId = `items${ID_DELIMITER}5678`;
     expect(moduleToTest.translateNodeIdToInfo({ nodeId: invalidNodeId })).toBeNull();
     invalidNodeId = `afolder${ID_DELIMITER}2345`;
