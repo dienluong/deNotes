@@ -4,7 +4,7 @@ const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
 export const mockedTree = [
   {
-    title: 'root-folder 1',
+    title: 'folder root[0]',
     subtitle: '',
     uniqid: '1',
     type: nodeTypes.FOLDER,
@@ -14,7 +14,7 @@ export const mockedTree = [
     expanded: false,
     children: [
       {
-        title: 'note 1',
+        title: 'note root[0].children[0]',
         subtitle: '',
         uniqid: '2',
         type: nodeTypes.ITEM,
@@ -23,7 +23,7 @@ export const mockedTree = [
         },
       },
       {
-        title: 'note 2',
+        title: 'note root[0].children[1]',
         subtitle: '',
         uniqid: '3',
         type: nodeTypes.ITEM,
@@ -32,7 +32,7 @@ export const mockedTree = [
         },
       },
       {
-        title: 'subfolder 1',
+        title: 'folder root[0].children[2]',
         subtitle: '',
         uniqid: '4',
         type: nodeTypes.FOLDER,
@@ -42,7 +42,7 @@ export const mockedTree = [
         expanded: false,
         children: [
           {
-            title: 'subnote 1',
+            title: 'note root[0].children[2].children[0]',
             subtitle: '',
             uniqid: '5',
             type: nodeTypes.ITEM,
@@ -51,7 +51,7 @@ export const mockedTree = [
             },
           },
           {
-            title: 'subnote 2',
+            title: 'note root[0].children[2].children[1]',
             subtitle: '',
             uniqid: '6',
             type: nodeTypes.ITEM,
@@ -62,7 +62,7 @@ export const mockedTree = [
         ],
       },
       {
-        title: 'subfolder 2',
+        title: 'folder root[0].children[3]',
         subtitle: '',
         uniqid: '7',
         type: nodeTypes.FOLDER,
@@ -75,7 +75,7 @@ export const mockedTree = [
     ],
   },
   {
-    title: 'root-note 1',
+    title: 'note root[1]',
     subtitle: '',
     uniqid: '8',
     type: nodeTypes.ITEM,
@@ -84,7 +84,7 @@ export const mockedTree = [
     },
   },
   {
-    title: 'root-folder 2',
+    title: 'folder root[2]',
     subtitle: '',
     uniqid: '9',
     type: nodeTypes.FOLDER,
