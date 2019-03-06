@@ -1,6 +1,6 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import { addNodeUnderParent } from 'react-sortable-tree';
-import { getNodeKey, createNode } from '../../utils/treeUtils';
+import { getNodeKey, createNode, translateNodeIdToInfo, equals } from '../../utils/treeUtils';
 import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
 import initialState from '../misc/initialState';
 
@@ -17,18 +17,23 @@ import { AnyAction } from "redux";
  */
 function _addAndSelectNewNode({ state, kind, now }: { state: AppStateT, kind: NodeTypeT, now: number })
   : AppStateT {
-  const parentPath: ActiveNodeT['path'] = state.activeNode.path.slice(0, -1);
-  const newNode: TreeNodeT = createNode({ type: kind });
-
-  let newActiveNodePath: ActiveNodeT['path'];
-  let newActiveNodeId: ActiveNodeT['id'];
-  if (kind === nodeTypes.ITEM) {
-    newActiveNodePath = [...parentPath, newNode.id];
-    newActiveNodeId = newNode.id;
+  let parentPath: ActiveNodeT['path'];
+  if (equals(state.activeNode.path, [NONE_SELECTED])){
+    // case where active node is root folder (i.e. active ID = NONE_SELECTED and path = [NONE_SELECTED])
+    parentPath = [];
   } else {
-    newActiveNodePath = [...parentPath, newNode.id, NONE_SELECTED];
-    newActiveNodeId = NONE_SELECTED;
+    const activeNodeInfo = translateNodeIdToInfo({nodeId: state.activeNode.id});
+    if (activeNodeInfo && activeNodeInfo.type === nodeTypes.FOLDER) {
+      parentPath = state.activeNode.path;
+    } else {
+      // If current active node is not a FOLDER, simply truncate its path to obtain the parent path.
+      parentPath = state.activeNode.path.slice(0, -1);
+    }
   }
+
+  const newNode: TreeNodeT = createNode({ type: kind });
+  let newActiveNodePath: ActiveNodeT['path'] = [...parentPath, newNode.id];
+  let newActiveNodeId: ActiveNodeT['id'] = newNode.id;
 
   let parentKey: string|null|undefined = null;
   if (parentPath.length) {
