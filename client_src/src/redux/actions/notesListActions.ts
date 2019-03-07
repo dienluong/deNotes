@@ -208,16 +208,21 @@ export function fetchNotesTreeThunkAction()
       payload: { userId },
     });
 
+    // Immediately save currently opened note
+    const currentContent = getState().editorContent;
+    if (currentContent.id) {
+      _editorContentStorage.save(currentContent)
+        .catch((err: Error) => console.log(err)); // TODO: log error?
+    }
+
     return _notesTreeStorage.load({ userId })
       .then((notesTree: NotesTreeT) => {
         if (notesTree && Array.isArray(notesTree.tree)) {
-          const tree = notesTree.tree;
-          // Select the first node in root
+          // Select root folder
           // TODO: adjust activeNode to where user left off
-          const activeNodeId = tree.length ? tree[0].id : NONE_SELECTED;
           const activeNode: ActiveNodeT = {
-            id: activeNodeId,
-            path: [activeNodeId],
+            id: NONE_SELECTED,
+            path: [NONE_SELECTED],
           };
           const returnVal = dispatch({
             type: notesListActionTypes.FETCH_NOTES_TREE_SUCCESS,
@@ -231,6 +236,7 @@ export function fetchNotesTreeThunkAction()
               notesTree,
             },
           });
+
           dispatch({
             type: notesListActionTypes.SELECT_NODE,
             payload: {
@@ -248,9 +254,7 @@ export function fetchNotesTreeThunkAction()
       .catch((err: Error) => {
         // If no tree found for this user, use default empty tree and add new node (new blank note)
         const error = new Error(`No tree loaded. Error: "${err.message}" Using default tree.`);
-        // TODO: Remove
-        console.log(error);
-        dispatch({
+        const returnVal = dispatch({
           type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
           payload: { error },
         });
@@ -268,7 +272,7 @@ export function fetchNotesTreeThunkAction()
             notesTree: defaultNotesTree,
           },
         });
-        // To represent no node selected, set to NONE_SELECTED
+        // Select root
         dispatch({
           type: notesListActionTypes.SELECT_NODE,
           payload: {
@@ -277,8 +281,7 @@ export function fetchNotesTreeThunkAction()
           },
         });
 
-        // Add a "note" node (an ITEM) to the root of the tree
-        return dispatch(addAndSelectNodeThunkAction({ kind: nodeTypes.ITEM }));
+        return Promise.resolve(returnVal);
       });
   };
 }
