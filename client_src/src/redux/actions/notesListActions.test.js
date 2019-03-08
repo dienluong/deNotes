@@ -58,7 +58,7 @@ describe('1. selectNodeThunkAction ', () => {
     let expectedActions = [
       {
         type: notesListActionTypes.SELECT_NODE,
-        payload: { nodeId: selectedFolderId, path: [selectedFolderId]},
+        payload: { nodeId: selectedFolderId, path: [selectedFolderId] },
       },
     ];
 
@@ -739,7 +739,7 @@ describe('6. changeNotesFolderThunkAction ', () => {
     fetchEditorContentThunkAction.mockClear();
   });
 
-  it('should save opened note and dispatch action to switch active folder', () => {
+  it('should save opened note and dispatch CHANGE_NOTES_TREE_FOLDER action to switch active folder', () => {
     const expectedDate = 778899;
     global.Date = class extends RealDate {
       constructor() {
@@ -754,7 +754,7 @@ describe('6. changeNotesFolderThunkAction ', () => {
       {
         title: 'new root-folder',
         subtitle: '',
-        uniqid: '9999',
+        uniqid: '878787',
         type: nodeTypes.FOLDER,
         get id() {
           return `${this.type}${ID_DELIMITER}${this.uniqid}`;
@@ -764,7 +764,7 @@ describe('6. changeNotesFolderThunkAction ', () => {
           {
             title: 'new sub-note 1',
             subtitle: '',
-            uniqid: '10101010',
+            uniqid: '232323',
             type: nodeTypes.ITEM,
             get id() {
               return `${this.type}${ID_DELIMITER}${this.uniqid}`;
@@ -774,7 +774,7 @@ describe('6. changeNotesFolderThunkAction ', () => {
       },
     ];
     // Choose an active node
-    const selectedNode = mockedTree[1];
+    const selectedNode = mockedTree[0].children[2].children[0];
     const selectedNodeInfo = find({
       getNodeKey,
       treeData: mockedTree,
@@ -796,7 +796,7 @@ describe('6. changeNotesFolderThunkAction ', () => {
         tree: mockedTree,
       },
       activeNode: {
-        id: selectedNodeInfo.node.id,
+        id: selectedNode.id,
         path: selectedNodeInfo.path,
       },
     });
@@ -805,7 +805,7 @@ describe('6. changeNotesFolderThunkAction ', () => {
         type: notesListActionTypes.CHANGE_NOTES_TREE_FOLDER,
         payload: {
           folder: newFolder,
-          activePath: selectedNodeInfo.path,
+          activePath: mockedStore.getState().activeNode.path,
           now: expectedDate,
         },
       },
