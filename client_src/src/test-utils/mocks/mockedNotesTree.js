@@ -62,7 +62,7 @@ export const mockedTree = [
         ],
       },
       {
-        title: 'folder root0.children[3]',
+        title: 'folder root0.children3',
         subtitle: '',
         uniqid: '7',
         type: nodeTypes.FOLDER,
