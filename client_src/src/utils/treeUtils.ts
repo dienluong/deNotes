@@ -83,20 +83,26 @@ export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().
 }
 
 /**
- * Returns the index of the node of type FOLDER that is the direct parent of the node referenced by the given path.
- * Returns null if none found.
+ * Returns the index of the node of type FOLDER that is deepest in the given path.
+ * Returns null if path is invalid. Returns -1 if FOLDER is root.
  * @param path {Array}
- * @return {number|null}
+ * @return {number|null} Index of deepest FOLDER in path; -1 if that FOLDER is root; null if path is invalid.
  */
-export function findClosestParent(path: string[])
+export function findDeepestFolder(path: string[])
   : number|null {
   if (!Array.isArray(path) || !path.length) {
     return null;
   }
 
-  // If path consists only of the node, then no parent
+  const nodeInfo = translateNodeIdToInfo({ nodeId: path[path.length - 1]});
+  // if last entry in path is a FOLDER, then that is the farthest one
+  if (nodeInfo && nodeInfo.type === nodeTypes.FOLDER) {
+    return path.length - 1;
+  }
+
+  // If path consists only of one ITEM node, then "farthest" folder root
   if (path.length === 1) {
-    return null;
+    return -1;
   }
 
   const parent = path[path.length - 2];
@@ -104,7 +110,7 @@ export function findClosestParent(path: string[])
     return null;
   } else {
     const re = new RegExp(`^${nodeTypes.FOLDER}`);
-    return (re.test(parent)) ? path.length - 2 : null;
+    return (re.test(parent) ? path.length - 2 : null);
   }
 }
 
