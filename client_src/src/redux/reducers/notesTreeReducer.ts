@@ -1,6 +1,6 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import { changeNodeAtPath, removeNodeAtPath, find, getNodeAtPath } from 'react-sortable-tree';
-import { getNodeKey, findClosestParent } from '../../utils/treeUtils';
+import { getNodeKey, findDeepestFolder } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
 import { nodeTypes } from '../../utils/appCONSTANTS';
 
@@ -65,12 +65,12 @@ function _deleteNode({ notesTree, nodeToDelete, activePath, now }: { notesTree: 
   //   searchMethod: ({ node: treeNode, searchQuery }) => searchQuery === treeNode.id,
   // }).matches;
   //
-  const parentFolderIdx: number | null = findClosestParent(activePath);
+  const parentFolderIdx: number | null = findDeepestFolder(activePath);
   let nodeToDeletePath: ActiveNodeT['path'];
   if (parentFolderIdx !== null) {
     nodeToDeletePath = [...activePath.slice(0, parentFolderIdx + 1), nodeToDelete.id];
   } else {
-    nodeToDeletePath = [nodeToDelete.id];
+    return notesTree;
   }
 
   let newTree: NotesTreeT['tree'] = notesTree.tree;
@@ -100,9 +100,12 @@ function _changeTreeFolder({ notesTree, folder, activePath, now }: { notesTree: 
   if (!Array.isArray(folder)) {
     return notesTree;
   }
-  const parentIdx: number|null = findClosestParent(activePath);
-  // If no parent, then active node is at the root; therefore, the new folder is the root content, i.e. the entire tree.
+  const parentIdx: number|null = findDeepestFolder(activePath);
   if (parentIdx === null) {
+    return notesTree;
+  }
+  // Parent is root; then the new folder is the entire root content, i.e. the new tree.
+  if (parentIdx === -1) {
     newTreeData = folder;
   } else {
     const parentPath: ActiveNodeT['path'] = activePath.slice(0, parentIdx + 1);

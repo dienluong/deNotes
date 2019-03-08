@@ -1,6 +1,6 @@
 import { find, getNodeAtPath } from 'react-sortable-tree';
 import { createSelector } from 'reselect';
-import { getNodeKey, findClosestParent } from '../../utils/treeUtils';
+import { getNodeKey, findDeepestFolder } from '../../utils/treeUtils';
 import { selectNotesTreeTree, selectActiveNodePath } from '../reducers';
 
 // TODO: remove
@@ -45,11 +45,16 @@ export const selectSiblingsOfActiveNode = createSelector(
       return [];
     }
 
-    const parentIdx = findClosestParent(activePath);
+    const parentIdx = findDeepestFolder(activePath);
     if (parentIdx === null) {
-      // if node has no parent, then active node is root node, which means its siblings (including itself) is the tree
+      return [];
+    }
+
+    if (parentIdx === -1) {
+      // folder is root, then the list of siblings (including itself) is the tree itself
       return tree;
     }
+
     const parentPath = activePath.slice(0, parentIdx + 1);
     const parentInfo = getNodeAtPath({
       treeData: tree,
