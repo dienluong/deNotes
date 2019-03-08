@@ -115,11 +115,11 @@ describe('activeNodeReducer ', () => {
         idx: selectedPathSegmentIdx,
       },
     })).toEqual({
-      id: NONE_SELECTED,
-      path: [...currentState.path.slice(0, selectedPathSegmentIdx + 1), NONE_SELECTED],
+      id: currentState.path[selectedPathSegmentIdx],
+      path: [...currentState.path.slice(0, selectedPathSegmentIdx + 1)],
     });
 
-    // If selected node is same as current state, return current state
+    // If selected node is the last node in path, return current state
     selectedPathSegmentIdx = currentState.path.length - 1;
     expect(reducer(currentState, {
       type: notesListActionTypes.NAVIGATE_PATH,

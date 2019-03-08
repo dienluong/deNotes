@@ -19,11 +19,13 @@ const initialActiveNode = baseState.activeNode;
 function _changeActiveNodeOnPathNavClick({ currentActive, idx }: { currentActive: ActiveNodeT, idx: number })
   : ActiveNodeT {
   if (Number.isSafeInteger(idx) && idx < (currentActive.path.length - 1)) {
-    // Active node ID set to NONE_SELECTED because we switched parent folder but no node in that folder is selected by default
+    const newActivePath = currentActive.path.slice(0, idx + 1);
+    const newActiveNode = newActivePath.length ?
+      { id: newActivePath[newActivePath.length - 1], path: newActivePath } :
+      { id: NONE_SELECTED, path: [NONE_SELECTED] };
     return {
       ...currentActive,
-      id: NONE_SELECTED,
-      path: [...currentActive.path.slice(0, idx + 1), NONE_SELECTED],
+      ...newActiveNode,
     };
   } else {
     // If last entry of the path was selected, then no need to change active node
