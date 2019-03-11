@@ -669,7 +669,6 @@ describe('5. navigatePathThunkAction ', () => {
   afterEach(() => {
     mockedStore.clearActions();
     mockedSave.mockClear();
-    fetchEditorContentThunkAction.mockClear();
   });
 
   it('should save opened note and dispatch NAVIGATE_PATH action', () => {
@@ -736,7 +735,6 @@ describe('6. changeNotesFolderThunkAction ', () => {
     global.Date = RealDate;
     mockedStore.clearActions();
     mockedSave.mockClear();
-    fetchEditorContentThunkAction.mockClear();
   });
 
   it('should save opened note and dispatch CHANGE_NOTES_TREE_FOLDER action to switch active folder', () => {
