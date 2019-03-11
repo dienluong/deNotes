@@ -1,7 +1,8 @@
 import reducer from './activeNodeReducer';
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import initialState from '../misc/initialState';
-import { NONE_SELECTED } from '../../utils/appCONSTANTS';
+import { NONE_SELECTED, nodeTypes } from '../../utils/appCONSTANTS';
+const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|^|';
 
 describe('activeNodeReducer ', () => {
   it('should return initial state by default', () => {
@@ -19,16 +20,31 @@ describe('activeNodeReducer ', () => {
   });
 
   it('should return active node on SELECT_NODE action', () => {
-    const currentState = {
-      id: 'current-active-id',
-      path: ['current-active-parent', 'current-active-id'],
+    // Case where current active node is an ITEM
+    let currentState = {
+      id: `${nodeTypes.ITEM}${ID_DELIMITER}current-active-id`,
+      path: [`${nodeTypes.FOLDER}${ID_DELIMITER}current-active-parent`, `${nodeTypes.ITEM}${ID_DELIMITER}current-active-id`],
     };
     const newActiveNode = {
-      nodeId: 'new-active-id',
+      nodeId: `${nodeTypes.ITEM}${ID_DELIMITER}new-active-id`,
     };
     let expectedState = {
       id: newActiveNode.nodeId,
-      path: [currentState.path[0], newActiveNode.nodeId],
+      path: [...currentState.path.slice(0, -1), newActiveNode.nodeId],
+    };
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SELECT_NODE,
+      payload: newActiveNode,
+    })).toEqual(expectedState);
+
+    // Case where current active node is a FOLDER
+    currentState = {
+      id: `${nodeTypes.FOLDER}${ID_DELIMITER}current-active-id`,
+      path: [`${nodeTypes.FOLDER}${ID_DELIMITER}current-active-parent`, `${nodeTypes.FOLDER}${ID_DELIMITER}current-active-id`],
+    };
+    expectedState = {
+      id: newActiveNode.nodeId,
+      path: [...currentState.path, newActiveNode.nodeId],
     };
     expect(reducer(currentState, {
       type: notesListActionTypes.SELECT_NODE,
@@ -45,11 +61,14 @@ describe('activeNodeReducer ', () => {
     })).toBe(currentState);
 
     // If selected node ID and active node ID are the same *BUT* equal NONE_SELECTED, compute new state, i.e. does not simply return current state.
-    currentState.id = NONE_SELECTED;
-    currentState.path = [currentState.path[0], NONE_SELECTED];
+    currentState = {
+      id: `${nodeTypes.FOLDER}${ID_DELIMITER}current-active-id`,
+      path: [`${nodeTypes.FOLDER}${ID_DELIMITER}current-active-parent`, `${nodeTypes.FOLDER}${ID_DELIMITER}current-active-id`],
+    };
+
     const noneSelected = {
       nodeId: NONE_SELECTED,
-      path: [currentState.path[0], 'parent1', NONE_SELECTED],
+      path: [NONE_SELECTED],
     };
     expectedState = {
       id: noneSelected.nodeId,
@@ -96,11 +115,11 @@ describe('activeNodeReducer ', () => {
         idx: selectedPathSegmentIdx,
       },
     })).toEqual({
-      id: NONE_SELECTED,
-      path: [...currentState.path.slice(0, selectedPathSegmentIdx + 1), NONE_SELECTED],
+      id: currentState.path[selectedPathSegmentIdx],
+      path: [...currentState.path.slice(0, selectedPathSegmentIdx + 1)],
     });
 
-    // If selected node is same as current state, return current state
+    // If selected node is the last node in path, return current state
     selectedPathSegmentIdx = currentState.path.length - 1;
     expect(reducer(currentState, {
       type: notesListActionTypes.NAVIGATE_PATH,
@@ -125,8 +144,8 @@ describe('activeNodeReducer ', () => {
       type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
       payload,
     })).toEqual({
-      id: NONE_SELECTED,
-      path: [currentState.path[0], NONE_SELECTED],
+      id: currentState.path[0],
+      path: [currentState.path[0]],
     });
 
     // Delete active node itself
@@ -138,9 +157,23 @@ describe('activeNodeReducer ', () => {
       type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
       payload,
     })).toEqual({
-      id: NONE_SELECTED,
-      path: [...currentState.path.slice(0, -1), NONE_SELECTED],
+      id: currentState.path[2],
+      path: [...currentState.path.slice(0, -1)],
     });
+
+    // Deleting the parent folder at the root
+    payload = {
+      deletedNodeId: currentState.path[0],
+    };
+
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
+      payload,
+    })).toEqual({
+      id: NONE_SELECTED,
+      path: [NONE_SELECTED],
+    });
+
 
     // If deleted node is not on current active path, no change to active path, nor active ID
     payload = {

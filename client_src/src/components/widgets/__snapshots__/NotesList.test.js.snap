@@ -27,7 +27,7 @@ exports[`should render all node titles in the first level of the received tree a
           class="lined dnt__pathnav-segment--active"
         >
           <span>
-            root-folder 1
+            folder root0
             &gt;
           </span>
         </li>
@@ -92,7 +92,7 @@ exports[`should render all node titles in the first level of the received tree a
                               <input
                                 class="dnt__node-title"
                                 type="text"
-                                value="root-folder 1"
+                                value="folder root0"
                               />
                             </form>
                           </span>
@@ -160,7 +160,7 @@ exports[`should render all node titles in the first level of the received tree a
                               <input
                                 class="dnt__node-title"
                                 type="text"
-                                value="root-note 1"
+                                value="note root1"
                               />
                             </form>
                           </span>
@@ -219,7 +219,7 @@ exports[`should render all node titles in the first level of the received tree a
                               <input
                                 class="dnt__node-title"
                                 type="text"
-                                value="root-folder 2"
+                                value="folder root2"
                               />
                             </form>
                           </span>

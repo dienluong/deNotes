@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { selectTitlesFromActivePath, selectSiblingsOfActiveNode } from '../redux/selectors';
+import { selectTitlesFromActivePath, selectSiblingsOfActiveNode } from '../redux/selectors/index.js';
 import * as rootReducer from '../redux/reducers';
 import NotesList from './widgets/NotesList';
 import {

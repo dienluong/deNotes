@@ -53,7 +53,7 @@ it('renders correctly with prop values taken from redux store', () => {
     },
   };
   const expectedProps = {
-    tree: [...mockedNotesTree.tree],
+    tree: [...mockedNotesTree.tree[0].children],
     activeNode: { ...mockedInitialState.activeNode },
     activePath: [mockedNotesTree.tree[0].title],
     getNodeKey,

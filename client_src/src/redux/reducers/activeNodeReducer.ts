@@ -1,6 +1,7 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
+import { translateNodeIdToInfo } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
-import { NONE_SELECTED } from '../../utils/appCONSTANTS';
+import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
 
 // Types
 import { AnyAction } from 'redux';
@@ -18,11 +19,13 @@ const initialActiveNode = baseState.activeNode;
 function _changeActiveNodeOnPathNavClick({ currentActive, idx }: { currentActive: ActiveNodeT, idx: number })
   : ActiveNodeT {
   if (Number.isSafeInteger(idx) && idx < (currentActive.path.length - 1)) {
-    // Active node ID set to NONE_SELECTED because we switched parent folder but no node in that folder is selected by default
+    const newActivePath = currentActive.path.slice(0, idx + 1);
+    const newActiveNode = newActivePath.length ?
+      { id: newActivePath[newActivePath.length - 1], path: newActivePath } :
+      { id: NONE_SELECTED, path: [NONE_SELECTED] };
     return {
       ...currentActive,
-      id: NONE_SELECTED,
-      path: [...currentActive.path.slice(0, idx + 1), NONE_SELECTED],
+      ...newActiveNode,
     };
   } else {
     // If last entry of the path was selected, then no need to change active node
@@ -37,10 +40,14 @@ function _changeActiveNodeOnDelete({ currentActive, deletedNodeId }: { currentAc
   const deletedNodeIdx = currentActive.path.lastIndexOf(deletedNodeId);
   if (deletedNodeIdx >= 0) {
       // Since deleted node is part of active path, truncate the path to find parent folder
-      const newActivePath: ActiveNodeT['path'] = [...(currentActive.path.slice(0, deletedNodeIdx)), NONE_SELECTED];
+      const newActivePath: ActiveNodeT['path'] = [...(currentActive.path.slice(0, deletedNodeIdx))];
+      // If the deleted node was at the root, then use NONE_SELECTED as new active node.
+      if (!newActivePath.length) {
+        newActivePath[0] = NONE_SELECTED;
+      }
       returnedActiveNode = {
         ...currentActive,
-        id: NONE_SELECTED,
+        id: newActivePath[newActivePath.length - 1],
         path: newActivePath,
       };
   }
@@ -73,7 +80,15 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentAct
     }
   } else {
     // If no path provided, use the current active path
+    const nodeInfo = translateNodeIdToInfo({ nodeId: currentActive.id });
+    if (nodeInfo && nodeInfo.type === nodeTypes.FOLDER) {
+      newPath = [...currentActive.path, nodeId];
+    } else if (nodeInfo && nodeInfo.type === nodeTypes.ITEM){
+      // If current active node is an item, use its parent folder to build new active node.
       newPath = [...(currentActive.path.slice(0, -1)), nodeId];
+    } else {
+      return currentActive;
+    }
   }
 
   return { id: nodeId, path: newPath };

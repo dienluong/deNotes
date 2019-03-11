@@ -1,5 +1,5 @@
 import * as moduleToTest from './treeUtils';
-import { nodeTypes } from '../utils/appCONSTANTS';
+import { NONE_SELECTED, nodeTypes } from '../utils/appCONSTANTS';
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|^|';
 
 describe('1. equals()', () => {
@@ -111,27 +111,41 @@ describe('1. equals()', () => {
   });
 });
 
-describe('2. findClosestParent ', () => {
-  it('should return the index of parent node for given path', () => {
+describe('2. findDeepestFolder ', () => {
+  it('should return the index of FOLDER node deepest in given path', () => {
+    // case where ITEM node is last entry
     let testPath = [`${nodeTypes.FOLDER}${ID_DELIMITER}1111`, `${nodeTypes.ITEM}${ID_DELIMITER}2222`];
-    expect(moduleToTest.findClosestParent(testPath)).toBe(0);
+    expect(moduleToTest.findDeepestFolder(testPath)).toBe(0);
 
+    // case where FOLDER node is last entry
     testPath = [`${nodeTypes.FOLDER}${ID_DELIMITER}0000`, `${nodeTypes.FOLDER}${ID_DELIMITER}1111`, `${nodeTypes.FOLDER}${ID_DELIMITER}2222`];
-    expect(moduleToTest.findClosestParent(testPath)).toBe(1);
+    expect(moduleToTest.findDeepestFolder(testPath)).toBe(2);
+
+    // case where FOLDER node is last and lone entry
+    testPath = [`${nodeTypes.FOLDER}${ID_DELIMITER}1111`];
+    expect(moduleToTest.findDeepestFolder(testPath)).toBe(0);
   });
 
-  it('should return null if path only has one entry', () => {
-    let testPath = [`${nodeTypes.FOLDER}${ID_DELIMITER}1111`];
-    expect(moduleToTest.findClosestParent(testPath)).toBeNull();
+  it('should return -1, i.e. the "deepest" FOLDER is root, if path only has one non-FOLDER entry', () => {
+    // case where ITEM node is last and lone entry
+    let testPath = [`${nodeTypes.ITEM}${ID_DELIMITER}1111`];
+    expect(moduleToTest.findDeepestFolder(testPath)).toEqual(-1);
+    // case where no selected node in root folder
+    testPath = [NONE_SELECTED];
+    expect(moduleToTest.findDeepestFolder(testPath)).toEqual(-1);
   });
 
   it('should return null if invalid path received', () => {
     let testPath = [];
-    expect(moduleToTest.findClosestParent(testPath)).toBeNull();
-    testPath = [1, 2, `${nodeTypes.FOLDER}${ID_DELIMITER}3333`];
-    expect(moduleToTest.findClosestParent(testPath)).toBeNull();
+    expect(moduleToTest.findDeepestFolder(testPath)).toBeNull();
+    // 2 is not a valid folder ID (must be a string)
+    testPath = ['1', 2, `${nodeTypes.ITEM}${ID_DELIMITER}3333`];
+    expect(moduleToTest.findDeepestFolder(testPath)).toBeNull();
+    // the first item in path is not a valid folder ID (must start with a valid node type)
+    testPath = [`my${nodeTypes.FOLDER}${ID_DELIMITER}3333`, `${nodeTypes.ITEM}${ID_DELIMITER}3333`];
+    expect(moduleToTest.findDeepestFolder(testPath)).toBeNull();
     testPath = {};
-    expect(moduleToTest.findClosestParent(testPath)).toBeNull();
+    expect(moduleToTest.findDeepestFolder(testPath)).toBeNull();
   });
 });
 

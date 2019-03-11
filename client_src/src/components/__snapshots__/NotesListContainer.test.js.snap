@@ -27,7 +27,7 @@ exports[`renders correctly with prop values taken from redux store 1`] = `
           class="lined dnt__pathnav-segment--active"
         >
           <span>
-            root-folder 1
+            folder root0
             &gt;
           </span>
         </li>
@@ -49,7 +49,7 @@ exports[`renders correctly with prop values taken from redux store 1`] = `
           <div
             class="ReactVirtualized__Grid__innerScrollContainer"
             role="rowgroup"
-            style="width: auto; height: 186px; max-width: 200px; max-height: 186px; overflow: hidden; position: relative;"
+            style="width: auto; height: 248px; max-width: 200px; max-height: 248px; overflow: hidden; position: relative;"
           >
             <div
               class="node"
@@ -60,22 +60,15 @@ exports[`renders correctly with prop values taken from redux store 1`] = `
                 style="padding-left: 0px;"
               >
                 <div
-                  data-testid="FOLDER_NODE|^|1"
+                  data-testid="ITEM_NODE|^|2"
                   style="height: 100%;"
                   tabindex="0"
                 >
-                  <div>
-                    <button
-                      aria-label="Collapse"
-                      class="expandButton"
-                      type="button"
-                    />
-                  </div>
                   <div
                     class="rowWrapper"
                   >
                     <div
-                      class="row dnt__tree-node dnt__tree-node--active"
+                      class="row dnt__tree-node"
                       style="opacity: 1; padding-left: 45px;"
                     >
                       <div
@@ -92,7 +85,132 @@ exports[`renders correctly with prop values taken from redux store 1`] = `
                               <input
                                 class="dnt__node-title"
                                 type="text"
-                                value="root-folder 1"
+                                value="note root0.children0"
+                              />
+                            </form>
+                          </span>
+                          
+                        </div>
+                        <div
+                          class="rowToolbar"
+                        >
+                          <div
+                            class="toolbarButton"
+                          >
+                            <button
+                              class="dnt__tree-node-btn"
+                            >
+                              x
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 62px; width: 100%;"
+            >
+              <div
+                class="nodeContent"
+                style="padding-left: 0px;"
+              >
+                <div
+                  data-testid="ITEM_NODE|^|3"
+                  style="height: 100%;"
+                  tabindex="0"
+                >
+                  <div
+                    class="rowWrapper"
+                  >
+                    <div
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
+                    >
+                      <div
+                        class="rowContents"
+                        draggable="true"
+                      >
+                        <div
+                          class="rowLabel"
+                        >
+                          <span
+                            class="rowTitle"
+                          >
+                            <form>
+                              <input
+                                class="dnt__node-title"
+                                type="text"
+                                value="note root0.children1"
+                              />
+                            </form>
+                          </span>
+                          
+                        </div>
+                        <div
+                          class="rowToolbar"
+                        >
+                          <div
+                            class="toolbarButton"
+                          >
+                            <button
+                              class="dnt__tree-node-btn"
+                            >
+                              x
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="node"
+              style="height: 62px; left: 0px; position: absolute; top: 124px; width: 100%;"
+            >
+              <div
+                class="nodeContent"
+                style="padding-left: 0px;"
+              >
+                <div
+                  data-testid="FOLDER_NODE|^|4"
+                  style="height: 100%;"
+                  tabindex="0"
+                >
+                  <div>
+                    <button
+                      aria-label="Collapse"
+                      class="expandButton"
+                      type="button"
+                    />
+                  </div>
+                  <div
+                    class="rowWrapper"
+                  >
+                    <div
+                      class="row dnt__tree-node"
+                      style="opacity: 1; padding-left: 45px;"
+                    >
+                      <div
+                        class="rowContents"
+                        draggable="true"
+                      >
+                        <div
+                          class="rowLabel"
+                        >
+                          <span
+                            class="rowTitle"
+                          >
+                            <form>
+                              <input
+                                class="dnt__node-title"
+                                type="text"
+                                value="folder root0.children2"
                               />
                             </form>
                           </span>
@@ -128,14 +246,14 @@ exports[`renders correctly with prop values taken from redux store 1`] = `
             </div>
             <div
               class="node"
-              style="height: 62px; left: 0px; position: absolute; top: 62px; width: 100%;"
+              style="height: 62px; left: 0px; position: absolute; top: 186px; width: 100%;"
             >
               <div
                 class="nodeContent"
                 style="padding-left: 0px;"
               >
                 <div
-                  data-testid="ITEM_NODE|^|8"
+                  data-testid="FOLDER_NODE|^|7"
                   style="height: 100%;"
                   tabindex="0"
                 >
@@ -160,66 +278,7 @@ exports[`renders correctly with prop values taken from redux store 1`] = `
                               <input
                                 class="dnt__node-title"
                                 type="text"
-                                value="root-note 1"
-                              />
-                            </form>
-                          </span>
-                          
-                        </div>
-                        <div
-                          class="rowToolbar"
-                        >
-                          <div
-                            class="toolbarButton"
-                          >
-                            <button
-                              class="dnt__tree-node-btn"
-                            >
-                              x
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="node"
-              style="height: 62px; left: 0px; position: absolute; top: 124px; width: 100%;"
-            >
-              <div
-                class="nodeContent"
-                style="padding-left: 0px;"
-              >
-                <div
-                  data-testid="FOLDER_NODE|^|9"
-                  style="height: 100%;"
-                  tabindex="0"
-                >
-                  <div
-                    class="rowWrapper"
-                  >
-                    <div
-                      class="row dnt__tree-node"
-                      style="opacity: 1; padding-left: 45px;"
-                    >
-                      <div
-                        class="rowContents"
-                        draggable="true"
-                      >
-                        <div
-                          class="rowLabel"
-                        >
-                          <span
-                            class="rowTitle"
-                          >
-                            <form>
-                              <input
-                                class="dnt__node-title"
-                                type="text"
-                                value="root-folder 2"
+                                value="folder root0.children3"
                               />
                             </form>
                           </span>

@@ -1,87 +1,31 @@
 import reducer from './notesTreeReducer';
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import initialState from '../misc/initialState';
-import { nodeTypes } from '../../utils/appCONSTANTS';
+import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
+import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
 
 describe('notesTreeReducer ', () => {
-  const currentTree = [
-    {
-      title: 'test root folder 1',
-      subtitle: 'test root folder 1 subtitle',
-      uniqid: 'my-test-root-folder-1',
-      get id() {
-        return `${this.type}-${this.uniqid}`;
-      },
-      type: nodeTypes.FOLDER,
-      expanded: true,
-      children: [
-        {
-          title: 'test child 0',
-          subtitle: 'test child subtitle 0',
-          uniqid: 'my-test-child-0',
-          get id() {
-            return `${this.type}-${this.uniqid}`;
-          },
-          type: nodeTypes.ITEM,
-        },
-        {
-          title: 'test child 1',
-          subtitle: 'test child subtitle 1',
-          uniqid: 'my-test-child-1',
-          get id() {
-            return `${this.type}-${this.uniqid}`;
-          },
-          type: nodeTypes.FOLDER,
-          expanded: true,
-          children: [
-            {
-              title: 'test grandchild 0',
-              subtitle: 'test grandchild subtitle 0',
-              uniqid: 'my-test-grandchild-0',
-              get id() {
-                return `${this.type}-${this.uniqid}`;
-              },
-              type: nodeTypes.ITEM,
-            },
-          ],
-        },
-        {
-          title: 'test child 2',
-          subtitle: 'test child subtitle 2',
-          uniqid: 'my-test-child-2',
-          get id() {
-            return `${this.type}-${this.uniqid}`;
-          },
-          type: nodeTypes.ITEM,
-        },
-      ],
-    },
-    {
-      title: 'test root item 1',
-      subtitle: 'test root item 1 subtitle',
-      uniqid: 'my-test-root-item-1',
-      get id() {
-        return `${this.type}-${this.uniqid}`;
-      },
-      type: nodeTypes.ITEM,
-    },
-  ];
+  let currentTree, currentState;
 
-  const currentState = {
-    id: 'my-current-state',
-    tree: currentTree,
-    dateCreated: 10,
-    dateModified: 20,
-  };
+  beforeEach(() => {
+    // make a copy of the mocked tree
+    currentTree = JSON.parse(JSON.stringify(mockedTree));
+    currentState = {
+      id: 'my-current-state',
+      tree: currentTree,
+      dateCreated: 1000,
+      dateModified: 2000,
+    };
+  });
 
   it('should return the initial state by default', () => {
     expect(reducer(undefined, {})).toEqual(initialState.notesTree);
   });
 
   it('should return current state if no payload received', () => {
-    const currentState = {
+    currentState = {
       id: 'current tree ID',
-      tree: [{ id: '1' }, { id: '2' }],
+      tree: currentTree,
       dateCreated: 12340,
       dateModified: 56789,
     };
@@ -123,44 +67,32 @@ describe('notesTreeReducer ', () => {
         ],
       },
     ];
-    const newState = {
+    const expectedNewState = {
       id: 'my-new-state',
       tree: newTree,
-      dateCreated: 101,
-      dateModified: 202,
+      dateCreated: 102030,
+      dateModified: 302010,
     };
 
     expect(reducer(currentState, {
       type: notesListActionTypes.CHANGE_NOTES_TREE,
       payload: {
-        notesTree: newState,
+        notesTree: expectedNewState,
       },
     })).toEqual({
       ...currentState,
-      ...newState,
+      ...expectedNewState,
     });
   });
 
   it('should, on CHANGE_NODE_TITLE, return a tree with the title of specified node changed', () => {
     const expectedDate = 20202;
     const newTitle = 'a new title';
-    const newTree = [
-      {
-        ...currentTree[0],
-        children: [
-          currentTree[0].children[0],
-          {
-            ...currentTree[0].children[1],
-            title: newTitle,
-          },
-          currentTree[0].children[2],
-        ],
-      },
-      currentTree[1],
-    ];
-    const newState = {
+    const expectedNewTree = JSON.parse(JSON.stringify(currentTree));
+    expectedNewTree[0].children[3].title = newTitle;
+    const expectedNewState = {
       ...currentState,
-      tree: newTree,
+      tree: expectedNewTree,
       dateModified: expectedDate,
     };
 
@@ -168,10 +100,10 @@ describe('notesTreeReducer ', () => {
       type: notesListActionTypes.CHANGE_NODE_TITLE,
       payload: {
         title: newTitle,
-        node: currentTree[0].children[1],
+        node: currentTree[0].children[3],
         now: expectedDate,
       },
-    })).toEqual(newState);
+    })).toEqual(expectedNewState);
 
     // if node invalid, return current state
     expect(reducer(currentState, {
@@ -195,33 +127,24 @@ describe('notesTreeReducer ', () => {
   });
 
   it('should, on DELETE_NODE, return a tree with the specified node removed.', () => {
-    const expectedDate = 3003;
+    const expectedDate = 300300;
     // New tree is current tree but with one node removed
-    const newTree = [
-      {
-        ...currentTree[0],
-        children: [
-          currentTree[0].children[0],
-          // currentTree[0].children[1] removed
-          currentTree[0].children[2],
-        ],
-      },
-      currentTree[1],
-    ];
-    const newState = {
+    const expectedNewTree = JSON.parse(JSON.stringify(currentTree));
+    expectedNewTree.splice(0, 1);
+    const expectedNewState = {
       ...currentState,
-      tree: newTree,
+      tree: expectedNewTree,
       dateModified: expectedDate,
     };
 
     expect(reducer(currentState, {
       type: notesListActionTypes.DELETE_NODE,
       payload: {
-        nodeToDelete: currentTree[0].children[1],
-        activePath: [currentTree[0].id, currentTree[0].children[1].id],
+        nodeToDelete: currentTree[0],
+        activePath: [NONE_SELECTED],
         now: expectedDate,
       },
-    })).toEqual(newState);
+    })).toEqual(expectedNewState);
   });
 
   it('should, on CHANGE_NOTES_TREE_FOLDER, return modified tree from received node', () => {
@@ -255,41 +178,40 @@ describe('notesTreeReducer ', () => {
         type: nodeTypes.ITEM,
       },
     ];
-    let newTree = [
-      {
-        ...currentTree[0],
-        children: [
-          currentTree[0].children[0],
-          {
-            ...currentTree[0].children[1],
-            children: newFolder,
-          },
-          currentTree[0].children[2],
-        ],
-      },
-      currentTree[1],
-    ];
-    let newState = {
+    let expectedNewTree = JSON.parse(JSON.stringify(currentTree));
+    expectedNewTree[0].children[2].children = newFolder;
+    let expectedNewState = {
       ...currentState,
-      tree: newTree,
+      tree: expectedNewTree,
       dateModified: expectedDate,
     };
 
+    // active node is the actual folder to be replaced
     expect(reducer(currentState, {
       type: notesListActionTypes.CHANGE_NOTES_TREE_FOLDER,
       payload: {
         folder: newFolder,
-        activePath: [currentTree[0].id, currentTree[0].children[1].id, currentTree[0].children[1].children[0].id],
+        activePath: [currentTree[0].id, currentTree[0].children[2].id, currentTree[0].children[2]],
         now: expectedDate,
       },
-    })).toEqual(newState);
+    })).toEqual(expectedNewState);
+
+    // active node is one of the children of the folder to be replaced
+    expect(reducer(currentState, {
+      type: notesListActionTypes.CHANGE_NOTES_TREE_FOLDER,
+      payload: {
+        folder: newFolder,
+        activePath: [currentTree[0].id, currentTree[0].children[2].id, currentTree[0].children[2].children[0].id],
+        now: expectedDate,
+      },
+    })).toEqual(expectedNewState);
 
     // should work with empty new folder as well. Here, we are replacing root folder
     newFolder = [];
-    newTree = [];
-    newState = {
+    expectedNewTree = newFolder;
+    expectedNewState = {
       ...currentState,
-      tree: newTree,
+      tree: expectedNewTree,
       dateModified: expectedDate,
     };
 
@@ -300,7 +222,16 @@ describe('notesTreeReducer ', () => {
         activePath: [currentTree[1].id],
         now: expectedDate,
       },
-    })).toEqual(newState);
+    })).toEqual(expectedNewState);
+
+    expect(reducer(currentState, {
+      type: notesListActionTypes.CHANGE_NOTES_TREE_FOLDER,
+      payload: {
+        folder: newFolder,
+        activePath: [NONE_SELECTED],
+        now: expectedDate,
+      },
+    })).toEqual(expectedNewState);
 
     // should return current state if folder is invalid (valid folder must be an array)
     newFolder = { id: 'invalid folder' };
@@ -315,7 +246,7 @@ describe('notesTreeReducer ', () => {
 
     // should return current state if given path does not lead to folder in tree
     newFolder = [];
-    let invalidActivePath = [currentTree[0].id, `${nodeTypes.FOLDER}-non-existent-id`, currentTree[0].children[1].children[0].id];
+    let invalidActivePath = [currentTree[0].id, `${nodeTypes.FOLDER}-non-existent-id`, currentTree[0].children[2].children[0].id];
     expect(reducer(currentState, {
       type: notesListActionTypes.CHANGE_NOTES_TREE_FOLDER,
       payload: {

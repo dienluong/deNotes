@@ -80,45 +80,25 @@ export function selectNodeThunkAction({ id, path }: { id: string, path?: string[
         .catch((err: Error) => { console.log(err); }); // TODO: log error?
     }
 
-    let returnVal = { type: 'NO_OP' };
+    let returnVal = dispatch({
+      type: notesListActionTypes.SELECT_NODE,
+      payload: {
+        nodeId: id,
+        path,
+      },
+    });
 
-    // If selected node is a FOLDER, then don't select any node.
-    // If selected node is an ITEM, then simply select it
-    const nodeInfo = translateNodeIdToInfo({ nodeId: id });
-    if (nodeInfo && nodeInfo.type === nodeTypes.FOLDER) {
-      /* A folder was selected */
-      const defaultPath = [...getState().activeNode.path.slice(0, -1), id];
-      returnVal = dispatch({
-        type: notesListActionTypes.SELECT_NODE,
-        payload: {
-          nodeId: NONE_SELECTED,
-          path: [...(path || defaultPath), NONE_SELECTED],
-        },
-      });
-    } else if (nodeInfo && nodeInfo.type === nodeTypes.ITEM) {
-      /* An ITEM (note) was selected */
-      returnVal = dispatch({
-        type: notesListActionTypes.SELECT_NODE,
-        payload: {
-          nodeId: id,
-          path,
-        },
-      });
-
-      // If new active node is an ITEM (note) and if its content is not already open, then fetch its content
-      const activeNodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
-      if ( activeNodeInfo && activeNodeInfo.type === nodeTypes.ITEM) {
-        const uniqid = activeNodeInfo.uniqid;
-        // Fetch note content only if not already loaded
-        if (uniqid !== getState().editorContent.id) {
-          dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
-            .catch((err: ActionError) => {
-              window.alert(`Error loading saved note content: ${err.message}`);
-              return err.action;
-            }); // TODO: adjust error handling.
-        }
-      } else {
-        //TODO: Load blank editor canvas...
+    // If new active node is an ITEM (note) and if its content is not already open, then fetch its content
+    const activeNodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
+    if ( activeNodeInfo && activeNodeInfo.type === nodeTypes.ITEM) {
+      const uniqid = activeNodeInfo.uniqid;
+      // Fetch note content only if not already loaded
+      if (uniqid !== getState().editorContent.id) {
+        dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
+          .catch((err: ActionError) => {
+            window.alert(`Error loading saved note content: ${err.message}`);
+            return err.action;
+          }); // TODO: adjust error handling.
       }
     }
 
@@ -228,14 +208,21 @@ export function fetchNotesTreeThunkAction()
       payload: { userId },
     });
 
+    // Immediately save currently opened note
+    const currentContent = getState().editorContent;
+    if (currentContent.id) {
+      _editorContentStorage.save(currentContent)
+        .catch((err: Error) => console.log(err)); // TODO: log error?
+    }
+
     return _notesTreeStorage.load({ userId })
       .then((notesTree: NotesTreeT) => {
         if (notesTree && Array.isArray(notesTree.tree)) {
-          const tree = notesTree.tree;
-          const activeNodeId = tree.length ? tree[0].id : NONE_SELECTED;
+          // Select root folder
+          // TODO: adjust activeNode to where user left off
           const activeNode: ActiveNodeT = {
-            id: activeNodeId,
-            path: [activeNodeId], // TODO: adjust activeNode to where user left off
+            id: NONE_SELECTED,
+            path: [NONE_SELECTED],
           };
           const returnVal = dispatch({
             type: notesListActionTypes.FETCH_NOTES_TREE_SUCCESS,
@@ -249,6 +236,7 @@ export function fetchNotesTreeThunkAction()
               notesTree,
             },
           });
+
           dispatch({
             type: notesListActionTypes.SELECT_NODE,
             payload: {
@@ -266,9 +254,7 @@ export function fetchNotesTreeThunkAction()
       .catch((err: Error) => {
         // If no tree found for this user, use default empty tree and add new node (new blank note)
         const error = new Error(`No tree loaded. Error: "${err.message}" Using default tree.`);
-        // TODO: Remove
-        console.log(error);
-        dispatch({
+        const returnVal = dispatch({
           type: notesListActionTypes.FETCH_NOTES_TREE_FAILURE,
           payload: { error },
         });
@@ -286,7 +272,7 @@ export function fetchNotesTreeThunkAction()
             notesTree: defaultNotesTree,
           },
         });
-        // To represent no node selected, set to NONE_SELECTED
+        // Select root
         dispatch({
           type: notesListActionTypes.SELECT_NODE,
           payload: {
@@ -295,8 +281,7 @@ export function fetchNotesTreeThunkAction()
           },
         });
 
-        // Add a "note" node (an ITEM) to the root of the tree
-        return dispatch(addAndSelectNodeThunkAction({ kind: nodeTypes.ITEM }));
+        return Promise.resolve(returnVal);
       });
   };
 }
