@@ -10,7 +10,7 @@ import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorAc
 import { mockedContent } from '../../test-utils/mocks/mockedEditorContent';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
 import { find } from 'react-sortable-tree';
-import { getNodeKey } from '../../utils/treeUtils';
+import * as treeUtils from '../../utils/treeUtils';
 import { NONE_SELECTED, nodeTypes } from '../../utils/appCONSTANTS';
 
 const mockStore = setupMockStore([thunk]);
@@ -213,7 +213,7 @@ describe('2. deleteNodeThunkAction ', () => {
     // Choose a folder node in mocked tree as active node
     const selectedNodeId = mockedTree[0].children[2].id;
     const selectedNodeInfo = find({
-      getNodeKey,
+      getNodeKey: treeUtils.getNodeKey,
       treeData: mockedTree,
       searchQuery: selectedNodeId,
       searchMethod: ({ node, searchQuery }) => node.id === searchQuery,
@@ -277,7 +277,7 @@ describe('2. deleteNodeThunkAction ', () => {
     // Choose active node in mocked tree that is a note (type=ITEM)
     const selectedNodeId = mockedTree[1].id;
     const selectedNodeInfo = find({
-      getNodeKey,
+      getNodeKey: treeUtils.getNodeKey,
       treeData: mockedTree,
       searchQuery: selectedNodeId,
       searchMethod: ({ node, searchQuery }) => node.id === searchQuery,
@@ -345,7 +345,7 @@ describe('2. deleteNodeThunkAction ', () => {
     // Choose an active node
     const selectedNodeId = mockedTree[1].id;
     const selectedNodeInfo = find({
-      getNodeKey,
+      getNodeKey: treeUtils.getNodeKey,
       treeData: mockedTree,
       searchQuery: selectedNodeId,
       searchMethod: ({ node, searchQuery }) => node.id === searchQuery,
@@ -414,7 +414,16 @@ describe('3. addAndSelectNodeThunkAction ', () => {
     mockedSave.mockClear();
   });
 
-  it('should save the current content before adding an item to the tree and switching to that item', () => {
+  it('should save the current content, create the new node and dispatch action', () => {
+    const kind = nodeTypes.ITEM;
+    const uniqid = '11223344';
+    const newNode = {
+      title: 'new node title',
+      subtitle: 'new node subtitle',
+      type: kind,
+      uniqid,
+      id: `${kind}${ID_DELIMITER}${uniqid}`,
+    };
     const editorContent = {
       ...initialState.editorContent,
       id: 345345345,
@@ -435,23 +444,26 @@ describe('3. addAndSelectNodeThunkAction ', () => {
         return expectedDate;
       }
     };
-    const kind = nodeTypes.ITEM;
     const expectedAction = [
       {
         type: notesListActionTypes.ADD_AND_SELECT_NODE,
         payload: {
-          kind,
+          newNode,
           now: expectedDate,
         },
       },
     ];
 
     mockedSave.mockImplementation(() => Promise.resolve('Saved'));
+    const createNodeSpy = jest.spyOn(treeUtils, 'createNode');
+    createNodeSpy.mockImplementation(() => newNode);
 
-    expect.assertions(3);
+    expect.assertions(4);
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
     expect(mockedSave).lastCalledWith(editorContent);
+    expect(createNodeSpy).lastCalledWith({ type: kind });
     expect(mockedStore.getActions()).toEqual(expectedAction);
+    createNodeSpy.mockRestore();
   });
 });
 
@@ -675,7 +687,7 @@ describe('5. navigatePathThunkAction ', () => {
     // Select an active node
     const selectedNode = mockedTree[0].children[2].children[1];
     const selectedNodeInfo = find({
-      getNodeKey,
+      getNodeKey: treeUtils.getNodeKey,
       treeData: mockedTree,
       searchQuery: selectedNode.id,
       searchMethod: ({ node, searchQuery }) => node.id === searchQuery,
@@ -774,7 +786,7 @@ describe('6. changeNotesFolderThunkAction ', () => {
     // Choose an active node
     const selectedNode = mockedTree[0].children[2].children[0];
     const selectedNodeInfo = find({
-      getNodeKey,
+      getNodeKey: treeUtils.getNodeKey,
       treeData: mockedTree,
       searchQuery: selectedNode.id,
       searchMethod: ({ node, searchQuery }) => node.id === searchQuery,

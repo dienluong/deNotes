@@ -1,6 +1,6 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import { addNodeUnderParent } from 'react-sortable-tree';
-import { getNodeKey, createNode, translateNodeIdToInfo, equals } from '../../utils/treeUtils';
+import { getNodeKey, translateNodeIdToInfo, equals } from '../../utils/treeUtils';
 import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
 import initialState from '../misc/initialState';
 
@@ -15,7 +15,7 @@ import { AnyAction } from "redux";
  * @returns {{notesTree: *, activeNode: {id: *, path: Array}}}
  * @private
  */
-function _addAndSelectNewNode({ state, kind, now }: { state: AppStateT, kind: NodeTypeT, now: number })
+function _addAndSelectNewNode({ state, newNode, now }: { state: AppStateT, newNode: TreeNodeT, now: number })
   : AppStateT {
   let parentPath: ActiveNodeT['path'];
   if (equals(state.activeNode.path, [NONE_SELECTED])){
@@ -31,7 +31,6 @@ function _addAndSelectNewNode({ state, kind, now }: { state: AppStateT, kind: No
     }
   }
 
-  const newNode: TreeNodeT = createNode({ type: kind });
   let newActiveNodePath: ActiveNodeT['path'] = [...parentPath, newNode.id];
   let newActiveNodeId: ActiveNodeT['id'] = newNode.id;
 
@@ -79,7 +78,7 @@ function _addAndSelectNewNode({ state, kind, now }: { state: AppStateT, kind: No
   };
 
   // Only change the editorContent state if newly added node is a note, as opposed to a folder.
-  if (kind === nodeTypes.ITEM) {
+  if (newNode.type === nodeTypes.ITEM) {
     newState.editorContent = {
       ...initialState.editorContent,
       id: newNode.uniqid,

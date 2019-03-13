@@ -1,26 +1,13 @@
 import reducer from './reducedReducer';
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import initialState from '../misc/initialState';
-import uuid from 'uuid/v4';
 jest.mock('uuid/v4');
+import uuid from 'uuid/v4';
 import { createNode } from '../../utils/treeUtils';
 import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
 
 describe('reducedReducer', () => {
-  // Use the actual uuid implementation for now...
-  // uuid.mockImplementation(() => {
-  //   return require.requireActual('uuid/v4')();
-  // });
-  // const parentFolder = createNode({ title: 'test root', type: nodeTypes.FOLDER });
-  // const children = [createNode({ title: 'test child 1', type: nodeTypes.FOLDER }), createNode({ title: 'test child 2', type: nodeTypes.FOLDER })];
-  // const grandChild = [createNode({ title: 'test grandchild 1', type: nodeTypes.ITEM })];
-  // parentFolder.children = children;
-  // children[0].children = grandChild;
-  // const currentTree = [
-  //   parentFolder,
-  // ];
-
   const notesTree = {
     id: 'current-tree-id',
     tree: mockedTree,
@@ -68,6 +55,8 @@ describe('reducedReducer', () => {
     // Mock the uuid implementation to return a predictable ID we can verify with the assertion.
     uuid.mockImplementation(() => 'newly-created-node-uniqid');
     let expectedNewNode = createNode({ type: newNodeKind });
+    uuid.mockClear();
+
     // Build expected new tree
     let expectedNewTree = JSON.parse(JSON.stringify(currentTree));
     expectedNewTree[0].children[3].children.push(expectedNewNode);
@@ -103,7 +92,7 @@ describe('reducedReducer', () => {
     expect(reducer(currentState, {
       type: notesListActionTypes.ADD_AND_SELECT_NODE,
       payload: {
-        kind: newNodeKind,
+        newNode: expectedNewNode,
         now: expectedDate,
       },
     })).toEqual(expectedNewState);
@@ -116,6 +105,8 @@ describe('reducedReducer', () => {
 
     uuid.mockImplementation(() => 'another-newly-created-node-uniqid');
     expectedNewNode = createNode({ type: newNodeKind });
+    uuid.mockClear();
+
     // Build the expected new tree
     expectedNewTree = JSON.parse(JSON.stringify(currentTree));
     expectedNewTree[0].children[2].children.push(expectedNewNode);
@@ -152,7 +143,7 @@ describe('reducedReducer', () => {
     expect(reducer(currentState, {
       type: notesListActionTypes.ADD_AND_SELECT_NODE,
       payload: {
-        kind: newNodeKind,
+        newNode: expectedNewNode,
         now: expectedDate,
       },
     })).toEqual(expectedNewState);
@@ -165,6 +156,8 @@ describe('reducedReducer', () => {
 
     uuid.mockImplementation(() => 'yet-another-newly-created-node-uniqid');
     expectedNewNode = createNode({ type: newNodeKind });
+    uuid.mockClear();
+
     // Build the expected new tree
     expectedNewTree = JSON.parse(JSON.stringify(currentTree));
     expectedNewTree.push(expectedNewNode);
@@ -200,7 +193,7 @@ describe('reducedReducer', () => {
     expect(reducer(currentState, {
       type: notesListActionTypes.ADD_AND_SELECT_NODE,
       payload: {
-        kind: newNodeKind,
+        newNode: expectedNewNode,
         now: expectedDate,
       },
     })).toEqual(expectedNewState);
@@ -218,6 +211,8 @@ describe('reducedReducer', () => {
     // Mock the uuid implementation to return a predictable ID we can verify with the assertion.
     uuid.mockImplementation(() => 'newly-created-node-uniqid');
     let expectedNewNode = createNode({ type: newNodeKind });
+    uuid.mockClear();
+
     let expectedNewTree = JSON.parse(JSON.stringify(currentTree));
     expectedNewTree[0].children.push(expectedNewNode);
     expectedNewTree[0].expanded = true;
@@ -242,7 +237,7 @@ describe('reducedReducer', () => {
     expect(reducer(currentState, {
       type: notesListActionTypes.ADD_AND_SELECT_NODE,
       payload: {
-        kind: newNodeKind,
+        newNode: expectedNewNode,
         now: expectedDate,
       },
     })).toEqual(expectedNewState);
@@ -257,6 +252,8 @@ describe('reducedReducer', () => {
     // Mock the uuid implementation to return a predictable ID we can verify with the assertion.
     uuid.mockImplementation(() => 'another-newly-created-node-uniqid');
     expectedNewNode = createNode({ type: newNodeKind });
+    uuid.mockClear();
+
     expectedNewTree = JSON.parse(JSON.stringify(currentTree));
     expectedNewTree.push(expectedNewNode);
     expectedNotesTree = {
@@ -280,10 +277,9 @@ describe('reducedReducer', () => {
     expect(reducer(currentState, {
       type: notesListActionTypes.ADD_AND_SELECT_NODE,
       payload: {
-        kind: newNodeKind,
+        newNode: expectedNewNode,
         now: expectedDate,
       },
     })).toEqual(expectedNewState);
-
   });
 });

@@ -1,7 +1,7 @@
 import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
-import { translateNodeIdToInfo, getDescendantItems } from '../../utils/treeUtils';
+import { translateNodeIdToInfo, getDescendantItems, createNode } from '../../utils/treeUtils';
 import { NONE_SELECTED, nodeTypes } from '../../utils/appCONSTANTS';
 
 // Types
@@ -67,7 +67,7 @@ export function use({ notesTreeStorage, editorContentStorage }: { notesTreeStora
  * @param {string} params.id
  * @param {string[]} [params.path] If path not provided, then selected node is assumed to be in current active path.
  */
-export function selectNodeThunkAction({ id, path }: { id: string, path?: string[] })
+export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path?: TreeNodePathT })
   : ThunkAction<AnyAction, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     if (typeof id !== 'string' || !id.length) {
@@ -185,10 +185,11 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
         .catch((err: Error) => console.log(err)); // TODO: log error?
     }
 
+    const newNode: TreeNodeT = createNode({ type: kind });
     return dispatch({
       type: notesListActionTypes.ADD_AND_SELECT_NODE,
       payload: {
-        kind,
+        newNode,
         now: Date.now(),
       },
     });
