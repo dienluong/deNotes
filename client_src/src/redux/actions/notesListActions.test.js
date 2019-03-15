@@ -455,7 +455,7 @@ describe('3. addAndSelectNodeThunkAction ', () => {
     };
     let expectedAction = [
       {
-        type: notesListActionTypes.ADD_AND_SELECT_NODE,
+        type: notesListActionTypes.ADD_NODE,
         payload: {
           newNode,
           parentKey: '',
@@ -495,7 +495,7 @@ describe('3. addAndSelectNodeThunkAction ', () => {
 
     expectedAction = [
       {
-        type: notesListActionTypes.ADD_AND_SELECT_NODE,
+        type: notesListActionTypes.ADD_NODE,
         payload: {
           newNode,
           parentKey: activeNode.path[1],
@@ -531,7 +531,7 @@ describe('3. addAndSelectNodeThunkAction ', () => {
 
     expectedAction = [
       {
-        type: notesListActionTypes.ADD_AND_SELECT_NODE,
+        type: notesListActionTypes.ADD_NODE,
         payload: {
           newNode,
           parentKey: activeNode.path[1],
@@ -567,7 +567,7 @@ describe('3. addAndSelectNodeThunkAction ', () => {
 
     expectedAction = [
       {
-        type: notesListActionTypes.ADD_AND_SELECT_NODE,
+        type: notesListActionTypes.ADD_NODE,
         payload: {
           newNode,
           parentKey: '',

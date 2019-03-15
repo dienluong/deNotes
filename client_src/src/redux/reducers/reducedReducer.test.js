@@ -39,10 +39,10 @@ describe('reducedReducer', () => {
   });
 
   it('should return current state if no payload', () => {
-    expect(reducer(currentState, { type: notesListActionTypes.ADD_AND_SELECT_NODE })).toBe(currentState);
+    expect(reducer(currentState, { type: notesListActionTypes.ADD_NODE })).toBe(currentState);
   });
 
-  it('should, on ADD_AND_SELECT_NODE, return state w/ new tree and editor content for added ITEM node', () => {
+  it('should, on ADD_NODE, return state w/ new tree and editor content for added ITEM node', () => {
     let expectedDate = 40404;
     let newNodeKind = nodeTypes.ITEM;
     const uniqid = 'newly-created-node-uniqid';
@@ -83,7 +83,7 @@ describe('reducedReducer', () => {
     };
 
     expect(reducer(currentState, {
-      type: notesListActionTypes.ADD_AND_SELECT_NODE,
+      type: notesListActionTypes.ADD_NODE,
       payload: {
         newNode,
         parentKey,
@@ -120,7 +120,7 @@ describe('reducedReducer', () => {
     };
 
     expect(reducer(currentState, {
-      type: notesListActionTypes.ADD_AND_SELECT_NODE,
+      type: notesListActionTypes.ADD_NODE,
       payload: {
         newNode,
         parentKey,
@@ -129,7 +129,7 @@ describe('reducedReducer', () => {
     })).toEqual(expectedNewState);
   });
 
-  it('should, on ADD_AND_SELECT_NODE, return new tree w/ added FOLDER node, but editor content is unchanged', () => {
+  it('should, on ADD_NODE, return new tree w/ added FOLDER node, but editor content is unchanged', () => {
     let expectedDate = 4004;
     const uniqid = 'newly-created-node-uniqid';
     const currentTree = currentState.notesTree.tree;
@@ -157,7 +157,7 @@ describe('reducedReducer', () => {
     };
 
     expect(reducer(currentState, {
-      type: notesListActionTypes.ADD_AND_SELECT_NODE,
+      type: notesListActionTypes.ADD_NODE,
       payload: {
         newNode: expectedNewNode,
         parentKey,
@@ -184,7 +184,7 @@ describe('reducedReducer', () => {
     };
 
     expect(reducer(currentState, {
-      type: notesListActionTypes.ADD_AND_SELECT_NODE,
+      type: notesListActionTypes.ADD_NODE,
       payload: {
         newNode: expectedNewNode,
         parentKey,
@@ -193,7 +193,7 @@ describe('reducedReducer', () => {
     })).toEqual(expectedNewState);
   });
 
-  it('should, on ADD_AND_SELECT_NODE, return current state if parentKey is invalid', () => {
+  it('should, on ADD_NODE, return current state if parentKey is invalid', () => {
     let newNodeKind = nodeTypes.ITEM;
     const uniqid = 'newly-created-node-uniqid';
 
@@ -206,7 +206,7 @@ describe('reducedReducer', () => {
     let parentKey = undefined;
 
     expect(reducer(currentState, {
-      type: notesListActionTypes.ADD_AND_SELECT_NODE,
+      type: notesListActionTypes.ADD_NODE,
       payload: {
         newNode,
         parentKey,
@@ -217,7 +217,7 @@ describe('reducedReducer', () => {
     // ---> test case where parentKey is null
     parentKey = null;
     expect(reducer(currentState, {
-      type: notesListActionTypes.ADD_AND_SELECT_NODE,
+      type: notesListActionTypes.ADD_NODE,
       payload: {
         newNode,
         parentKey,
@@ -228,7 +228,7 @@ describe('reducedReducer', () => {
     // ---> test case where parentKey is not a string
     parentKey = 0;
     expect(reducer(currentState, {
-      type: notesListActionTypes.ADD_AND_SELECT_NODE,
+      type: notesListActionTypes.ADD_NODE,
       payload: {
         newNode,
         parentKey,

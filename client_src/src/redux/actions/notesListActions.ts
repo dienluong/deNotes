@@ -214,7 +214,7 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
     }
 
     const returnVal = dispatch({
-      type: notesListActionTypes.ADD_AND_SELECT_NODE,
+      type: notesListActionTypes.ADD_NODE,
       payload: {
         newNode,
         parentKey,

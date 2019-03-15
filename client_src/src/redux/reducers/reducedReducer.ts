@@ -75,7 +75,7 @@ export default function reducedReducer(state: AppStateT = initialState, action: 
   }
   console.log(`REDUCER: '${action.type}'`);
   switch (action.type) {
-    case notesListActionTypes.ADD_AND_SELECT_NODE:
+    case notesListActionTypes.ADD_NODE:
       return _addAndSelectNewNode({
         state,
         ...action.payload,
