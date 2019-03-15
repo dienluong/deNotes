@@ -173,5 +173,7 @@ describe('3. translateNodeIdToInfo', () => {
     expect(moduleToTest.translateNodeIdToInfo({ nodeId: invalidNodeId })).toBeNull();
     invalidNodeId = `afolder${ID_DELIMITER}2345`;
     expect(moduleToTest.translateNodeIdToInfo({ nodeId: invalidNodeId })).toBeNull();
+    invalidNodeId = NONE_SELECTED;
+    expect(moduleToTest.translateNodeIdToInfo({ nodeId: invalidNodeId })).toBeNull();
   });
 });
