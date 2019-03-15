@@ -79,6 +79,20 @@ describe('activeNodeReducer ', () => {
       payload: noneSelected,
     })).toEqual(expectedState);
 
+    // If active node is root folder, i.e. id: NONE_SELECTED, path: [NONE_SELECTED]
+    currentState = {
+      id: NONE_SELECTED,
+      path: [NONE_SELECTED],
+    };
+    expectedState = {
+      id: newActiveNode.nodeId,
+      path: [newActiveNode.nodeId],
+    };
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SELECT_NODE,
+      payload: newActiveNode,
+    })).toEqual(expectedState);
+
     // If payload is invalid, return current state
     const invalidPayload = {
       invalidProp: 'current-active-id',
