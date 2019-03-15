@@ -1,7 +1,7 @@
 import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
-import { translateNodeIdToInfo, getDescendantItems, createNode } from '../../utils/treeUtils';
+import { equals, translateNodeIdToInfo, getDescendantItems, createNode } from '../../utils/treeUtils';
 import { NONE_SELECTED, nodeTypes } from '../../utils/appCONSTANTS';
 
 // Types
@@ -178,21 +178,61 @@ export function switchActiveNodeOnDeleteAction({ deletedNodeId }: { deletedNodeI
 export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
   : ThunkAction<AnyAction, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
+    const state = getState();
+
     // Immediately save currently opened note
-    const currentContent = getState().editorContent;
+    const currentContent = state.editorContent;
     if (currentContent.id) {
       _editorContentStorage.save(currentContent)
         .catch((err: Error) => console.log(err)); // TODO: log error?
     }
 
     const newNode: TreeNodeT = createNode({ type: kind });
-    return dispatch({
+    let parentPath: ActiveNodeT['path'];
+    let parentKey: string;
+
+    // Determine parent path of the new node
+    if (equals(state.activeNode.path, [NONE_SELECTED])){
+      // case where active node is root folder (i.e. active ID = NONE_SELECTED and path = [NONE_SELECTED])
+      parentPath = [];
+    } else {
+      const activeNodeInfo = translateNodeIdToInfo({nodeId: state.activeNode.id});
+      if (activeNodeInfo && activeNodeInfo.type === nodeTypes.FOLDER) {
+        parentPath = state.activeNode.path;
+      } else {
+        // If current active node is not a FOLDER, simply truncate its path to obtain the parent path.
+        parentPath = state.activeNode.path.slice(0, -1);
+      }
+    }
+
+    // Determine parent key
+    if (parentPath.length) {
+      parentKey = parentPath[parentPath.length - 1];
+    } else {
+      // If path to parent node is [], then it means the active node is at the very root of the tree.
+      parentKey = '';
+    }
+
+    const returnVal = dispatch({
       type: notesListActionTypes.ADD_AND_SELECT_NODE,
       payload: {
         newNode,
+        parentKey,
         now: Date.now(),
       },
     });
+
+    let newActiveNodeId: ActiveNodeT['id'] = newNode.id;
+    let newActiveNodePath: ActiveNodeT['path'] = [...parentPath, newNode.id];
+    dispatch({
+      type: notesListActionTypes.SELECT_NODE,
+      payload: {
+        nodeId: newActiveNodeId,
+        path: newActiveNodePath,
+      },
+    });
+
+    return returnVal;
   };
 }
 

@@ -42,24 +42,23 @@ describe('reducedReducer', () => {
     expect(reducer(currentState, { type: notesListActionTypes.ADD_AND_SELECT_NODE })).toBe(currentState);
   });
 
-  it('should, on ADD_AND_SELECT_NODE, return state w/ 1) new tree, 2) new active node and 3) editor content for added ITEM node', () => {
-    let expectedDate = 4004;
+  it('should, on ADD_AND_SELECT_NODE, return state w/ new tree and editor content for added ITEM node', () => {
+    let expectedDate = 40404;
     let newNodeKind = nodeTypes.ITEM;
+    const uniqid = 'newly-created-node-uniqid';
     const currentTree = currentState.notesTree.tree;
-    // Select folder as active node
-    currentState.activeNode = {
-      id: currentTree[0].children[3].id,
-      path: [currentTree[0].id, currentTree[0].children[3].id],
-    };
+
+    // ---> test case where parent key is ID of a FOLDER
+    let parentKey = currentTree[0].children[3].id;
 
     // Mock the uuid implementation to return a predictable ID we can verify with the assertion.
-    uuid.mockImplementation(() => 'newly-created-node-uniqid');
-    let expectedNewNode = createNode({ type: newNodeKind });
+    uuid.mockImplementation(() => uniqid);
+    let newNode = createNode({ type: newNodeKind });
     uuid.mockClear();
 
-    // Build expected new tree
+    // Build expected new tree -- new node expected to be added at location given by parent key
     let expectedNewTree = JSON.parse(JSON.stringify(currentTree));
-    expectedNewTree[0].children[3].children.push(expectedNewNode);
+    expectedNewTree[0].children[3].children.push(newNode);
     expectedNewTree[0].children[3].expanded = true;
 
     let expectedNotesTree = {
@@ -68,15 +67,10 @@ describe('reducedReducer', () => {
       dateModified: expectedDate,
     };
 
-    let expectedActiveNode = {
-      id: expectedNewNode.id,
-      path: [...currentState.activeNode.path, expectedNewNode.id],
-    };
-
     let expectedEditorContent = {
       ...initialState.editorContent,
-      id: expectedNewNode.uniqid,
-      title: expectedNewNode.title,
+      id: uniqid,
+      title: newNode.title,
       dateCreated: expectedDate,
       dateModified: expectedDate,
       readOnly: false,
@@ -85,49 +79,35 @@ describe('reducedReducer', () => {
     let expectedNewState = {
       ...currentState,
       notesTree: expectedNotesTree,
-      activeNode: expectedActiveNode,
       editorContent: expectedEditorContent,
     };
 
     expect(reducer(currentState, {
       type: notesListActionTypes.ADD_AND_SELECT_NODE,
       payload: {
-        newNode: expectedNewNode,
+        newNode,
+        parentKey,
         now: expectedDate,
       },
     })).toEqual(expectedNewState);
 
-    // Should still work when active node is an ITEM
-    currentState.activeNode = {
-      id: currentTree[0].children[2].children[1].id,
-      path: [currentTree[0].id, currentTree[0].children[2].id, currentTree[0].children[2].children[1].id],
-    };
-
-    uuid.mockImplementation(() => 'another-newly-created-node-uniqid');
-    expectedNewNode = createNode({ type: newNodeKind });
-    uuid.mockClear();
-
+    // ---> test case where parentKey is empty string -- new node expected to be added at root
+    parentKey = '';
     // Build the expected new tree
     expectedNewTree = JSON.parse(JSON.stringify(currentTree));
-    expectedNewTree[0].children[2].children.push(expectedNewNode);
-    expectedNewTree[0].children[2].expanded = true;
+    expectedNewTree.push(newNode);
 
-    expectedDate = 50607;
+    expectedDate = 753753;
     expectedNotesTree = {
       ...currentState.notesTree,
       tree: expectedNewTree,
       dateModified: expectedDate,
     };
 
-    expectedActiveNode = {
-      id: expectedNewNode.id,
-      path: [...currentState.activeNode.path.slice(0, -1), expectedNewNode.id],
-    };
-
     expectedEditorContent = {
       ...initialState.editorContent,
-      id: expectedNewNode.uniqid,
-      title: expectedNewNode.title,
+      id: uniqid,
+      title: newNode.title,
       dateCreated: expectedDate,
       dateModified: expectedDate,
       readOnly: false,
@@ -136,80 +116,28 @@ describe('reducedReducer', () => {
     expectedNewState = {
       ...currentState,
       notesTree: expectedNotesTree,
-      activeNode: expectedActiveNode,
       editorContent: expectedEditorContent,
     };
 
     expect(reducer(currentState, {
       type: notesListActionTypes.ADD_AND_SELECT_NODE,
       payload: {
-        newNode: expectedNewNode,
-        now: expectedDate,
-      },
-    })).toEqual(expectedNewState);
-
-    // Should still work if active node is NONE_SELECTED (active folder is root)
-    currentState.activeNode = {
-      id: NONE_SELECTED,
-      path: [NONE_SELECTED],
-    };
-
-    uuid.mockImplementation(() => 'yet-another-newly-created-node-uniqid');
-    expectedNewNode = createNode({ type: newNodeKind });
-    uuid.mockClear();
-
-    // Build the expected new tree
-    expectedNewTree = JSON.parse(JSON.stringify(currentTree));
-    expectedNewTree.push(expectedNewNode);
-
-    expectedDate = 630630;
-    expectedNotesTree = {
-      ...currentState.notesTree,
-      tree: expectedNewTree,
-      dateModified: expectedDate,
-    };
-
-    expectedActiveNode = {
-      id: expectedNewNode.id,
-      path: [expectedNewNode.id],
-    };
-
-    expectedEditorContent = {
-      ...initialState.editorContent,
-      id: expectedNewNode.uniqid,
-      title: expectedNewNode.title,
-      dateCreated: expectedDate,
-      dateModified: expectedDate,
-      readOnly: false,
-    };
-
-    expectedNewState = {
-      ...currentState,
-      notesTree: expectedNotesTree,
-      activeNode: expectedActiveNode,
-      editorContent: expectedEditorContent,
-    };
-
-    expect(reducer(currentState, {
-      type: notesListActionTypes.ADD_AND_SELECT_NODE,
-      payload: {
-        newNode: expectedNewNode,
+        newNode,
+        parentKey,
         now: expectedDate,
       },
     })).toEqual(expectedNewState);
   });
 
-  it('should, on ADD_AND_SELECT_NODE, return new tree w/ added FOLDER node and updated active node, but editor content is unchanged', () => {
+  it('should, on ADD_AND_SELECT_NODE, return new tree w/ added FOLDER node, but editor content is unchanged', () => {
     let expectedDate = 4004;
+    const uniqid = 'newly-created-node-uniqid';
     const currentTree = currentState.notesTree.tree;
-    // A folder as active node
-    currentState.activeNode = {
-      id: currentTree[0].id,
-      path: [currentTree[0].id],
-    };
+    // ---> test case where parent key is ID of a FOLDER
+    let parentKey = currentTree[0].id;
     let newNodeKind = nodeTypes.FOLDER;
     // Mock the uuid implementation to return a predictable ID we can verify with the assertion.
-    uuid.mockImplementation(() => 'newly-created-node-uniqid');
+    uuid.mockImplementation(() => uniqid);
     let expectedNewNode = createNode({ type: newNodeKind });
     uuid.mockClear();
 
@@ -222,37 +150,24 @@ describe('reducedReducer', () => {
       dateModified: expectedDate,
     };
 
-    let expectedActiveNode = {
-      id: expectedNewNode.id,
-      path: [...currentState.activeNode.path, expectedNewNode.id],
-    };
-
     // Note: since we are adding a folder node, loaded content editor does not change
     let expectedNewState = {
       ...currentState,
       notesTree: expectedNotesTree,
-      activeNode: expectedActiveNode,
     };
 
     expect(reducer(currentState, {
       type: notesListActionTypes.ADD_AND_SELECT_NODE,
       payload: {
         newNode: expectedNewNode,
+        parentKey,
         now: expectedDate,
       },
     })).toEqual(expectedNewState);
 
-    // Should still work if we're at the root folder (NONE_SELECTED is active node)
+    // ---> test case where parentKey is empty string -- new FOLDER node expected to be added to root folder
+    parentKey = '';
     expectedDate = 897897;
-    // A folder as active node
-    currentState.activeNode = {
-      id: NONE_SELECTED,
-      path: [NONE_SELECTED],
-    };
-    // Mock the uuid implementation to return a predictable ID we can verify with the assertion.
-    uuid.mockImplementation(() => 'another-newly-created-node-uniqid');
-    expectedNewNode = createNode({ type: newNodeKind });
-    uuid.mockClear();
 
     expectedNewTree = JSON.parse(JSON.stringify(currentTree));
     expectedNewTree.push(expectedNewNode);
@@ -262,24 +177,63 @@ describe('reducedReducer', () => {
       dateModified: expectedDate,
     };
 
-    expectedActiveNode = {
-      id: expectedNewNode.id,
-      path: [expectedNewNode.id],
-    };
-
     // Note: since we are adding a folder node, loaded content editor does not change
     expectedNewState = {
       ...currentState,
       notesTree: expectedNotesTree,
-      activeNode: expectedActiveNode,
     };
 
     expect(reducer(currentState, {
       type: notesListActionTypes.ADD_AND_SELECT_NODE,
       payload: {
         newNode: expectedNewNode,
+        parentKey,
         now: expectedDate,
       },
     })).toEqual(expectedNewState);
+  });
+
+  it('should, on ADD_AND_SELECT_NODE, return current state if parentKey is invalid', () => {
+    let newNodeKind = nodeTypes.ITEM;
+    const uniqid = 'newly-created-node-uniqid';
+
+    // Mock the uuid implementation to return a predictable ID we can verify with the assertion.
+    uuid.mockImplementation(() => uniqid);
+    let newNode = createNode({ type: newNodeKind });
+    uuid.mockClear();
+
+    // ---> test case where parentKey is undefined
+    let parentKey = undefined;
+
+    expect(reducer(currentState, {
+      type: notesListActionTypes.ADD_AND_SELECT_NODE,
+      payload: {
+        newNode,
+        parentKey,
+        now: 123456,
+      },
+    })).toBe(currentState);
+
+    // ---> test case where parentKey is null
+    parentKey = null;
+    expect(reducer(currentState, {
+      type: notesListActionTypes.ADD_AND_SELECT_NODE,
+      payload: {
+        newNode,
+        parentKey,
+        now: 24680,
+      },
+    })).toBe(currentState);
+
+    // ---> test case where parentKey is not a string
+    parentKey = 0;
+    expect(reducer(currentState, {
+      type: notesListActionTypes.ADD_AND_SELECT_NODE,
+      payload: {
+        newNode,
+        parentKey,
+        now: 369,
+      },
+    })).toBe(currentState);
   });
 });
