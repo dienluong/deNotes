@@ -196,7 +196,7 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
       // case where active node is root folder (i.e. active ID = NONE_SELECTED and path = [NONE_SELECTED])
       parentPath = [];
     } else {
-      const activeNodeInfo = translateNodeIdToInfo({nodeId: state.activeNode.id});
+      const activeNodeInfo = translateNodeIdToInfo({ nodeId: state.activeNode.id });
       if (activeNodeInfo && activeNodeInfo.type === nodeTypes.FOLDER) {
         parentPath = state.activeNode.path;
       } else {
@@ -222,15 +222,18 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
       },
     });
 
-    let newActiveNodeId: ActiveNodeT['id'] = newNode.id;
-    let newActiveNodePath: ActiveNodeT['path'] = [...parentPath, newNode.id];
-    dispatch({
-      type: notesListActionTypes.SELECT_NODE,
-      payload: {
-        nodeId: newActiveNodeId,
-        path: newActiveNodePath,
-      },
-    });
+    const newNodeInfo = translateNodeIdToInfo({ nodeId: newNode.id });
+    if (newNodeInfo && newNodeInfo.type === nodeTypes.ITEM) {
+      const newActiveNodeId: ActiveNodeT['id'] = newNode.id;
+      const newActiveNodePath: ActiveNodeT['path'] = [...parentPath, newNode.id];
+      dispatch({
+        type: notesListActionTypes.SELECT_NODE,
+        payload: {
+          nodeId: newActiveNodeId,
+          path: newActiveNodePath,
+        },
+      });
+    }
 
     return returnVal;
   };
