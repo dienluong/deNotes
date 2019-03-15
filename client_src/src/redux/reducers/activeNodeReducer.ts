@@ -1,5 +1,5 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
-import { translateNodeIdToInfo } from '../../utils/treeUtils';
+import { translateNodeIdToInfo, equals } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
 import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
 
@@ -80,8 +80,8 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentAct
     }
   } else { // If no path provided, use the current active path
 
-    // If active folder is root
-    if ((currentActive.path.length === 1) && (currentActive.path[0] === NONE_SELECTED)) {
+    // If active folder is root with no item selected
+    if (equals(currentActive.path, [NONE_SELECTED])) {
       newPath = [nodeId];
     } else {
       const nodeInfo = translateNodeIdToInfo({ nodeId: currentActive.id });
