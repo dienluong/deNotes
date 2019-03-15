@@ -62,8 +62,8 @@ describe('activeNodeReducer ', () => {
 
     // If selected node ID and active node ID are the same *BUT* equal NONE_SELECTED, compute new state, i.e. does not simply return current state.
     currentState = {
-      id: `${nodeTypes.FOLDER}${ID_DELIMITER}current-active-id`,
-      path: [`${nodeTypes.FOLDER}${ID_DELIMITER}current-active-parent`, `${nodeTypes.FOLDER}${ID_DELIMITER}current-active-id`],
+      id: NONE_SELECTED,
+      path: [`${nodeTypes.FOLDER}${ID_DELIMITER}current-active-parent`, `${nodeTypes.FOLDER}${ID_DELIMITER}current-active-id`, NONE_SELECTED],
     };
 
     const noneSelected = {
@@ -102,7 +102,7 @@ describe('activeNodeReducer ', () => {
     });
   });
 
-  it('should change active path and set ID to NONE_SELECTED, on NAVIGATE_PATH action', () => {
+  it('should change active path and set ID, on NAVIGATE_PATH action', () => {
     const currentState = {
       id: 'active1',
       path: ['segment0', 'segment1', 'segment2', 'active1'],
