@@ -414,7 +414,165 @@ describe('3. addAndSelectNodeThunkAction ', () => {
     mockedSave.mockClear();
   });
 
-  it('should save the current content, create the new node and dispatch ADD_NODE and SELECT_NODE', () => {
+  it('should save current editor content, create new node and dispatch ADD_NODE, if new node is FOLDER', () => {
+    const kind = nodeTypes.FOLDER;
+    const uniqid = '99887766';
+    const newNode = {
+      title: 'new node title',
+      subtitle: 'new node subtitle',
+      type: kind,
+      uniqid,
+      id: `${kind}${ID_DELIMITER}${uniqid}`,
+    };
+    const editorContent = {
+      ...initialState.editorContent,
+      id: 345345345,
+      title: 'test note',
+      dateModified: 98765,
+      dateCreated: 56789,
+    };
+
+    // ---> Test case where active folder is root
+    let activeNode = {
+      id: NONE_SELECTED,
+      path: [NONE_SELECTED],
+    };
+
+    mockedStore = mockStore({
+      ...initialState,
+      activeNode,
+      editorContent,
+    });
+
+    const expectedDate = 12345;
+    global.Date = class extends RealDate {
+      constructor() {
+        super(expectedDate);
+      }
+      static now() {
+        return expectedDate;
+      }
+    };
+    let expectedAction = [
+      {
+        type: notesListActionTypes.ADD_NODE,
+        payload: {
+          newNode,
+          parentKey: '',
+          now: expectedDate,
+        },
+      },
+    ];
+
+    mockedSave.mockImplementation(() => Promise.resolve('Saved'));
+    const createNodeSpy = jest.spyOn(treeUtils, 'createNode');
+    createNodeSpy.mockImplementation(() => newNode);
+
+    expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
+    expect(mockedSave).lastCalledWith(editorContent);
+    expect(createNodeSpy).lastCalledWith({ type: kind });
+    expect(mockedStore.getActions()).toEqual(expectedAction);
+    mockedSave.mockClear();
+    createNodeSpy.mockClear();
+    mockedStore.clearActions();
+
+    // ---> Test case where active node is FOLDER
+    activeNode = {
+      id: mockedTree[0].children[3].id,
+      path: [mockedTree[0].id, mockedTree[0].children[3].id],
+    };
+
+    mockedStore = mockStore({
+      ...initialState,
+      activeNode,
+      editorContent,
+    });
+
+    expectedAction = [
+      {
+        type: notesListActionTypes.ADD_NODE,
+        payload: {
+          newNode,
+          parentKey: activeNode.path[1],
+          now: expectedDate,
+        },
+      },
+    ];
+
+    expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
+    expect(mockedSave).lastCalledWith(editorContent);
+    expect(createNodeSpy).lastCalledWith({ type: kind });
+    expect(mockedStore.getActions()).toEqual(expectedAction);
+    mockedSave.mockClear();
+    createNodeSpy.mockClear();
+    mockedStore.clearActions();
+
+    // ---> Test case where active node is an ITEM
+    activeNode = {
+      id: mockedTree[0].children[2].children[1].id,
+      path: [mockedTree[0].id, mockedTree[0].children[2].id, mockedTree[0].children[2].children[1].id],
+    };
+
+    mockedStore = mockStore({
+      ...initialState,
+      activeNode,
+      editorContent,
+    });
+
+    expectedAction = [
+      {
+        type: notesListActionTypes.ADD_NODE,
+        payload: {
+          newNode,
+          parentKey: activeNode.path[1],
+          now: expectedDate,
+        },
+      },
+    ];
+
+    expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
+    expect(mockedSave).lastCalledWith(editorContent);
+    expect(createNodeSpy).lastCalledWith({ type: kind });
+    expect(mockedStore.getActions()).toEqual(expectedAction);
+    mockedSave.mockClear();
+    createNodeSpy.mockClear();
+    mockedStore.clearActions();
+
+    // ---> Test case where active node is an ITEM in root
+    activeNode = {
+      id: mockedTree[1].id,
+      path: [mockedTree[1].id],
+    };
+
+    mockedStore = mockStore({
+      ...initialState,
+      activeNode,
+      editorContent,
+    });
+
+    expectedAction = [
+      {
+        type: notesListActionTypes.ADD_NODE,
+        payload: {
+          newNode,
+          parentKey: '',
+          now: expectedDate,
+        },
+      },
+    ];
+
+    expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
+    expect(mockedSave).lastCalledWith(editorContent);
+    expect(createNodeSpy).lastCalledWith({ type: kind });
+    expect(mockedStore.getActions()).toEqual(expectedAction);
+    mockedSave.mockClear();
+    createNodeSpy.mockClear();
+    mockedStore.clearActions();
+
+    createNodeSpy.mockRestore();
+  });
+
+  it('should save current editor content, create new node, dispatch ADD_NODE, and SELECT_NODE and update editor content if new node is ITEM', () => {
     const kind = nodeTypes.ITEM;
     const uniqid = '11223344';
     const newNode = {
@@ -479,6 +637,8 @@ describe('3. addAndSelectNodeThunkAction ', () => {
     expect(mockedSave).lastCalledWith(editorContent);
     expect(createNodeSpy).lastCalledWith({ type: kind });
     expect(mockedStore.getActions()).toEqual(expectedAction);
+    mockedSave.mockClear();
+    createNodeSpy.mockClear();
     mockedStore.clearActions();
 
     // ---> Test case where active node is FOLDER
@@ -515,6 +675,8 @@ describe('3. addAndSelectNodeThunkAction ', () => {
     expect(mockedSave).lastCalledWith(editorContent);
     expect(createNodeSpy).lastCalledWith({ type: kind });
     expect(mockedStore.getActions()).toEqual(expectedAction);
+    mockedSave.mockClear();
+    createNodeSpy.mockClear();
     mockedStore.clearActions();
 
     // ---> Test case where active node is an ITEM
@@ -551,6 +713,8 @@ describe('3. addAndSelectNodeThunkAction ', () => {
     expect(mockedSave).lastCalledWith(editorContent);
     expect(createNodeSpy).lastCalledWith({ type: kind });
     expect(mockedStore.getActions()).toEqual(expectedAction);
+    mockedSave.mockClear();
+    createNodeSpy.mockClear();
     mockedStore.clearActions();
 
     // ---> Test case where active node is an ITEM in root
@@ -587,6 +751,8 @@ describe('3. addAndSelectNodeThunkAction ', () => {
     expect(mockedSave).lastCalledWith(editorContent);
     expect(createNodeSpy).lastCalledWith({ type: kind });
     expect(mockedStore.getActions()).toEqual(expectedAction);
+    mockedSave.mockClear();
+    createNodeSpy.mockClear();
     mockedStore.clearActions();
 
     createNodeSpy.mockRestore();
