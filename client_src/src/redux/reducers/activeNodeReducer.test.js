@@ -143,6 +143,60 @@ describe('activeNodeReducer ', () => {
     })).toBe(currentState);
   });
 
+  it('should go up one folder on GO_UP_A_FOLDER', () => {
+    // ---> Test case where active node is an ITEM
+    let currentState = {
+      id: `${nodeTypes.ITEM}${ID_DELIMITER}2222`,
+      path: [`${nodeTypes.FOLDER}${ID_DELIMITER}0000`, `${nodeTypes.FOLDER}${ID_DELIMITER}1111`, `${nodeTypes.ITEM}${ID_DELIMITER}2222`],
+    };
+    expect(reducer(currentState, {
+      type: notesListActionTypes.GO_UP_A_FOLDER,
+      payload: {},
+    })).toEqual({
+      id: currentState.path[0],
+      path: currentState.path.slice(0, 1),
+    });
+
+    // ---> Test case where active node is a FOLDER
+    currentState = {
+      id: `${nodeTypes.FOLDER}${ID_DELIMITER}1111`,
+      path: [`${nodeTypes.FOLDER}${ID_DELIMITER}0000`, `${nodeTypes.FOLDER}${ID_DELIMITER}1111`],
+    };
+    expect(reducer(currentState, {
+      type: notesListActionTypes.GO_UP_A_FOLDER,
+      payload: {},
+    })).toEqual({
+      id: currentState.path[0],
+      path: currentState.path.slice(0, 1),
+    });
+
+    // ---> Test case where active node is a FOLDER in root; should switch to root folder
+    currentState = {
+      id: `${nodeTypes.FOLDER}${ID_DELIMITER}0000`,
+      path: [`${nodeTypes.FOLDER}${ID_DELIMITER}0000`],
+    };
+    expect(reducer(currentState, {
+      type: notesListActionTypes.GO_UP_A_FOLDER,
+      payload: {},
+    })).toEqual({
+      id: NONE_SELECTED,
+      path: [NONE_SELECTED],
+    });
+
+    // ---> Test case where active node is root folder
+    currentState = {
+      id: NONE_SELECTED,
+      path: [NONE_SELECTED],
+    };
+    expect(reducer(currentState, {
+      type: notesListActionTypes.GO_UP_A_FOLDER,
+      payload: {},
+    })).toEqual({
+      id: NONE_SELECTED,
+      path: [NONE_SELECTED],
+    });
+  });
+
   it('should switch to parent folder on SWITCH_NODE_ON_DELETE action, if deleted node is the active node or is part of its path.', () => {
     const currentState = {
       id: 'active1',
