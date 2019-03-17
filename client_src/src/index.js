@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { NONE_SELECTED } from './utils/appCONSTANTS';
 import { find } from 'react-sortable-tree';
 import { getNodeKey } from './utils/treeUtils';
 import registerServiceWorker from './registerServiceWorker';
@@ -83,8 +84,7 @@ store.dispatch(fetchNotesTreeThunkAction())
       store.dispatch(selectNodeThunkAction({ id: activeId, path: matches[0].path }));
     }
     else {
-      const defaultNodeId = notesTree[0].id;
-      store.dispatch(selectNodeThunkAction({ id: defaultNodeId, path: [defaultNodeId] }));
+      store.dispatch(selectNodeThunkAction({ id: NONE_SELECTED, path: [NONE_SELECTED] }));
     }
   })
   .catch(err => window.alert(err.message));

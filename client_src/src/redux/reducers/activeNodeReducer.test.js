@@ -62,8 +62,8 @@ describe('activeNodeReducer ', () => {
 
     // If selected node ID and active node ID are the same *BUT* equal NONE_SELECTED, compute new state, i.e. does not simply return current state.
     currentState = {
-      id: `${nodeTypes.FOLDER}${ID_DELIMITER}current-active-id`,
-      path: [`${nodeTypes.FOLDER}${ID_DELIMITER}current-active-parent`, `${nodeTypes.FOLDER}${ID_DELIMITER}current-active-id`],
+      id: NONE_SELECTED,
+      path: [`${nodeTypes.FOLDER}${ID_DELIMITER}current-active-parent`, `${nodeTypes.FOLDER}${ID_DELIMITER}current-active-id`, NONE_SELECTED],
     };
 
     const noneSelected = {
@@ -77,6 +77,20 @@ describe('activeNodeReducer ', () => {
     expect(reducer(currentState, {
       type: notesListActionTypes.SELECT_NODE,
       payload: noneSelected,
+    })).toEqual(expectedState);
+
+    // If active node is root folder, i.e. id: NONE_SELECTED, path: [NONE_SELECTED]
+    currentState = {
+      id: NONE_SELECTED,
+      path: [NONE_SELECTED],
+    };
+    expectedState = {
+      id: newActiveNode.nodeId,
+      path: [newActiveNode.nodeId],
+    };
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SELECT_NODE,
+      payload: newActiveNode,
     })).toEqual(expectedState);
 
     // If payload is invalid, return current state
@@ -102,7 +116,7 @@ describe('activeNodeReducer ', () => {
     });
   });
 
-  it('should change active path and set ID to NONE_SELECTED, on NAVIGATE_PATH action', () => {
+  it('should change active path and set ID, on NAVIGATE_PATH action', () => {
     const currentState = {
       id: 'active1',
       path: ['segment0', 'segment1', 'segment2', 'active1'],

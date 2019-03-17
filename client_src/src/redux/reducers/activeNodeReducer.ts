@@ -1,5 +1,5 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
-import { translateNodeIdToInfo } from '../../utils/treeUtils';
+import { translateNodeIdToInfo, equals } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
 import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
 
@@ -78,16 +78,21 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentAct
     } else {
       return currentActive;
     }
-  } else {
-    // If no path provided, use the current active path
-    const nodeInfo = translateNodeIdToInfo({ nodeId: currentActive.id });
-    if (nodeInfo && nodeInfo.type === nodeTypes.FOLDER) {
-      newPath = [...currentActive.path, nodeId];
-    } else if (nodeInfo && nodeInfo.type === nodeTypes.ITEM){
-      // If current active node is an item, use its parent folder to build new active node.
-      newPath = [...(currentActive.path.slice(0, -1)), nodeId];
+  } else { // If no path provided, use the current active path
+
+    // If active folder is root with no item selected
+    if (equals(currentActive.path, [NONE_SELECTED])) {
+      newPath = [nodeId];
     } else {
-      return currentActive;
+      const nodeInfo = translateNodeIdToInfo({ nodeId: currentActive.id });
+      if (nodeInfo && nodeInfo.type === nodeTypes.FOLDER) {
+        newPath = [...currentActive.path, nodeId];
+      } else if (nodeInfo && nodeInfo.type === nodeTypes.ITEM){
+        // If current active node is an item, use its parent folder to build new active node.
+        newPath = [...(currentActive.path.slice(0, -1)), nodeId];
+      } else {
+        return currentActive;
+      }
     }
   }
 
