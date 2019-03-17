@@ -19,6 +19,15 @@ exports[`renders correctly with prop values taken from redux store 1`] = `
         New Note
       </button>
     </div>
+    <div
+      class="dnt__toolbar"
+    >
+      <button
+        class="dnt__tool"
+      >
+        NAME OF PARENT
+      </button>
+    </div>
     <nav
       class="dnt__pathnav"
     >
