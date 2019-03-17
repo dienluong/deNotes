@@ -1,7 +1,6 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import { addNodeUnderParent } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/treeUtils';
-import { nodeTypes } from '../../utils/appCONSTANTS';
 import initialState from '../misc/initialState';
 
 // Types
@@ -48,24 +47,10 @@ function _addAndSelectNewNode({ state, newNode, parentKey, now }: { state: AppSt
     dateModified: now,
   };
 
-  const newState: AppStateT = {
+  return {
     ...state,
     notesTree: newNotesTree,
   };
-
-  // Only change the editorContent state if newly added node is a note, as opposed to a folder.
-  if (newNode.type === nodeTypes.ITEM) {
-    newState.editorContent = {
-      ...initialState.editorContent,
-      id: newNode.uniqid,
-      title: newNode.title,
-      dateCreated: now,
-      dateModified: now,
-      readOnly: false,
-    };
-  }
-
-  return newState;
 }
 
 export default function reducedReducer(state: AppStateT = initialState, action: AnyAction)

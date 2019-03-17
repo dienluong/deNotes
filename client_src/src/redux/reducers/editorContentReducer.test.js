@@ -25,7 +25,7 @@ describe('editorContentReducer ', () => {
     expect(reducer(currentState, { type: editorActionTypes.CONTENT_CHANGED })).toBe(currentState);
   });
 
-  it('should, on CONTENT_CHANGED, return new state w/ recieved delta, content and refresh modified date.', () => {
+  it('should, on CONTENT_CHANGED, return new state w/ received delta, content and refresh modified date.', () => {
     const newContent = {
       delta: new Delta([
         { insert: 'Goodnight People' },
@@ -42,6 +42,30 @@ describe('editorContentReducer ', () => {
     })).toEqual({
       ...currentState,
       ...newContent,
+    });
+  });
+
+  it('should, on NEW_EDITOR_CONTENT, return new state from editor content data in payload.', () => {
+    const newEditorContent = {
+      id: 'new-editor-content-id',
+      title: 'new-editor-content-title',
+      delta: new Delta([
+        { insert: 'Goodnight People' },
+      ]),
+      content: '<p>Goodnight People<br></p>',
+      dateCreated: 200,
+      dateModified: 300,
+      readOnly: false,
+    };
+
+    expect(reducer(currentState, {
+      type: editorActionTypes.NEW_EDITOR_CONTENT,
+      payload: {
+        newEditorContent,
+      },
+    })).toEqual({
+      ...currentState,
+      ...newEditorContent,
     });
   });
 

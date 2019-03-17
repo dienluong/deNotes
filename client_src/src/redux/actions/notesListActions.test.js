@@ -572,7 +572,7 @@ describe('3. addAndSelectNodeThunkAction ', () => {
     createNodeSpy.mockRestore();
   });
 
-  it('should save current editor content, create new node, dispatch ADD_NODE, and SELECT_NODE and update editor content if new node is ITEM', () => {
+  it('should save current editor content, create new node, dispatch ADD_NODE, SELECT_NODE and NEW_EDITOR_CONTENT, if new node is ITEM', () => {
     const kind = nodeTypes.ITEM;
     const uniqid = '11223344';
     const newNode = {
@@ -611,6 +611,16 @@ describe('3. addAndSelectNodeThunkAction ', () => {
         return expectedDate;
       }
     };
+
+    const expectedNewEditorContent = {
+      ...initialState.editorContent,
+      id: newNode.uniqid,
+      title: newNode.title,
+      dateCreated: expectedDate,
+      dateModified: expectedDate,
+      readOnly: false,
+    };
+
     let expectedAction = [
       {
         type: notesListActionTypes.ADD_NODE,
@@ -625,6 +635,12 @@ describe('3. addAndSelectNodeThunkAction ', () => {
         payload: {
           nodeId: newNode.id,
           path: [newNode.id],
+        },
+      },
+      {
+        type: editorActionTypes.NEW_EDITOR_CONTENT,
+        payload: {
+          newEditorContent: expectedNewEditorContent,
         },
       },
     ];
@@ -669,6 +685,12 @@ describe('3. addAndSelectNodeThunkAction ', () => {
           path: [...activeNode.path, newNode.id],
         },
       },
+      {
+        type: editorActionTypes.NEW_EDITOR_CONTENT,
+        payload: {
+          newEditorContent: expectedNewEditorContent,
+        },
+      },
     ];
 
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
@@ -707,6 +729,12 @@ describe('3. addAndSelectNodeThunkAction ', () => {
           path: [...activeNode.path.slice(0, -1), newNode.id],
         },
       },
+      {
+        type: editorActionTypes.NEW_EDITOR_CONTENT,
+        payload: {
+          newEditorContent: expectedNewEditorContent,
+        },
+      },
     ];
 
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
@@ -743,6 +771,12 @@ describe('3. addAndSelectNodeThunkAction ', () => {
         payload: {
           nodeId: newNode.id,
           path: [newNode.id],
+        },
+      },
+      {
+        type: editorActionTypes.NEW_EDITOR_CONTENT,
+        payload: {
+          newEditorContent: expectedNewEditorContent,
         },
       },
     ];

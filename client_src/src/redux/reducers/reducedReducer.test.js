@@ -21,6 +21,16 @@ describe('reducedReducer', () => {
     path: [NONE_SELECTED],
   };
 
+  const editorContent = {
+    ...initialState.editorContent,
+    id: 'default',
+    title: 'Default Editor Content',
+    content: '<p>Default Editor Content<br></p>',
+    dateCreated: 663399,
+    dateModified: 993366,
+    readOnly: false,
+  };
+
   let currentState;
 
   beforeEach(() => {
@@ -28,6 +38,7 @@ describe('reducedReducer', () => {
       ...initialState,
       notesTree,
       activeNode,
+      editorContent,
     };
   });
   afterEach(() => {
@@ -42,7 +53,7 @@ describe('reducedReducer', () => {
     expect(reducer(currentState, { type: notesListActionTypes.ADD_NODE })).toBe(currentState);
   });
 
-  it('should, on ADD_NODE, return state w/ new tree and editor content for added ITEM node', () => {
+  it('should, on ADD_NODE, return new tree w/ ITEM node added', () => {
     let expectedDate = 40404;
     let newNodeKind = nodeTypes.ITEM;
     const uniqid = 'newly-created-node-uniqid';
@@ -67,19 +78,9 @@ describe('reducedReducer', () => {
       dateModified: expectedDate,
     };
 
-    let expectedEditorContent = {
-      ...initialState.editorContent,
-      id: uniqid,
-      title: newNode.title,
-      dateCreated: expectedDate,
-      dateModified: expectedDate,
-      readOnly: false,
-    };
-
     let expectedNewState = {
       ...currentState,
       notesTree: expectedNotesTree,
-      editorContent: expectedEditorContent,
     };
 
     expect(reducer(currentState, {
@@ -104,19 +105,9 @@ describe('reducedReducer', () => {
       dateModified: expectedDate,
     };
 
-    expectedEditorContent = {
-      ...initialState.editorContent,
-      id: uniqid,
-      title: newNode.title,
-      dateCreated: expectedDate,
-      dateModified: expectedDate,
-      readOnly: false,
-    };
-
     expectedNewState = {
       ...currentState,
       notesTree: expectedNotesTree,
-      editorContent: expectedEditorContent,
     };
 
     expect(reducer(currentState, {

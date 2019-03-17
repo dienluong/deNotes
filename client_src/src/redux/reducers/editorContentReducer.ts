@@ -19,6 +19,11 @@ export default function editorContentReducer(state: EditorContentT = initialCont
         ...state,
         ...action.payload.newContent,
       };
+    case editorActionTypes.NEW_EDITOR_CONTENT:
+      return {
+        ...state,
+        ...action.payload.newEditorContent,
+      };
     case editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS:
       return {
         ...state,

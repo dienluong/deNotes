@@ -1,7 +1,9 @@
 import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
+import editorActionTypes from './constants/editorActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { equals, translateNodeIdToInfo, getDescendantItems, createNode } from '../../utils/treeUtils';
+import initialState from '../misc/initialState';
 import { NONE_SELECTED, nodeTypes } from '../../utils/appCONSTANTS';
 
 // Types
@@ -179,6 +181,7 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
   : ThunkAction<AnyAction, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     const state = getState();
+    const now = Date.now();
 
     // Immediately save currently opened note
     const currentContent = state.editorContent;
@@ -218,11 +221,12 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
       payload: {
         newNode,
         parentKey,
-        now: Date.now(),
+        now,
       },
     });
 
     const newNodeInfo = translateNodeIdToInfo({ nodeId: newNode.id });
+    // Only change active node and editor content if newly added node is of type ITEM (i.e. a note), as opposed to a FOLDER.
     if (newNodeInfo && newNodeInfo.type === nodeTypes.ITEM) {
       const newActiveNodeId: ActiveNodeT['id'] = newNode.id;
       const newActiveNodePath: ActiveNodeT['path'] = [...parentPath, newNode.id];
@@ -233,6 +237,22 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
           path: newActiveNodePath,
         },
       });
+
+      const newEditorContent = {
+          ...initialState.editorContent,
+          id: newNode.uniqid,
+          title: newNode.title,
+          dateCreated: now,
+          dateModified: now,
+          readOnly: false,
+        };
+
+      dispatch({
+        type: editorActionTypes.NEW_EDITOR_CONTENT,
+        payload: {
+          newEditorContent,
+        }
+      })
     }
 
     return returnVal;
