@@ -376,6 +376,13 @@ export function navigatePathThunkAction({ idx }: { idx: number })
   };
 }
 
+export function goUpAFolderAction(): AnyAction {
+  return {
+    type: notesListActionTypes.GO_UP_A_FOLDER,
+    payload: {},
+  };
+}
+
 /**
  * ...
  * @param {Object} params

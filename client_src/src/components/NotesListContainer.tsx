@@ -5,6 +5,7 @@ import NotesList from './widgets/NotesList';
 import {
   selectNodeThunkAction,
   navigatePathThunkAction,
+  goUpAFolderAction,
   changeNotesFolderThunkAction,
   changeNodeTitleAction,
   deleteNodeThunkAction,
@@ -26,11 +27,13 @@ interface DispatchProps {
   deleteNodeBtnHandler: (params: any) => Promise<AnyAction>;
   addNoteBtnHandler: (params: any) => AnyAction;
   toolbarHandlersMap: Map<string, () => AnyAction>;
+  toolbarHandlersMap2: Map<string, () => AnyAction>;
 }
 
 export const TOOLBAR_LABELS = {
   NEW_FOLDER: 'New Folder',
   NEW_NOTE: 'New Note',
+  BACK_BUTTON: 'NAME OF PARENT',
 };
 
 function mapStateToProps(state: AppStateT) {
@@ -85,10 +88,16 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
     return dispatch(addAndSelectNodeThunkAction({ kind: nodeTypes.ITEM }));
   }
 
-  const toolbarHandlersMap = new Map();
+  function toolbarBackBtnHandler() {
+    return dispatch(goUpAFolderAction());
+  }
 
+  const toolbarHandlersMap = new Map();
   toolbarHandlersMap.set(TOOLBAR_LABELS.NEW_FOLDER, toolbarNewFolderBtnHandler);
   toolbarHandlersMap.set(TOOLBAR_LABELS.NEW_NOTE, toolbarNewNoteBtnHandler);
+  const toolbarHandlersMap2 = new Map();
+  toolbarHandlersMap2.set(TOOLBAR_LABELS.BACK_BUTTON, toolbarBackBtnHandler);
+
 
   return {
     treeChangeHandler(tree) {
@@ -120,7 +129,8 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
       // remember that NotesList only receives and renders a given leaf of the whole tree.
       return dispatch(addAndSelectNodeThunkAction({ kind: nodeTypes.ITEM }));
     },
-    toolbarHandlersMap: toolbarHandlersMap,
+    toolbarHandlersMap,
+    toolbarHandlersMap2,
   };
 }
 

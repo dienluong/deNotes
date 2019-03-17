@@ -11,6 +11,12 @@ import baseState from '../../redux/misc/initialState';
 import { selectTitlesFromActivePath } from '../../redux/selectors';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
 
+const toolbarHandlersMap = new Map();
+const toolbarHandlersMap2 = new Map();
+toolbarHandlersMap.set('tool1', jest.fn());
+toolbarHandlersMap.set('tool2', jest.fn());
+toolbarHandlersMap2.set('tool3', jest.fn());
+
 afterEach(cleanup);
 
 it('should render all node titles in the first level of the received tree and highlight the active node', () => {
@@ -20,9 +26,6 @@ it('should render all node titles in the first level of the received tree and hi
     path: [mockedTree[0].id],
   };
   const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
-  const toolbarHandlersMap = new Map();
-  toolbarHandlersMap.set('tool1', jest.fn());
-  toolbarHandlersMap.set('tool2', jest.fn());
   const props = {
     tree,
     activeNode,
@@ -34,6 +37,7 @@ it('should render all node titles in the first level of the received tree and hi
     addNoteBtnHandler: jest.fn(),
     pathNavigatorClickHandler: jest.fn(),
     toolbarHandlersMap,
+    toolbarHandlersMap2,
     getNodeKey,
   };
 
@@ -69,9 +73,6 @@ it('should invoke handler when tree node is clicked', () => {
     path: [mockedTree[0].id],
   };
   const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
-  const toolbarHandlersMap = new Map();
-  toolbarHandlersMap.set('tool1', jest.fn());
-  toolbarHandlersMap.set('tool2', jest.fn());
   const props = {
     tree,
     activeNode,
@@ -83,6 +84,7 @@ it('should invoke handler when tree node is clicked', () => {
     addNoteBtnHandler: jest.fn(),
     pathNavigatorClickHandler: jest.fn(),
     toolbarHandlersMap,
+    toolbarHandlersMap2,
     getNodeKey,
   };
 
@@ -116,9 +118,6 @@ it('should invoke handler when double-click on node', () => {
     path: [mockedTree[0].id],
   };
   const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
-  const toolbarHandlersMap = new Map();
-  toolbarHandlersMap.set('tool1', jest.fn());
-  toolbarHandlersMap.set('tool2', jest.fn());
   const props = {
     tree,
     activeNode,
@@ -131,6 +130,7 @@ it('should invoke handler when double-click on node', () => {
     addNoteBtnHandler: jest.fn(),
     pathNavigatorClickHandler: jest.fn(),
     toolbarHandlersMap,
+    toolbarHandlersMap2,
     getNodeKey,
   };
 
@@ -164,10 +164,6 @@ it('should invoke handler when toolbar button is clicked', () => {
     path: [mockedTree[0].id],
   };
   const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
-  const toolbarHandlersMap = new Map();
-  toolbarHandlersMap.set('tool1', jest.fn());
-  toolbarHandlersMap.set('tool2', jest.fn());
-  toolbarHandlersMap.set('tool3', jest.fn());
   const props = {
     tree,
     activeNode,
@@ -179,6 +175,7 @@ it('should invoke handler when toolbar button is clicked', () => {
     addNoteBtnHandler: jest.fn(),
     pathNavigatorClickHandler: jest.fn(),
     toolbarHandlersMap,
+    toolbarHandlersMap2,
     getNodeKey,
   };
 
@@ -191,7 +188,15 @@ it('should invoke handler when toolbar button is clicked', () => {
     expect(handler).toBeCalled();
   }
 
+  for (let [label, handler] of toolbarHandlersMap2) {
+    const button = queryAllByText(label);
+    expect(button).toHaveLength(1);
+    fireEvent.click(button[0]);
+    expect(handler).toBeCalled();
+  }
+
   toolbarHandlersMap.forEach(handler => expect(handler).toBeCalledTimes(1));
+  toolbarHandlersMap2.forEach(handler => expect(handler).toBeCalledTimes(1));
 });
 
 it('should invoke handler when segment in path navigator is clicked', () => {
@@ -201,9 +206,6 @@ it('should invoke handler when segment in path navigator is clicked', () => {
     path: [mockedTree[0].id],
   };
   const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
-  const toolbarHandlersMap = new Map();
-  toolbarHandlersMap.set('tool1', jest.fn());
-  toolbarHandlersMap.set('tool2', jest.fn());
   const props = {
     tree,
     activeNode,
@@ -215,6 +217,7 @@ it('should invoke handler when segment in path navigator is clicked', () => {
     addNoteBtnHandler: jest.fn(),
     pathNavigatorClickHandler: jest.fn(),
     toolbarHandlersMap,
+    toolbarHandlersMap2,
     getNodeKey,
   };
 
@@ -236,9 +239,6 @@ it('should invoke handler when tree node button is clicked', () => {
     path: [mockedTree[0].id],
   };
   const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
-  const toolbarHandlersMap = new Map();
-  toolbarHandlersMap.set('tool1', jest.fn());
-  toolbarHandlersMap.set('tool2', jest.fn());
   const props = {
     tree,
     activeNode,
@@ -250,6 +250,7 @@ it('should invoke handler when tree node button is clicked', () => {
     addNoteBtnHandler: jest.fn(),
     pathNavigatorClickHandler: jest.fn(),
     toolbarHandlersMap,
+    toolbarHandlersMap2,
     getNodeKey,
   };
 
@@ -290,9 +291,6 @@ it('should invoke handler on node title change', () => {
     path: [mockedTree[0].id],
   };
   const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
-  const toolbarHandlersMap = new Map();
-  toolbarHandlersMap.set('tool1', jest.fn());
-  toolbarHandlersMap.set('tool2', jest.fn());
   const props = {
     tree,
     activeNode,
@@ -304,6 +302,7 @@ it('should invoke handler on node title change', () => {
     addNoteBtnHandler: jest.fn(),
     pathNavigatorClickHandler: jest.fn(),
     toolbarHandlersMap,
+    toolbarHandlersMap2,
     getNodeKey,
   };
 
