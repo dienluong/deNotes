@@ -1,5 +1,5 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
-import { translateNodeIdToInfo, equals } from '../../utils/treeUtils';
+import { findDeepestFolder, translateNodeIdToInfo, equals } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
 import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
 
@@ -29,6 +29,26 @@ function _changeActiveNodeOnPathNavClick({ currentActive, idx }: { currentActive
     };
   } else {
     // If last entry of the path was selected, then no need to change active node
+    return currentActive;
+  }
+}
+
+function _goUpAFolder({ currentActive }: { currentActive: ActiveNodeT })
+  : ActiveNodeT {
+  const currentParentIdx = findDeepestFolder(currentActive.path);
+  if (currentParentIdx !== null) {
+    if (currentParentIdx <= 0) {
+      return {
+        id: NONE_SELECTED,
+        path: [NONE_SELECTED],
+      }
+    } else {
+      return {
+        id: currentActive.path[currentParentIdx - 1],
+        path: currentActive.path.slice(0, currentParentIdx),
+      };
+    }
+  } else {
     return currentActive;
   }
 }
@@ -138,6 +158,12 @@ export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode
       return _changeActiveNodeOnPathNavClick({
         currentActive: state,
         idx: action.payload.idx,
+      });
+    }
+    case notesListActionTypes.GO_UP_A_FOLDER: {
+      return _goUpAFolder({
+        currentActive: state,
+        ...action.payload,
       });
     }
     case notesListActionTypes.SWITCH_NODE_ON_DELETE: {

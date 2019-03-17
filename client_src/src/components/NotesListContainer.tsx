@@ -5,6 +5,7 @@ import NotesList from './widgets/NotesList';
 import {
   selectNodeThunkAction,
   navigatePathThunkAction,
+  goUpAFolderAction,
   changeNotesFolderThunkAction,
   changeNodeTitleAction,
   deleteNodeThunkAction,
@@ -32,7 +33,7 @@ interface DispatchProps {
 export const TOOLBAR_LABELS = {
   NEW_FOLDER: 'New Folder',
   NEW_NOTE: 'New Note',
-  BACK_TO_PARENT: 'NAME OF PARENT',
+  BACK_BUTTON: 'NAME OF PARENT',
 };
 
 function mapStateToProps(state: AppStateT) {
@@ -87,15 +88,15 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
     return dispatch(addAndSelectNodeThunkAction({ kind: nodeTypes.ITEM }));
   }
 
-  function toolbarBackToParentBtnHandler() {
-    alert('Back Button Pressed');
+  function toolbarBackBtnHandler() {
+    return dispatch(goUpAFolderAction());
   }
 
   const toolbarHandlersMap = new Map();
   toolbarHandlersMap.set(TOOLBAR_LABELS.NEW_FOLDER, toolbarNewFolderBtnHandler);
   toolbarHandlersMap.set(TOOLBAR_LABELS.NEW_NOTE, toolbarNewNoteBtnHandler);
   const toolbarHandlersMap2 = new Map();
-  toolbarHandlersMap.set(TOOLBAR_LABELS.BACK_TO_PARENT, toolbarBackToParentBtnHandler);
+  toolbarHandlersMap2.set(TOOLBAR_LABELS.BACK_BUTTON, toolbarBackBtnHandler);
 
 
   return {
