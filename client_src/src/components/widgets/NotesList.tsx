@@ -21,6 +21,7 @@ type PropsT = {
   addNoteBtnHandler: (params: { path: TreeNodePathT }) => unknown,
   pathNavigatorClickHandler: (...args: any) => any,
   toolbarHandlersMap: any,
+  toolbarHandlersMap2: any,
   getNodeKey: (...args: any) => any,
 };
 type generateNodePropsT = ({ node, path }: { node: TreeItem, path: (string|number)[] }) => object;
@@ -37,6 +38,7 @@ function NotesList({
   addNoteBtnHandler,
   pathNavigatorClickHandler,
   toolbarHandlersMap,
+  toolbarHandlersMap2,
   getNodeKey,
 }: PropsT) {
   function buildNodeProps({ node, path }: { node: TreeNodeT, path: string[] }) {
@@ -94,6 +96,7 @@ function NotesList({
   return (
     <div className={ styles["dnt__notes-list"] }>
       <Toolbar toolsMap={ toolbarHandlersMap } />
+      <Toolbar toolsMap={ toolbarHandlersMap2 } />
       <PathNavigator
         path={ activePath }
         activeSegmentIdx={ activeNode.path.indexOf(activeNode.id) }
