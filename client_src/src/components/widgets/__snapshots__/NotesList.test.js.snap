@@ -19,6 +19,15 @@ exports[`should render all node titles in the first level of the received tree a
         tool2
       </button>
     </div>
+    <div
+      class="dnt__toolbar"
+    >
+      <button
+        class="dnt__tool"
+      >
+        tool3
+      </button>
+    </div>
     <nav
       class="dnt__pathnav"
     >
