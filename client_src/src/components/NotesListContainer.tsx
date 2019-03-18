@@ -33,7 +33,7 @@ interface DispatchProps {
 export const TOOLBAR_LABELS = {
   NEW_FOLDER: 'New Folder',
   NEW_NOTE: 'New Note',
-  BACK_BUTTON: 'NAME OF PARENT',
+  BACK_BUTTON: '<',
 };
 
 function mapStateToProps(state: AppStateT) {
