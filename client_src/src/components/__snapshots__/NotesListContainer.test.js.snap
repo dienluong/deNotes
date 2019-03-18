@@ -25,7 +25,7 @@ exports[`renders correctly with prop values taken from redux store 1`] = `
       <button
         class="dnt__tool"
       >
-        NAME OF PARENT
+        &lt;
       </button>
     </div>
     <nav
