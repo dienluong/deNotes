@@ -52,7 +52,7 @@ describe('notesTreeReducer ', () => {
               return `${this.type}-${this.uniqid}`;
             },
             type: nodeTypes.FOLDER,
-            expanded: false,
+            expanded: true,
             children: [],
           },
           {

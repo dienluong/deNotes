@@ -1095,7 +1095,7 @@ describe('6. changeNotesFolderThunkAction ', () => {
         get id() {
           return `${this.type}${ID_DELIMITER}${this.uniqid}`;
         },
-        expanded: false,
+        expanded: true,
         children: [
           {
             title: 'new sub-note 1',
