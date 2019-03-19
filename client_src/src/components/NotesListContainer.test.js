@@ -8,7 +8,7 @@ import NotesListContainer, { TOOLBAR_LABELS } from './NotesListContainer';
 import NotesList from './widgets/NotesList';
 import initialState from '../redux/misc/initialState';
 import { mockedTree } from '../test-utils/mocks/mockedNotesTree';
-import { getNodeKey } from '../utils/treeUtils';
+import { getNodeKey, collapseFolders } from '../utils/treeUtils';
 jest.mock('../redux/actions/notesListActions');
 import {
   selectNodeThunkAction,
@@ -45,7 +45,12 @@ afterEach(() => {
 });
 
 it('renders correctly with prop values taken from redux store', () => {
-  const mockedNotesTree = { id: '1234', tree: mockedTree, dateCreated: 1111, dateModified: 2222 };
+  const mockedNotesTree = {
+    id: '1234',
+    tree: mockedTree,
+    dateCreated: 1111,
+    dateModified: 2222,
+  };
   const mockedInitialState = {
     ...initialState,
     notesTree: mockedNotesTree,
@@ -54,12 +59,57 @@ it('renders correctly with prop values taken from redux store', () => {
       path: [mockedNotesTree.tree[0].id],
     },
   };
+
+  // ---> test case where active folder is not root: all sub-folders should be rendered collapsed
   const expectedProps = {
-    tree: [...mockedNotesTree.tree[0].children],
+    tree: collapseFolders({ tree: mockedNotesTree.tree[0].children }),
     activeNode: { ...mockedInitialState.activeNode },
     activePath: [mockedNotesTree.tree[0].title],
     getNodeKey,
   };
+  const store = createMockStore([thunk])(mockedInitialState);
+  const { container } = render(<Provider
+    store={store}><NotesListContainer/></Provider>);
+  expect(container).toMatchSnapshot();
+
+  wrapper = shallow(<Provider
+    store={store}><NotesListContainer/></Provider>).dive({ context: { store } });
+
+  expect(wrapper.find(NotesList).exists()).toBe(true);
+  expect(wrapper.find(NotesList).props()).toMatchObject(expectedProps);
+
+});
+
+it('renders root folder with all its sub-folders are expanded ', () => {
+  const mockedNotesTree = {
+    id: '1234',
+    tree: mockedTree,
+    dateCreated: 1111,
+    dateModified: 2222,
+  };
+  const mockedInitialState = {
+    ...initialState,
+    notesTree: mockedNotesTree,
+    activeNode: {
+      id: mockedNotesTree.tree[0].id,
+      path: [mockedNotesTree.tree[0].id],
+    },
+  };
+
+  // ---> test case where active folder is root: all its sub-folders should be rendered expanded;
+  // In the case below, the active node is an ITEM node (as opposed to a FOLDER) of the root, so the active folder is root itself.
+  mockedInitialState.activeNode = {
+    id: mockedNotesTree.tree[1].id,
+    path: [mockedNotesTree.tree[1].id],
+  };
+
+  const expectedProps = {
+    tree: mockedNotesTree.tree,
+    activeNode: { ...mockedInitialState.activeNode },
+    activePath: [mockedNotesTree.tree[1].title],
+    getNodeKey,
+  };
+
   const store = createMockStore([thunk])(mockedInitialState);
   const { container } = render(<Provider store={ store }><NotesListContainer /></Provider>);
   expect(container).toMatchSnapshot();
