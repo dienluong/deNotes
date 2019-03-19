@@ -75,7 +75,7 @@ export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().
 
   if (type === nodeTypes.FOLDER) {
     newNode.children = [];
-    newNode.expanded = false;
+    newNode.expanded = true;
     newNode.title = title === DEFAULT_TITLES.NOTE ? DEFAULT_TITLES.FOLDER : title;
   }
 
@@ -209,6 +209,21 @@ export function trimTree(tree: TreeNodeT[])
     }
 
     return normNode;
+  });
+}
+
+/**
+ * Collapse all first-level folders in the tree.
+ * @param tree {Object[]}
+ */
+export function collapseFolders({ tree }: { tree: TreeNodeT[] })
+  : TreeNodeT[] {
+  return tree.map((node): TreeNodeT => {
+    if (node && node.children) {
+      return { ...node, expanded: false };
+    } else {
+      return node;
+    }
   });
 }
 
