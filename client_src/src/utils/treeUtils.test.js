@@ -1,6 +1,7 @@
 import * as moduleToTest from './treeUtils';
 import { NONE_SELECTED, nodeTypes } from '../utils/appCONSTANTS';
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|^|';
+import { mockedTree } from '../test-utils/mocks/mockedNotesTree';
 
 describe('1. equals()', () => {
   it('should handle simple non-nested objects and arrays', () => {
@@ -175,5 +176,22 @@ describe('3. translateNodeIdToInfo', () => {
     expect(moduleToTest.translateNodeIdToInfo({ nodeId: invalidNodeId })).toBeNull();
     invalidNodeId = NONE_SELECTED;
     expect(moduleToTest.translateNodeIdToInfo({ nodeId: invalidNodeId })).toBeNull();
+  });
+});
+
+describe('4. collapseFolders', () => {
+  it('sets "expanded" property to false for all nodes which have "children"', () => {
+    const newTree = moduleToTest.collapseFolders({ tree: mockedTree[0].children });
+
+    const test = node => {
+      if (node && node.children) {
+        expect(node.expanded).toBe(false);
+      } else {
+        expect("expanded" in node).toBe(false);
+      }
+    };
+
+    newTree.forEach(test);
+    expect.assertions(newTree.length);
   });
 });
