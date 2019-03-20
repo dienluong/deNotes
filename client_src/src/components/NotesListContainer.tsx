@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { selectTitlesFromActivePath, selectSiblingsOfActiveNode } from '../redux/selectors/index.js';
+import { selectTitlesFromActivePath, selectChildrenOfActiveFolder } from '../redux/selectors/index.js';
 import * as rootReducer from '../redux/reducers';
 import NotesList from './widgets/NotesList';
 import {
@@ -72,9 +72,9 @@ function mapStateToProps(state: AppStateT) {
   let children;
   // Do not collapse folders if displaying root
   if (parent && parent === -1) {
-    children = selectSiblingsOfActiveNode(state);
+    children = selectChildrenOfActiveFolder(state);
   } else {
-    children = collapseFolders({ tree: selectSiblingsOfActiveNode(state) as TreeNodeT[] });
+    children = collapseFolders({ tree: selectChildrenOfActiveFolder(state) as TreeNodeT[] });
   }
   return {
     tree: children,
