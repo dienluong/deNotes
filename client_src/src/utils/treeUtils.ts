@@ -100,7 +100,7 @@ export function findDeepestFolder(path: string[])
     return path.length - 1;
   }
 
-  // If path consists only of one ITEM node, then "farthest" folder root
+  // If path consists of only one node and it's an ITEM, then "farthest" folder is root
   if (path.length === 1) {
     return -1;
   }
