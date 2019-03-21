@@ -77,7 +77,6 @@ it('renders correctly with prop values taken from redux store', () => {
 
   expect(wrapper.find(NotesList).exists()).toBe(true);
   expect(wrapper.find(NotesList).props()).toMatchObject(expectedProps);
-
 });
 
 it('renders root folder with all its sub-folders are expanded ', () => {

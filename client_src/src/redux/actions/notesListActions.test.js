@@ -249,7 +249,7 @@ describe('1. selectNodeThunkAction ', () => {
     mockedSave.mockImplementation(() => Promise.resolve({}));
     fetchEditorContentThunkAction.mockImplementation(() => () => {});
 
-    mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id: itemToSelect.id, path: [itemToSelect.id] }))
+    mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id: itemToSelect.id, path: [itemToSelect.id] }));
     expect(fetchEditorContentThunkAction).not.toBeCalled();
   });
 });

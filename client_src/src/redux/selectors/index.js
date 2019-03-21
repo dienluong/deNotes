@@ -51,7 +51,7 @@ export const selectChildrenOfActiveFolder = createSelector(
     }
 
     if (parentIdx === -1) {
-      // folder is root, then the list of siblings (including itself) is the tree itself
+      // folder is root, then the list of children is the tree itself
       return tree;
     }
 

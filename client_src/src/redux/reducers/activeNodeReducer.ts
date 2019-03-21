@@ -1,7 +1,7 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
-import { findDeepestFolder, translateNodeIdToInfo, equals } from '../../utils/treeUtils';
+import { findDeepestFolder } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
-import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
+import { NONE_SELECTED } from '../../utils/appCONSTANTS';
 
 // Types
 import { AnyAction } from 'redux';
