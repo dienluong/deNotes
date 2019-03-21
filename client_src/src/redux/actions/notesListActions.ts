@@ -2,7 +2,7 @@ import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
 import editorActionTypes from './constants/editorActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
-import { equals, translateNodeIdToInfo, getDescendantItems, createNode } from '../../utils/treeUtils';
+import { equals, translateNodeIdToInfo, getDescendantItems, createNode, findDeepestFolder } from '../../utils/treeUtils';
 import initialState from '../misc/initialState';
 import { NONE_SELECTED, nodeTypes } from '../../utils/appCONSTANTS';
 
@@ -69,11 +69,16 @@ export function use({ notesTreeStorage, editorContentStorage }: { notesTreeStora
  * @param {string} params.id
  * @param {string[]} [params.path] If path not provided, then selected node is assumed to be in current active path.
  */
-export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path?: TreeNodePathT })
+export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path: TreeNodePathT })
   : ThunkAction<AnyAction, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
     if (typeof id !== 'string' || !id.length) {
-      return { type: 'NO_OP' };
+      return {
+        type: 'NO_OP',
+        payload: {
+          error: new Error('Invalid id'),
+        }
+      };
     }
     // Immediately save currently opened note
     const currentEditorContent = getState().editorContent;
@@ -82,13 +87,35 @@ export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path?
         .catch((err: Error) => { console.log(err); }); // TODO: log error?
     }
 
-    let returnVal = dispatch({
-      type: notesListActionTypes.SELECT_NODE,
-      payload: {
-        nodeId: id,
-        path,
-      },
-    });
+    let returnVal;
+    const parentIdx = findDeepestFolder(getState().activeNode.path);
+    if (parentIdx === null) {
+      return {
+        type: 'NO_OP',
+        payload: {
+          error: new Error('Invalid active path'),
+        },
+      };
+    }
+    // If at root folder, then use received path because that path is the absolute path to the selected node
+    // If not at root, then construct the path to the selected node from the current active path.
+    if (parentIdx === -1) {
+      returnVal = dispatch({
+        type: notesListActionTypes.SELECT_NODE,
+        payload: {
+          nodeId: id,
+          path,
+        },
+      });
+    } else {
+      returnVal = dispatch({
+        type: notesListActionTypes.SELECT_NODE,
+        payload: {
+          nodeId: id,
+          path: [...getState().activeNode.path.slice(0, parentIdx + 1), id],
+        },
+      });
+    }
 
     // If new active node is an ITEM (note) and if its content is not already open, then fetch its content
     const activeNodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
