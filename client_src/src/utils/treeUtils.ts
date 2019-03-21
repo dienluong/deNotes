@@ -136,7 +136,8 @@ export function translateNodeIdToInfo({ nodeId }: { nodeId: string })
     return null;
   }
 
-  const re = new RegExp(`^(?:${nodeTypes.ITEM}|${nodeTypes.FOLDER})$`);
+  const reSource = `^(?:${nodeTypes.ITEM}|${nodeTypes.FOLDER})$`;
+  const re = new RegExp(reSource);
   if (re.test(info[0])) {
     return {
       type: info[0] as NodeTypeT,
