@@ -141,10 +141,18 @@ describe('notesTreeReducer ', () => {
       type: notesListActionTypes.DELETE_NODE,
       payload: {
         nodeToDelete: currentTree[0],
-        activePath: [NONE_SELECTED],
         now: expectedDate,
       },
     })).toEqual(expectedNewState);
+
+    // And should return current state if node to delete does not exist on tree
+    expect(reducer(currentState, {
+      type: notesListActionTypes.DELETE_NODE,
+      payload: {
+        nodeToDelete: { id: 'non-existant' },
+        now: expectedDate,
+      },
+    })).toBe(currentState);
   });
 
   it('should, on CHANGE_NOTES_TREE_FOLDER, return modified tree from received node', () => {

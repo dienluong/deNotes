@@ -306,7 +306,6 @@ describe('2. deleteNodeThunkAction ', () => {
         type: notesListActionTypes.DELETE_NODE,
         payload: {
           nodeToDelete,
-          activePath: selectedNodeInfo.path,
           now: expectedDate,
         },
       },
@@ -374,7 +373,6 @@ describe('2. deleteNodeThunkAction ', () => {
         type: notesListActionTypes.DELETE_NODE,
         payload: {
           nodeToDelete,
-          activePath: selectedNodeInfo.path,
           now: expectedDate,
         },
       },
@@ -443,7 +441,6 @@ describe('2. deleteNodeThunkAction ', () => {
         type: notesListActionTypes.DELETE_NODE,
         payload: {
           nodeToDelete,
-          activePath: selectedNodeInfo.path,
           now: expectedDate,
         },
       },

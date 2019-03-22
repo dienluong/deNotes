@@ -164,7 +164,6 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
           type: notesListActionTypes.DELETE_NODE,
           payload: {
             nodeToDelete: node,
-            activePath: getState().activeNode.path,
             now: Date.now(),
           },
         });
