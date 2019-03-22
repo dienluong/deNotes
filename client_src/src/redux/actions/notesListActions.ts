@@ -2,7 +2,7 @@ import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
 import editorActionTypes from './constants/editorActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
-import { equals, translateNodeIdToInfo, getDescendantItems, createNode, findDeepestFolder } from '../../utils/treeUtils';
+import { translateNodeIdToInfo, getDescendantItems, createNode, findDeepestFolder } from '../../utils/treeUtils';
 import initialState from '../misc/initialState';
 import { NONE_SELECTED, nodeTypes } from '../../utils/appCONSTANTS';
 
@@ -218,8 +218,9 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
 
     const newNode: TreeNodeT = createNode({ type: kind });
     let parentPath: ActiveNodeT['path'];
-    let parentKey: string;
+    let parentKey: TreeNodeT['id'];
 
+    /*
     // Determine parent path of the new node
     if (equals(state.activeNode.path, [NONE_SELECTED])){
       // case where active node is root folder (i.e. active ID = NONE_SELECTED and path = [NONE_SELECTED])
@@ -233,13 +234,24 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
         parentPath = state.activeNode.path.slice(0, -1);
       }
     }
-
     // Determine parent key
     if (parentPath.length) {
       parentKey = parentPath[parentPath.length - 1];
     } else {
       // If path to parent node is [], then it means the active node is at the very root of the tree.
       parentKey = '';
+    }
+    */
+
+    // Determine parent path and key
+    const parentIdx = findDeepestFolder(state.activeNode.path);
+    if (!parentIdx || parentIdx === -1) {
+      // case where parent folder is root
+      parentPath = [];
+      parentKey = '';
+    } else {
+      parentPath = state.activeNode.path.slice(0, parentIdx + 1);
+      parentKey = parentPath[parentIdx];
     }
 
     const returnVal = dispatch({
