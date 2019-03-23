@@ -722,10 +722,10 @@ describe('3. addAndSelectNodeThunkAction ', () => {
     createNodeSpy.mockClear();
     mockedStore.clearActions();
 
-    // ---> Test case where active node is FOLDER
+    // ---> Test case where active node is FOLDER in root
     activeNode = {
-      id: mockedTree[0].children[3].id,
-      path: [mockedTree[0].id, mockedTree[0].children[3].id],
+      id: mockedTree[2].id,
+      path: [mockedTree[2].id],
     };
 
     mockedStore = mockStore({
@@ -739,7 +739,7 @@ describe('3. addAndSelectNodeThunkAction ', () => {
         type: notesListActionTypes.ADD_NODE,
         payload: {
           newNode,
-          parentKey: activeNode.path[1],
+          parentKey: activeNode.path[0],
           now: expectedDate,
         },
       },
