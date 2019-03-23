@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { selectTitlesFromActivePath, selectSiblingsOfActiveNode } from '../redux/selectors/index.js';
+import { selectTitlesFromActivePath, selectChildrenOfActiveFolder } from '../redux/selectors/index.js';
 import * as rootReducer from '../redux/reducers';
 import NotesList from './widgets/NotesList';
 import {
@@ -12,7 +12,7 @@ import {
   addAndSelectNodeThunkAction,
 } from '../redux/actions/notesListActions';
 
-import { getNodeKey } from '../utils/treeUtils';
+import { getNodeKey, collapseFolders, findDeepestFolder } from '../utils/treeUtils';
 import { nodeTypes } from '../utils/appCONSTANTS';
 
 // Types
@@ -66,11 +66,19 @@ function mapStateToProps(state: AppStateT) {
   }
   // TODO: Remove ABOVE
 
+  const activeNode = rootReducer.selectActiveNode(state);
   // Get the siblings of the current active node (including itself). The children will be passed as prop to the component
-  const children = selectSiblingsOfActiveNode(state);
+  const parent = findDeepestFolder(activeNode.path);
+  let children;
+  // Do not collapse folders if displaying root
+  if (parent && parent === -1) {
+    children = selectChildrenOfActiveFolder(state);
+  } else {
+    children = collapseFolders({ tree: selectChildrenOfActiveFolder(state) as TreeNodeT[] });
+  }
   return {
     tree: children,
-    activeNode: rootReducer.selectActiveNode(state),
+    activeNode,
     activePath: activePathByTitles,
   };
 }
@@ -112,12 +120,10 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
       return dispatch(navigatePathThunkAction({ idx }));
     },
     nodeClickHandler({ id = '', path = [] }) {
-      // We are not using the path received from the NotesList component because that path is not for the entire tree;
-      // remember that NotesList only receives and renders a given leaf of the whole tree.
-      return dispatch(selectNodeThunkAction({ id }));
+      return dispatch(selectNodeThunkAction({ id, path }));
     },
     nodeDoubleClickHandler({ id, path }) {
-      return dispatch(selectNodeThunkAction({ id }))
+      return dispatch(selectNodeThunkAction({ id, path }))
     },
     deleteNodeBtnHandler({ node, path }) {
       // We are not using the path received from the NotesList component because that path is not for the entire tree;

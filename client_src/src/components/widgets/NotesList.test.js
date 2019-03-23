@@ -4,7 +4,7 @@ import notesListStyles from './NotesList.module.css';
 import pathNavStyles from './PathNavigator.module.css';
 import { render, cleanup, fireEvent, within } from 'react-testing-library';
 import 'jest-dom/extend-expect';
-import { walk, find } from 'react-sortable-tree';
+import { walk, find, getFlatDataFromTree } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/treeUtils';
 import { nodeTypes } from '../../utils/appCONSTANTS';
 import baseState from '../../redux/misc/initialState';
@@ -19,11 +19,12 @@ toolbarHandlersMap2.set('tool3', jest.fn());
 
 afterEach(cleanup);
 
-it('should render all node titles in the first level of the received tree and highlight the active node', () => {
+it('should render all node titles of the received tree and highlight the active node', () => {
   const tree = mockedTree;
+  // active node is an ITEM in root, so active folder is the root itself
   const activeNode = {
-    id: mockedTree[0].id,
-    path: [mockedTree[0].id],
+    id: mockedTree[1].id,
+    path: [mockedTree[1].id],
   };
   const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
   const props = {
@@ -47,7 +48,8 @@ it('should render all node titles in the first level of the received tree and hi
   const renderedInputs = Array.from(container.getElementsByTagName('input'));
   const renderedTitles = renderedInputs.map(input => input.value);
 
-  const test = (node) => {
+  const test = jest.fn();
+  test.mockImplementation(({ node }) => {
     if (node.id === activeNode.id) {
       const highlightedNodes = container.getElementsByClassName(notesListStyles['dnt__tree-node--active']);
       // should expect only one highlighted node
@@ -56,21 +58,28 @@ it('should render all node titles in the first level of the received tree and hi
     }
     expect(queryAllByValue(node.title)).toHaveLength(1);
     expect(renderedTitles.includes(node.title)).toBe(true);
-  };
+  });
 
-  // For each node in the tree sent to NotesList component, run test...
-  props.tree.forEach(test);
+  // For each node in the tree sent to NotesList component, run test.
+  walk({
+    treeData: props.tree,
+    getNodeKey,
+    callback: test,
+    ignoreCollapsed: true,
+  });
 
+  // The current active folder (the root) has total of 9 children and grandchildren nodes
+  expect(test).toBeCalledTimes(9);
   const numOfRenderedTreeNodeElements = container.getElementsByClassName(notesListStyles['dnt__tree-node']).length;
-  const numOfNodesInSourceTree = props.tree.length;
-  expect(numOfRenderedTreeNodeElements).toEqual(numOfNodesInSourceTree);
+  const numOfNodesInSourceTree = getFlatDataFromTree({ treeData: props.tree, getNodeKey, ignoreCollapsed: true }).length;
+  expect(numOfNodesInSourceTree).toEqual(numOfRenderedTreeNodeElements);
 });
 
 it('should invoke handler when tree node is clicked', () => {
   const tree = mockedTree;
   const activeNode = {
-    id: mockedTree[0].id,
-    path: [mockedTree[0].id],
+    id: mockedTree[1].id,
+    path: [mockedTree[1].id],
   };
   const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
   const props = {
@@ -107,15 +116,15 @@ it('should invoke handler when tree node is clicked', () => {
     expect(props.nodeClickHandler).lastCalledWith({ id: correspondingNode[0].node.id, path: correspondingNode[0].path });
   });
 
-  const numberOfNodes = props.tree.length;
-  expect(props.nodeClickHandler).toBeCalledTimes(numberOfNodes);
+  const numOfNodesInSourceTree = getFlatDataFromTree({ treeData: props.tree, getNodeKey, ignoreCollapsed: true }).length;
+  expect(props.nodeClickHandler).toBeCalledTimes(numOfNodesInSourceTree);
 });
 
 it('should invoke handler when double-click on node', () => {
   const tree = mockedTree;
   const activeNode = {
-    id: mockedTree[0].id,
-    path: [mockedTree[0].id],
+    id: mockedTree[1].id,
+    path: [mockedTree[1].id],
   };
   const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
   const props = {
@@ -153,8 +162,8 @@ it('should invoke handler when double-click on node', () => {
     expect(props.nodeDoubleClickHandler).lastCalledWith({ id: correspondingNode[0].node.id, path: correspondingNode[0].path });
   });
 
-  const numberOfNodes = props.tree.length;
-  expect(props.nodeDoubleClickHandler).toBeCalledTimes(numberOfNodes);
+  const numOfNodesInSourceTree = getFlatDataFromTree({ treeData: props.tree, getNodeKey, ignoreCollapsed: true }).length;
+  expect(props.nodeDoubleClickHandler).toBeCalledTimes(numOfNodesInSourceTree);
 });
 
 it('should invoke handler when toolbar button is clicked', () => {
@@ -235,8 +244,8 @@ it('should invoke handler when segment in path navigator is clicked', () => {
 it('should invoke handler when tree node button is clicked', () => {
   const tree = mockedTree;
   const activeNode = {
-    id: mockedTree[0].id,
-    path: [mockedTree[0].id],
+    id: mockedTree[1].id,
+    path: [mockedTree[1].id],
   };
   const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
   const props = {
@@ -257,7 +266,9 @@ it('should invoke handler when tree node button is clicked', () => {
   const { getByTestId } = render(<NotesList { ...props }/>);
 
   let numberOfFolders = 0;
-  const test = ({ node, path }) => {
+
+  const test = jest.fn();
+  test.mockImplementation(({ node, path }) => {
     if (node.type === nodeTypes.FOLDER) {
       numberOfFolders += 1;
       const renderedTreeNode = getByTestId(node.id);
@@ -274,7 +285,7 @@ it('should invoke handler when tree node button is clicked', () => {
       expect(props.deleteNodeBtnHandler).lastCalledWith({ node, path });
       expect(props.deleteNodeBtnHandler).toBeCalledTimes(numberOfFolders);
     }
-  };
+  });
 
   walk({
     treeData: props.tree,
@@ -282,13 +293,16 @@ it('should invoke handler when tree node button is clicked', () => {
     callback: test,
     ignoreCollapsed: true,
   });
+
+  // There is a total of 9 nodes
+  expect(test).toBeCalledTimes(9);
 });
 
 it('should invoke handler on node title change', () => {
   const tree = mockedTree;
   const activeNode = {
-    id: mockedTree[0].id,
-    path: [mockedTree[0].id],
+    id: mockedTree[1].id,
+    path: [mockedTree[1].id],
   };
   const activePath = selectTitlesFromActivePath({ ...baseState, notesTree: { ...baseState.notesTree, tree }, activeNode });
   const props = {
@@ -309,7 +323,8 @@ it('should invoke handler on node title change', () => {
   const { queryAllByValue } = render(<NotesList { ...props }/>);
 
   let numberOfNodes = 0;
-  const test = ({ node, path }) => {
+  const test = jest.fn();
+  test.mockImplementation(({ node, path }) => {
     const newTitle = 'new test title';
     const renderedInputs = queryAllByValue(node.title);
     expect(renderedInputs).toHaveLength(1);
@@ -320,7 +335,7 @@ it('should invoke handler on node title change', () => {
     fireEvent.blur(renderedTitle);
     expect(props.nodeTitleChangeHandler).lastCalledWith({ node, path, title: newTitle });
     expect(props.nodeTitleChangeHandler).toBeCalledTimes(numberOfNodes);
-  };
+  });
 
   walk({
     treeData: props.tree,
@@ -328,4 +343,7 @@ it('should invoke handler on node title change', () => {
     callback: test,
     ignoreCollapsed: true,
   });
+
+  // There is a total of 9 nodes.
+  expect(test).toBeCalledTimes(9);
 });

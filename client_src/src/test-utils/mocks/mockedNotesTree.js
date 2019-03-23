@@ -11,7 +11,7 @@ export const mockedTree = [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
-    expanded: false,
+    expanded: true,
     children: [
       {
         title: 'note root0.children0',
@@ -39,7 +39,7 @@ export const mockedTree = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        expanded: false,
+        expanded: true,
         children: [
           {
             title: 'note root0.children2.children0',
@@ -69,7 +69,7 @@ export const mockedTree = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        expanded: false,
+        expanded: true,
         children: [],
       },
     ],
@@ -91,7 +91,7 @@ export const mockedTree = [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
-    expanded: false,
+    expanded: true,
     children: [],
   },
 ];

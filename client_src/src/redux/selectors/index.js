@@ -33,12 +33,12 @@ export const selectTitlesFromActivePath = createSelector(
 );
 
 /**
- *  Returns siblings of a tree node (including itself) specified by the provided path.
+ *  Returns nodes of the active folder node specified by the provided path.
  *  @param {Object[]} notesTree
  *  @param {string[]} activePath
  *  @return {Object[]}
  */
-export const selectSiblingsOfActiveNode = createSelector(
+export const selectChildrenOfActiveFolder = createSelector(
   [selectNotesTreeTree, selectActiveNodePath],
   (tree = [], activePath = []) => {
     if (!Array.isArray(activePath) || !activePath.length || !Array.isArray(tree)) {
@@ -51,7 +51,7 @@ export const selectSiblingsOfActiveNode = createSelector(
     }
 
     if (parentIdx === -1) {
-      // folder is root, then the list of siblings (including itself) is the tree itself
+      // folder is root, then the list of children is the tree itself
       return tree;
     }
 

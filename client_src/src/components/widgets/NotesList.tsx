@@ -83,16 +83,6 @@ function NotesList({
     return buttons;
   }
 
-  function _collapseAllParents({ tree }: { tree: TreeNodeT[] }): TreeNodeT[] {
-    return tree.map((node): TreeNodeT => {
-      if (node && node.children) {
-        return { ...node, expanded: false };
-      } else {
-        return node;
-      }
-    });
-  }
-
   return (
     <div className={ styles["dnt__notes-list"] }>
       <Toolbar toolsMap={ toolbarHandlersMap } />
@@ -104,7 +94,7 @@ function NotesList({
       />
       <Tree
         className={ 'tree ' + styles.dnt__tree }
-        treeData={ _collapseAllParents({ tree }) }
+        treeData={ tree }
         theme={ mobileTheme as any }
         onChange={ treeChangeHandler }
         getNodeKey={ getNodeKey }

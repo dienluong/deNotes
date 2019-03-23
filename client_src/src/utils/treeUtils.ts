@@ -75,7 +75,7 @@ export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().
 
   if (type === nodeTypes.FOLDER) {
     newNode.children = [];
-    newNode.expanded = false;
+    newNode.expanded = true;
     newNode.title = title === DEFAULT_TITLES.NOTE ? DEFAULT_TITLES.FOLDER : title;
   }
 
@@ -100,7 +100,7 @@ export function findDeepestFolder(path: string[])
     return path.length - 1;
   }
 
-  // If path consists only of one ITEM node, then "farthest" folder root
+  // If path consists of only one node and it's an ITEM, then "farthest" folder is root
   if (path.length === 1) {
     return -1;
   }
@@ -136,7 +136,8 @@ export function translateNodeIdToInfo({ nodeId }: { nodeId: string })
     return null;
   }
 
-  const re = new RegExp(`^(?:${nodeTypes.ITEM}|${nodeTypes.FOLDER})$`);
+  const reSource = `^(?:${nodeTypes.ITEM}|${nodeTypes.FOLDER})$`;
+  const re = new RegExp(reSource);
   if (re.test(info[0])) {
     return {
       type: info[0] as NodeTypeT,
@@ -209,6 +210,21 @@ export function trimTree(tree: TreeNodeT[])
     }
 
     return normNode;
+  });
+}
+
+/**
+ * Collapse all first-level folders in the tree.
+ * @param tree {Object[]}
+ */
+export function collapseFolders({ tree }: { tree: TreeNodeT[] })
+  : TreeNodeT[] {
+  return tree.map((node): TreeNodeT => {
+    if (node && node.children) {
+      return { ...node, expanded: false };
+    } else {
+      return node;
+    }
   });
 }
 

@@ -1,7 +1,7 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
-import { findDeepestFolder, translateNodeIdToInfo, equals } from '../../utils/treeUtils';
+import { findDeepestFolder } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
-import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
+import { NONE_SELECTED } from '../../utils/appCONSTANTS';
 
 // Types
 import { AnyAction } from 'redux';
@@ -99,26 +99,20 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentAct
       return currentActive;
     }
   } else { // If no path provided, use the current active path
-
-    // If active folder is root with no item selected
-    if (equals(currentActive.path, [NONE_SELECTED])) {
+    const parentIdx = findDeepestFolder(currentActive.path);
+    if (parentIdx === null) {
+      return currentActive;
+    }
+    // If parent folder is root...
+    if (parentIdx === -1) {
       newPath = [nodeId];
     } else {
-      const nodeInfo = translateNodeIdToInfo({ nodeId: currentActive.id });
-      if (nodeInfo && nodeInfo.type === nodeTypes.FOLDER) {
-        newPath = [...currentActive.path, nodeId];
-      } else if (nodeInfo && nodeInfo.type === nodeTypes.ITEM){
-        // If current active node is an item, use its parent folder to build new active node.
-        newPath = [...(currentActive.path.slice(0, -1)), nodeId];
-      } else {
-        return currentActive;
-      }
+      newPath = [...(currentActive.path.slice(0, parentIdx + 1)), nodeId];
     }
   }
 
   return { id: nodeId, path: newPath };
 }
-
 
 /*
 function _switchActiveNodeOnFolderChange({ currentActive, folder }: { currentActive: ActiveNodeT, folder: TreeNodeT[] } )
