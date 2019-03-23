@@ -160,6 +160,12 @@ export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode
         ...action.payload,
       });
     }
+    case notesListActionTypes.GO_TO_ROOT: {
+      return {
+        id: NONE_SELECTED,
+        path: [NONE_SELECTED],
+      };
+    }
     case notesListActionTypes.SWITCH_NODE_ON_DELETE: {
       if (!action.payload.deletedNodeId) {
         return state;

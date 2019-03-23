@@ -13,7 +13,7 @@ jest.mock('../redux/actions/notesListActions');
 import {
   selectNodeThunkAction,
   navigatePathThunkAction,
-  goUpAFolderAction,
+  goToRootAction,
   changeNotesFolderThunkAction,
   changeNodeTitleAction,
   deleteNodeThunkAction,
@@ -37,7 +37,7 @@ afterEach(() => {
   cleanup();
   addAndSelectNodeThunkAction.mockClear();
   navigatePathThunkAction.mockClear();
-  goUpAFolderAction.mockClear();
+  goToRootAction.mockClear();
   selectNodeThunkAction.mockClear();
   changeNodeTitleAction.mockClear();
   deleteNodeThunkAction.mockClear();
@@ -131,7 +131,7 @@ it('reacts to events by calling proper handlers', () => {
   };
   addAndSelectNodeThunkAction.mockImplementation(() => ({ type: 'DUMMY_ACTION', payload: 'DUMMY_PAYLOAD' }));
   navigatePathThunkAction.mockImplementation(() => ({ type: 'DUMMY_ACTION', payload: 'DUMMY_PAYLOAD' }));
-  goUpAFolderAction.mockImplementation(() => ({ type: 'DUMMY_ACTION', payload: 'DUMMY_PAYLOAD' }));
+  goToRootAction.mockImplementation(() => ({ type: 'DUMMY_ACTION', payload: 'DUMMY_PAYLOAD' }));
   selectNodeThunkAction.mockImplementation(() => ({ type: 'DUMMY_ACTION', payload: 'DUMMY_PAYLOAD' }));
   changeNodeTitleAction.mockImplementation(() => ({ type: 'DUMMY_ACTION', payload: 'DUMMY_PAYLOAD' }));
   deleteNodeThunkAction.mockImplementation(() => ({ type: 'DUMMY_ACTION', payload: 'DUMMY_PAYLOAD' }));
@@ -157,8 +157,8 @@ it('reacts to events by calling proper handlers', () => {
   target = queryAllByText(TOOLBAR_LABELS.BACK_BUTTON);
   expect(target).toHaveLength(1);
   fireEvent.click(target[0]);
-  expect(goUpAFolderAction).toBeCalledTimes(1);
-  goUpAFolderAction.mockClear();
+  expect(goToRootAction).toBeCalledTimes(1);
+  goToRootAction.mockClear();
 
   // Test navbar click
   target = container.querySelectorAll(`.${pathNavStyles["dnt__pathnav-segment--active"]}`);

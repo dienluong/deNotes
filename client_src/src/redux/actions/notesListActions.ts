@@ -421,6 +421,13 @@ export function goUpAFolderAction(): AnyAction {
   };
 }
 
+export function goToRootAction(): AnyAction {
+  return {
+    type: notesListActionTypes.GO_TO_ROOT,
+    payload: {},
+  };
+}
+
 /**
  * ...
  * @param {Object} params
