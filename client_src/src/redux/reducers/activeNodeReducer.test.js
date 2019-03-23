@@ -197,6 +197,14 @@ describe('activeNodeReducer ', () => {
     });
   });
 
+  it('should return state NONE_SELECTED/[NONE_SELECTED] on GO_TO_ROOT action', () => {
+    const currentState = initialState.activeNode;
+    expect(reducer(currentState, {
+      type: notesListActionTypes.GO_TO_ROOT,
+      payload: {},
+    }));
+  });
+
   it('should switch to parent folder on SWITCH_NODE_ON_DELETE action, if deleted node is the active node or is part of its path.', () => {
     const currentState = {
       id: 'active1',

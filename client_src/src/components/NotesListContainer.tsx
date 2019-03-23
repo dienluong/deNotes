@@ -5,7 +5,7 @@ import NotesList from './widgets/NotesList';
 import {
   selectNodeThunkAction,
   navigatePathThunkAction,
-  goUpAFolderAction,
+  goToRootAction,
   changeNotesFolderThunkAction,
   changeNodeTitleAction,
   deleteNodeThunkAction,
@@ -97,7 +97,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
   }
 
   function toolbarBackBtnHandler() {
-    return dispatch(goUpAFolderAction());
+    return dispatch(goToRootAction());
   }
 
   const toolbarHandlersMap = new Map();
