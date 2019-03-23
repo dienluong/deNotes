@@ -245,7 +245,7 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
 
     // Determine parent path and key
     const parentIdx = findDeepestFolder(state.activeNode.path);
-    if (!parentIdx || parentIdx === -1) {
+    if (parentIdx === null || parentIdx === -1) {
       // case where parent folder is root
       parentPath = [];
       parentKey = '';
