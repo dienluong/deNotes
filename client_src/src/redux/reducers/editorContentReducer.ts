@@ -56,3 +56,5 @@ export default function editorContentReducer(state: EditorContentT = initialCont
       return state;
   }
 }
+
+export const selectId = (state: EditorContentT) => state.id;

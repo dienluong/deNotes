@@ -3,6 +3,7 @@ import notesListActionTypes from './constants/notesListActionConstants';
 import editorActionTypes from './constants/editorActionConstants';
 import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { translateNodeIdToInfo, getDescendantItems, createNode, findDeepestFolder } from '../../utils/treeUtils';
+import * as rootReducer from '../reducers';
 import initialState from '../misc/initialState';
 import { NONE_SELECTED, nodeTypes } from '../../utils/appCONSTANTS';
 
@@ -81,14 +82,14 @@ export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path:
       };
     }
     // Immediately save currently opened note
-    const currentEditorContent = getState().editorContent;
+    const currentEditorContent = rootReducer.selectEditorContent(getState());
     if (currentEditorContent.id) {
       _editorContentStorage.save(currentEditorContent)
         .catch((err: Error) => { console.log(err); }); // TODO: log error?
     }
 
     let returnVal;
-    const parentIdx = findDeepestFolder(getState().activeNode.path);
+    const parentIdx = findDeepestFolder(rootReducer.selectActiveNodePath(getState()));
     if (parentIdx === null) {
       return {
         type: 'NO_OP',
@@ -112,17 +113,17 @@ export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path:
         type: notesListActionTypes.SELECT_NODE,
         payload: {
           nodeId: id,
-          path: [...getState().activeNode.path.slice(0, parentIdx + 1), id],
+          path: [...rootReducer.selectActiveNodePath(getState()).slice(0, parentIdx + 1), id],
         },
       });
     }
 
     // If new active node is an ITEM (note) and if its content is not already open, then fetch its content
-    const activeNodeInfo = translateNodeIdToInfo({ nodeId: getState().activeNode.id });
+    const activeNodeInfo = translateNodeIdToInfo({ nodeId: rootReducer.selectActiveNodeId(getState()) });
     if ( activeNodeInfo && activeNodeInfo.type === nodeTypes.ITEM) {
       const uniqid = activeNodeInfo.uniqid;
       // Fetch note content only if not already loaded
-      if (uniqid !== getState().editorContent.id) {
+      if (uniqid !== rootReducer.selectEditorContentId(getState())) {
         dispatch(fetchEditorContentThunkAction({ noteId: uniqid }))
           .catch((err: ActionError) => {
             window.alert(`Error loading saved note content: ${err.message}`);
@@ -169,7 +170,7 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
         });
 
         // If deleted node is part of the active path, then switch to a new active node
-        if (getState().activeNode.path.lastIndexOf(node.id) >= 0) {
+        if (rootReducer.selectActiveNodePath(getState()).lastIndexOf(node.id) >= 0) {
           dispatch(switchActiveNodeOnDeleteAction({ deletedNodeId: node.id }));
           // TODO Load blank editor canvas
         }
@@ -206,11 +207,10 @@ export function switchActiveNodeOnDeleteAction({ deletedNodeId }: { deletedNodeI
 export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
   : ThunkAction<AnyAction, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
-    const state = getState();
     const now = Date.now();
 
     // Immediately save currently opened note
-    const currentContent = state.editorContent;
+    const currentContent = rootReducer.selectEditorContent(getState());
     if (currentContent.id) {
       _editorContentStorage.save(currentContent)
         .catch((err: Error) => console.log(err)); // TODO: log error?
@@ -220,37 +220,14 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
     let parentPath: ActiveNodeT['path'];
     let parentKey: TreeNodeT['id'];
 
-    /*
-    // Determine parent path of the new node
-    if (equals(state.activeNode.path, [NONE_SELECTED])){
-      // case where active node is root folder (i.e. active ID = NONE_SELECTED and path = [NONE_SELECTED])
-      parentPath = [];
-    } else {
-      const activeNodeInfo = translateNodeIdToInfo({ nodeId: state.activeNode.id });
-      if (activeNodeInfo && activeNodeInfo.type === nodeTypes.FOLDER) {
-        parentPath = state.activeNode.path;
-      } else {
-        // If current active node is not a FOLDER, simply truncate its path to obtain the parent path.
-        parentPath = state.activeNode.path.slice(0, -1);
-      }
-    }
-    // Determine parent key
-    if (parentPath.length) {
-      parentKey = parentPath[parentPath.length - 1];
-    } else {
-      // If path to parent node is [], then it means the active node is at the very root of the tree.
-      parentKey = '';
-    }
-    */
-
     // Determine parent path and key
-    const parentIdx = findDeepestFolder(state.activeNode.path);
+    const parentIdx = findDeepestFolder(rootReducer.selectActiveNodePath(getState()));
     if (parentIdx === null || parentIdx === -1) {
       // case where parent folder is root
       parentPath = [];
       parentKey = '';
     } else {
-      parentPath = state.activeNode.path.slice(0, parentIdx + 1);
+      parentPath = rootReducer.selectActiveNodePath(getState()).slice(0, parentIdx + 1);
       parentKey = parentPath[parentIdx];
     }
 
@@ -304,14 +281,14 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
 export function fetchNotesTreeThunkAction()
   : ThunkAction<Promise<(AnyAction | Error)>, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
-    const userId = getState().userInfo.id;
+    const userId = rootReducer.selectUserInfoId(getState());
     dispatch({
       type: notesListActionTypes.FETCH_NOTES_TREE,
       payload: { userId },
     });
 
     // Immediately save currently opened note
-    const currentContent = getState().editorContent;
+    const currentContent = rootReducer.selectEditorContent(getState());
     if (currentContent.id) {
       _editorContentStorage.save(currentContent)
         .catch((err: Error) => console.log(err)); // TODO: log error?
@@ -399,7 +376,7 @@ export function navigatePathThunkAction({ idx }: { idx: number })
   // 2. Switch folder
   return (dispatch, getState) => {
     // immediately save currently opened note
-    const currentContent = getState().editorContent;
+    const currentContent = rootReducer.selectEditorContent(getState());
     if (currentContent.id) {
       _editorContentStorage.save(currentContent)
         .catch((err: Error) => console.log(err)); // TODO: log error?
@@ -441,7 +418,7 @@ export function changeNotesFolderThunkAction({ folder }: { folder: TreeNodeT[] }
     }
 
     // immediately save currently opened note
-    const currentContent = getState().editorContent;
+    const currentContent = rootReducer.selectEditorContent(getState());
     if (currentContent.id) {
       _editorContentStorage.save(currentContent)
         .catch((err: Error) => console.log(err)); // TODO: log error?
@@ -451,7 +428,7 @@ export function changeNotesFolderThunkAction({ folder }: { folder: TreeNodeT[] }
       type: notesListActionTypes.CHANGE_NOTES_TREE_FOLDER,
       payload: {
         folder,
-        activePath: getState().activeNode.path,
+        activePath: rootReducer.selectActiveNodePath(getState()),
         now: Date.now(),
       },
     });

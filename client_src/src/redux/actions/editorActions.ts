@@ -1,5 +1,6 @@
 import Delta from 'quill-delta';
 import editorActionTypes from './constants/editorActionConstants';
+import * as rootReducer from '../reducers';
 
 // Types
 import { AnyAction } from 'redux';
@@ -65,7 +66,7 @@ export function changeContentAction({ editor, content }: { editor: UnprivilegedE
 export function fetchEditorContentThunkAction({ noteId }: { noteId: string })
   : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
-    const userId = getState().userInfo.id;
+    const userId = rootReducer.selectUserInfoId(getState());
     dispatch({
       type: editorActionTypes.FETCH_EDITOR_CONTENT,
       payload: { id: noteId },
@@ -134,7 +135,7 @@ export function removeNoteThunkAction({ ids }: { ids: string[] })
       type: editorActionTypes.REMOVING_NOTE,
       payload: { ids },
     });
-    const userId = getState().userInfo.id;
+    const userId = rootReducer.selectUserInfoId(getState());
     return _editorContentStorage.remove({ userId, ids })
       .then(result => {
         let count = 0;

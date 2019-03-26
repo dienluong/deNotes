@@ -40,4 +40,4 @@ export default function userReducer(state: UserInfoT = initialUser, action: AnyA
 }
 
 // Selects User's ID
-export const selectID = (state: UserInfoT) => state.id;
+export const selectId = (state: UserInfoT) => state.id;
