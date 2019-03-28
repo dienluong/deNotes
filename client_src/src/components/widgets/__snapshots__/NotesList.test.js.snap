@@ -52,7 +52,7 @@ exports[`should render all node titles of the received tree and highlight the ac
           aria-readonly="true"
           class="ReactVirtualized__Grid ReactVirtualized__List rst__virtualScrollOverride"
           role="grid"
-          style="box-sizing: border-box; direction: ltr; height: 99999px; position: relative; width: 200px; overflow-x: hidden; overflow-y: hidden;"
+          style="box-sizing: border-box; direction: ltr; height: 99999px; position: relative; width: 200px; will-change: transform; overflow-x: hidden; overflow-y: hidden;"
           tabindex="0"
         >
           <div
