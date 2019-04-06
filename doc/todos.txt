@@ -36,7 +36,7 @@ x Implement type checking
 
 x Sanitize (e.g. user input titles)!
 
-=> Minimal tree (better suited for mobile)
+x Minimal tree (better suited for mobile)
 
 x The active path must always lead to the selected child of the folder, of which the content listed by the tree. If the folder has no content, i.e. no child selected, then the last entry of the path must be empty string.  This way, we can consistently and reliably determine the current folder, whose content is listed by the tree, by simply slicing off the last entry of the active path.
 
@@ -51,6 +51,8 @@ REMOVE resolution in package.json that temp fix for https://github.com/facebook/
   npm install
 
 x Set expanded = false for every folder node created.
+
+Remove react-split-pane
 
 Make reducers pure functions by removing UUID creation, calls to Date.now(), etc.
 Define typescript type ActionPayload for action object with a payload property.

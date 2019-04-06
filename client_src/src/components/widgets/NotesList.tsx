@@ -84,7 +84,7 @@ function NotesList({
   }
 
   return (
-    <div className={ styles["dnt__notes-list"] }>
+    <div className={ styles['dnt__notes-list'] }>
       <Toolbar toolsMap={ toolbarHandlersMap } />
       <Toolbar toolsMap={ toolbarHandlersMap2 } />
       <PathNavigator
