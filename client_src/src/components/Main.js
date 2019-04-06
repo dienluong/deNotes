@@ -1,31 +1,29 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import './Main.css';
+import styles from './Main.module.css';
 import EditorContainer from './EditorContainer';
 import NotesListContainer from './NotesListContainer';
-import SplitPane from 'react-split-pane';
-
-// TODO: remove
-// import { BrowserRouter as Router, Route } from 'react-router-dom';
-// import Delta from 'quill-delta';
-// const initContent = new Delta();
+import Paper from '@material-ui/core/Paper';
+import DrawerButton from './widgets/DrawerButton';
 
 const editorParams = {
   options: { placeholder: 'Welcome to deNotes! v0.02' },
 };
 
-class Main extends React.Component {
-  render() {
-    return (
-      // <React.StrictMode>
-      <Fragment>
-        <SplitPane split="vertical" defaultSize="60%" >
-          <NotesListContainer />
-          <EditorContainer options={ editorParams.options }/>
-        </SplitPane>
-      </Fragment>
-      // </React.StrictMode>
-    );
+function Main() {
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  function handleDrawerToggle() {
+    setDrawerOpen(!drawerOpen);
   }
+  return (
+    // <React.StrictMode>
+    <Paper elevation={ 1 }>
+      <DrawerButton className={ styles['dnt__notes-list-drawer-btn'] } visible={ drawerOpen } clickHandler={ handleDrawerToggle } />
+      <NotesListContainer drawerOpen handleDrawerToogle />
+      <EditorContainer options={ editorParams.options } />
+    </Paper>
+    // </React.StrictMode>
+  );
 }
 
 export default Main;
