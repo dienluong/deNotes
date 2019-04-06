@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { selectTitlesFromActivePath, selectChildrenOfActiveFolder } from '../redux/selectors/index.js';
 import * as rootReducer from '../redux/reducers';
-import NotesList from './widgets/NotesList';
+import NotesListDrawer from './widgets/NotesListDrawer';
 import {
   selectNodeThunkAction,
   navigatePathThunkAction,
@@ -144,5 +144,5 @@ function mergeProps(stateProps: object, dispatchProps: object, ownProps: object)
   return Object.assign({}, ownProps, stateProps, dispatchProps, { getNodeKey });
 }
 
-const NotesListContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(NotesList);
+const NotesListContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(NotesListDrawer);
 export default NotesListContainer;
