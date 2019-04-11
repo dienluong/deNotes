@@ -1,0 +1,14 @@
+.dnt__notes-list-drawer-root {
+  display: flex;
+}
+
+@media screen and (min-width: 600px) {
+  .dnt__notes-list-drawer {
+    width: 500px;
+    flex-shrink: 0;
+  }
+}
+
+.dnt__notes-list-drawer-paper {
+  width: 500px;
+}
