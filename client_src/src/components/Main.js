@@ -13,13 +13,15 @@ const editorParams = {
 function Main() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   function handleDrawerToggle() {
+    //TODO remove
+    console.log('DRAWER]]]]]]]]]] ', drawerOpen);
     setDrawerOpen(!drawerOpen);
   }
   return (
     // <React.StrictMode>
     <Paper elevation={ 1 }>
-      <DrawerButton className={ styles['dnt__notes-list-drawer-btn'] } visible={ drawerOpen } clickHandler={ handleDrawerToggle } />
-      <NotesListContainer drawerOpen handleDrawerToogle />
+      <DrawerButton className={ styles['dnt__notes-list-drawer-btn'] } visible={ !drawerOpen } clickHandler={ handleDrawerToggle } />
+      <NotesListContainer drawerOpen={ drawerOpen } handleDrawerToogle={ handleDrawerToggle } />
       <EditorContainer options={ editorParams.options } />
     </Paper>
     // </React.StrictMode>
