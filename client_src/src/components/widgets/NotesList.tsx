@@ -13,7 +13,7 @@ type PropsT = {
   tree: TreeNodeT[],
   activeNode: ActiveNodeT,
   activePath: string[],
-  treeChangeHandler: (...args: any) => any;
+  treeChangeHandler: (...args: any) => any,
   nodeTitleChangeHandler: (...args: any) => any,
   nodeClickHandler: (params: { id: TreeNodeT["id"], path: TreeNodePathT }) => unknown,
   nodeDoubleClickHandler: (params: { id: TreeNodeT["id"], path: TreeNodePathT }) => unknown,
