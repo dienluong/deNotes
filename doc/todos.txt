@@ -54,6 +54,14 @@ x Set expanded = false for every folder node created.
 
 Remove react-split-pane
 
+Warn on page unload when content unsaved:
+// Check for unsaved data
+window.onbeforeunload = function() {
+  if (change.length() > 0) {
+    return 'There are unsaved changes. Are you sure you want to leave?';
+  }
+}
+
 Make reducers pure functions by removing UUID creation, calls to Date.now(), etc.
 Define typescript type ActionPayload for action object with a payload property.
 Use state selectors instead of getState().<sliceOfState>
@@ -69,3 +77,4 @@ Upon creation of new note, auto select editor body.
 ? Deselecting note with empty content deletes the note.
 Retry save or load on failure
 recycle bin
+
