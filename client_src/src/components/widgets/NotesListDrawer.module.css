@@ -1,7 +1,3 @@
-.dnt__notes-list-drawer-root {
-  display: flex;
-}
-
 @media screen and (min-width: 600px) {
   .dnt__notes-list-drawer {
     width: 500px;

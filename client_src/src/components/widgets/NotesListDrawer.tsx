@@ -14,7 +14,6 @@ function NotesListDrawer({ drawerOpen, handleDrawerToggle, ...otherProps }: any)
   console.log('drawerOpen]]]]] ', drawerOpen);
 
   return (
-    <div className={ styles['dnt__notes-list-drawer-root'] }>
     <nav className={ styles['dnt__notes-list-drawer'] }>
       <Hidden smUp implementation="css">
         <Drawer
@@ -45,7 +44,6 @@ function NotesListDrawer({ drawerOpen, handleDrawerToggle, ...otherProps }: any)
         </Drawer>
       </Hidden>
     </nav>
-    </div>
   );
 }
 
