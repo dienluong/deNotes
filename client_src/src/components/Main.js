@@ -18,15 +18,15 @@ function Main() {
   return (
     // <React.StrictMode>
     <div className={ styles['dnt__main-root'] }>
-      <Paper elevation={ 1 } >
-        <nav className={ styles['dnt__main-nav'] }>
-          <NotesListContainer drawerOpen={ drawerOpen } handleDrawerToggle={ handleDrawerToggle } />
-        </nav>
-        <DrawerButton className={ styles['dnt__main-nav-btn'] } visible={ !drawerOpen } clickHandler={ handleDrawerToggle } />
-        <main className={ styles['dnt__main-editor'] }>
+      <nav className={ styles['dnt__main-nav'] }>
+        <NotesListContainer drawerOpen={ drawerOpen } handleDrawerToggle={ handleDrawerToggle } />
+      </nav>
+      <DrawerButton className={ styles['dnt__main-nav-btn'] } visible={ !drawerOpen } clickHandler={ handleDrawerToggle } />
+      <main className={ styles['dnt__main-editor'] }>
+        <Paper elevation={ 1 } >
           <EditorContainer options={ editorParams.options } />
-        </main>
-      </Paper>
+        </Paper>
+      </main>
     </div>
     // </React.StrictMode>
   );
