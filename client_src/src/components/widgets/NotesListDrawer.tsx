@@ -10,11 +10,8 @@ function NotesListDrawer({ drawerOpen, handleDrawerToggle, ...otherProps }: any)
   //   setMobileOpen(!mobileOpen);
   // }
 
-  // TODO remove
-  console.log('drawerOpen]]]]] ', drawerOpen);
-
   return (
-    <nav className={ styles['dnt__notes-list-drawer'] }>
+    <React.Fragment>
       <Hidden smUp implementation="css">
         <Drawer
           variant="temporary"
@@ -43,7 +40,7 @@ function NotesListDrawer({ drawerOpen, handleDrawerToggle, ...otherProps }: any)
           <NotesList {...otherProps} />
         </Drawer>
       </Hidden>
-    </nav>
+    </React.Fragment>
   );
 }
 

@@ -1,9 +1,21 @@
-.dnt__notes-list-drawer-root {
+.dnt__main-root {
   display: flex;
 }
 
-.dnt__notes-list-drawer-btn {
+.dnt__main-nav-btn {
   position: absolute;
   top: 10px;
   left: 10px
+}
+
+@media screen and (min-width: 600px) {
+  .dnt__main-nav {
+    width: 400px;
+    flex-shrink: 0;
+  }
+}
+
+.dnt__main-editor {
+  flex-grow: 1;
+  padding: 3px;
 }
