@@ -5,6 +5,9 @@
     /*right: 0;*/
     /*width: auto;*/
 /*}*/
+#dnt-editor-toolbar {
+  padding: 4.5% 13%;
+}
 
 .ql-toolbar.ql-snow {
   border: none;
