@@ -22,14 +22,14 @@ function Main() {
       <nav className={ styles['dnt__main-nav'] }>
         <NotesListContainer drawerOpen={ drawerOpen } handleDrawerToggle={ handleDrawerToggle } />
       </nav>
-      <Hidden className={ styles['dnt__main-nav-btn'] } mdUp implementation="css">
-        <DrawerButton visible={ !drawerOpen } clickHandler={ handleDrawerToggle } />
-      </Hidden>
       <main className={ styles['dnt__main-editor'] }>
         <Paper elevation={ 1 } >
           <EditorContainer options={ editorParams.options } />
         </Paper>
       </main>
+      <Hidden className={ styles['dnt__main-nav-btn'] } mdUp implementation="css">
+        <DrawerButton visible={ !drawerOpen } clickHandler={ handleDrawerToggle } />
+      </Hidden>
     </div>
     // </React.StrictMode>
   );

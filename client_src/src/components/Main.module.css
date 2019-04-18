@@ -5,7 +5,7 @@
 .dnt__main-nav-btn {
   position: absolute;
   bottom: 20px;
-  left: 20px
+  right: 20px
 }
 
 @media (min-width: 960px) {
