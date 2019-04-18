@@ -22,8 +22,8 @@ function Main() {
       <nav className={ styles['dnt__main-nav'] }>
         <NotesListContainer drawerOpen={ drawerOpen } handleDrawerToggle={ handleDrawerToggle } />
       </nav>
-      <Hidden mdUp implementation="css">
-        <DrawerButton className={ styles['dnt__main-nav-btn'] } visible={ !drawerOpen } clickHandler={ handleDrawerToggle } />
+      <Hidden className={ styles['dnt__main-nav-btn'] } mdUp implementation="css">
+        <DrawerButton visible={ !drawerOpen } clickHandler={ handleDrawerToggle } />
       </Hidden>
       <main className={ styles['dnt__main-editor'] }>
         <Paper elevation={ 1 } >
