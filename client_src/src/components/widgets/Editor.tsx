@@ -18,11 +18,11 @@ type PropsT = {
 const EditorToolbar = () => (
   <div id="dnt-editor-toolbar">
     <span className="ql-formats">
-      <select className="ql-header">
+      <select className="ql-header" defaultValue="false">
         <option value="1">Heading 1</option>
         <option value="2">Heading 2</option>
         <option value="3">Heading 3</option>
-        <option selected>Normal</option>
+        <option value="false">Normal</option>
       </select>
     </span>
     <span className="ql-formats">
