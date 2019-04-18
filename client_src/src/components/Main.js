@@ -4,6 +4,7 @@ import styles from './Main.module.css';
 import EditorContainer from './EditorContainer';
 import NotesListContainer from './NotesListContainer';
 import Paper from '@material-ui/core/Paper';
+import Hidden from '@material-ui/core/Hidden';
 import DrawerButton from './widgets/DrawerButton';
 
 const editorParams = {
@@ -21,7 +22,9 @@ function Main() {
       <nav className={ styles['dnt__main-nav'] }>
         <NotesListContainer drawerOpen={ drawerOpen } handleDrawerToggle={ handleDrawerToggle } />
       </nav>
-      <DrawerButton className={ styles['dnt__main-nav-btn'] } visible={ !drawerOpen } clickHandler={ handleDrawerToggle } />
+      <Hidden mdUp implementation="css">
+        <DrawerButton className={ styles['dnt__main-nav-btn'] } visible={ !drawerOpen } clickHandler={ handleDrawerToggle } />
+      </Hidden>
       <main className={ styles['dnt__main-editor'] }>
         <Paper elevation={ 1 } >
           <EditorContainer options={ editorParams.options } />
