@@ -62,6 +62,7 @@ window.onbeforeunload = function() {
   }
 }
 
+Revisit QuillJs bug https://github.com/quilljs/quill/issues/1940
 Make reducers pure functions by removing UUID creation, calls to Date.now(), etc.
 Define typescript type ActionPayload for action object with a payload property.
 Use state selectors instead of getState().<sliceOfState>
