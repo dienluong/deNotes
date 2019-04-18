@@ -8,7 +8,7 @@
   left: 10px
 }
 
-@media (min-width: 600px) {
+@media (min-width: 960px) {
   .dnt__main-nav {
     width: 400px;
     flex-shrink: 0;

@@ -12,7 +12,7 @@ function NotesListDrawer({ drawerOpen, handleDrawerToggle, ...otherProps }: any)
 
   return (
     <React.Fragment>
-      <Hidden smUp implementation="css">
+      <Hidden mdUp implementation="css">
         <Drawer
           variant="temporary"
           anchor="left"
@@ -28,7 +28,7 @@ function NotesListDrawer({ drawerOpen, handleDrawerToggle, ...otherProps }: any)
           <NotesList {...otherProps} />
         </Drawer>
       </Hidden>
-      <Hidden xsDown implementation="css">
+      <Hidden smDown implementation="css">
         <Drawer
           variant="permanent"
           anchor="left"
