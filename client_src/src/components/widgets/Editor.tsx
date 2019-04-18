@@ -16,7 +16,7 @@ type PropsT = {
 };
 
 const EditorToolbar = () => (
-  <div id="dnt-editor-toolbar">
+  <div id="dnt__editor-toolbar">
     <span className="ql-formats">
       <select className="ql-header" defaultValue="false">
         <option value="1">Heading 1</option>
@@ -47,7 +47,7 @@ const EditorToolbar = () => (
 // the component is not re-rendered when defaultValue subsequently changes. Changing the 'key' will allow us to trigger a re-render.
 function Editor({ id, title, delta, content, dateCreated, dateModified, readOnly, contentChangeHandler, options }: PropsT) {
   return (
-    <div className="dnt-editor">
+    <div className="dnt__editor">
       <EditorToolbar />
       <Quill
         key={ id }
@@ -64,7 +64,7 @@ function Editor({ id, title, delta, content, dateCreated, dateModified, readOnly
 
 Editor.modules = {
   toolbar: {
-    container: '#dnt-editor-toolbar'
+    container: '#dnt__editor-toolbar'
   },
 };
 
