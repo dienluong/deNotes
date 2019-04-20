@@ -6,6 +6,9 @@ import mobileTheme from '../../tree-theme';
 import 'react-sortable-tree/style.css';
 import styles from './NotesList.module.css';
 import NodeTitle from './NodeTitle';
+import HomeIcon from '@material-ui/icons/Home';
+import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
+import NewNote from '@material-ui/icons/NoteAdd';
 
 // Types
 import { TreeItem } from 'react-sortable-tree';
@@ -20,11 +23,25 @@ type PropsT = {
   deleteNodeBtnHandler: (params: { node: TreeNodeT, path: TreeNodePathT }) => unknown,
   addNoteBtnHandler: (params: { path: TreeNodePathT }) => unknown,
   pathNavigatorClickHandler: (...args: any) => any,
-  toolbarHandlersMap: any,
-  toolbarHandlersMap2: any,
+  toolbarHandlers: Array<(...args: any) => any>,
   getNodeKey: (...args: any) => any,
 };
 type generateNodePropsT = ({ node, path }: { node: TreeItem, path: (string|number)[] }) => object;
+
+export const TOOLBAR = {
+  NEW_FOLDER: {
+    label: 'New Folder',
+    icon: <NewFolderIcon />,
+  },
+  NEW_NOTE: {
+    label: 'New Note',
+    icon: <NewNote />,
+  },
+  BACK_BUTTON: {
+    label: 'Home',
+    icon: <HomeIcon />,
+  },
+};
 
 function NotesList({
   tree,
@@ -37,8 +54,7 @@ function NotesList({
   deleteNodeBtnHandler,
   addNoteBtnHandler,
   pathNavigatorClickHandler,
-  toolbarHandlersMap,
-  toolbarHandlersMap2,
+  toolbarHandlers,
   getNodeKey,
 }: PropsT) {
   function buildNodeProps({ node, path }: { node: TreeNodeT, path: string[] }) {
@@ -82,6 +98,9 @@ function NotesList({
 
     return buttons;
   }
+
+  const toolbarHandlersMap = new Map([ [TOOLBAR.NEW_FOLDER, toolbarHandlers[0]], [TOOLBAR.NEW_NOTE, toolbarHandlers[1]] ]);
+  const toolbarHandlersMap2 = new Map([ [TOOLBAR.BACK_BUTTON, toolbarHandlers[2]], ]);
 
   return (
     <div className={ styles['dnt__notes-list'] }>
