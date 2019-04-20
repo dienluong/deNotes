@@ -15,7 +15,7 @@ function NotesListDrawer({ drawerOpen, handleDrawerToggle, ...otherProps }: any)
       <Hidden mdUp implementation="css">
         <Drawer
           variant="temporary"
-          anchor="left"
+          anchor="right"
           open={ drawerOpen }
           onClose={ handleDrawerToggle }
           ModalProps={{
@@ -31,7 +31,7 @@ function NotesListDrawer({ drawerOpen, handleDrawerToggle, ...otherProps }: any)
       <Hidden smDown implementation="css">
         <Drawer
           variant="permanent"
-          anchor="left"
+          anchor="right"
           open
           classes={{
             paper: styles['dnt__notes-list-drawer-paper'],
