@@ -6,6 +6,7 @@ import mobileTheme from '../../tree-theme';
 import 'react-sortable-tree/style.css';
 import styles from './NotesList.module.css';
 import NodeTitle from './NodeTitle';
+import Typography from '@material-ui/core/Typography';
 import HomeIcon from '@material-ui/icons/Home';
 import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import NewNoteIcon from '@material-ui/icons/NoteAdd';
@@ -15,6 +16,7 @@ import { TreeItem } from 'react-sortable-tree';
 type PropsT = {
   tree: TreeNodeT[],
   activeNode: ActiveNodeT,
+  folderName: string,
   activePath: string[],
   treeChangeHandler: (...args: any) => any,
   nodeTitleChangeHandler: (...args: any) => any,
@@ -54,6 +56,7 @@ const HandlersMapKeys = toolbarHandlersMap.keys();
 function NotesList({
   tree,
   activeNode,
+  folderName,
   activePath,
   treeChangeHandler,
   nodeTitleChangeHandler,
@@ -123,6 +126,9 @@ function NotesList({
         activeSegmentIdx={ activeNode.path.indexOf(activeNode.id) }
         onClick={ pathNavigatorClickHandler }
       />
+      <Typography variant="h6" color="primary">
+        {folderName || '<NO_NAME>'}
+      </Typography>
       <Tree
         className={ 'tree ' + styles.dnt__tree }
         treeData={ tree }

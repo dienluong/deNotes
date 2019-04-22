@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { selectTitlesFromActivePath, selectChildrenOfActiveFolder } from '../redux/selectors/index.js';
+import { selectTitlesFromActivePath, selectChildrenOfActiveFolder } from '../redux/selectors';
 import * as rootReducer from '../redux/reducers';
 import NotesListDrawer from './widgets/NotesListDrawer';
 import {
@@ -18,7 +18,7 @@ import { nodeTypes } from '../utils/appCONSTANTS';
 // Types
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
-interface DispatchProps {
+interface MapDispatchPropsT {
   treeChangeHandler: (params: any) => AnyAction;
   nodeTitleChangeHandler: (params: { node: TreeNodeT, title: string, path: TreeNodePathT }) => AnyAction;
   pathNavigatorClickHandler: (params: { idx: number }) => AnyAction;
@@ -28,8 +28,16 @@ interface DispatchProps {
   addNoteBtnHandler: (params: any) => AnyAction;
   toolbarHandlers: Array<() => AnyAction>;
 }
+interface MapStatePropsT {
+  tree: TreeNodeT[];
+  activeNode: ActiveNodeT;
+  folderName: string
+  activePath: string[];
+}
 
-function mapStateToProps(state: AppStateT) {
+const ROOT_FOLDER_NAME = 'HOME';
+
+function mapStateToProps(state: AppStateT): MapStatePropsT {
   const activePathByTitles = selectTitlesFromActivePath(state);
 
   // const activePath = translatePathToInfo({ notesTree: state.notesTree, path: state.activeNode.path, kind: 'title' });
@@ -61,17 +69,21 @@ function mapStateToProps(state: AppStateT) {
 
   const activeNode = rootReducer.selectActiveNode(state);
   // Get the siblings of the current active node (including itself). The children will be passed as prop to the component
-  const parent = findDeepestFolder(activeNode.path);
+  const parentIdx = findDeepestFolder(activeNode.path);
+  let parentFolderName = '';
   let children;
   // Do not collapse folders if displaying root
-  if (parent && parent === -1) {
-    children = selectChildrenOfActiveFolder(state);
+  if (parentIdx === -1) {
+    children = selectChildrenOfActiveFolder(state) as TreeNodeT[];
+    parentFolderName = ROOT_FOLDER_NAME;
   } else {
     children = collapseFolders({ tree: selectChildrenOfActiveFolder(state) as TreeNodeT[] });
+    parentFolderName = parentIdx !== null ? (activePathByTitles[parentIdx] || '') : '';
   }
   return {
     tree: children,
     activeNode,
+    folderName: parentFolderName,
     activePath: activePathByTitles,
   };
 }
@@ -80,7 +92,7 @@ function mapStateToProps(state: AppStateT) {
 // Memoization.
 mapStateToProps.cache = {} as { notesTree: any, activeNode: any, activePath: any, editorContent: any };
 
-function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>): DispatchProps {
+function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>): MapDispatchPropsT {
   function toolbarNewFolderBtnHandler() {
     return dispatch(addAndSelectNodeThunkAction({ kind: nodeTypes.FOLDER }));
   }
