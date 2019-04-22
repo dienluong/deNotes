@@ -93,7 +93,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
     return dispatch(goToRootAction());
   }
 
-  const toolbarHandlers = [toolbarNewFolderBtnHandler, toolbarNewNoteBtnHandler, toolbarBackBtnHandler];
+  const toolbarHandlers = [toolbarBackBtnHandler, toolbarNewFolderBtnHandler, toolbarNewNoteBtnHandler];
 
   return {
     treeChangeHandler(tree) {

@@ -43,8 +43,13 @@ export const TOOLBAR = {
   },
 };
 
+const dummyCb = () => {};
 const toolbarHandlersMap = new Map();
-const toolbarHandlersMap2 = new Map();
+toolbarHandlersMap.set(TOOLBAR.BACK_BUTTON, dummyCb)
+                  .set(TOOLBAR.NEW_FOLDER, dummyCb)
+                  .set(TOOLBAR.NEW_NOTE, dummyCb);
+const HandlersMapKeys = toolbarHandlersMap.keys();
+
 
 function NotesList({
   tree,
@@ -102,14 +107,17 @@ function NotesList({
     return buttons;
   }
 
-  toolbarHandlersMap.set(TOOLBAR.NEW_FOLDER, toolbarHandlers[0])
-                    .set(TOOLBAR.NEW_NOTE, toolbarHandlers[1]);
-  toolbarHandlersMap2.set(TOOLBAR.BACK_BUTTON, toolbarHandlers[2]);
+  if (Array.isArray(toolbarHandlers) && toolbarHandlers.length) {
+    for (let i = 0, key = HandlersMapKeys.next(); !key.done; i++, key = HandlersMapKeys.next()) {
+      if (typeof toolbarHandlers[i] === 'function') {
+        toolbarHandlersMap.set(key.value, toolbarHandlers[i]);
+      }
+    }
+  }
 
   return (
     <div className={ styles['dnt__notes-list'] }>
       <Toolbar toolsMap={ toolbarHandlersMap } />
-      <Toolbar toolsMap={ toolbarHandlersMap2 } />
       <PathNavigator
         path={ activePath }
         activeSegmentIdx={ activeNode.path.indexOf(activeNode.id) }
