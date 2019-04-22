@@ -5,8 +5,8 @@ import styles from './Tool.module.css';
 // Types
 type PropsT = {
   label: string;
-  onClick: (params: any) => any;
-  children: JSX.Element;
+  onClick: (...args: any) => any;
+  children: React.ReactNode;
 }
 
 function Tool({ label, onClick: clickHandler, children }: PropsT) {

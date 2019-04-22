@@ -8,7 +8,7 @@ import styles from './NotesList.module.css';
 import NodeTitle from './NodeTitle';
 import HomeIcon from '@material-ui/icons/Home';
 import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
-import NewNote from '@material-ui/icons/NoteAdd';
+import NewNoteIcon from '@material-ui/icons/NoteAdd';
 
 // Types
 import { TreeItem } from 'react-sortable-tree';
@@ -35,13 +35,16 @@ export const TOOLBAR = {
   },
   NEW_NOTE: {
     label: 'New Note',
-    icon: <NewNote />,
+    icon: <NewNoteIcon />,
   },
   BACK_BUTTON: {
     label: 'Home',
     icon: <HomeIcon />,
   },
 };
+
+const toolbarHandlersMap = new Map();
+const toolbarHandlersMap2 = new Map();
 
 function NotesList({
   tree,
@@ -99,8 +102,9 @@ function NotesList({
     return buttons;
   }
 
-  const toolbarHandlersMap = new Map([ [TOOLBAR.NEW_FOLDER, toolbarHandlers[0]], [TOOLBAR.NEW_NOTE, toolbarHandlers[1]] ]);
-  const toolbarHandlersMap2 = new Map([ [TOOLBAR.BACK_BUTTON, toolbarHandlers[2]], ]);
+  toolbarHandlersMap.set(TOOLBAR.NEW_FOLDER, toolbarHandlers[0])
+                    .set(TOOLBAR.NEW_NOTE, toolbarHandlers[1]);
+  toolbarHandlersMap2.set(TOOLBAR.BACK_BUTTON, toolbarHandlers[2]);
 
   return (
     <div className={ styles['dnt__notes-list'] }>

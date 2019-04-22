@@ -4,7 +4,7 @@ import Tool from './Tool';
 
 // Types
 type PropsT = {
-  toolsMap: Map<{label: string, icon: JSX.Element}, (...args: any) => any>;
+  toolsMap: Map<{ label: string, icon: React.ReactNode }, (...args: any) => any>;
 }
 
 function Toolbar({ toolsMap }: PropsT) {
