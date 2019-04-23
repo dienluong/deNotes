@@ -12,7 +12,7 @@ import {
   addAndSelectNodeThunkAction,
 } from '../redux/actions/notesListActions';
 
-import { getNodeKey, collapseFolders, findDeepestFolder } from '../utils/treeUtils';
+import { getNodeKey } from '../utils/treeUtils';
 import { nodeTypes } from '../utils/appCONSTANTS';
 
 // Types
@@ -31,7 +31,7 @@ interface MapDispatchPropsT {
 interface MapStatePropsT {
   tree: TreeNodeT[];
   activeNode: ActiveNodeT;
-  folderName: string
+  rootFolderName: string
   activePath: string[];
 }
 
@@ -69,21 +69,12 @@ function mapStateToProps(state: AppStateT): MapStatePropsT {
 
   const activeNode = rootReducer.selectActiveNode(state);
   // Get the siblings of the current active node (including itself). The children will be passed as prop to the component
-  const parentIdx = findDeepestFolder(activeNode.path);
-  let parentFolderName = '';
-  let children;
-  // Do not collapse folders if displaying root
-  if (parentIdx === -1) {
-    children = selectChildrenOfActiveFolder(state) as TreeNodeT[];
-    parentFolderName = ROOT_FOLDER_NAME;
-  } else {
-    children = collapseFolders({ tree: selectChildrenOfActiveFolder(state) as TreeNodeT[] });
-    parentFolderName = parentIdx !== null ? (activePathByTitles[parentIdx] || '') : '';
-  }
+  let children = selectChildrenOfActiveFolder(state) as TreeNodeT[];
+
   return {
     tree: children,
     activeNode,
-    folderName: parentFolderName,
+    rootFolderName: ROOT_FOLDER_NAME,
     activePath: activePathByTitles,
   };
 }

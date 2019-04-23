@@ -3,7 +3,7 @@ import Toolbar from './Toolbar';
 import PathNavigator from './PathNavigator';
 import NodeTitle from './NodeTitle';
 import Tree from 'react-sortable-tree';
-import { findDeepestFolder } from '../../utils/treeUtils';
+import { collapseFolders, findDeepestFolder } from '../../utils/treeUtils';
 import mobileTheme from '../../tree-theme';
 import 'react-sortable-tree/style.css';
 import styles from './NotesList.module.css';
@@ -18,7 +18,7 @@ import { nodeTypes } from '../../utils/appCONSTANTS';
 type PropsT = {
   tree: TreeNodeT[],
   activeNode: ActiveNodeT,
-  folderName: string,
+  rootFolderName: string,
   activePath: string[],
   treeChangeHandler: (...args: any) => any,
   nodeTitleChangeHandler: (...args: any) => any,
@@ -60,7 +60,7 @@ const HandlersMapKeys = toolbarHandlersMap.keys();
 function NotesList({
   tree,
   activeNode,
-  folderName,
+  rootFolderName,
   activePath,
   treeChangeHandler,
   nodeTitleChangeHandler,
@@ -84,7 +84,7 @@ function NotesList({
     });
   }
 
-  // make visible only folder nodes or nodes (of any type) in root
+  // make visible only folder nodes and direct child nodes (of any type) of root
   function buildRootFolderNodeProps({ node, path }: { node: TreeNodeT, path: TreeNodePathT }) {
     if (node.type === nodeTypes.FOLDER || path.length === 1) {
       return buildNodeProps({ node, path });
@@ -95,7 +95,7 @@ function NotesList({
     }
   }
 
-  // give a height only to folder nodes or to nodes (of any type) in root
+  // give a height only to folder nodes and to direct child nodes (of any type) of root
   function RootFolderNodeRowHeight({ node, path }:{ node: TreeNodeT, path: TreeNodePathT }) {
     if (node.type === nodeTypes.FOLDER || path.length === 1) {
       return _DEFAULT_ROW_HEIGHT;
@@ -144,10 +144,17 @@ function NotesList({
 
   let generateNodeProps = buildNodeProps as generateNodePropsT;
   let rowHeight: ((arg: any) => number) | number = _DEFAULT_ROW_HEIGHT;
+  let parentFolderName = _DEFAULT_FOLDER_NAME;
+  const parentIdx = findDeepestFolder(activeNode.path);
   // if current folder is root, then the tree will be rendered differently.
-  if (findDeepestFolder(activeNode.path) === -1) {
+  if (parentIdx === -1) {
     generateNodeProps = buildRootFolderNodeProps as generateNodePropsT;
     rowHeight = RootFolderNodeRowHeight;
+    parentFolderName = rootFolderName;
+  } else {
+    // When rendering content of a non-root folder, all its child folders are collapsed
+    tree = collapseFolders({ tree });
+    parentFolderName = parentIdx !== null ? activePath[parentIdx] : _DEFAULT_FOLDER_NAME;
   }
 
   return (
@@ -159,7 +166,7 @@ function NotesList({
         onClick={ pathNavigatorClickHandler }
       />
       <Typography variant="h6" color="primary">
-        { folderName || _DEFAULT_FOLDER_NAME }
+        { parentFolderName || _DEFAULT_FOLDER_NAME }
       </Typography>
       <Tree
         className={ 'tree ' + styles.dnt__tree }
