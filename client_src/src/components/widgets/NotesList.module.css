@@ -11,6 +11,10 @@
 
 }
 
+.dnt__tree-node--invisible {
+  display: none;
+}
+
 .dnt__tree-node--active {
   box-shadow: 0 0 0 4px pink;
 }
