@@ -6,6 +6,7 @@ import {
   selectNodeThunkAction,
   navigatePathThunkAction,
   goToRootAction,
+  goUpAFolderAction,
   changeNotesFolderThunkAction,
   changeNodeTitleAction,
   deleteNodeThunkAction,
@@ -22,6 +23,7 @@ interface MapDispatchPropsT {
   treeChangeHandler: (params: any) => AnyAction;
   nodeTitleChangeHandler: (params: { node: TreeNodeT, title: string, path: TreeNodePathT }) => AnyAction;
   pathNavigatorClickHandler: (params: { idx: number }) => AnyAction;
+  backBtnHandler: () => AnyAction;
   nodeClickHandler: (params: any) => AnyAction;
   nodeDoubleClickHandler: (params: any) => AnyAction;
   deleteNodeBtnHandler: (params: any) => Promise<AnyAction>;
@@ -109,6 +111,9 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
     },
     pathNavigatorClickHandler({ idx }) {
       return dispatch(navigatePathThunkAction({ idx }));
+    },
+    backBtnHandler() {
+      return dispatch(goUpAFolderAction());
     },
     nodeClickHandler({ id = '', path = [] }) {
       return dispatch(selectNodeThunkAction({ id, path }));

@@ -28,7 +28,8 @@ type PropsT = {
   nodeDoubleClickHandler: (params: { id: TreeNodeT["id"], path: TreeNodePathT }) => unknown,
   deleteNodeBtnHandler: (params: { node: TreeNodeT, path: TreeNodePathT }) => unknown,
   addNoteBtnHandler: (params: { path: TreeNodePathT }) => unknown,
-  pathNavigatorClickHandler: ({ idx }: { idx: number }) => any,
+  pathNavigatorClickHandler?: ({ idx }: { idx: number }) => any,
+  backBtnHandler: (...args: any) => any,
   toolbarHandlers: Array<(...args: any) => any>,
   getNodeKey: (...args: any) => any,
 };
@@ -79,6 +80,7 @@ function NotesList({
   deleteNodeBtnHandler,
   addNoteBtnHandler,
   pathNavigatorClickHandler,
+  backBtnHandler,
   toolbarHandlers,
   getNodeKey,
 }: PropsT) {
@@ -173,7 +175,7 @@ function NotesList({
   return (
     <div className={ styles['dnt__notes-list'] }>
       <Toolbar toolsMap={ toolbarHandlersMap } />
-      <Back label={ PATHNAV.BACK_BUTTON.label } activeSegmentIdx={ parentIdx } onClick={ pathNavigatorClickHandler } >
+      <Back label={ PATHNAV.BACK_BUTTON.label } onClick={ backBtnHandler } >
         { PATHNAV.BACK_BUTTON.icon }
       </Back>
       <Typography variant="h6" color="primary">
