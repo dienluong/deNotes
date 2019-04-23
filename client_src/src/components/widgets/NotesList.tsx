@@ -4,7 +4,7 @@ import Toolbar from './Toolbar';
 import Back from './Back';
 import NodeTitle from './NodeTitle';
 import Tree from 'react-sortable-tree';
-import { collapseFolders, findDeepestFolder } from '../../utils/treeUtils';
+import { collapseFolders } from '../../utils/treeUtils';
 import mobileTheme from '../../tree-theme';
 import 'react-sortable-tree/style.css';
 import styles from './NotesList.module.css';
@@ -20,8 +20,9 @@ import { nodeTypes } from '../../utils/appCONSTANTS';
 type PropsT = {
   tree: TreeNodeT[],
   activeNode: ActiveNodeT,
-  rootFolderName: string,
-  activePath: string[],
+  rootViewOn: boolean,
+  currentFolderName: string,
+  activePath?: string[],
   treeChangeHandler: (...args: any) => any,
   nodeTitleChangeHandler: (...args: any) => any,
   nodeClickHandler: (params: { id: TreeNodeT["id"], path: TreeNodePathT }) => unknown,
@@ -71,15 +72,14 @@ const HandlersMapKeys = toolbarHandlersMap.keys();
 function NotesList({
   tree,
   activeNode,
-  rootFolderName,
-  activePath,
+  rootViewOn,
+  currentFolderName,
   treeChangeHandler,
   nodeTitleChangeHandler,
   nodeClickHandler,
   nodeDoubleClickHandler,
   deleteNodeBtnHandler,
   addNoteBtnHandler,
-  pathNavigatorClickHandler,
   backBtnHandler,
   toolbarHandlers,
   getNodeKey,
@@ -154,22 +154,17 @@ function NotesList({
     }
   }
 
-  let generateNodeProps = buildNodeProps as generateNodePropsT;
-  let rowHeight: ((arg: any) => number) | number = _DEFAULT_ROW_HEIGHT;
-  let parentFolderName = _DEFAULT_FOLDER_NAME;
-  const parentIdx = findDeepestFolder(activeNode.path);
-  if (parentIdx === null) {
-    throw new Error(`Invalid active path: ${ activeNode.path }`);
-  }
+  let generateNodeProps: generateNodePropsT;
+  let rowHeight: ((arg: any) => number) | number;
   // if current folder is root, then the tree will be rendered differently.
-  if (parentIdx === -1) {
+  if (rootViewOn) {
     generateNodeProps = buildRootFolderNodeProps as generateNodePropsT;
     rowHeight = RootFolderNodeRowHeight;
-    parentFolderName = rootFolderName;
   } else {
+    generateNodeProps = buildNodeProps as generateNodePropsT;
+    rowHeight = _DEFAULT_ROW_HEIGHT;
     // When rendering content of a non-root folder, all its child folders are collapsed
     tree = collapseFolders({ tree });
-    parentFolderName = activePath[parentIdx];
   }
 
   return (
@@ -179,7 +174,7 @@ function NotesList({
         { PATHNAV.BACK_BUTTON.icon }
       </Back>
       <Typography variant="h6" color="primary">
-        { unescape(parentFolderName || _DEFAULT_FOLDER_NAME) }
+        { unescape(currentFolderName || _DEFAULT_FOLDER_NAME) }
       </Typography>
       <Tree
         className={ 'tree ' + styles.dnt__tree }

@@ -13,7 +13,7 @@ import {
   addAndSelectNodeThunkAction,
 } from '../redux/actions/notesListActions';
 
-import { getNodeKey } from '../utils/treeUtils';
+import { findDeepestFolder, getNodeKey } from '../utils/treeUtils';
 import { nodeTypes } from '../utils/appCONSTANTS';
 
 // Types
@@ -33,8 +33,9 @@ interface MapDispatchPropsT {
 interface MapStatePropsT {
   tree: TreeNodeT[];
   activeNode: ActiveNodeT;
-  rootFolderName: string
-  activePath: string[];
+  rootViewOn: boolean;
+  currentFolderName: string;
+  activePath?: string[];
 }
 
 const ROOT_FOLDER_NAME = 'HOME';
@@ -71,13 +72,28 @@ function mapStateToProps(state: AppStateT): MapStatePropsT {
 
   const activeNode = rootReducer.selectActiveNode(state);
   // Get the siblings of the current active node (including itself). The children will be passed as prop to the component
+  const parentIdx = findDeepestFolder(activeNode.path);
+  if (parentIdx === null) {
+    throw new Error(`Invalid active path: ${ activeNode.path }`);
+  }
+
   let children = selectChildrenOfActiveFolder(state) as TreeNodeT[];
+  let rootViewOn = false;
+  let folderName = '';
+  // If parent is root then...
+  if (parentIdx === -1) {
+    rootViewOn = true;
+    folderName = ROOT_FOLDER_NAME;
+  } else {
+    rootViewOn = false;
+    folderName = activePathByTitles[parentIdx];
+  }
 
   return {
     tree: children,
     activeNode,
-    rootFolderName: ROOT_FOLDER_NAME,
-    activePath: activePathByTitles,
+    rootViewOn,
+    currentFolderName: folderName,
   };
 }
 
