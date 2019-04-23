@@ -1,6 +1,7 @@
 import React from 'react';
+import unescape from 'lodash-es/unescape';
 import Toolbar from './Toolbar';
-import PathNavigator from './PathNavigator';
+import Back from './Back';
 import NodeTitle from './NodeTitle';
 import Tree from 'react-sortable-tree';
 import { collapseFolders, findDeepestFolder } from '../../utils/treeUtils';
@@ -11,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import HomeIcon from '@material-ui/icons/Home';
 import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import NewNoteIcon from '@material-ui/icons/NoteAdd';
+import GoUpFolder from '@material-ui/icons/ArrowBack';
 
 // Types
 import { TreeItem } from 'react-sortable-tree';
@@ -26,13 +28,13 @@ type PropsT = {
   nodeDoubleClickHandler: (params: { id: TreeNodeT["id"], path: TreeNodePathT }) => unknown,
   deleteNodeBtnHandler: (params: { node: TreeNodeT, path: TreeNodePathT }) => unknown,
   addNoteBtnHandler: (params: { path: TreeNodePathT }) => unknown,
-  pathNavigatorClickHandler: (...args: any) => any,
+  pathNavigatorClickHandler: ({ idx }: { idx: number }) => any,
   toolbarHandlers: Array<(...args: any) => any>,
   getNodeKey: (...args: any) => any,
 };
 type generateNodePropsT = ({ node, path }: { node: TreeItem, path: (string|number)[] }) => object;
 
-export const TOOLBAR = {
+const TOOLBAR = {
   NEW_FOLDER: {
     label: 'New Folder',
     icon: <NewFolderIcon />,
@@ -46,6 +48,14 @@ export const TOOLBAR = {
     icon: <HomeIcon />,
   },
 };
+
+const PATHNAV = {
+  BACK_BUTTON: {
+    label: 'Go up a folder',
+    icon: <GoUpFolder />,
+  },
+};
+
 
 const _DEFAULT_FOLDER_NAME = '<NO_NAME>';
 const _DEFAULT_ROW_HEIGHT = 62;
@@ -146,6 +156,9 @@ function NotesList({
   let rowHeight: ((arg: any) => number) | number = _DEFAULT_ROW_HEIGHT;
   let parentFolderName = _DEFAULT_FOLDER_NAME;
   const parentIdx = findDeepestFolder(activeNode.path);
+  if (parentIdx === null) {
+    throw new Error(`Invalid active path: ${ activeNode.path }`);
+  }
   // if current folder is root, then the tree will be rendered differently.
   if (parentIdx === -1) {
     generateNodeProps = buildRootFolderNodeProps as generateNodePropsT;
@@ -154,19 +167,17 @@ function NotesList({
   } else {
     // When rendering content of a non-root folder, all its child folders are collapsed
     tree = collapseFolders({ tree });
-    parentFolderName = parentIdx !== null ? activePath[parentIdx] : _DEFAULT_FOLDER_NAME;
+    parentFolderName = activePath[parentIdx];
   }
 
   return (
     <div className={ styles['dnt__notes-list'] }>
       <Toolbar toolsMap={ toolbarHandlersMap } />
-      <PathNavigator
-        path={ activePath }
-        activeSegmentIdx={ activeNode.path.indexOf(activeNode.id) }
-        onClick={ pathNavigatorClickHandler }
-      />
+      <Back label={ PATHNAV.BACK_BUTTON.label } activeSegmentIdx={ parentIdx } onClick={ pathNavigatorClickHandler } >
+        { PATHNAV.BACK_BUTTON.icon }
+      </Back>
       <Typography variant="h6" color="primary">
-        { parentFolderName || _DEFAULT_FOLDER_NAME }
+        { unescape(parentFolderName || _DEFAULT_FOLDER_NAME) }
       </Typography>
       <Tree
         className={ 'tree ' + styles.dnt__tree }
