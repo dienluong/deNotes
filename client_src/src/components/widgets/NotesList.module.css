@@ -3,6 +3,11 @@
   height: 100%;
 }
 
+.dnt__notes-list-muitoolbar {
+  align-items: center;
+  justify-content: space-between;
+}
+
 .dnt__tree {
 
 }

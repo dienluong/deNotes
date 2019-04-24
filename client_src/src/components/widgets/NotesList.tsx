@@ -8,11 +8,13 @@ import { collapseFolders } from '../../utils/treeUtils';
 import mobileTheme from '../../tree-theme';
 import 'react-sortable-tree/style.css';
 import styles from './NotesList.module.css';
+import AppBar from '@material-ui/core/AppBar';
+import MuiToolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import HomeIcon from '@material-ui/icons/Home';
 import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import NewNoteIcon from '@material-ui/icons/NoteAdd';
-import GoUpFolder from '@material-ui/icons/ArrowBack';
+import GoUpFolder from '@material-ui/icons/ArrowBackIos';
 
 // Types
 import { TreeItem } from 'react-sortable-tree';
@@ -169,13 +171,17 @@ function NotesList({
 
   return (
     <div className={ styles['dnt__notes-list'] }>
-      <Toolbar toolsMap={ toolbarHandlersMap } />
-      <Back label={ PATHNAV.BACK_BUTTON.label } onClick={ backBtnHandler } >
-        { PATHNAV.BACK_BUTTON.icon }
-      </Back>
-      <Typography variant="h6" color="primary">
-        { unescape(currentFolderName || _DEFAULT_FOLDER_NAME) }
-      </Typography>
+      <Toolbar className={ styles['dnt__notes-list-muitoolbar'] } toolsMap={ toolbarHandlersMap } position="static" color="default" />
+      <AppBar position="static" color="default">
+        <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
+          <Back label={ PATHNAV.BACK_BUTTON.label } onClick={ backBtnHandler } >
+            { PATHNAV.BACK_BUTTON.icon }
+          </Back>
+          <Typography inline variant="h6" color="primary">
+            { unescape(currentFolderName || _DEFAULT_FOLDER_NAME) }
+          </Typography>
+        </MuiToolbar>
+      </AppBar>
       <Tree
         className={ 'tree ' + styles.dnt__tree }
         treeData={ tree }
