@@ -9,7 +9,7 @@ type PropsT = {
   children: React.ReactNode;
 }
 
-function Back({ children, label, onClick: clickHandler }: PropsT) {
+function Back({ label, onClick: clickHandler, children }: PropsT) {
   return (
     <IconButton className={ styles.dnt__backBtn } aria-label={ label } color="primary" onClick={ clickHandler }>{ children }</IconButton>
   );
