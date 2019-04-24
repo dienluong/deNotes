@@ -1,7 +1,5 @@
 import React from 'react';
 import unescape from 'lodash-es/unescape';
-import Toolbar from './Toolbar';
-import Back from './Back';
 import NodeTitle from './NodeTitle';
 import Tree from 'react-sortable-tree';
 import { collapseFolders } from '../../utils/treeUtils';
@@ -11,10 +9,11 @@ import styles from './NotesList.module.css';
 import AppBar from '@material-ui/core/AppBar';
 import MuiToolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 import HomeIcon from '@material-ui/icons/Home';
 import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import NewNoteIcon from '@material-ui/icons/NoteAdd';
-import GoUpFolder from '@material-ui/icons/ArrowBackIos';
+import GoUpFolderIcon from '@material-ui/icons/ArrowBackIos';
 
 // Types
 import { TreeItem } from 'react-sortable-tree';
@@ -38,38 +37,8 @@ type PropsT = {
 };
 type generateNodePropsT = ({ node, path }: { node: TreeItem, path: (string|number)[] }) => object;
 
-const TOOLBAR = {
-  NEW_FOLDER: {
-    label: 'New Folder',
-    icon: <NewFolderIcon />,
-  },
-  NEW_NOTE: {
-    label: 'New Note',
-    icon: <NewNoteIcon />,
-  },
-  BACK_BUTTON: {
-    label: 'Home',
-    icon: <HomeIcon />,
-  },
-};
-
-const PATHNAV = {
-  BACK_BUTTON: {
-    label: 'Go up a folder',
-    icon: <GoUpFolder />,
-  },
-};
-
-
 const _DEFAULT_FOLDER_NAME = '<NO_NAME>';
 const _DEFAULT_ROW_HEIGHT = 62;
-
-const dummyCb = () => {};
-const toolbarHandlersMap = new Map();
-toolbarHandlersMap.set(TOOLBAR.BACK_BUTTON, dummyCb)
-                  .set(TOOLBAR.NEW_FOLDER, dummyCb)
-                  .set(TOOLBAR.NEW_NOTE, dummyCb);
-const HandlersMapKeys = toolbarHandlersMap.keys();
 
 function NotesList({
   tree,
@@ -148,12 +117,8 @@ function NotesList({
     return buttons;
   }
 
-  if (Array.isArray(toolbarHandlers) && toolbarHandlers.length) {
-    for (let i = 0, key = HandlersMapKeys.next(); !key.done; i++, key = HandlersMapKeys.next()) {
-      if (typeof toolbarHandlers[i] === 'function') {
-        toolbarHandlersMap.set(key.value, toolbarHandlers[i]);
-      }
-    }
+  if (!Array.isArray(toolbarHandlers) || (toolbarHandlers.length < 3) || toolbarHandlers.some(cb => (typeof cb !== 'function'))) {
+    throw new Error('Invalid value in toolbarHandlers.');
   }
 
   let generateNodeProps: generateNodePropsT;
@@ -171,12 +136,24 @@ function NotesList({
 
   return (
     <div className={ styles['dnt__notes-list'] }>
-      <Toolbar className={ styles['dnt__notes-list-muitoolbar'] } toolsMap={ toolbarHandlersMap } position="static" color="default" />
       <AppBar position="static" color="default">
         <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
-          <Back label={ PATHNAV.BACK_BUTTON.label } onClick={ backBtnHandler } >
-            { PATHNAV.BACK_BUTTON.icon }
-          </Back>
+          <IconButton aria-label={ 'Home' } color="primary" onClick={ toolbarHandlers[0] }>
+            <HomeIcon />
+          </IconButton>
+          <IconButton aria-label={ 'New Folder' } color="primary" onClick={ toolbarHandlers[1] }>
+            <NewFolderIcon />
+          </IconButton>
+          <IconButton aria-label={ 'New Note' } color="primary" onClick={ toolbarHandlers[2] }>
+            <NewNoteIcon />
+          </IconButton>
+        </MuiToolbar>
+      </AppBar>
+      <AppBar position="static" color="default">
+        <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
+          <IconButton aria-label={ 'Go up a folder' } color="primary" onClick={ backBtnHandler }>
+            <GoUpFolderIcon />
+          </IconButton>
           <Typography inline variant="h6" color="primary">
             { unescape(currentFolderName || _DEFAULT_FOLDER_NAME) }
           </Typography>
