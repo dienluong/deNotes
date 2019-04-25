@@ -1,5 +1,4 @@
 import React from 'react';
-import unescape from 'lodash-es/unescape';
 import NodeTitle from './NodeTitle';
 import Tree from 'react-sortable-tree';
 import { collapseFolders } from '../../utils/treeUtils';
@@ -155,7 +154,7 @@ function NotesList({
             <GoUpFolderIcon />
           </IconButton>
           <Typography inline variant="h6" color="primary">
-            { unescape(currentFolderName || _DEFAULT_FOLDER_NAME) }
+            { currentFolderName || _DEFAULT_FOLDER_NAME }
           </Typography>
         </MuiToolbar>
       </AppBar>
