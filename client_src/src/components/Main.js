@@ -1,5 +1,4 @@
 import React from 'react';
-import './Main.css';
 import styles from './Main.module.css';
 import EditorContainer from './EditorContainer';
 import NotesListContainer from './NotesListContainer';
