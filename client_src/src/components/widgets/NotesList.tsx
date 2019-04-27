@@ -5,6 +5,7 @@ import { collapseFolders } from '../../utils/treeUtils';
 import mobileTheme from '../../tree-theme';
 import 'react-sortable-tree/style.css';
 import styles from './NotesList.module.css';
+import Grid from '@material-ui/core/Grid';
 import AppBar from '@material-ui/core/AppBar';
 import MuiToolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -125,7 +126,7 @@ function NotesList({
 
   return (
     <div className={ styles['dnt__notes-list'] }>
-      <AppBar position="static" color="default">
+      <AppBar className={ styles['dnt__notes-list-muiappbar'] } position="fixed" color="default">
         <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
           <IconButton aria-label={ 'Home' } color="primary" onClick={ toolbarHandlers[0] }>
             <HomeIcon />
@@ -138,7 +139,7 @@ function NotesList({
           </IconButton>
         </MuiToolbar>
       </AppBar>
-      <AppBar position="static" color="default">
+      <Grid className={ styles['dnt__notes-list-header'] }>
         <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
           <IconButton aria-label={ 'Go up a folder' } color="primary" onClick={ backBtnHandler }>
             <GoUpFolderIcon />
@@ -147,7 +148,7 @@ function NotesList({
             { currentFolderName || _DEFAULT_FOLDER_NAME }
           </Typography>
         </MuiToolbar>
-      </AppBar>
+      </Grid>
       <Tree
         className={ 'tree ' + styles.dnt__tree }
         treeData={ tree }

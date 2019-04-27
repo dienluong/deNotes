@@ -1,6 +1,10 @@
-/* NotesList styles */
 .dnt__notes-list {
-  height: 100%;
+  min-height: 100vh;
+}
+
+.dnt__notes-list-muiappbar {
+  top: 0;
+  bottom: auto;
 }
 
 .dnt__notes-list-muitoolbar {
@@ -8,8 +12,20 @@
   justify-content: space-between;
 }
 
-.dnt__tree {
+.dnt__notes-list-header {
+  padding-top: 60px;
+}
 
+.dnt__tree {
+  background-color: white;
+  /*position: fixed;*/
+  /*top: 0;*/
+  /*left: 0;*/
+  /*bottom: 0;*/
+  /*width: 400px;*/
+  /*height: 400px;*/
+  /*overflow-x: hidden;*/
+  /*overflow-y: auto;*/
 }
 
 .dnt__tree-node {
