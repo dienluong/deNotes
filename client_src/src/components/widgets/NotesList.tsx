@@ -87,7 +87,7 @@ function NotesList({
   }
 
   function _buildNodeButtons({ node, path }: { node: TreeNodeT, path: TreeNodePathT }) {
-    let buttons = [
+    const buttons = [
       <button
         className={ styles['dnt__tree-node-btn'] }
         onClick={ (event) => {
@@ -99,18 +99,8 @@ function NotesList({
       </button>,
     ];
 
-    // Check if current node is parent node; '+' button only for parent nodes
-    if (typeof node.children !== 'undefined') {
-      buttons.unshift(
-        <button
-          className={ styles['dnt__tree-node-btn'] }
-          onClick={ (event) => {
-            event.stopPropagation();
-            addNoteBtnHandler({ path });
-          }}
-        >
-          +
-        </button>);
+    if (Array.isArray(node.children) && node.children.length) {
+      buttons.unshift(<span>{ node.children.length }</span>)
     }
 
     return buttons;
