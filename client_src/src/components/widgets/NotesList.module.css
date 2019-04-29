@@ -37,7 +37,7 @@
 }
 
 .dnt__tree-node--active {
-  box-shadow: 0 0 0 4px pink;
+  /*box-shadow: 0 0 0 4px pink;*/
 }
 
 .dnt__tree-node-btn {

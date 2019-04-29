@@ -1,3 +1,5 @@
 .dnt__node-title {
-
+  border: none;
+  outline: none;
+  background-color: transparent;
 }

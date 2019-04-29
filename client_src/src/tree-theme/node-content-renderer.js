@@ -89,25 +89,6 @@ class MinimalThemeNodeContentRenderer extends Component {
 
     return (
       <div style={{ height: '100%' }} {...otherProps}>
-        {toggleChildrenVisibility && node.children &&
-        (node.children.length > 0 || typeof node.children === 'function') && (
-          <div>
-            <button
-              type="button"
-              aria-label={ 'Collapse' }
-              className={ styles.expandButton }
-              onClick={ () => {} }
-            />
-
-            {node.expanded && !isDragging && (
-              <div
-                style={{ width: scaffoldBlockPxWidth }}
-                className={styles.lineChildren}
-              />
-            )}
-          </div>
-        )}
-
         <div
           className={
             styles.rowWrapper + (!canDrag ? ` ${styles.rowWrapperDragDisabled}` : '')
