@@ -2,10 +2,10 @@
   min-height: 100vh;
 }
 
-.dnt__notes-list-muiappbar {
-  top: 0;
-  bottom: auto;
-}
+/*.dnt__notes-list-muiappbar {*/
+/*  top: auto;*/
+/*  bottom: 0;*/
+/*}*/
 
 .dnt__notes-list-muitoolbar {
   align-items: center;
@@ -13,11 +13,12 @@
 }
 
 .dnt__notes-list-header {
-  padding-top: 60px;
+  /*padding-top: 60px;*/
 }
 
 .dnt__tree {
   background-color: white;
+  padding-bottom: 140px;
   /*position: fixed;*/
   /*top: 0;*/
   /*left: 0;*/
