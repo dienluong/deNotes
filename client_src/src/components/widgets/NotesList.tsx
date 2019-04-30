@@ -43,7 +43,7 @@ type generateNodePropsT = ({ node, path }: { node: TreeItem, path: (string|numbe
 const _DEFAULT_FOLDER_NAME = '<NO_NAME>';
 const _DEFAULT_ROW_HEIGHT = 62;
 const muiAppBarStyles = {
-  positionFixed: {
+  positionStatic: {
     top: 'auto',
     bottom: 0,
   },
@@ -141,12 +141,14 @@ function NotesList({
     <div className={ styles['dnt__notes-list'] }>
       <Grid className={ styles['dnt__notes-list-header'] }>
         <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
-          <IconButton aria-label={ 'Go up a folder' } color="primary" onClick={ backBtnHandler }>
-            <GoOutFolderIcon />
-          </IconButton>
-          <Typography inline variant="h6" color="primary">
+          <Typography inline variant="h4" color="default">
             { currentFolderName || _DEFAULT_FOLDER_NAME }
           </Typography>
+          { !rootViewOn && (
+            <IconButton aria-label={ 'Go up a folder' } color="primary" onClick={ backBtnHandler }>
+              <GoOutFolderIcon />
+            </IconButton>
+          )}
         </MuiToolbar>
       </Grid>
       <Tree
@@ -159,7 +161,7 @@ function NotesList({
         // @ts-ignore -- bug in react-sortable-tree/index.d.ts for rowHeight
         rowHeight={ rowHeight }
       />
-      <AppBar position="fixed" color="default" classes={{ positionFixed: classes.positionFixed }}>
+      <AppBar position="static" color="default" classes={{ positionStatic: classes.positionStatic }}>
         <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
           <IconButton aria-label={ 'Home' } color="primary" onClick={ toolbarHandlers[0] }>
             <HomeIcon />

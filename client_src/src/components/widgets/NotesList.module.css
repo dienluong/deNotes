@@ -1,4 +1,6 @@
 .dnt__notes-list {
+  display: flex;
+  flex-flow: column;
   min-height: 100vh;
 }
 
@@ -13,12 +15,12 @@
 }
 
 .dnt__notes-list-header {
-  /*padding-top: 60px;*/
+  direction: rtl;
 }
 
 .dnt__tree {
+  flex-grow : 1;
   background-color: white;
-  padding-bottom: 140px;
   /*position: fixed;*/
   /*top: 0;*/
   /*left: 0;*/
