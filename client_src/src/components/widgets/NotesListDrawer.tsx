@@ -4,18 +4,21 @@ import Hidden from '@material-ui/core/Hidden';
 import NotesList from './NotesList';
 import styles from './NotesListDrawer.module.css';
 
-function NotesListDrawer({ drawerOpen, handleDrawerToggle, ...otherProps }: any) {
-  // const [mobileOpen, setMobileOpen] = React.useState(false);
-  // function handleDrawerToggle() {
-  //   setMobileOpen(!mobileOpen);
-  // }
+// Types
+import { PropsT as NotestListPropsT } from './NotesList';
+type PropsT = {
+  drawerOpen: boolean,
+  drawerSide: 'left' | 'right',
+  handleDrawerToggle: () => void,
+}
 
+function NotesListDrawer({ drawerOpen, drawerSide, handleDrawerToggle, ...otherProps }: PropsT & NotestListPropsT) {
   return (
     <React.Fragment>
       <Hidden mdUp implementation="css">
         <Drawer
           variant="temporary"
-          anchor="right"
+          anchor={ drawerSide }
           open={ drawerOpen }
           onClose={ handleDrawerToggle }
           ModalProps={{
@@ -25,19 +28,19 @@ function NotesListDrawer({ drawerOpen, handleDrawerToggle, ...otherProps }: any)
             paper: styles['dnt__notes-list-drawer-paper'],
           }}
         >
-          <NotesList {...otherProps} />
+          <NotesList { ...otherProps } />
         </Drawer>
       </Hidden>
       <Hidden smDown implementation="css">
         <Drawer
           variant="permanent"
-          anchor="right"
+          anchor={ drawerSide }
           open
           classes={{
             paper: styles['dnt__notes-list-drawer-paper'],
           }}
         >
-          <NotesList {...otherProps} />
+          <NotesList { ...otherProps } />
         </Drawer>
       </Hidden>
     </React.Fragment>

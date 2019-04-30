@@ -24,7 +24,7 @@ function Main() {
         </Paper>
       </main>
       <nav className={ styles['dnt__main-nav'] }>
-        <NotesListContainer drawerOpen={ drawerOpen } handleDrawerToggle={ handleDrawerToggle } />
+        <NotesListContainer drawerOpen={ drawerOpen } drawerSide={ 'left' } handleDrawerToggle={ handleDrawerToggle } />
       </nav>
       <Hidden className={ styles['dnt__main-nav-btn'] } mdUp implementation="css">
         <DrawerButton visible={ !drawerOpen } clickHandler={ handleDrawerToggle } />

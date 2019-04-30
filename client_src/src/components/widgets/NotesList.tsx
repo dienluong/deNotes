@@ -20,7 +20,7 @@ import GoInFolderIcon from '@material-ui/icons/ArrowForwardIos';
 // Types
 import { TreeItem } from 'react-sortable-tree';
 import { nodeTypes } from '../../utils/appCONSTANTS';
-type PropsT = {
+export type PropsT = {
   tree: TreeNodeT[],
   activeNode: ActiveNodeT,
   rootViewOn: boolean,
@@ -48,7 +48,6 @@ const muiAppBarStyles = {
     bottom: 0,
   },
 };
-
 
 function NotesList({
   tree,
