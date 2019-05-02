@@ -4,10 +4,10 @@
   min-height: 100vh;
 }
 
-/*.dnt__notes-list-muiappbar {*/
-/*  top: auto;*/
-/*  bottom: 0;*/
-/*}*/
+.dnt__notes-list-muiappbar {
+  top: auto;
+  bottom: 0;
+}
 
 .dnt__notes-list-muitoolbar {
   align-items: center;

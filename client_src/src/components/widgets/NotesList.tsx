@@ -5,7 +5,6 @@ import { collapseFolders } from '../../utils/treeUtils';
 import mobileTheme from '../../tree-theme';
 import 'react-sortable-tree/style.css';
 import styles from './NotesList.module.css';
-import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import AppBar from '@material-ui/core/AppBar';
 import MuiToolbar from '@material-ui/core/Toolbar';
@@ -36,18 +35,11 @@ export type PropsT = {
   backBtnHandler: (...args: any) => any,
   toolbarHandlers: Array<(...args: any) => any>,
   getNodeKey: (...args: any) => any,
-  classes: { [key: string]: string },
 };
 type generateNodePropsT = ({ node, path }: { node: TreeItem, path: (string|number)[] }) => object;
 
 const _DEFAULT_FOLDER_NAME = '<NO_NAME>';
 const _DEFAULT_ROW_HEIGHT = 62;
-const muiAppBarStyles = {
-  positionStatic: {
-    top: 'auto',
-    bottom: 0,
-  },
-};
 
 function NotesList({
   tree,
@@ -62,7 +54,6 @@ function NotesList({
   backBtnHandler,
   toolbarHandlers,
   getNodeKey,
-  classes,
 }: PropsT) {
   function buildNodeProps({ node, path }: { node: TreeNodeT, path: TreeNodePathT }) {
     return ({
@@ -160,21 +151,23 @@ function NotesList({
         // @ts-ignore -- bug in react-sortable-tree/index.d.ts for rowHeight
         rowHeight={ rowHeight }
       />
-      <AppBar position="static" color="default" classes={{ positionStatic: classes.positionStatic }}>
-        <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
-          <IconButton aria-label={ 'Home' } color="primary" onClick={ toolbarHandlers[0] }>
-            <HomeIcon />
-          </IconButton>
-          <IconButton aria-label={ 'New Folder' } color="primary" onClick={ toolbarHandlers[1] }>
-            <NewFolderIcon />
-          </IconButton>
-          <IconButton aria-label={ 'New Note' } color="primary" onClick={ toolbarHandlers[2] }>
-            <NewNoteIcon />
-          </IconButton>
-        </MuiToolbar>
-      </AppBar>
+      <div className={ styles['dnt__notes-list-muiappbar'] }>
+        <AppBar position="static" color="default">
+          <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
+            <IconButton aria-label={ 'Home' } color="primary" onClick={ toolbarHandlers[0] }>
+              <HomeIcon />
+            </IconButton>
+            <IconButton aria-label={ 'New Folder' } color="primary" onClick={ toolbarHandlers[1] }>
+              <NewFolderIcon />
+            </IconButton>
+            <IconButton aria-label={ 'New Note' } color="primary" onClick={ toolbarHandlers[2] }>
+              <NewNoteIcon />
+            </IconButton>
+          </MuiToolbar>
+        </AppBar>
+      </div>
     </div>
   );
 }
 
-export default withStyles(muiAppBarStyles)(NotesList);
+export default NotesList;
