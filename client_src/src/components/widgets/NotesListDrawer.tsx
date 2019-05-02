@@ -31,18 +31,6 @@ function NotesListDrawer({ drawerOpen, drawerSide, handleDrawerToggle, ...otherP
           <NotesList { ...otherProps } />
         </Drawer>
       </Hidden>
-      <Hidden smDown implementation="css">
-        <Drawer
-          variant="permanent"
-          anchor={ drawerSide }
-          open
-          classes={{
-            paper: styles['dnt__notes-list-drawer-paper'],
-          }}
-        >
-          <NotesList { ...otherProps } />
-        </Drawer>
-      </Hidden>
     </React.Fragment>
   );
 }
