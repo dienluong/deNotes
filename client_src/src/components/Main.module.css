@@ -4,8 +4,8 @@
 
 .dnt__main-nav-btn {
   position: absolute;
-  bottom: 20px;
-  right: 20px
+  top: 20px;
+  left: 20px
 }
 
 /*@media (min-width: 960px) {*/
@@ -17,5 +17,5 @@
 
 .dnt__main-editor {
   flex-grow: 1;
-  padding: 3px;
+  padding: 2%;
 }

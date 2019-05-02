@@ -1,10 +1,10 @@
 .dnt__editor {
   min-height: 100vh;
-  padding: 0 5%;
-  /*margin-left: 402px;*/
+  padding: 0 10%;
 }
+
 #dnt__editor-toolbar {
-  padding: 4.5% 13%;
+  padding: 4% 11%;
 }
 
 .ql-toolbar.ql-snow {
