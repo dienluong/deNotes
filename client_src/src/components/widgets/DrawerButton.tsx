@@ -7,7 +7,7 @@ function DrawerButton({ visible, clickHandler, className }: { visible: boolean, 
   return (
     <div className={ className }>
       <Zoom in={ visible } unmountOnExit>
-        <Fab aria-label="notes list drawer" onClick={ clickHandler }>
+        <Fab color="primary" aria-label="notes list drawer" onClick={ clickHandler }>
           <MenuIcon />
         </Fab>
       </Zoom>

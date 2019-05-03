@@ -24,6 +24,7 @@ interface MapDispatchPropsT {
   nodeTitleChangeHandler: (params: { node: TreeNodeT, title: string, path: TreeNodePathT }) => AnyAction;
   pathNavigatorClickHandler: (params: { idx: number }) => AnyAction;
   backBtnHandler: () => AnyAction;
+  homeBtnHandler: () => AnyAction;
   nodeClickHandler: (params: any) => AnyAction;
   nodeDoubleClickHandler: (params: any) => AnyAction;
   deleteNodeBtnHandler: (params: any) => Promise<AnyAction>;
@@ -110,11 +111,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
     return dispatch(addAndSelectNodeThunkAction({ kind: nodeTypes.ITEM }));
   }
 
-  function toolbarBackBtnHandler() {
-    return dispatch(goToRootAction());
-  }
-
-  const toolbarHandlers = [toolbarBackBtnHandler, toolbarNewFolderBtnHandler, toolbarNewNoteBtnHandler];
+  const toolbarHandlers = [toolbarNewFolderBtnHandler, toolbarNewNoteBtnHandler];
 
   return {
     treeChangeHandler(tree) {
@@ -130,6 +127,9 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
     },
     backBtnHandler() {
       return dispatch(goUpAFolderAction());
+    },
+    homeBtnHandler() {
+      return dispatch(goToRootAction());
     },
     nodeClickHandler({ id = '', path = [] }) {
       return dispatch(selectNodeThunkAction({ id, path }));

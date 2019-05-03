@@ -5,7 +5,6 @@ import { collapseFolders } from '../../utils/treeUtils';
 import mobileTheme from '../../tree-theme';
 import 'react-sortable-tree/style.css';
 import styles from './NotesList.module.css';
-import Grid from '@material-ui/core/Grid';
 import AppBar from '@material-ui/core/AppBar';
 import MuiToolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -33,6 +32,7 @@ export type PropsT = {
   addNoteBtnHandler: (params: { path: TreeNodePathT }) => unknown,
   pathNavigatorClickHandler?: ({ idx }: { idx: number }) => any,
   backBtnHandler: (...args: any) => any,
+  homeBtnHandler: (...args: any) => any,
   toolbarHandlers: Array<(...args: any) => any>,
   getNodeKey: (...args: any) => any,
 };
@@ -52,6 +52,7 @@ function NotesList({
   nodeDoubleClickHandler,
   deleteNodeBtnHandler,
   backBtnHandler,
+  homeBtnHandler,
   toolbarHandlers,
   getNodeKey,
 }: PropsT) {
@@ -110,8 +111,8 @@ function NotesList({
     return buttons;
   }
 
-  if (!Array.isArray(toolbarHandlers) || (toolbarHandlers.length < 3) || toolbarHandlers.some(cb => (typeof cb !== 'function'))) {
-    throw new Error('Invalid value in toolbarHandlers.');
+  if (!Array.isArray(toolbarHandlers) || (toolbarHandlers.length < 2) || toolbarHandlers.some(cb => (typeof cb !== 'function'))) {
+    throw new Error('Invalid toolbar handlers.');
   }
 
   let generateNodeProps: generateNodePropsT;
@@ -129,18 +130,23 @@ function NotesList({
 
   return (
     <div className={ styles['dnt__notes-list'] }>
-      <Grid className={ styles['dnt__notes-list-header'] }>
+      <AppBar position="static" color="default" className={ styles['dnt__notes-list-header'] }>
         <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
-          <Typography inline variant="h4" color="default">
-            { currentFolderName || _DEFAULT_FOLDER_NAME }
-          </Typography>
           { !rootViewOn && (
             <IconButton aria-label={ 'Go up a folder' } color="primary" onClick={ backBtnHandler }>
               <GoOutFolderIcon />
             </IconButton>
           )}
+          <Typography inline variant="h4" color="default">
+            { currentFolderName || _DEFAULT_FOLDER_NAME }
+          </Typography>
+          { !rootViewOn && (
+            <IconButton aria-label={ 'Home' } color="primary" onClick={ homeBtnHandler }>
+              <HomeIcon />
+            </IconButton>
+          )}
         </MuiToolbar>
-      </Grid>
+      </AppBar>
       <Tree
         className={ 'tree ' + styles.dnt__tree }
         treeData={ tree }
@@ -154,13 +160,10 @@ function NotesList({
       <div className={ styles['dnt__notes-list-muiappbar'] }>
         <AppBar position="static" color="default">
           <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
-            <IconButton aria-label={ 'Home' } color="primary" onClick={ toolbarHandlers[0] }>
-              <HomeIcon />
-            </IconButton>
-            <IconButton aria-label={ 'New Folder' } color="primary" onClick={ toolbarHandlers[1] }>
+            <IconButton aria-label={ 'New Folder' } color="primary" onClick={ toolbarHandlers[0] }>
               <NewFolderIcon />
             </IconButton>
-            <IconButton aria-label={ 'New Note' } color="primary" onClick={ toolbarHandlers[2] }>
+            <IconButton aria-label={ 'New Note' } color="primary" onClick={ toolbarHandlers[1] }>
               <NewNoteIcon />
             </IconButton>
           </MuiToolbar>
