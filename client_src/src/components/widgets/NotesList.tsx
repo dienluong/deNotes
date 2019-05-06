@@ -130,18 +130,18 @@ function NotesList({
 
   return (
     <div className={ styles['dnt__notes-list'] }>
-      <AppBar position="static" color="default" className={ styles['dnt__notes-list-header'] }>
+      <AppBar position="static" color="primary" className={ styles['dnt__notes-list-header'] }>
         <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
           { !rootViewOn && (
-            <IconButton aria-label={ 'Go up a folder' } color="primary" onClick={ backBtnHandler }>
+            <IconButton aria-label={ 'Go up a folder' } color="inherit" onClick={ backBtnHandler }>
               <GoOutFolderIcon />
             </IconButton>
           )}
-          <Typography inline variant="h4" color="default">
+          <Typography inline variant="h5" color="inherit">
             { currentFolderName || _DEFAULT_FOLDER_NAME }
           </Typography>
           { !rootViewOn && (
-            <IconButton aria-label={ 'Home' } color="primary" onClick={ homeBtnHandler }>
+            <IconButton aria-label={ 'Home' } color="inherit" onClick={ homeBtnHandler }>
               <HomeIcon />
             </IconButton>
           )}

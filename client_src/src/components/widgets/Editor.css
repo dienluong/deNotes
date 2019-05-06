@@ -1,6 +1,7 @@
 .dnt__editor {
   min-height: 100vh;
   padding: 0 10%;
+  background-image: url("../../images/papertexture.png");
 }
 
 #dnt__editor-toolbar {

@@ -18,4 +18,5 @@
 .dnt__main-editor {
   flex-grow: 1;
   padding: 2%;
+  background-color: #dddddd;
 }
