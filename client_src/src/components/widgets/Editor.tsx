@@ -1,7 +1,8 @@
 import React from 'react';
-import 'react-quill/dist/quill.snow.css';
-import './Editor.css';
+import './Editor.scss';
 import Quill from 'react-quill';
+import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+
 
 type PropsT = {
   id: string;
@@ -15,7 +16,7 @@ type PropsT = {
   options: object;
 };
 
-const EditorToolbar = () => (
+const LargeEditorToolbar = () => (
   <div id="dnt__editor-toolbar">
     <span className="ql-formats">
       <select className="ql-header" defaultValue="false">
@@ -46,15 +47,27 @@ const EditorToolbar = () => (
 // Note about use of 'key': defaultValue is only read at the initial creation of the form component. So by default,
 // the component is not re-rendered when defaultValue subsequently changes. Changing the 'key' will allow us to trigger a re-render.
 function Editor({ id, title, delta, content, dateCreated, dateModified, readOnly, contentChangeHandler, options }: PropsT) {
+  const smallMedia = useMediaQuery('(max-width:600px)');
+  let editorToolbar, theme, modules;
+  if (smallMedia) {
+    editorToolbar = <div id="dnt__editor-toolbar"> </div>;
+    theme = 'bubble';
+    modules = {};
+  } else {
+    editorToolbar = <LargeEditorToolbar />;
+    theme = 'snow';
+    modules = Editor.modules;
+  }
+
   return (
     <div className="dnt__editor">
-      <EditorToolbar />
+      { editorToolbar }
       <Quill
         key={ id }
         defaultValue={ delta }
         onChange={ contentChangeHandler }
-        theme="snow"
-        modules={ Editor.modules }
+        theme={ theme }
+        modules={ modules }
         readOnly={ readOnly }
         { ...options }
       />
