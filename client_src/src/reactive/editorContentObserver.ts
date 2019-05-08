@@ -27,7 +27,7 @@ export function save(editorContent: EditorContentT)
   let retValue: Promise<any>;
   // TODO:  Should it save if and only if condition #2 (id = lastContentId && dateModified > lastSavedDate) is met. This would *not* save newly created empty notes.
   // Save 1) if newly created note -OR- 2) if content of opened note changed since last save.
-  if (editorContent.dateCreated > _lastSavedDate || (editorContent.id === _lastContentId && editorContent.dateModified > _lastSavedDate && editorContent.title && !editorContent.readOnly)) {
+  if (editorContent.dateCreated > _lastSavedDate || (editorContent.id === _lastContentId && editorContent.dateModified > _lastSavedDate && editorContent.title)) {
     retValue = _storage.save({ userId: _user, editorContent })
       .then(responseObj => {
         // TODO: remove
