@@ -32,7 +32,14 @@
 }
 
 .dnt__tree-node {
+  display: block;
+}
 
+.dnt__tree-node:after {
+  content: "\a0";
+  display: block;
+  line-height: 0;
+  border-top: 1px solid #dddddd;
 }
 
 .dnt__tree-node--invisible {
