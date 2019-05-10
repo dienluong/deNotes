@@ -35,6 +35,7 @@
   display: block;
 }
 
+/* https://stackoverflow.com/a/12671940 */
 .dnt__tree-node:after {
   content: "\a0";
   display: block;
