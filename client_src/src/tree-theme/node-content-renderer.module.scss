@@ -93,7 +93,7 @@ $hover-padding: 3px;
   position: relative;
   height: 100%;
   //padding: 0 5px 0 30px;
-  min-width: 230px;
+  //min-width: 230px;
   flex: 1 0 auto;
   display: flex;
   align-items: center;
@@ -116,7 +116,7 @@ $hover-padding: 3px;
 
 .rowToolbar {
   @extend %rowItem;
-  flex: 0 1 auto;
+  flex: 0 0 auto;
   display: flex;
 }
 
