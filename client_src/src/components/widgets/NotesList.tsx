@@ -131,7 +131,7 @@ function NotesList({
   return (
     <div className={ styles['dnt__notes-list'] }>
       <AppBar position="static" color="primary" className={ styles['dnt__notes-list-header'] }>
-        <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
+        <MuiToolbar className={ rootViewOn ? styles['dnt__notes-list-muitoolbar--root'] : styles['dnt__notes-list-muitoolbar'] } disableGutters>
           { !rootViewOn && (
             <IconButton aria-label={ 'Go up a folder' } color="inherit" onClick={ backBtnHandler }>
               <GoOutFolderIcon />
