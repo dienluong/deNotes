@@ -17,13 +17,15 @@ function Main() {
     setDrawerOpen(!drawerOpen);
   }
   const smallMedia = useMediaQuery('(max-width:600px)');
-  let drawerButtonSize;
+  let drawerButtonSize, drawerSize;
   if (smallMedia) {
     editorParams.minimalist = true;
     drawerButtonSize = 'small';
+    drawerSize = 'small';
   } else {
     editorParams.minimalist = false;
     drawerButtonSize = 'medium';
+    drawerSize = 'medium';
   }
 
   return (
@@ -35,7 +37,7 @@ function Main() {
         </Paper>
       </main>
       <nav className={ styles['dnt__main-nav'] }>
-        <NotesListContainer drawerOpen={ drawerOpen } drawerSide={ 'left' } handleDrawerToggle={ handleDrawerToggle } />
+        <NotesListContainer drawerOpen={ drawerOpen } drawerSide={ 'left' } size={ drawerSize } handleDrawerToggle={ handleDrawerToggle } />
       </nav>
       <DrawerButton className={ styles['dnt__main-nav-btn'] } size={ drawerButtonSize } visible={ !drawerOpen } clickHandler={ handleDrawerToggle } />
     </div>

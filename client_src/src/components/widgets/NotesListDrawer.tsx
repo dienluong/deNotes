@@ -9,10 +9,11 @@ import { PropsT as NotestListPropsT } from './NotesList';
 type PropsT = {
   drawerOpen: boolean,
   drawerSide: 'left' | 'right',
+  size: 'small' | 'medium',
   handleDrawerToggle: () => void,
 }
 
-function NotesListDrawer({ drawerOpen, drawerSide, handleDrawerToggle, ...otherProps }: PropsT & NotestListPropsT) {
+function NotesListDrawer({ drawerOpen, drawerSide, size, handleDrawerToggle, ...otherProps }: PropsT & NotestListPropsT) {
   return (
     <React.Fragment>
       <Hidden mdUp implementation="css">
@@ -25,10 +26,10 @@ function NotesListDrawer({ drawerOpen, drawerSide, handleDrawerToggle, ...otherP
             keepMounted: true, // Better open performance on mobile.
           }}
           classes={{
-            paper: styles['dnt__notes-list-drawer-paper'],
+            paper: size !== 'small' ? styles['dnt__notes-list-drawer-paper'] : styles['dnt__notes-list-drawer-paper--small'],
           }}
         >
-          <NotesList { ...otherProps } />
+          <NotesList { ...{size, ...otherProps} } />
         </Drawer>
       </Hidden>
     </React.Fragment>

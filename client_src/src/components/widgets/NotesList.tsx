@@ -20,6 +20,7 @@ import { TreeItem } from 'react-sortable-tree';
 import { nodeTypes } from '../../utils/appCONSTANTS';
 export type PropsT = {
   tree: TreeNodeT[],
+  size: 'small' | 'medium',
   activeNode: ActiveNodeT,
   rootViewOn: boolean,
   currentFolderName: string,
@@ -43,6 +44,7 @@ const _DEFAULT_ROW_HEIGHT = 62;
 
 function NotesList({
   tree,
+  size,
   activeNode,
   rootViewOn,
   currentFolderName,
@@ -137,7 +139,7 @@ function NotesList({
               <GoOutFolderIcon />
             </IconButton>
           )}
-          <Typography inline variant="h5" color="inherit">
+          <Typography inline variant={ size !== 'small' ? 'h5' : 'h6' } color="inherit">
             { currentFolderName || _DEFAULT_FOLDER_NAME }
           </Typography>
           { !rootViewOn && (
