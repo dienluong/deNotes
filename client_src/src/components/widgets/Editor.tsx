@@ -1,8 +1,6 @@
 import React from 'react';
 import './Editor.scss';
 import Quill from 'react-quill';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
-
 
 type PropsT = {
   id: string;
@@ -13,6 +11,7 @@ type PropsT = {
   dateModified?: number;
   readOnly: boolean;
   contentChangeHandler: (...args: any) => any;
+  minimalist: boolean;
   options: object;
 };
 
@@ -46,10 +45,9 @@ const LargeEditorToolbar = () => (
 // a CONTENT_CHANGED would have updated the 'modified date' of the note and ultimately resulted in a (unnecessary) content save.
 // Note about use of 'key': defaultValue is only read at the initial creation of the form component. So by default,
 // the component is not re-rendered when defaultValue subsequently changes. Changing the 'key' will allow us to trigger a re-render.
-function Editor({ id, title, delta, content, dateCreated, dateModified, readOnly, contentChangeHandler, options }: PropsT) {
-  const smallMedia = useMediaQuery('(max-width:600px)');
+function Editor({ id, title, delta, content, dateCreated, dateModified, readOnly, minimalist, contentChangeHandler, options }: PropsT) {
   let editorToolbar, theme, modules;
-  if (smallMedia) {
+  if (minimalist) {
     editorToolbar = <div id="dnt__editor-toolbar"> </div>;
     theme = 'bubble';
     modules = {};
