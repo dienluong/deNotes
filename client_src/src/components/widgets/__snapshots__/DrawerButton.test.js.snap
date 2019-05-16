@@ -165,7 +165,6 @@ ShallowWrapper {
         },
       },
     },
-    "context": Object {},
   },
 }
 `;

@@ -3,13 +3,9 @@ import DrawerButton from './DrawerButton';
 import Fab from '@material-ui/core/Fab';
 import MenuIcon from '@material-ui/icons/Menu';
 import Zoom from '@material-ui/core/Zoom';
-// import { render, cleanup, fireEvent } from 'react-testing-library';
-// import 'jest-dom/extend-expect';
-import { createShallow } from '@material-ui/core/test-utils';
-
 
 // Configure Enzyme
-import { configure } from 'enzyme';
+import { configure, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 configure({ adapter: new Adapter() });
 let wrapper = {};
@@ -18,11 +14,9 @@ afterEach(() => {
   if (typeof wrapper.unmount === 'function') {
     wrapper.unmount();
   }
-  // cleanup();
 });
 
 it('should render button with material-ui Zoom and Fab components', () => {
-  const shallow = createShallow({ untilSelector: 'MenuIcon' });
   const clickHandler = jest.fn();
   const props = {
     size: 'small',
@@ -41,7 +35,6 @@ it('should render button with material-ui Zoom and Fab components', () => {
 });
 
 it('should react to click by invoking handler function', () => {
-  const shallow = createShallow();
   const clickHandler = jest.fn();
   const props = {
     size: 'small',
