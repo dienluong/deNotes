@@ -5,7 +5,7 @@ import NotesList from './NotesList';
 import styles from './NotesListDrawer.module.css';
 
 // Types
-import { PropsT as NotestListPropsT } from './NotesList';
+import { PropsT as NotesListPropsT } from './NotesList';
 type PropsT = {
   drawerOpen: boolean,
   drawerSide: 'left' | 'right',
@@ -13,7 +13,7 @@ type PropsT = {
   handleDrawerToggle: () => void,
 }
 
-function NotesListDrawer({ drawerOpen, drawerSide, size, handleDrawerToggle, ...otherProps }: PropsT & NotestListPropsT) {
+function NotesListDrawer({ drawerOpen, drawerSide, size, handleDrawerToggle, ...otherProps }: PropsT & NotesListPropsT) {
   return (
     <React.Fragment>
       <Hidden mdUp implementation="css">
