@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render drawer using material-ui Drawer w/ proper props and pass remaining props to NotesList 1`] = `
+<Fragment>
+  <WithStyles(Drawer)
+    ModalProps={
+      Object {
+        "keepMounted": true,
+      }
+    }
+    anchor="right"
+    classes={
+      Object {
+        "paper": "dnt__notes-list-drawer-paper--small",
+      }
+    }
+    onClose={[MockFunction]}
+    open={false}
+    variant="temporary"
+  >
+    <NotesList
+      notesListProp1="dummy-prop"
+      notesListProp2={1234}
+      size="small"
+    />
+  </WithStyles(Drawer)>
+</Fragment>
+`;
