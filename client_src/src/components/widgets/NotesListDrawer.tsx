@@ -1,6 +1,5 @@
 import React from 'react';
 import Drawer from '@material-ui/core/Drawer';
-import Hidden from '@material-ui/core/Hidden';
 import NotesList from './NotesList';
 import styles from './NotesListDrawer.module.css';
 
@@ -16,7 +15,6 @@ type PropsT = {
 function NotesListDrawer({ drawerOpen, drawerSide, size, handleDrawerToggle, ...otherProps }: PropsT & NotesListPropsT) {
   return (
     <React.Fragment>
-      <Hidden mdUp implementation="css">
         <Drawer
           variant="temporary"
           anchor={ drawerSide }
@@ -31,7 +29,6 @@ function NotesListDrawer({ drawerOpen, drawerSide, size, handleDrawerToggle, ...
         >
           <NotesList { ...{size, ...otherProps} } />
         </Drawer>
-      </Hidden>
     </React.Fragment>
   );
 }
