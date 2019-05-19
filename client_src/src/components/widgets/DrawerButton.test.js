@@ -3,12 +3,16 @@ import DrawerButton from './DrawerButton';
 import Fab from '@material-ui/core/Fab';
 import MenuIcon from '@material-ui/icons/Menu';
 import Zoom from '@material-ui/core/Zoom';
+import { createSerializer } from 'enzyme-to-json';
 
 // Configure Enzyme
 import { configure, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 configure({ adapter: new Adapter() });
 let wrapper = {};
+
+// Configure snapshot serializer
+expect.addSnapshotSerializer(createSerializer());
 
 afterEach(() => {
   if (typeof wrapper.unmount === 'function') {
