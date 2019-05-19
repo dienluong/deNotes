@@ -70,6 +70,7 @@
       "!**/src/test-utils/**",
       "!**/src/tmp/**",
       "!**/src/registerServiceWorker.js"
-    ]
+    ],
+    "snapshotSerializers": ["enzyme-to-json"]
   }
 }
