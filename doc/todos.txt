@@ -24,7 +24,7 @@ x Upon deleting a folder, switch active node to parent.
 
 x Fix bug: quick successive notes creation skips saving of some notes.
 
-Implement local storage
+x Implement local storage
   x -> save to and load from local storage
   x -> delete from local storage
 
@@ -66,10 +66,11 @@ Revisit QuillJs bug
     https://github.com/quilljs/quill/issues/1940
     https://github.com/zenoamaro/react-quill/issues/309
 
-Make reducers pure functions by removing UUID creation, calls to Date.now(), etc.
-Define typescript type ActionPayload for action object with a payload property.
-Use state selectors instead of getState().<sliceOfState>
-Convert use of node type literals ('item' and 'folder') to enum or constants, or something similar.
+~ Make reducers pure functions by removing UUID creation, calls to Date.now(), etc.
+~ Define typescript type ActionPayload for action object with a payload property.
+~ Use state selectors instead of getState().<sliceOfState>
+~ Convert use of node type literals ('item' and 'folder') to enum or constants, or something similar.
+
 How to handle error (promises) from Observers?
 How to handle offline mode?  Do we let user create/modify notes offline and store them locally? How do we reconciliate the local data with the remote data once connection is back?
 Active node should be the persistent across sessions.
@@ -82,3 +83,13 @@ Upon creation of new note, auto select editor body.
 Retry save or load on failure
 recycle bin
 
+Update/create tests for:
+  x DrawerButton.tsx
+  x NotesListDrawer.tsx
+  NotesListContainer.tsx
+  Main.js
+  NotesList.tsx
+  Editor.tsx
+  index.js
+  NodeTitle.tsx
+  editorContentObserver.ts
