@@ -46,6 +46,7 @@
     "babel-eslint": "^9.0.0",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.7.0",
+    "enzyme-to-json": "^3.3.5",
     "jest-dom": "^2.1.0",
     "node-sass": "^4.11.0",
     "react-test-renderer": "^16.6.0",
