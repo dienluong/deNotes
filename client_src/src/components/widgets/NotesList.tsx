@@ -156,7 +156,7 @@ function NotesList({
         // @ts-ignore -- bug in react-sortable-tree/index.d.ts for rowHeight
         rowHeight={ rowHeight }
       />
-      <div className={ styles['dnt__notes-list-muiappbar'] }>
+      <div className={ styles['dnt__notes-list-appbar'] }>
         <AppBar position="static" color="default">
           <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
             <IconButton aria-label={ 'New Folder' } color="primary" onClick={ toolbarHandlers[0] }>

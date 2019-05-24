@@ -2,14 +2,41 @@ import React from 'react';
 import NotesList from './NotesList';
 import notesListStyles from './NotesList.module.css';
 import pathNavStyles from './PathNavigator.module.css';
-import { render, cleanup, fireEvent, within } from 'react-testing-library';
-import 'jest-dom/extend-expect';
-import { walk, find, getFlatDataFromTree } from 'react-sortable-tree';
+import AppBar from '@material-ui/core/AppBar';
+import MuiToolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import HomeIcon from '@material-ui/icons/Home';
+import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
+import NewNoteIcon from '@material-ui/icons/NoteAdd';
+import GoOutFolderIcon from '@material-ui/icons/ArrowBackIos';
+import GoInFolderIcon from '@material-ui/icons/ArrowForwardIos';
+import Tree, { walk, find, getFlatDataFromTree } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/treeUtils';
 import { nodeTypes } from '../../utils/appCONSTANTS';
 import baseState from '../../redux/misc/initialState';
 import { selectTitlesFromActivePath } from '../../redux/selectors';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
+import { render, cleanup, fireEvent, within } from 'react-testing-library';
+import 'jest-dom/extend-expect';
+import { createSerializer } from 'enzyme-to-json';
+
+// Configure Enzyme
+import { configure, shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+configure({ adapter: new Adapter() });
+let wrapper = {};
+
+// Configure snapshot serializer
+expect.addSnapshotSerializer(createSerializer());
+
+afterEach(() => {
+  if (typeof wrapper.unmount === 'function') {
+    wrapper.unmount();
+  }
+
+  cleanup();
+});
 
 const toolbarHandlersMap = new Map();
 const toolbarHandlersMap2 = new Map();
@@ -17,7 +44,52 @@ toolbarHandlersMap.set('tool1', jest.fn());
 toolbarHandlersMap.set('tool2', jest.fn());
 toolbarHandlersMap2.set('tool3', jest.fn());
 
-afterEach(cleanup);
+it('should render header, tree and app bar properly in root-view mode', () => {
+  const tree = mockedTree;
+  // active node is an ITEM in root, so active folder is the root itself; thus, rootViewOn should be set to true
+  const activeNode = {
+    id: mockedTree[1].id,
+    path: [mockedTree[1].id],
+  };
+  const props = {
+    tree,
+    size: 'small',
+    activeNode,
+    rootViewOn: true,
+    currentFolderName: 'TEST FOLDER NAME',
+    treeChangeHandler: jest.fn(),
+    nodeTitleChangeHandler: jest.fn(),
+    nodeClickHandler: jest.fn(),
+    nodeDoubleClickHandler: jest.fn(),
+    deleteNodeBtnHandler: jest.fn(),
+    backBtnHandler: jest.fn(),
+    homeBtnHandler: jest.fn(),
+    toolbarHandlers: [jest.fn(), jest.fn()],
+    getNodeKey,
+  };
+
+  const expectedTreeProps = {
+    treeData: props.tree,
+    onChange: props.treeChangeHandler,
+    getNodeKey,
+  };
+
+  wrapper = shallow(<NotesList { ...props } />);
+  expect(wrapper).toMatchSnapshot();
+  expect(wrapper.find(AppBar).filter('.dnt__notes-list-header').exists()).toBe(true);
+  expect(wrapper.find('div.dnt__notes-list-appbar').exists()).toBe(true);
+  const treeWrapper = wrapper.find(Tree);
+  expect(treeWrapper.exists()).toBe(true);
+  expect(treeWrapper.props()).toMatchObject(expectedTreeProps);
+  expect(wrapper.find(Typography).render().text()).toEqual(props.currentFolderName);
+  expect(wrapper.find(NewFolderIcon).exists()).toBe(true);
+  expect(wrapper.find(NewNoteIcon).exists()).toBe(true);
+
+  // Asserts root-view mode specifics
+  expect(wrapper.find(MuiToolbar).filter('.dnt__notes-list-muitoolbar--root').exists()).toBe(true);
+  expect(wrapper.find(GoOutFolderIcon).exists()).toBe(false);
+  expect(wrapper.find(HomeIcon).exists()).toBe(false);
+});
 
 it('should render all node titles of the received tree and highlight the active node', () => {
   const tree = mockedTree;
