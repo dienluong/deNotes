@@ -2,7 +2,6 @@ import React from 'react';
 import createMockStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import 'jest-dom/extend-expect';
 import NotesListContainer, { DEFAULT_ROOT_FOLDER_NAME } from './NotesListContainer';
 import NotesListDrawer from './widgets/NotesListDrawer';
 import initialState from '../redux/misc/initialState';
