@@ -86,10 +86,10 @@ recycle bin
 Update/create tests for:
   x DrawerButton.tsx
   x NotesListDrawer.tsx
-  NotesListContainer.tsx
-  Main.js
+  x NotesListContainer.tsx
   NotesList.tsx
-  Editor.tsx
-  index.js
   NodeTitle.tsx
+  Editor.tsx
   editorContentObserver.ts
+  Main.js
+  index.js
