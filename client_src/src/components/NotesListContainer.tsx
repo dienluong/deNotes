@@ -4,7 +4,6 @@ import * as rootReducer from '../redux/reducers';
 import NotesListDrawer from './widgets/NotesListDrawer';
 import {
   selectNodeThunkAction,
-  navigatePathThunkAction,
   goToRootAction,
   goUpAFolderAction,
   changeNotesFolderThunkAction,
@@ -22,13 +21,11 @@ import { AnyAction } from 'redux';
 interface MapDispatchPropsT {
   treeChangeHandler: (params: any) => AnyAction;
   nodeTitleChangeHandler: (params: { node: TreeNodeT, title: string, path: TreeNodePathT }) => AnyAction;
-  pathNavigatorClickHandler: (params: { idx: number }) => AnyAction;
-  backBtnHandler: () => AnyAction;
-  homeBtnHandler: () => AnyAction;
   nodeClickHandler: (params: any) => AnyAction;
   nodeDoubleClickHandler: (params: any) => AnyAction;
   deleteNodeBtnHandler: (params: any) => Promise<AnyAction>;
-  addNoteBtnHandler: (params: any) => AnyAction;
+  backBtnHandler: () => AnyAction;
+  homeBtnHandler: () => AnyAction;
   toolbarHandlers: Array<() => AnyAction>;
 }
 interface MapStatePropsT {
@@ -36,15 +33,13 @@ interface MapStatePropsT {
   activeNode: ActiveNodeT;
   rootViewOn: boolean;
   currentFolderName: string;
-  activePath?: string[];
 }
 
-const ROOT_FOLDER_NAME = 'HOME';
+export const DEFAULT_ROOT_FOLDER_NAME = 'HOME';
 
 function mapStateToProps(state: AppStateT): MapStatePropsT {
   const activePathByTitles = selectTitlesFromActivePath(state);
 
-  // const activePath = translatePathToInfo({ notesTree: state.notesTree, path: state.activeNode.path, kind: 'title' });
   if (mapStateToProps.cache.notesTree !== rootReducer.selectNotesTree(state)) {
     console.log('~~~~~~~~~~~~~~~~ Notes Tree Changed');
     mapStateToProps.cache.notesTree = rootReducer.selectNotesTree(state);
@@ -84,7 +79,7 @@ function mapStateToProps(state: AppStateT): MapStatePropsT {
   // If parent is root then...
   if (parentIdx === -1) {
     rootViewOn = true;
-    folderName = ROOT_FOLDER_NAME;
+    folderName = DEFAULT_ROOT_FOLDER_NAME;
   } else {
     rootViewOn = false;
     folderName = activePathByTitles[parentIdx];
@@ -122,9 +117,6 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
       // remember that NotesList only receives and renders a given leaf of the whole tree.
       return dispatch(changeNodeTitleAction({ node, title }));
     },
-    pathNavigatorClickHandler({ idx }) {
-      return dispatch(navigatePathThunkAction({ idx }));
-    },
     backBtnHandler() {
       return dispatch(goUpAFolderAction());
     },
@@ -141,11 +133,6 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
       // We are not using the path received from the NotesList component because that path is not for the entire tree;
       // remember that NotesList only receives and renders a given leaf of the whole tree.
       return dispatch(deleteNodeThunkAction({ node }));
-    },
-    addNoteBtnHandler({ path } ) {
-      // We are not using the path received from the NotesList component because that path is not for the entire tree;
-      // remember that NotesList only receives and renders a given leaf of the whole tree.
-      return dispatch(addAndSelectNodeThunkAction({ kind: nodeTypes.ITEM }));
     },
     toolbarHandlers,
   };
