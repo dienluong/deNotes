@@ -12,7 +12,7 @@ import NewNoteIcon from '@material-ui/icons/NoteAdd';
 import GoOutFolderIcon from '@material-ui/icons/ArrowBackIos';
 import GoInFolderIcon from '@material-ui/icons/ArrowForwardIos';
 import Tree, { walk, find, getFlatDataFromTree } from 'react-sortable-tree';
-import { getNodeKey } from '../../utils/treeUtils';
+import { getNodeKey, collapseFolders } from '../../utils/treeUtils';
 import { nodeTypes } from '../../utils/appCONSTANTS';
 import baseState from '../../redux/misc/initialState';
 import { selectTitlesFromActivePath } from '../../redux/selectors';
@@ -44,18 +44,18 @@ toolbarHandlersMap.set('tool1', jest.fn());
 toolbarHandlersMap.set('tool2', jest.fn());
 toolbarHandlersMap2.set('tool3', jest.fn());
 
-it('should render header, tree and app bar properly in root-view mode', () => {
-  const tree = mockedTree;
-  // active node is an ITEM in root, so active folder is the root itself; thus, rootViewOn should be set to true
+it('should render header, tree and app bar properly in non-root-view mode', () => {
+  // active node is a FOLDER in root, so active folder is that FOLDER node (and not the root); thus, rootViewOn is set to false
   const activeNode = {
-    id: mockedTree[1].id,
-    path: [mockedTree[1].id],
+    id: mockedTree[0].id,
+    path: [mockedTree[0].id],
   };
+  const tree = mockedTree[0].children;
   const props = {
     tree,
     size: 'small',
     activeNode,
-    rootViewOn: true,
+    rootViewOn: false,
     currentFolderName: 'TEST FOLDER NAME',
     treeChangeHandler: jest.fn(),
     nodeTitleChangeHandler: jest.fn(),
@@ -69,7 +69,7 @@ it('should render header, tree and app bar properly in root-view mode', () => {
   };
 
   const expectedTreeProps = {
-    treeData: props.tree,
+    treeData: collapseFolders({ tree: props.tree }),
     onChange: props.treeChangeHandler,
     getNodeKey,
   };
@@ -85,10 +85,51 @@ it('should render header, tree and app bar properly in root-view mode', () => {
   expect(wrapper.find(NewFolderIcon).exists()).toBe(true);
   expect(wrapper.find(NewNoteIcon).exists()).toBe(true);
 
-  // Asserts root-view mode specifics
+  // Asserts UI elements specific to non-root-view mode
+  expect(wrapper.find(MuiToolbar).first().hasClass('dnt__notes-list-muitoolbar')).toBe(true);
+  expect(wrapper.find(GoOutFolderIcon).exists()).toBe(true);
+  expect(wrapper.find(HomeIcon).exists()).toBe(true);
+});
+
+it('should display only folder nodes and all direct child nodes of root, in root-view mode', () => {
+  // active node is an ITEM in root, so active folder is the root itself; thus, rootViewOn is set to true
+  const activeNode = {
+    id: mockedTree[1].id,
+    path: [mockedTree[1].id],
+  };
+  const props = {
+    tree: mockedTree,
+    size: 'small',
+    activeNode,
+    rootViewOn: true,
+    currentFolderName: 'TEST FOLDER NAME',
+    treeChangeHandler: jest.fn(),
+    nodeTitleChangeHandler: jest.fn(),
+    nodeClickHandler: jest.fn(),
+    nodeDoubleClickHandler: jest.fn(),
+    deleteNodeBtnHandler: jest.fn(),
+    backBtnHandler: jest.fn(),
+    homeBtnHandler: jest.fn(),
+    toolbarHandlers: [jest.fn(), jest.fn()],
+    getNodeKey,
+  };
+
+  wrapper = shallow(<NotesList { ...props } />);
+
+  // Asserts UI elements specific to root-view mode
   expect(wrapper.find(MuiToolbar).filter('.dnt__notes-list-muitoolbar--root').exists()).toBe(true);
   expect(wrapper.find(GoOutFolderIcon).exists()).toBe(false);
   expect(wrapper.find(HomeIcon).exists()).toBe(false);
+
+  const { container } = render(<NotesList { ...props }/>);
+  const invisibleNodes = container.querySelectorAll('.dnt__tree-node--invisible');
+  // In the mocked tree, we have strategically assigned titles to the nodes.
+  // In this case, title starting w/ "note root0" means all notes that is children of node root0 (first child of root).
+  // We expect these to be the invisible nodes.
+  const check = text => expect(text).toEqual(expect.stringContaining('note root0'));
+  invisibleNodes.forEach(node => {
+    check(node.textContent);
+  });
 });
 
 it('should render all node titles of the received tree and highlight the active node', () => {

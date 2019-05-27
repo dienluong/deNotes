@@ -657,7 +657,7 @@ exports[`should render all node titles of the received tree and highlight the ac
 </div>
 `;
 
-exports[`should render header, tree and app bar properly in root-view mode 1`] = `
+exports[`should render header, tree and app bar properly in non-root-view mode 1`] = `
 <div
   className="dnt__notes-list"
 >
@@ -667,9 +667,16 @@ exports[`should render header, tree and app bar properly in root-view mode 1`] =
     position="static"
   >
     <WithStyles(Toolbar)
-      className="dnt__notes-list-muitoolbar--root"
+      className="dnt__notes-list-muitoolbar"
       disableGutters={true}
     >
+      <WithStyles(IconButton)
+        aria-label="Go up a folder"
+        color="inherit"
+        onClick={[MockFunction]}
+      >
+        <pure(ArrowBackIosIcon) />
+      </WithStyles(IconButton)>
       <WithStyles(Typography)
         color="inherit"
         inline={true}
@@ -677,6 +684,13 @@ exports[`should render header, tree and app bar properly in root-view mode 1`] =
       >
         TEST FOLDER NAME
       </WithStyles(Typography)>
+      <WithStyles(IconButton)
+        aria-label="Home"
+        color="inherit"
+        onClick={[MockFunction]}
+      >
+        <pure(HomeIcon) />
+      </WithStyles(IconButton)>
     </WithStyles(Toolbar)>
   </WithStyles(AppBar)>
   <DragDropContext(ReactSortableTree)
@@ -684,7 +698,7 @@ exports[`should render header, tree and app bar properly in root-view mode 1`] =
     generateNodeProps={[Function]}
     getNodeKey={[Function]}
     onChange={[MockFunction]}
-    rowHeight={[Function]}
+    rowHeight={62}
     theme={
       Object {
         "nodeContentRenderer": [Function],
@@ -695,77 +709,51 @@ exports[`should render header, tree and app bar properly in root-view mode 1`] =
     treeData={
       Array [
         Object {
-          "children": Array [
-            Object {
-              "id": "ITEM_NODE|^|2",
-              "subtitle": "",
-              "title": "note root0.children0",
-              "type": "ITEM_NODE",
-              "uniqid": "2",
-            },
-            Object {
-              "id": "ITEM_NODE|^|3",
-              "subtitle": "",
-              "title": "note root0.children1",
-              "type": "ITEM_NODE",
-              "uniqid": "3",
-            },
-            Object {
-              "children": Array [
-                Object {
-                  "id": "ITEM_NODE|^|5",
-                  "subtitle": "",
-                  "title": "note root0.children2.children0",
-                  "type": "ITEM_NODE",
-                  "uniqid": "5",
-                },
-                Object {
-                  "id": "ITEM_NODE|^|6",
-                  "subtitle": "",
-                  "title": "note root0.children2.children1",
-                  "type": "ITEM_NODE",
-                  "uniqid": "6",
-                },
-              ],
-              "expanded": true,
-              "id": "FOLDER_NODE|^|4",
-              "subtitle": "",
-              "title": "folder root0.children2",
-              "type": "FOLDER_NODE",
-              "uniqid": "4",
-            },
-            Object {
-              "children": Array [],
-              "expanded": true,
-              "id": "FOLDER_NODE|^|7",
-              "subtitle": "",
-              "title": "folder root0.children3",
-              "type": "FOLDER_NODE",
-              "uniqid": "7",
-            },
-          ],
-          "expanded": true,
-          "id": "FOLDER_NODE|^|1",
+          "id": "ITEM_NODE|^|2",
           "subtitle": "",
-          "title": "folder root0",
-          "type": "FOLDER_NODE",
-          "uniqid": "1",
+          "title": "note root0.children0",
+          "type": "ITEM_NODE",
+          "uniqid": "2",
         },
         Object {
-          "id": "ITEM_NODE|^|8",
+          "id": "ITEM_NODE|^|3",
           "subtitle": "",
-          "title": "note root1",
+          "title": "note root0.children1",
           "type": "ITEM_NODE",
-          "uniqid": "8",
+          "uniqid": "3",
+        },
+        Object {
+          "children": Array [
+            Object {
+              "id": "ITEM_NODE|^|5",
+              "subtitle": "",
+              "title": "note root0.children2.children0",
+              "type": "ITEM_NODE",
+              "uniqid": "5",
+            },
+            Object {
+              "id": "ITEM_NODE|^|6",
+              "subtitle": "",
+              "title": "note root0.children2.children1",
+              "type": "ITEM_NODE",
+              "uniqid": "6",
+            },
+          ],
+          "expanded": false,
+          "id": "FOLDER_NODE|^|4",
+          "subtitle": "",
+          "title": "folder root0.children2",
+          "type": "FOLDER_NODE",
+          "uniqid": "4",
         },
         Object {
           "children": Array [],
-          "expanded": true,
-          "id": "FOLDER_NODE|^|9",
+          "expanded": false,
+          "id": "FOLDER_NODE|^|7",
           "subtitle": "",
-          "title": "folder root2",
+          "title": "folder root0.children3",
           "type": "FOLDER_NODE",
-          "uniqid": "9",
+          "uniqid": "7",
         },
       ]
     }
