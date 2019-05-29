@@ -5,43 +5,77 @@ exports[`should render all node titles of the received tree and highlight the ac
   <div
     class="dnt__notes-list"
   >
-    <div
-      class="dnt__toolbar"
+    <header
+      class="MuiPaper-root-10 MuiPaper-elevation4-16 MuiAppBar-root-1 MuiAppBar-positionStatic-5 MuiAppBar-colorPrimary-8 dnt__notes-list-header"
     >
-      <button
-        class="dnt__tool"
+      <div
+        class="MuiToolbar-root-37 MuiToolbar-regular-39 dnt__notes-list-muitoolbar"
       >
-        tool1
-      </button>
-      <button
-        class="dnt__tool"
-      >
-        tool2
-      </button>
-    </div>
-    <div
-      class="dnt__toolbar"
-    >
-      <button
-        class="dnt__tool"
-      >
-        tool3
-      </button>
-    </div>
-    <nav
-      class="dnt__pathnav"
-    >
-      <ul>
-        <li
-          class="lined dnt__pathnav-segment--active"
+        <button
+          aria-label="Go up a folder"
+          class="MuiButtonBase-root-47 MuiIconButton-root-41 MuiIconButton-colorInherit-42"
+          tabindex="0"
+          type="button"
         >
-          <span>
-            note root1
-            &gt;
+          <span
+            class="MuiIconButton-label-46"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root-50"
+              focusable="false"
+              role="presentation"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M11.67 3.87L9.9 2.1 0 12l9.9 9.9 1.77-1.77L3.54 12z"
+              />
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+            </svg>
           </span>
-        </li>
-      </ul>
-    </nav>
+          <span
+            class="MuiTouchRipple-root-95"
+          />
+        </button>
+        <h5
+          class="MuiTypography-root-59 MuiTypography-h5-75 MuiTypography-colorInherit-88 MuiTypography-inline-94"
+        >
+          TEST FOLDER NAME
+        </h5>
+        <button
+          aria-label="Home"
+          class="MuiButtonBase-root-47 MuiIconButton-root-41 MuiIconButton-colorInherit-42"
+          tabindex="0"
+          type="button"
+        >
+          <span
+            class="MuiIconButton-label-46"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root-50"
+              focusable="false"
+              role="presentation"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"
+              />
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+            </svg>
+          </span>
+          <span
+            class="MuiTouchRipple-root-95"
+          />
+        </button>
+      </div>
+    </header>
     <div
       class="rst__tree tree dnt__tree"
       style="height: 100%;"
@@ -58,7 +92,7 @@ exports[`should render all node titles of the received tree and highlight the ac
           <div
             class="ReactVirtualized__Grid__innerScrollContainer"
             role="rowgroup"
-            style="width: auto; height: 558px; max-width: 200px; max-height: 558px; overflow: hidden; position: relative;"
+            style="width: auto; height: 248px; max-width: 200px; max-height: 248px; overflow: hidden; position: relative;"
           >
             <div
               class="node"
@@ -67,85 +101,6 @@ exports[`should render all node titles of the received tree and highlight the ac
               <div
                 class="nodeContent"
                 style="padding-left: 0px;"
-              >
-                <div
-                  data-testid="FOLDER_NODE|^|1"
-                  style="height: 100%;"
-                  tabindex="0"
-                >
-                  <div>
-                    <button
-                      aria-label="Collapse"
-                      class="expandButton"
-                      type="button"
-                    />
-                    <div
-                      class="lineChildren"
-                      style="width: 45px;"
-                    />
-                  </div>
-                  <div
-                    class="rowWrapper"
-                  >
-                    <div
-                      class="row dnt__tree-node"
-                      style="opacity: 1; padding-left: 45px;"
-                    >
-                      <div
-                        class="rowContents"
-                        draggable="true"
-                      >
-                        <div
-                          class="rowLabel"
-                        >
-                          <span
-                            class="rowTitle"
-                          >
-                            <form>
-                              <input
-                                class="dnt__node-title"
-                                type="text"
-                                value="folder root0"
-                              />
-                            </form>
-                          </span>
-                          
-                        </div>
-                        <div
-                          class="rowToolbar"
-                        >
-                          <div
-                            class="toolbarButton"
-                          >
-                            <button
-                              class="dnt__tree-node-btn"
-                            >
-                              +
-                            </button>
-                          </div>
-                          <div
-                            class="toolbarButton"
-                          >
-                            <button
-                              class="dnt__tree-node-btn"
-                            >
-                              x
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="node"
-              style="height: 62px; left: 0px; position: absolute; top: 62px; width: 100%;"
-            >
-              <div
-                class="nodeContent"
-                style="padding-left: 45px;"
               >
                 <div
                   data-testid="ITEM_NODE|^|2"
@@ -157,7 +112,7 @@ exports[`should render all node titles of the received tree and highlight the ac
                   >
                     <div
                       class="row dnt__tree-node"
-                      style="opacity: 1; padding-left: 45px;"
+                      style="opacity: 1; padding-left: 20px;"
                     >
                       <div
                         class="rowContents"
@@ -200,11 +155,11 @@ exports[`should render all node titles of the received tree and highlight the ac
             </div>
             <div
               class="node"
-              style="height: 62px; left: 0px; position: absolute; top: 124px; width: 100%;"
+              style="height: 62px; left: 0px; position: absolute; top: 62px; width: 100%;"
             >
               <div
                 class="nodeContent"
-                style="padding-left: 45px;"
+                style="padding-left: 0px;"
               >
                 <div
                   data-testid="ITEM_NODE|^|3"
@@ -215,8 +170,8 @@ exports[`should render all node titles of the received tree and highlight the ac
                     class="rowWrapper"
                   >
                     <div
-                      class="row dnt__tree-node"
-                      style="opacity: 1; padding-left: 45px;"
+                      class="row dnt__tree-node dnt__tree-node--active"
+                      style="opacity: 1; padding-left: 20px;"
                     >
                       <div
                         class="rowContents"
@@ -259,34 +214,23 @@ exports[`should render all node titles of the received tree and highlight the ac
             </div>
             <div
               class="node"
-              style="height: 62px; left: 0px; position: absolute; top: 186px; width: 100%;"
+              style="height: 62px; left: 0px; position: absolute; top: 124px; width: 100%;"
             >
               <div
                 class="nodeContent"
-                style="padding-left: 45px;"
+                style="padding-left: 0px;"
               >
                 <div
                   data-testid="FOLDER_NODE|^|4"
                   style="height: 100%;"
                   tabindex="0"
                 >
-                  <div>
-                    <button
-                      aria-label="Collapse"
-                      class="expandButton"
-                      type="button"
-                    />
-                    <div
-                      class="lineChildren"
-                      style="width: 45px;"
-                    />
-                  </div>
                   <div
                     class="rowWrapper"
                   >
                     <div
                       class="row dnt__tree-node"
-                      style="opacity: 1; padding-left: 45px;"
+                      style="opacity: 1; padding-left: 20px;"
                     >
                       <div
                         class="rowContents"
@@ -314,130 +258,29 @@ exports[`should render all node titles of the received tree and highlight the ac
                           <div
                             class="toolbarButton"
                           >
-                            <button
-                              class="dnt__tree-node-btn"
-                            >
-                              +
-                            </button>
+                            <span>
+                              2
+                            </span>
                           </div>
                           <div
                             class="toolbarButton"
                           >
-                            <button
-                              class="dnt__tree-node-btn"
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-root-50"
+                              focusable="false"
+                              role="presentation"
+                              viewBox="0 0 24 24"
                             >
-                              x
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="node"
-              style="height: 62px; left: 0px; position: absolute; top: 248px; width: 100%;"
-            >
-              <div
-                class="nodeContent"
-                style="padding-left: 90px;"
-              >
-                <div
-                  data-testid="ITEM_NODE|^|5"
-                  style="height: 100%;"
-                  tabindex="0"
-                >
-                  <div
-                    class="rowWrapper"
-                  >
-                    <div
-                      class="row dnt__tree-node"
-                      style="opacity: 1; padding-left: 45px;"
-                    >
-                      <div
-                        class="rowContents"
-                        draggable="true"
-                      >
-                        <div
-                          class="rowLabel"
-                        >
-                          <span
-                            class="rowTitle"
-                          >
-                            <form>
-                              <input
-                                class="dnt__node-title"
-                                type="text"
-                                value="note root0.children2.children0"
+                              <path
+                                d="M5.88 4.12L13.76 12l-7.88 7.88L8 22l10-10L8 2z"
                               />
-                            </form>
-                          </span>
-                          
-                        </div>
-                        <div
-                          class="rowToolbar"
-                        >
-                          <div
-                            class="toolbarButton"
-                          >
-                            <button
-                              class="dnt__tree-node-btn"
-                            >
-                              x
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="node"
-              style="height: 62px; left: 0px; position: absolute; top: 310px; width: 100%;"
-            >
-              <div
-                class="nodeContent"
-                style="padding-left: 90px;"
-              >
-                <div
-                  data-testid="ITEM_NODE|^|6"
-                  style="height: 100%;"
-                  tabindex="0"
-                >
-                  <div
-                    class="rowWrapper"
-                  >
-                    <div
-                      class="row dnt__tree-node"
-                      style="opacity: 1; padding-left: 45px;"
-                    >
-                      <div
-                        class="rowContents"
-                        draggable="true"
-                      >
-                        <div
-                          class="rowLabel"
-                        >
-                          <span
-                            class="rowTitle"
-                          >
-                            <form>
-                              <input
-                                class="dnt__node-title"
-                                type="text"
-                                value="note root0.children2.children1"
+                              <path
+                                d="M0 0h24v24H0z"
+                                fill="none"
                               />
-                            </form>
-                          </span>
-                          
-                        </div>
-                        <div
-                          class="rowToolbar"
-                        >
+                            </svg>
+                          </div>
                           <div
                             class="toolbarButton"
                           >
@@ -456,11 +299,11 @@ exports[`should render all node titles of the received tree and highlight the ac
             </div>
             <div
               class="node"
-              style="height: 62px; left: 0px; position: absolute; top: 372px; width: 100%;"
+              style="height: 62px; left: 0px; position: absolute; top: 186px; width: 100%;"
             >
               <div
                 class="nodeContent"
-                style="padding-left: 45px;"
+                style="padding-left: 0px;"
               >
                 <div
                   data-testid="FOLDER_NODE|^|7"
@@ -472,7 +315,7 @@ exports[`should render all node titles of the received tree and highlight the ac
                   >
                     <div
                       class="row dnt__tree-node"
-                      style="opacity: 1; padding-left: 45px;"
+                      style="opacity: 1; padding-left: 20px;"
                     >
                       <div
                         class="rowContents"
@@ -500,138 +343,21 @@ exports[`should render all node titles of the received tree and highlight the ac
                           <div
                             class="toolbarButton"
                           >
-                            <button
-                              class="dnt__tree-node-btn"
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-root-50"
+                              focusable="false"
+                              role="presentation"
+                              viewBox="0 0 24 24"
                             >
-                              +
-                            </button>
-                          </div>
-                          <div
-                            class="toolbarButton"
-                          >
-                            <button
-                              class="dnt__tree-node-btn"
-                            >
-                              x
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="node"
-              style="height: 62px; left: 0px; position: absolute; top: 434px; width: 100%;"
-            >
-              <div
-                class="nodeContent"
-                style="padding-left: 0px;"
-              >
-                <div
-                  data-testid="ITEM_NODE|^|8"
-                  style="height: 100%;"
-                  tabindex="0"
-                >
-                  <div
-                    class="rowWrapper"
-                  >
-                    <div
-                      class="row dnt__tree-node dnt__tree-node--active"
-                      style="opacity: 1; padding-left: 45px;"
-                    >
-                      <div
-                        class="rowContents"
-                        draggable="true"
-                      >
-                        <div
-                          class="rowLabel"
-                        >
-                          <span
-                            class="rowTitle"
-                          >
-                            <form>
-                              <input
-                                class="dnt__node-title"
-                                type="text"
-                                value="note root1"
+                              <path
+                                d="M5.88 4.12L13.76 12l-7.88 7.88L8 22l10-10L8 2z"
                               />
-                            </form>
-                          </span>
-                          
-                        </div>
-                        <div
-                          class="rowToolbar"
-                        >
-                          <div
-                            class="toolbarButton"
-                          >
-                            <button
-                              class="dnt__tree-node-btn"
-                            >
-                              x
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="node"
-              style="height: 62px; left: 0px; position: absolute; top: 496px; width: 100%;"
-            >
-              <div
-                class="nodeContent"
-                style="padding-left: 0px;"
-              >
-                <div
-                  data-testid="FOLDER_NODE|^|9"
-                  style="height: 100%;"
-                  tabindex="0"
-                >
-                  <div
-                    class="rowWrapper"
-                  >
-                    <div
-                      class="row dnt__tree-node"
-                      style="opacity: 1; padding-left: 45px;"
-                    >
-                      <div
-                        class="rowContents"
-                        draggable="true"
-                      >
-                        <div
-                          class="rowLabel"
-                        >
-                          <span
-                            class="rowTitle"
-                          >
-                            <form>
-                              <input
-                                class="dnt__node-title"
-                                type="text"
-                                value="folder root2"
+                              <path
+                                d="M0 0h24v24H0z"
+                                fill="none"
                               />
-                            </form>
-                          </span>
-                          
-                        </div>
-                        <div
-                          class="rowToolbar"
-                        >
-                          <div
-                            class="toolbarButton"
-                          >
-                            <button
-                              class="dnt__tree-node-btn"
-                            >
-                              +
-                            </button>
+                            </svg>
                           </div>
                           <div
                             class="toolbarButton"
@@ -652,6 +378,76 @@ exports[`should render all node titles of the received tree and highlight the ac
           </div>
         </div>
       </div>
+    </div>
+    <div
+      class="dnt__notes-list-appbar"
+    >
+      <header
+        class="MuiPaper-root-10 MuiPaper-elevation4-16 MuiAppBar-root-1 MuiAppBar-positionStatic-5 MuiAppBar-colorDefault-7"
+      >
+        <div
+          class="MuiToolbar-root-37 MuiToolbar-regular-39 MuiToolbar-gutters-38 dnt__notes-list-muitoolbar"
+        >
+          <button
+            aria-label="New Folder"
+            class="MuiButtonBase-root-47 MuiIconButton-root-41 MuiIconButton-colorPrimary-43"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiIconButton-label-46"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root-50"
+                focusable="false"
+                role="presentation"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M0 0h24v24H0V0z"
+                  fill="none"
+                />
+                <path
+                  d="M20 6h-8l-2-2H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-1 8h-3v3h-2v-3h-3v-2h3V9h2v3h3v2z"
+                />
+              </svg>
+            </span>
+            <span
+              class="MuiTouchRipple-root-95"
+            />
+          </button>
+          <button
+            aria-label="New Note"
+            class="MuiButtonBase-root-47 MuiIconButton-root-41 MuiIconButton-colorPrimary-43"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiIconButton-label-46"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root-50"
+                focusable="false"
+                role="presentation"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M0 0h24v24H0z"
+                  fill="none"
+                />
+                <path
+                  d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 14h-3v3h-2v-3H8v-2h3v-3h2v3h3v2zm-3-7V3.5L18.5 9H13z"
+                />
+              </svg>
+            </span>
+            <span
+              class="MuiTouchRipple-root-95"
+            />
+          </button>
+        </div>
+      </header>
     </div>
   </div>
 </div>
