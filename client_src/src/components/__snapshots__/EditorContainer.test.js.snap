@@ -3,10 +3,11 @@
 exports[`render correctly with proper component and props 1`] = `
 <div>
   <div
-    class="quill "
+    class="dnt__editor"
   >
     <div
       class="ql-toolbar ql-snow"
+      id="dnt__editor-toolbar"
     >
       <span
         class="ql-formats"
@@ -18,6 +19,8 @@ exports[`render correctly with proper component and props 1`] = `
             aria-controls="ql-picker-options-0"
             aria-expanded="false"
             class="ql-picker-label"
+            data-label="Normal"
+            data-value="false"
             role="button"
             tabindex="0"
           >
@@ -45,24 +48,29 @@ exports[`render correctly with proper component and props 1`] = `
           >
             <span
               class="ql-picker-item"
+              data-label="Heading 1"
               data-value="1"
               role="button"
               tabindex="0"
             />
             <span
               class="ql-picker-item"
+              data-label="Heading 2"
               data-value="2"
               role="button"
               tabindex="0"
             />
             <span
               class="ql-picker-item"
+              data-label="Heading 3"
               data-value="3"
               role="button"
               tabindex="0"
             />
             <span
               class="ql-picker-item ql-selected"
+              data-label="Normal"
+              data-value="false"
               role="button"
               tabindex="0"
             />
@@ -74,16 +82,25 @@ exports[`render correctly with proper component and props 1`] = `
         >
           <option
             value="1"
-          />
+          >
+            Heading 1
+          </option>
           <option
             value="2"
-          />
+          >
+            Heading 2
+          </option>
           <option
             value="3"
-          />
+          >
+            Heading 3
+          </option>
           <option
-            selected="selected"
-          />
+            selected=""
+            value="false"
+          >
+            Normal
+          </option>
         </select>
       </span>
       <span
@@ -377,42 +394,46 @@ exports[`render correctly with proper component and props 1`] = `
       </span>
     </div>
     <div
-      class="ql-container ql-snow"
+      class="quill "
     >
       <div
-        class="ql-editor"
-        contenteditable="true"
-        data-gramm="false"
+        class="ql-container ql-snow"
       >
-        <p>
-          Hello world!
-        </p>
-      </div>
-      <div
-        class="ql-clipboard"
-        contenteditable="true"
-        tabindex="-1"
-      />
-      <div
-        class="ql-tooltip ql-hidden"
-      >
-        <a
-          class="ql-preview"
-          href="about:blank"
-          target="_blank"
+        <div
+          class="ql-editor"
+          contenteditable="true"
+          data-gramm="false"
+        >
+          <p>
+            Hello world!
+          </p>
+        </div>
+        <div
+          class="ql-clipboard"
+          contenteditable="true"
+          tabindex="-1"
         />
-        <input
-          data-formula="e=mc^2"
-          data-link="https://quilljs.com"
-          data-video="Embed URL"
-          type="text"
-        />
-        <a
-          class="ql-action"
-        />
-        <a
-          class="ql-remove"
-        />
+        <div
+          class="ql-tooltip ql-hidden"
+        >
+          <a
+            class="ql-preview"
+            href="about:blank"
+            target="_blank"
+          />
+          <input
+            data-formula="e=mc^2"
+            data-link="https://quilljs.com"
+            data-video="Embed URL"
+            type="text"
+          />
+          <a
+            class="ql-action"
+          />
+          <a
+            class="ql-remove"
+          />
+        </div>
       </div>
     </div>
   </div>
