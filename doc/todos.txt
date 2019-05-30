@@ -87,9 +87,9 @@ Update/create tests for:
   x DrawerButton.tsx
   x NotesListDrawer.tsx
   x NotesListContainer.tsx
-  NotesList.tsx
-  NodeTitle.tsx
-  Editor.tsx
+  x NotesList.tsx
+  x NodeTitle.tsx
+  x Editor.tsx
   editorContentObserver.ts
   Main.js
   index.js
