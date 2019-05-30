@@ -90,6 +90,6 @@ Update/create tests for:
   x NotesList.tsx
   x NodeTitle.tsx
   x Editor.tsx
-  editorContentObserver.ts
+  x editorContentObserver.ts
   Main.js
   index.js
