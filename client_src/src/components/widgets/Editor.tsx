@@ -48,7 +48,7 @@ const LargeEditorToolbar = () => (
 function Editor({ id, title, delta, content, dateCreated, dateModified, readOnly, minimalist, contentChangeHandler, options }: PropsT) {
   let editorToolbar, theme, modules;
   if (minimalist) {
-    editorToolbar = <div id="dnt__editor-toolbar"> </div>;
+    editorToolbar = <div id="dnt__editor-toolbar" />;
     theme = 'bubble';
     modules = {};
   } else {
