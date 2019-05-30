@@ -71,6 +71,24 @@ describe('save', () => {
     expect(mockedStorage.save).not.toBeCalled();
   });
 
+  it('should skip saving if loaded content has no title', async() => {
+    const editorContent = {
+      ...initialState.editorContent,
+      id: uuid(),
+      title: '',
+      dateCreated: Date.now() - 200000,
+      dateModified: Date.now() + 200000,
+      readOnly: false,
+    };
+
+    moduleToTest.inject({ user, storage: mockedStorage });
+
+    // Simulate content being previously loaded by calling save() more than once with the same content
+    await moduleToTest.save(editorContent);
+    await expect(moduleToTest.save(editorContent)).resolves.toBe(false);
+    expect(mockedStorage.save).not.toBeCalled();
+  });
+
   it('should save if previously loaded content was modified recently, i.e. dateModified > module startup datetime', async() => {
     const editorContent = {
       ...initialState.editorContent,
