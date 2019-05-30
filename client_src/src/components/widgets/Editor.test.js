@@ -59,7 +59,7 @@ it('should render quill editor w/ default snow theme and w/ expected props', () 
   expect(wrapper.find('LargeEditorToolbar').exists()).toBe(true);
 });
 
-it('should render minimalist editor w/ bubble theme but without toolbar', () => {
+it('should render minimalist editor w/ bubble theme but without visible toolbar', () => {
   const delta = new Delta([
     { insert: 'Hello world!' },
   ]);
@@ -91,5 +91,6 @@ it('should render minimalist editor w/ bubble theme but without toolbar', () => 
   expect(wrapper.find(ReactQuill).props()).toMatchObject(expectedProps);
   expect(wrapper.find('LargeEditorToolbar').exists()).toBe(false);
   expect(wrapper.find('div#dnt__editor-toolbar').exists()).toBe(true);
+  // expect no visible toolbar
   expect(wrapper.find('div#dnt__editor-toolbar').children()).toHaveLength(0);
 });
