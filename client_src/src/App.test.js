@@ -25,7 +25,7 @@ beforeAll(() => {
   });
 });
 
-it('renders without crashing', () => {
+it.skip('renders without crashing', () => {
   const store = createStore(() => initialState);
   const div = document.createElement('div');
   ReactDOM.render(<Provider store={ store }><App /></Provider>, div);
