@@ -91,5 +91,5 @@ Update/create tests for:
   x NodeTitle.tsx
   x Editor.tsx
   x editorContentObserver.ts
-  Main.js
+  x Main.js
   index.js
