@@ -71,11 +71,11 @@ store.dispatch(fetchNotesTreeThunkAction())
       return;
     }
     // TODO: Node selected should be from last session, not hardcoded.
-    const notesTree = selectNotesTreeTree(store.getState());
+    const tree = selectNotesTreeTree(store.getState());
     // Once tree loaded, select a node.
     const matches = find({
       getNodeKey,
-      treeData: notesTree,
+      treeData: tree,
       searchQuery: activeId,
       searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
     }).matches;
@@ -84,7 +84,18 @@ store.dispatch(fetchNotesTreeThunkAction())
       store.dispatch(selectNodeThunkAction({ id: activeId, path: matches[0].path }));
     }
     else {
-      store.dispatch(selectNodeThunkAction({ id: NONE_SELECTED, path: [NONE_SELECTED] }));
+      if (tree.length) {
+        const matches = find({
+          getNodeKey,
+          treeData: tree,
+          searchQuery: tree[0].id,
+          searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
+        }).matches;
+
+        store.dispatch(selectNodeThunkAction({ id: tree[0].id, path: matches[0].path }));
+      } else {
+        store.dispatch(selectNodeThunkAction({ id: NONE_SELECTED, path: [NONE_SELECTED] }));
+      }
     }
   })
   .catch(err => window.alert(err.message));

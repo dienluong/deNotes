@@ -16,7 +16,7 @@ import treeNodeRenderer from './tree-node-renderer';
 const mobileTheme = {
   nodeContentRenderer,
   treeNodeRenderer,
-  scaffoldBlockPxWidth: 45,
+  scaffoldBlockPxWidth: 20,
 };
 
 export default mobileTheme;

@@ -1,5 +1,5 @@
 $row-padding: 2px;
-$hover-padding: 3px;
+$hover-padding: 2px;
 .rowWrapper {
   padding: $row-padding $row-padding $row-padding 0;
   height: 100%;
@@ -92,19 +92,19 @@ $hover-padding: 3px;
   @extend %rowItem;
   position: relative;
   height: 100%;
-  padding: 0 5px 0 30px;
-  min-width: 230px;
-  flex: 1 0 auto;
+  //padding: 0 5px 0 30px;
+  //min-width: 230px;
+  //flex: 1 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background-color: white;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-  &:hover {
-    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-    box-shadow: 0 5px 10px rgba(0,0,0,0.19), 0 3px 3px rgba(0,0,0,0.23);
-  }
+  justify-content: flex-end;
+  background-color: transparent;
+  //box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  //transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+  //&:hover {
+  //  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+  //  box-shadow: 0 5px 10px rgba(0,0,0,0.19), 0 3px 3px rgba(0,0,0,0.23);
+  //}
 }
 
 .rowLabel {
@@ -112,11 +112,12 @@ $hover-padding: 3px;
   flex: 0 1 auto;
   padding-right: 20px;
   width: 100%;
+  overflow: hidden;
 }
 
 .rowToolbar {
   @extend %rowItem;
-  flex: 0 1 auto;
+  flex: 0 0 auto;
   display: flex;
 }
 
@@ -222,43 +223,44 @@ $hover-padding: 3px;
   display: inline-block;
 }
 
-.collapseButton,
-.expandButton {
-  appearance: none;
-  background: none;
-  border: none;
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  top: 50%;
-  padding-left: 120px;
-  cursor: pointer;
-  z-index: 1000;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
-  &:focus {outline:0;}
-}
-
-.collapseButton {
-  &:before {
-    content: "\25bc";
-  }
-}
-
-.expandButton {
-  &:before {
-    content:"\25b6";
-  }
-}
+// TODO Remove
+//.collapseButton,
+//.expandButton {
+//  appearance: none;
+//  background: none;
+//  border: none;
+//  position: absolute;
+//  width: 16px;
+//  height: 16px;
+//  top: 50%;
+//  padding-left: 120px;
+//  cursor: pointer;
+//  z-index: 1000;
+//  transform: translate(-50%, -50%);
+//  &:focus {outline:0;}
+//}
+//
+//.collapseButton {
+//  &:before {
+//    content: "\25bc";
+//  }
+//}
+//
+//.expandButton {
+//  &:before {
+//    content:"\25b6";
+//  }
+//}
 
 /**
  * Line for under a node with children
  */
-.lineChildren {
-  height: 100%;
-  display: inline-block;
-  position: absolute;
-}
+// TODO Remove
+//.lineChildren {
+//  height: 100%;
+//  display: inline-block;
+//  position: absolute;
+//}
 
 .contentContainer {
   width: 75%;

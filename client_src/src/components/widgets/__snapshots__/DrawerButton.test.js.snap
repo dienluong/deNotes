@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render button with material-ui Zoom and Fab components 1`] = `
+<div
+  className="some-css-class"
+>
+  <WithTheme(Zoom)
+    in={true}
+    unmountOnExit={true}
+  >
+    <WithStyles(Fab)
+      aria-label="notes list drawer"
+      color="primary"
+      onClick={[MockFunction]}
+      size="small"
+    >
+      <pure(MenuIcon) />
+    </WithStyles(Fab)>
+  </WithTheme(Zoom)>
+</div>
+`;

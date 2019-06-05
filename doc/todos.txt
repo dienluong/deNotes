@@ -24,7 +24,7 @@ x Upon deleting a folder, switch active node to parent.
 
 x Fix bug: quick successive notes creation skips saving of some notes.
 
-Implement local storage
+x Implement local storage
   x -> save to and load from local storage
   x -> delete from local storage
 
@@ -36,19 +36,41 @@ x Implement type checking
 
 x Sanitize (e.g. user input titles)!
 
-=> Minimal tree (better suited for mobile)
+x Minimal tree (better suited for mobile)
 
 x The active path must always lead to the selected child of the folder, of which the content listed by the tree. If the folder has no content, i.e. no child selected, then the last entry of the path must be empty string.  This way, we can consistently and reliably determine the current folder, whose content is listed by the tree, by simply slicing off the last entry of the active path.
 
 Do we really need a default root node?!
 
 REMOVE resolution in package.json that temp fix for https://github.com/facebook/jest/issues/7709
+  "resolutions": {
+    "write-file-atomic": "2.4.1"
+  },
+  rm -r node_modules
+  npx npm-force-resolutions
+  npm install
+
 x Set expanded = false for every folder node created.
 
-Make reducers pure functions by removing UUID creation, calls to Date.now(), etc.
-Define typescript type ActionPayload for action object with a payload property.
-Use state selectors instead of getState().<sliceOfState>
-Convert use of node type literals ('item' and 'folder') to enum or constants, or something similar.
+x Remove react-split-pane
+
+Warn on page unload when content unsaved:
+// Check for unsaved data
+window.onbeforeunload = function() {
+  if (change.length() > 0) {
+    return 'There are unsaved changes. Are you sure you want to leave?';
+  }
+}
+
+Revisit QuillJs bug
+    https://github.com/quilljs/quill/issues/1940
+    https://github.com/zenoamaro/react-quill/issues/309
+
+~ Make reducers pure functions by removing UUID creation, calls to Date.now(), etc.
+~ Define typescript type ActionPayload for action object with a payload property.
+~ Use state selectors instead of getState().<sliceOfState>
+~ Convert use of node type literals ('item' and 'folder') to enum or constants, or something similar.
+
 How to handle error (promises) from Observers?
 How to handle offline mode?  Do we let user create/modify notes offline and store them locally? How do we reconciliate the local data with the remote data once connection is back?
 Active node should be the persistent across sessions.
@@ -60,3 +82,14 @@ Upon creation of new note, auto select editor body.
 ? Deselecting note with empty content deletes the note.
 Retry save or load on failure
 recycle bin
+
+Update/create tests for:
+  x DrawerButton.tsx
+  x NotesListDrawer.tsx
+  x NotesListContainer.tsx
+  x NotesList.tsx
+  x NodeTitle.tsx
+  x Editor.tsx
+  x editorContentObserver.ts
+  x Main.js
+  index.js

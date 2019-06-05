@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Main correctly using EditorContainer, NotesListContainer and DrawerButton 1`] = `
+<div
+  className="dnt__main-root"
+>
+  <main
+    className="dnt__main-editor"
+  >
+    <WithStyles(Paper)
+      elevation={1}
+    >
+      <Connect(Editor)
+        minimalist={false}
+        options={
+          Object {
+            "placeholder": "Welcome to deNotes! v0.02",
+          }
+        }
+      />
+    </WithStyles(Paper)>
+  </main>
+  <nav
+    className="dnt__main-nav"
+  >
+    <Connect(NotesListDrawer)
+      drawerOpen={false}
+      drawerSide="left"
+      handleDrawerToggle={[Function]}
+      size="medium"
+    />
+  </nav>
+  <DrawerButton
+    className="dnt__main-nav-btn"
+    clickHandler={[Function]}
+    size="medium"
+    visible={true}
+  />
+</div>
+`;

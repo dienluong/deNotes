@@ -1,18 +1,59 @@
-/* NotesList styles */
 .dnt__notes-list {
-  height: 100%;
+  display: flex;
+  flex-flow: column;
+  min-height: 100vh;
+}
+
+.dnt__notes-list-appbar {
+  top: auto;
+  bottom: 0;
+}
+
+.dnt__notes-list-muitoolbar {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dnt__notes-list-muitoolbar--root {
+  align-items: center;
+  justify-content: center;
+}
+
+.dnt__notes-list-header {
+  /*direction: rtl;*/
 }
 
 .dnt__tree {
-
+  flex-grow : 1;
+  background-color: white;
+  /*position: fixed;*/
+  /*top: 0;*/
+  /*left: 0;*/
+  /*bottom: 0;*/
+  /*width: 400px;*/
+  /*height: 400px;*/
+  /*overflow-x: hidden;*/
+  /*overflow-y: auto;*/
 }
 
 .dnt__tree-node {
+  display: block;
+}
 
+/* https://stackoverflow.com/a/12671940 */
+.dnt__tree-node:after {
+  content: "\a0";
+  display: block;
+  line-height: 0;
+  border-top: 1px solid #eeeeee;
+}
+
+.dnt__tree-node--invisible {
+  display: none;
 }
 
 .dnt__tree-node--active {
-  box-shadow: 0 0 0 4px pink;
+  /*box-shadow: 0 0 0 4px pink;*/
 }
 
 .dnt__tree-node-btn {

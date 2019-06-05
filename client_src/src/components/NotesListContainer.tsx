@@ -1,45 +1,45 @@
 import { connect } from 'react-redux';
-import { selectTitlesFromActivePath, selectChildrenOfActiveFolder } from '../redux/selectors/index.js';
+import { selectTitlesFromActivePath, selectChildrenOfActiveFolder } from '../redux/selectors';
 import * as rootReducer from '../redux/reducers';
-import NotesList from './widgets/NotesList';
+import NotesListDrawer from './widgets/NotesListDrawer';
 import {
   selectNodeThunkAction,
-  navigatePathThunkAction,
   goToRootAction,
+  goUpAFolderAction,
   changeNotesFolderThunkAction,
   changeNodeTitleAction,
   deleteNodeThunkAction,
   addAndSelectNodeThunkAction,
 } from '../redux/actions/notesListActions';
 
-import { getNodeKey, collapseFolders, findDeepestFolder } from '../utils/treeUtils';
+import { findDeepestFolder, getNodeKey } from '../utils/treeUtils';
 import { nodeTypes } from '../utils/appCONSTANTS';
 
 // Types
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
-interface DispatchProps {
+interface MapDispatchPropsT {
   treeChangeHandler: (params: any) => AnyAction;
   nodeTitleChangeHandler: (params: { node: TreeNodeT, title: string, path: TreeNodePathT }) => AnyAction;
-  pathNavigatorClickHandler: (params: { idx: number }) => AnyAction;
   nodeClickHandler: (params: any) => AnyAction;
   nodeDoubleClickHandler: (params: any) => AnyAction;
   deleteNodeBtnHandler: (params: any) => Promise<AnyAction>;
-  addNoteBtnHandler: (params: any) => AnyAction;
-  toolbarHandlersMap: Map<string, () => AnyAction>;
-  toolbarHandlersMap2: Map<string, () => AnyAction>;
+  backBtnHandler: () => AnyAction;
+  homeBtnHandler: () => AnyAction;
+  toolbarHandlers: Array<() => AnyAction>;
+}
+interface MapStatePropsT {
+  tree: TreeNodeT[];
+  activeNode: ActiveNodeT;
+  rootViewOn: boolean;
+  currentFolderName: string;
 }
 
-export const TOOLBAR_LABELS = {
-  NEW_FOLDER: 'New Folder',
-  NEW_NOTE: 'New Note',
-  BACK_BUTTON: '<',
-};
+export const DEFAULT_ROOT_FOLDER_NAME = 'HOME';
 
-function mapStateToProps(state: AppStateT) {
+function mapStateToProps(state: AppStateT): MapStatePropsT {
   const activePathByTitles = selectTitlesFromActivePath(state);
 
-  // const activePath = translatePathToInfo({ notesTree: state.notesTree, path: state.activeNode.path, kind: 'title' });
   if (mapStateToProps.cache.notesTree !== rootReducer.selectNotesTree(state)) {
     console.log('~~~~~~~~~~~~~~~~ Notes Tree Changed');
     mapStateToProps.cache.notesTree = rootReducer.selectNotesTree(state);
@@ -68,18 +68,28 @@ function mapStateToProps(state: AppStateT) {
 
   const activeNode = rootReducer.selectActiveNode(state);
   // Get the siblings of the current active node (including itself). The children will be passed as prop to the component
-  const parent = findDeepestFolder(activeNode.path);
-  let children;
-  // Do not collapse folders if displaying root
-  if (parent && parent === -1) {
-    children = selectChildrenOfActiveFolder(state);
-  } else {
-    children = collapseFolders({ tree: selectChildrenOfActiveFolder(state) as TreeNodeT[] });
+  const parentIdx = findDeepestFolder(activeNode.path);
+  if (parentIdx === null) {
+    throw new Error(`Invalid active path: ${ activeNode.path }`);
   }
+
+  let children = selectChildrenOfActiveFolder(state) as TreeNodeT[];
+  let rootViewOn = false;
+  let folderName = '';
+  // If parent is root then...
+  if (parentIdx === -1) {
+    rootViewOn = true;
+    folderName = DEFAULT_ROOT_FOLDER_NAME;
+  } else {
+    rootViewOn = false;
+    folderName = activePathByTitles[parentIdx];
+  }
+
   return {
     tree: children,
     activeNode,
-    activePath: activePathByTitles,
+    rootViewOn,
+    currentFolderName: folderName,
   };
 }
 
@@ -87,7 +97,7 @@ function mapStateToProps(state: AppStateT) {
 // Memoization.
 mapStateToProps.cache = {} as { notesTree: any, activeNode: any, activePath: any, editorContent: any };
 
-function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>): DispatchProps {
+function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>): MapDispatchPropsT {
   function toolbarNewFolderBtnHandler() {
     return dispatch(addAndSelectNodeThunkAction({ kind: nodeTypes.FOLDER }));
   }
@@ -96,16 +106,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
     return dispatch(addAndSelectNodeThunkAction({ kind: nodeTypes.ITEM }));
   }
 
-  function toolbarBackBtnHandler() {
-    return dispatch(goToRootAction());
-  }
-
-  const toolbarHandlersMap = new Map();
-  toolbarHandlersMap.set(TOOLBAR_LABELS.NEW_FOLDER, toolbarNewFolderBtnHandler);
-  toolbarHandlersMap.set(TOOLBAR_LABELS.NEW_NOTE, toolbarNewNoteBtnHandler);
-  const toolbarHandlersMap2 = new Map();
-  toolbarHandlersMap2.set(TOOLBAR_LABELS.BACK_BUTTON, toolbarBackBtnHandler);
-
+  const toolbarHandlers = [toolbarNewFolderBtnHandler, toolbarNewNoteBtnHandler];
 
   return {
     treeChangeHandler(tree) {
@@ -116,8 +117,11 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
       // remember that NotesList only receives and renders a given leaf of the whole tree.
       return dispatch(changeNodeTitleAction({ node, title }));
     },
-    pathNavigatorClickHandler({ idx }) {
-      return dispatch(navigatePathThunkAction({ idx }));
+    backBtnHandler() {
+      return dispatch(goUpAFolderAction());
+    },
+    homeBtnHandler() {
+      return dispatch(goToRootAction());
     },
     nodeClickHandler({ id = '', path = [] }) {
       return dispatch(selectNodeThunkAction({ id, path }));
@@ -130,13 +134,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
       // remember that NotesList only receives and renders a given leaf of the whole tree.
       return dispatch(deleteNodeThunkAction({ node }));
     },
-    addNoteBtnHandler({ path } ) {
-      // We are not using the path received from the NotesList component because that path is not for the entire tree;
-      // remember that NotesList only receives and renders a given leaf of the whole tree.
-      return dispatch(addAndSelectNodeThunkAction({ kind: nodeTypes.ITEM }));
-    },
-    toolbarHandlersMap,
-    toolbarHandlersMap2,
+    toolbarHandlers,
   };
 }
 
@@ -144,5 +142,5 @@ function mergeProps(stateProps: object, dispatchProps: object, ownProps: object)
   return Object.assign({}, ownProps, stateProps, dispatchProps, { getNodeKey });
 }
 
-const NotesListContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(NotesList);
+const NotesListContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(NotesListDrawer);
 export default NotesListContainer;

@@ -1,0 +1,27 @@
+//https://github.com/webpack-contrib/sass-loader/issues/494
+@media (min-width: 600px) {
+  @import '~react-quill/dist/quill.snow';
+}
+@media (max-width: 599px) {
+  @import '~react-quill/dist/quill.bubble';
+}
+
+.dnt__editor {
+  min-height: 100vh;
+  padding: 0 10%;
+  background-image: url("../../images/papertexture.png");
+}
+
+#dnt__editor-toolbar {
+  padding: 4% 11%;
+  text-align: center;
+  min-height: 56px;
+}
+
+.ql-toolbar.ql-snow {
+  border: none;
+}
+
+.ql-container.ql-snow {
+  border: none;
+}

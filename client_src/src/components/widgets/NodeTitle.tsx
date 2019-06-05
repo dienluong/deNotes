@@ -5,13 +5,13 @@ import unescape from 'lodash-es/unescape';
 
 // Types
 import { FormEvent } from 'react';
-type PropsT<P> = {
-  node: TreeNodeT,
+type PropsT<N,P> = {
+  node: N,
   path: P,
-  onSubmit: (params: { title: any, node: TreeNodeT, path: P }) => unknown,
+  onSubmit: (params: { title: string, node: N, path: P }) => unknown,
 };
 
-function NodeTitle({ node, path, onSubmit: submitHandler }: PropsT<any>) {
+function NodeTitle({ node, path, onSubmit: submitHandler }: PropsT<TreeNodeT, any>) {
   function submit(event: FormEvent<HTMLElement>) {
     // event.currentTarget is <input> if the event was onBlur
     // but event.currentTarget is *not* <input>, but rather <form>, if the event was onSubmit
