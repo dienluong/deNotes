@@ -52,7 +52,7 @@ REMOVE resolution in package.json that temp fix for https://github.com/facebook/
 
 x Set expanded = false for every folder node created.
 
-Remove react-split-pane
+x Remove react-split-pane
 
 Warn on page unload when content unsaved:
 // Check for unsaved data
