@@ -36,7 +36,7 @@ exports[`should render header, tree and app bar properly in non-root-view mode 1
       </WithStyles(IconButton)>
     </WithStyles(Toolbar)>
   </WithStyles(AppBar)>
-  <DragDropContext(ReactSortableTree)
+  <DragDropContext(SortableTreeWithoutDndContext)
     className="tree dnt__tree"
     generateNodeProps={[Function]}
     getNodeKey={[Function]}
