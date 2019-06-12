@@ -1,8 +1,8 @@
 import clientMixin from './clientMixin';
-const moduleName = 'notes';
-
 // Types
 import { BaseClient } from '.';
+
+const moduleName = 'notes';
 
 function builder(privateClient: BaseClient) {
   privateClient.declareType(moduleName, {
