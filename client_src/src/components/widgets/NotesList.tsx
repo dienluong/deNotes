@@ -14,6 +14,7 @@ import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import NewNoteIcon from '@material-ui/icons/NoteAdd';
 import GoOutFolderIcon from '@material-ui/icons/ArrowBackIos';
 import GoInFolderIcon from '@material-ui/icons/ArrowForwardIos';
+import Collapse from '@material-ui/core/Collapse';
 
 // Types
 import { TreeItem } from 'react-sortable-tree';
@@ -127,6 +128,12 @@ function NotesList({
     tree = collapseFolders({ tree });
   }
 
+  // Appbar's Edit Mode state using React hooks
+  const [editMode, setEditMode] = React.useState(false);
+  function toggleEditMode() {
+    setEditMode(!editMode);
+  }
+
   return (
     <div className={ styles['dnt__notes-list'] }>
       <AppBar position="static" color="primary" className={ styles['dnt__notes-list-header'] }>
@@ -157,16 +164,33 @@ function NotesList({
         rowHeight={ rowHeight }
       />
       <div className={ styles['dnt__notes-list-appbar'] }>
-        <AppBar position="static" color="default">
-          <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
-            <IconButton aria-label={ 'New Folder' } color="primary" onClick={ toolbarHandlers[0] }>
-              <NewFolderIcon />
-            </IconButton>
-            <IconButton aria-label={ 'New Note' } color="primary" onClick={ toolbarHandlers[1] }>
-              <NewNoteIcon />
-            </IconButton>
-          </MuiToolbar>
-        </AppBar>
+        <Collapse in={ editMode }>
+          <AppBar position="static" color="secondary">
+            <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
+              <IconButton aria-label={ 'Delete' } color="primary" onClick={ () => { console.log('DELETE CLICKED')} }>
+                <Typography>DELETE</Typography>
+              </IconButton>
+              <IconButton aria-label={ 'Done' } color="primary" onClick={ () => toggleEditMode() }>
+                <Typography>DONE</Typography>
+              </IconButton>
+            </MuiToolbar>
+          </AppBar>
+        </Collapse>
+        <Collapse in={ !editMode }>
+          <AppBar position="static" color="default">
+            <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
+              <IconButton aria-label={ 'New Folder' } color="primary" onClick={ toolbarHandlers[0] }>
+                <NewFolderIcon />
+              </IconButton>
+              <IconButton aria-label={ 'Edit' } color="primary" onClick={ () => toggleEditMode() }>
+                <Typography>EDIT</Typography>
+              </IconButton>
+              <IconButton aria-label={ 'New Note' } color="primary" onClick={ toolbarHandlers[1] }>
+                <NewNoteIcon />
+              </IconButton>
+            </MuiToolbar>
+          </AppBar>
+        </Collapse>
       </div>
     </div>
   );
