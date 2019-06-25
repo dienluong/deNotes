@@ -14,6 +14,7 @@ import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import NewNoteIcon from '@material-ui/icons/NoteAdd';
 import GoOutFolderIcon from '@material-ui/icons/ArrowBackIos';
 import GoInFolderIcon from '@material-ui/icons/ArrowForwardIos';
+import Checkbox from '@material-ui/core/Checkbox';
 import Collapse from '@material-ui/core/Collapse';
 
 // Types
@@ -22,6 +23,8 @@ import { nodeTypes } from '../../utils/appCONSTANTS';
 export type PropsT = {
   tree: TreeNodeT[],
   size: 'small' | 'medium',
+  editMode: boolean,
+  setEditMode: (arg: boolean) => unknown;
   activeNode: ActiveNodeT,
   rootViewOn: boolean,
   currentFolderName: string,
@@ -43,6 +46,8 @@ const _DEFAULT_ROW_HEIGHT = 62;
 function NotesList({
   tree,
   size,
+  editMode,
+  setEditMode,
   activeNode,
   rootViewOn,
   currentFolderName,
@@ -89,22 +94,25 @@ function NotesList({
   }
 
   function _buildNodeButtons({ node, path }: { node: TreeNodeT, path: TreeNodePathT }) {
-    const buttons = [
-      <button
-        className={ styles['dnt__tree-node-btn'] }
-        onClick={ (event) => {
-          event.stopPropagation();
-          deleteNodeBtnHandler({ node, path });
-        }}
-      >
-        x
-      </button>,
-    ];
+    const buttons = [];
+      /*<button*/
+        // className={ styles['dnt__tree-node-btn'] }
+        // onClick={ (event) => {
+        //   event.stopPropagation();
+        //   deleteNodeBtnHandler({ node, path });
+        // }}
+      // >
+      //   x
+      // </button>,
 
     if (Array.isArray(node.children)) {
-      buttons.unshift(<GoInFolderIcon />);
       if (node.children.length) {
-        buttons.unshift(<span>{ node.children.length }</span>);
+        buttons.push(<Typography>{ node.children.length }</Typography>);
+      }
+      if (editMode) {
+        buttons.push(<Checkbox value={ node.id } inputProps={{ 'aria-label': `${node.id} checkbox` }} />);
+      } else {
+        buttons.push(<GoInFolderIcon />);
       }
     }
 
@@ -128,8 +136,6 @@ function NotesList({
     tree = collapseFolders({ tree });
   }
 
-  // Appbar's Edit Mode state using React hooks
-  const [editMode, setEditMode] = React.useState(false);
   function toggleEditMode() {
     setEditMode(!editMode);
   }
