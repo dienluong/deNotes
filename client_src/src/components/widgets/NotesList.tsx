@@ -105,13 +105,16 @@ function NotesList({
       //   x
       // </button>,
 
-    if (Array.isArray(node.children)) {
-      if (node.children.length) {
+    if (node.type === nodeTypes.FOLDER) {
+      if (Array.isArray(node.children) && node.children.length) {
         buttons.push(<Typography>{ node.children.length }</Typography>);
       }
-      if (editMode) {
-        buttons.push(<Checkbox value={ node.id } inputProps={{ 'aria-label': `${node.id} checkbox` }} />);
-      } else {
+    }
+
+    if (editMode) {
+      buttons.push(<Checkbox value={ node.id } inputProps={{ 'aria-label': `${node.id} checkbox` }} />);
+    } else {
+      if (node.type === nodeTypes.FOLDER) {
         buttons.push(<GoInFolderIcon />);
       }
     }
