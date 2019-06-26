@@ -12,8 +12,8 @@ import IconButton from '@material-ui/core/IconButton';
 import HomeIcon from '@material-ui/icons/Home';
 import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import NewNoteIcon from '@material-ui/icons/NoteAdd';
-import GoOutFolderIcon from '@material-ui/icons/ArrowBackIos';
-import GoInFolderIcon from '@material-ui/icons/ArrowForwardIos';
+import GoOutFolderIcon from '@material-ui/icons/ArrowBackIosOutlined';
+import GoInFolderIcon from '@material-ui/icons/ArrowForwardIosOutlined';
 import Checkbox from '@material-ui/core/Checkbox';
 import Collapse from '@material-ui/core/Collapse';
 
@@ -139,10 +139,6 @@ function NotesList({
     tree = collapseFolders({ tree });
   }
 
-  function toggleEditMode() {
-    setEditMode(!editMode);
-  }
-
   return (
     <div className={ styles['dnt__notes-list'] }>
       <AppBar position="static" color="primary" className={ styles['dnt__notes-list-header'] }>
@@ -179,7 +175,7 @@ function NotesList({
               <IconButton aria-label={ 'Delete' } color="primary" onClick={ () => { console.log('DELETE CLICKED')} }>
                 <Typography>DELETE</Typography>
               </IconButton>
-              <IconButton aria-label={ 'Done' } color="primary" onClick={ () => toggleEditMode() }>
+              <IconButton aria-label={ 'Done' } color="primary" onClick={ () => setEditMode(false) }>
                 <Typography>DONE</Typography>
               </IconButton>
             </MuiToolbar>
@@ -191,7 +187,7 @@ function NotesList({
               <IconButton aria-label={ 'New Folder' } color="primary" onClick={ toolbarHandlers[0] }>
                 <NewFolderIcon />
               </IconButton>
-              <IconButton aria-label={ 'Edit' } color="primary" onClick={ () => toggleEditMode() }>
+              <IconButton aria-label={ 'Edit' } color="primary" onClick={ () => setEditMode(true) }>
                 <Typography>EDIT</Typography>
               </IconButton>
               <IconButton aria-label={ 'New Note' } color="primary" onClick={ toolbarHandlers[1] }>
