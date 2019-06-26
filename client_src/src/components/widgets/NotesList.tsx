@@ -24,7 +24,6 @@ export type PropsT = {
   tree: TreeNodeT[],
   size: 'small' | 'medium',
   editMode: boolean,
-  setEditMode: (arg: boolean) => unknown;
   activeNode: ActiveNodeT,
   rootViewOn: boolean,
   currentFolderName: string,
@@ -35,6 +34,8 @@ export type PropsT = {
   deleteNodeBtnHandler: (params: { node: TreeNodeT, path: TreeNodePathT }) => unknown,
   backBtnHandler: (...args: any) => any,
   homeBtnHandler: (...args: any) => any,
+  editBtnHandler: (...args: any) => any;
+  editDoneBtnHandler: (...args: any) => any;
   toolbarHandlers: Array<(...args: any) => any>,
   getNodeKey: (...args: any) => any,
 };
@@ -47,7 +48,6 @@ function NotesList({
   tree,
   size,
   editMode,
-  setEditMode,
   activeNode,
   rootViewOn,
   currentFolderName,
@@ -58,6 +58,8 @@ function NotesList({
   deleteNodeBtnHandler,
   backBtnHandler,
   homeBtnHandler,
+  editBtnHandler,
+  editDoneBtnHandler,
   toolbarHandlers,
   getNodeKey,
 }: PropsT) {
@@ -175,7 +177,7 @@ function NotesList({
               <IconButton aria-label={ 'Delete' } color="primary" onClick={ () => { console.log('DELETE CLICKED')} }>
                 <Typography>DELETE</Typography>
               </IconButton>
-              <IconButton aria-label={ 'Done' } color="primary" onClick={ () => setEditMode(false) }>
+              <IconButton aria-label={ 'Done' } color="primary" onClick={ editDoneBtnHandler }>
                 <Typography>DONE</Typography>
               </IconButton>
             </MuiToolbar>
@@ -187,7 +189,7 @@ function NotesList({
               <IconButton aria-label={ 'New Folder' } color="primary" onClick={ toolbarHandlers[0] }>
                 <NewFolderIcon />
               </IconButton>
-              <IconButton aria-label={ 'Edit' } color="primary" onClick={ () => setEditMode(true) }>
+              <IconButton aria-label={ 'Edit' } color="primary" onClick={ editBtnHandler }>
                 <Typography>EDIT</Typography>
               </IconButton>
               <IconButton aria-label={ 'New Note' } color="primary" onClick={ toolbarHandlers[1] }>

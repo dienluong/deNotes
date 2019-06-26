@@ -12,6 +12,7 @@ const rootReducer = reduceReducers(mainReducer, reducedReducer);
 export default rootReducer;
 export const selectNotesTree = (state: AppStateT) => state.notesTree;
 export const selectNotesTreeTree = (state: AppStateT) => fromNotesTree.selectTree(state.notesTree);
+export const selectNotesTreeEditMode = (state: AppStateT) => fromNotesTree.selectEditMode(state.notesTree);
 export const selectActiveNode = (state: AppStateT) => state.activeNode;
 export const selectActiveNodePath = (state: AppStateT) => fromActiveNode.selectPath(state.activeNode);
 export const selectActiveNodeId = (state: AppStateT) => fromActiveNode.selectId(state.activeNode);

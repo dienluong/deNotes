@@ -25,6 +25,7 @@ const initialState: AppStateT = {
   notesTree: {
     id: uuid(),
     tree: [_rootNode],
+    editMode: false,
     dateCreated: now,
     dateModified: now,
   },

@@ -342,6 +342,7 @@ export function fetchNotesTreeThunkAction()
         const defaultNotesTree: NotesTreeT = {
           tree: [],
           id: uuid(),
+          editMode: false,
           dateCreated: now,
           dateModified: now,
         };
@@ -403,6 +404,27 @@ export function goToRootAction(): AnyAction {
     type: notesListActionTypes.GO_TO_ROOT,
     payload: {},
   };
+}
+
+export function enterEditModeAction(): AnyAction {
+  return {
+    type: notesListActionTypes.SET_EDIT_MODE,
+    payload: { value: true },
+  }
+}
+
+export function exitEditModeAction(): AnyAction {
+  return {
+    type: notesListActionTypes.SET_EDIT_MODE,
+    payload: { value: false },
+  }
+}
+
+export function drawerCloseAction(): AnyAction {
+  return {
+    type: notesListActionTypes.SET_EDIT_MODE,
+    payload: { value: false },
+  }
 }
 
 /**

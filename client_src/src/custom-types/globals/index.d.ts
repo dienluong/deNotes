@@ -32,6 +32,7 @@ declare global {
   interface NotesTreeT {
     id: string;
     tree: TreeNodeT[];
+    editMode: boolean;
     dateCreated: number;
     dateModified: number;
   }

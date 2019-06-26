@@ -9,15 +9,14 @@ type PropsT = {
   drawerOpen: boolean,
   drawerSide: 'left' | 'right',
   size: 'small' | 'medium',
-  handleDrawerToggle: () => void,
+  handleDrawerToggle: () => unknown,
+  drawerCloseHandler: () => unknown,
 }
 
-function NotesListDrawer({ drawerOpen, drawerSide, size, handleDrawerToggle, ...otherProps }: PropsT & NotesListPropsT) {
-  // NotesList's Edit Mode state using React hooks
-  const [editMode, setEditMode] = React.useState(false);
+function NotesListDrawer({ drawerOpen, drawerSide, size, handleDrawerToggle, drawerCloseHandler, ...otherProps }: PropsT & NotesListPropsT) {
 
   function onCloseHandler() {
-    setEditMode(false);
+    drawerCloseHandler();
     handleDrawerToggle();
   }
 
@@ -35,7 +34,7 @@ function NotesListDrawer({ drawerOpen, drawerSide, size, handleDrawerToggle, ...
             paper: size !== 'small' ? styles['dnt__notes-list-drawer-paper'] : styles['dnt__notes-list-drawer-paper--small'],
           }}
         >
-          <NotesList size={ size } editMode={ editMode } setEditMode={ setEditMode } { ...otherProps } />
+          <NotesList size={ size } { ...otherProps } />
         </Drawer>
     </React.Fragment>
   );

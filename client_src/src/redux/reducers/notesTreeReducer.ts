@@ -174,6 +174,15 @@ export default function notesTreeReducer(state: NotesTreeT = initialTree, action
         notesTree: state,
         ...action.payload,
       });
+    case notesListActionTypes.SET_EDIT_MODE:
+      if (action.payload.value === state.editMode) {
+        return state;
+      } else {
+        return {
+          ...state,
+          editMode: action.payload.value,
+        };
+      }
     default:
       if (process.env.REACT_APP_DEBUG) {
         console.log(`Current notesTree: ${JSON.stringify(state)}`);
@@ -186,3 +195,4 @@ export const selectTree = (state: NotesTreeT) => state.tree;
 export const selectTreeId = (state: NotesTreeT) => state.id;
 export const selectDateModified = (state: NotesTreeT) => state.dateModified;
 export const selectDateCreated = (state: NotesTreeT) => state.dateCreated;
+export const selectEditMode = (state: NotesTreeT) => state.editMode;
