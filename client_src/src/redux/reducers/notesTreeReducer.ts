@@ -147,6 +147,50 @@ function _changeTreeFolder({ notesTree, folder, activePath, now }: { notesTree: 
   }
 }
 
+function _toggleSelected({ notesTree, nodeId, path }: { notesTree: NotesTreeT, nodeId: TreeNodeT['id'], path: TreeNodePathT })
+  : NotesTreeT {
+  // const nodesFound: Array<{ node: TreeItem, path: (string|number)[], treeIndex: number }> = find({
+  //   getNodeKey,
+  //   treeData: notesTree.tree,
+  //   searchQuery: nodeId,
+  //   searchMethod: ({ node: treeNode, searchQuery }) => searchQuery === treeNode.id,
+  // }).matches;
+
+  const targetNodeInfo = getNodeAtPath({
+    getNodeKey,
+    treeData: notesTree.tree,
+    path,
+    ignoreCollapsed: false,
+  });
+
+  if (targetNodeInfo && targetNodeInfo.node && targetNodeInfo.node.id === nodeId) {
+    const targetNode = targetNodeInfo.node as TreeNodeT;
+    // Cannot use _createNode for creating a new node (with a new ID) as it is breaking the tree.
+    // This is because react-sortable-tree treats it as a new standalone node due to new ID (not reusing the ID of the old node)
+    // So using object spread to keep the ID intact and only change the 'selected' property
+    const modifiedNode: TreeNodeT = { ...targetNode, selected: !targetNode.selected };
+    let newTree : NotesTreeT['tree'] = notesTree.tree;
+    try {
+      newTree = changeNodeAtPath({
+        treeData: notesTree.tree,
+        path,
+        newNode: modifiedNode,
+        getNodeKey,
+        ignoreCollapsed: false,
+      }) as TreeNodeT[];
+    } catch(error) {
+      return notesTree;
+    }
+
+    return {
+      ...notesTree,
+      tree: newTree,
+    };
+  } else {
+    return notesTree;
+  }
+}
+
 export default function notesTreeReducer(state: NotesTreeT = initialTree, action: AnyAction)
   : NotesTreeT {
   if (!action.payload) {
@@ -183,6 +227,11 @@ export default function notesTreeReducer(state: NotesTreeT = initialTree, action
           editMode: action.payload.value,
         };
       }
+    case notesListActionTypes.EDIT_MODE_SELECT_NODE:
+      return _toggleSelected({
+        notesTree: state,
+        ...action.payload,
+      });
     default:
       if (process.env.REACT_APP_DEBUG) {
         console.log(`Current notesTree: ${JSON.stringify(state)}`);

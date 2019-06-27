@@ -81,14 +81,7 @@ export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path:
         }
       };
     }
-    // Immediately save currently opened note
-    const currentEditorContent = rootReducer.selectEditorContent(getState());
-    if (currentEditorContent.id) {
-      _editorContentStorage.save(currentEditorContent)
-        .catch((err: Error) => { console.log(err); }); // TODO: log error?
-    }
 
-    let returnVal;
     const parentIdx = findDeepestFolder(rootReducer.selectActiveNodePath(getState()));
     if (parentIdx === null) {
       return {
@@ -98,8 +91,40 @@ export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path:
         },
       };
     }
+
+    // If selection was done during tree Edit Mode
+    if (rootReducer.selectNotesTreeEditMode(getState())) {
+      if (parentIdx === -1) {
+        // If at root folder, then use received path because that path is the absolute path to the selected node
+        return dispatch({
+          type: notesListActionTypes.EDIT_MODE_SELECT_NODE,
+          payload: {
+            nodeId: id,
+            path,
+          },
+        });
+      } else {
+        // If not at root, then path received is only partial. So construct absolute path to selected node w/ the current active path.
+        return dispatch({
+          type: notesListActionTypes.EDIT_MODE_SELECT_NODE,
+          payload: {
+            nodeId: id,
+            path: [...rootReducer.selectActiveNodePath(getState()).slice(0, parentIdx + 1), id],
+          },
+        });
+      }
+    }
+
+    // ---> Section below is for selection done outside of tree Edit Mode
+    // Immediately save currently opened note
+    const currentEditorContent = rootReducer.selectEditorContent(getState());
+    if (currentEditorContent.id) {
+      _editorContentStorage.save(currentEditorContent)
+        .catch((err: Error) => { console.log(err); }); // TODO: log error?
+    }
+
+    let returnVal;
     // If at root folder, then use received path because that path is the absolute path to the selected node
-    // If not at root, then construct the path to the selected node from the current active path.
     if (parentIdx === -1) {
       returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
@@ -109,6 +134,7 @@ export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path:
         },
       });
     } else {
+      // If not at root, then path received is only partial. So construct absolute path to selected node w/ the current active path.
       returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
         payload: {
