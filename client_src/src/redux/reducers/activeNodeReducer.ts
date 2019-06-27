@@ -90,7 +90,6 @@ function _changeActiveNodeOnSelect({ currentActive, nodeId, path }: { currentAct
     return currentActive;
   }
 
-  // Expect to receive a path when change to active node was not triggered by user event, for example on load of state from storage.
   if (Array.isArray(path) && path.length) {
     // A proper path must end with the ID of the active node
     if (path[path.length - 1] === nodeId) {
