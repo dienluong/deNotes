@@ -71,6 +71,7 @@ export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().
     get id() {
       return `${this.type}${ID_DELIMITER}${this.uniqid}`;
     },
+    selected: false,
   };
 
   if (type === nodeTypes.FOLDER) {

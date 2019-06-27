@@ -2,7 +2,7 @@ import { nodeTypes } from '../../utils/appCONSTANTS';
 
 const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
-export const mockedTree = [
+export const mockedTree: TreeNodeT[] = [
   {
     title: 'folder root0',
     subtitle: '',
@@ -11,6 +11,7 @@ export const mockedTree = [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
+    selected: false,
     expanded: true,
     children: [
       {
@@ -21,6 +22,7 @@ export const mockedTree = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
+        selected: false,
       },
       {
         title: 'note root0.children1',
@@ -30,6 +32,7 @@ export const mockedTree = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
+        selected: false,
       },
       {
         title: 'folder root0.children2',
@@ -39,6 +42,7 @@ export const mockedTree = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
+        selected: false,
         expanded: true,
         children: [
           {
@@ -49,6 +53,7 @@ export const mockedTree = [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
+            selected: false,
           },
           {
             title: 'note root0.children2.children1',
@@ -58,6 +63,7 @@ export const mockedTree = [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
+            selected: false,
           },
         ],
       },
@@ -69,6 +75,7 @@ export const mockedTree = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
+        selected: false,
         expanded: true,
         children: [],
       },
@@ -82,6 +89,7 @@ export const mockedTree = [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
+    selected: false,
   },
   {
     title: 'folder root2',
@@ -91,6 +99,7 @@ export const mockedTree = [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
+    selected: false,
     expanded: true,
     children: [],
   },

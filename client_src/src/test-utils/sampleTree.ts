@@ -1,7 +1,7 @@
 import uuid from 'uuid/v1';
 import { nodeTypes } from '../utils/appCONSTANTS';
 
-function randomDateString(start, end) {
+function randomDateString(start: Date, end: Date) {
   return new Date(start.getTime() +
     Math.random() * (end.getTime() - start.getTime())).toLocaleString();
 }
@@ -9,8 +9,7 @@ function randomDateString(start, end) {
 const start = new Date(2018, 5, 1);
 const end = new Date();
 const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
-
-export default [
+const sampleTree: Array<TreeNodeT> = [
   {
     title: 'react-ui-tree',
     subtitle: randomDateString(start, end),
@@ -18,6 +17,7 @@ export default [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
+    selected: false,
     type: nodeTypes.FOLDER,
     expanded: true,
     children: [
@@ -28,6 +28,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
+        selected: false,
         type: nodeTypes.FOLDER,
         children: [
           {
@@ -37,6 +38,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
+            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -46,6 +48,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
+            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -55,6 +58,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
+            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -64,6 +68,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
+            selected: false,
             type: nodeTypes.ITEM,
           },
         ],
@@ -75,6 +80,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
+        selected: false,
         type: nodeTypes.FOLDER,
         children: [
           {
@@ -84,6 +90,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
+            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -93,6 +100,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
+            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -102,6 +110,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
+            selected: false,
             type: nodeTypes.ITEM,
           },
         ],
@@ -113,6 +122,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
+        selected: false,
         type: nodeTypes.FOLDER,
         children: [
           {
@@ -122,6 +132,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
+            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -131,6 +142,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
+            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -140,6 +152,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
+            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -149,6 +162,7 @@ export default [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
+            selected: false,
             type: nodeTypes.ITEM,
           },
         ],
@@ -160,6 +174,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
+        selected: false,
         type: nodeTypes.ITEM,
       },
       {
@@ -169,6 +184,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
+        selected: false,
         type: nodeTypes.ITEM,
       },
       {
@@ -178,6 +194,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
+        selected: false,
         type: nodeTypes.ITEM,
       },
       {
@@ -187,6 +204,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
+        selected: false,
         type: nodeTypes.ITEM,
       },
       {
@@ -196,6 +214,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
+        selected: false,
         type: nodeTypes.ITEM,
       },
       {
@@ -205,6 +224,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
+        selected: false,
         type: nodeTypes.ITEM,
       },
       {
@@ -214,6 +234,7 @@ export default [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
+        selected: false,
         type: nodeTypes.ITEM,
       },
     ],
@@ -225,6 +246,7 @@ export default [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
+    selected: false,
     type: nodeTypes.FOLDER,
     children: [],
   },
@@ -235,7 +257,9 @@ export default [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
+    selected: false,
     type: nodeTypes.ITEM,
   },
 ];
 
+export default sampleTree;

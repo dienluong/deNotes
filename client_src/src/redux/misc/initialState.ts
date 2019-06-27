@@ -12,6 +12,7 @@ const _rootNode: TreeNodeT = {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
     type: nodeTypes.FOLDER,
+    selected: false,
     expanded: true,
     children: [],
 };

@@ -43,6 +43,7 @@ declare global {
     uniqid: string;
     id: string;
     type: NodeTypeT;
+    selected: boolean;
     expanded?: boolean;
     children?: TreeNodeT[];
   }
