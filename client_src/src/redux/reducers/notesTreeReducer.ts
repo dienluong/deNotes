@@ -24,9 +24,6 @@ function _changeNodeTitle({ notesTree, title, node, now }: { notesTree: NotesTre
   }).matches;
 
   if (nodesFound.length) {
-    // Cannot use _createNode for creating a new node (with a new ID) as it is breaking the tree.
-    // This is because react-sortable-tree treats it as a new standalone node due to new ID (not reusing the ID of the old node)
-    // So using { ...node, title } to keep the ID intact and only change the title
     const modifiedNode: TreeNodeT = { ...node, title };
     let newTree : NotesTreeT['tree'] = notesTree.tree;
     try {
@@ -149,6 +146,8 @@ function _changeTreeFolder({ notesTree, folder, activePath, now }: { notesTree: 
 
 function _toggleSelected({ notesTree, nodeId, path }: { notesTree: NotesTreeT, nodeId: TreeNodeT['id'], path: TreeNodePathT })
   : NotesTreeT {
+
+  // TODO: Remove
   // const nodesFound: Array<{ node: TreeItem, path: (string|number)[], treeIndex: number }> = find({
   //   getNodeKey,
   //   treeData: notesTree.tree,
@@ -165,9 +164,6 @@ function _toggleSelected({ notesTree, nodeId, path }: { notesTree: NotesTreeT, n
 
   if (targetNodeInfo && targetNodeInfo.node && targetNodeInfo.node.id === nodeId) {
     const targetNode = targetNodeInfo.node as TreeNodeT;
-    // Cannot use _createNode for creating a new node (with a new ID) as it is breaking the tree.
-    // This is because react-sortable-tree treats it as a new standalone node due to new ID (not reusing the ID of the old node)
-    // So using object spread to keep the ID intact and only change the 'selected' property
     const modifiedNode: TreeNodeT = { ...targetNode, selected: !targetNode.selected };
     let newTree : NotesTreeT['tree'] = notesTree.tree;
     try {
