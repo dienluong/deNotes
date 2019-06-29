@@ -33,6 +33,7 @@ declare global {
     id: string;
     tree: TreeNodeT[];
     editMode: boolean;
+    editModeSelectedNodes: (TreeNodeT['id'])[];
     dateCreated: number;
     dateModified: number;
   }
@@ -43,7 +44,6 @@ declare global {
     uniqid: string;
     id: string;
     type: NodeTypeT;
-    selected: boolean;
     expanded?: boolean;
     children?: TreeNodeT[];
   }

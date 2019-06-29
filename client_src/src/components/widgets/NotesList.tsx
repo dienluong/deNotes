@@ -14,7 +14,8 @@ import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import NewNoteIcon from '@material-ui/icons/NoteAdd';
 import GoOutFolderIcon from '@material-ui/icons/ArrowBackIosOutlined';
 import GoInFolderIcon from '@material-ui/icons/ArrowForwardIosOutlined';
-import Checkbox from '@material-ui/core/Checkbox';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import Collapse from '@material-ui/core/Collapse';
 
 // Types
@@ -24,6 +25,7 @@ export type PropsT = {
   tree: TreeNodeT[],
   size: 'small' | 'medium',
   editMode: boolean,
+  editModeSelectedNodes: string[],
   activeNode: ActiveNodeT,
   rootViewOn: boolean,
   currentFolderName: string,
@@ -48,6 +50,7 @@ function NotesList({
   tree,
   size,
   editMode,
+  editModeSelectedNodes,
   activeNode,
   rootViewOn,
   currentFolderName,
@@ -97,6 +100,8 @@ function NotesList({
 
   function _buildNodeButtons({ node, path }: { node: TreeNodeT, path: TreeNodePathT }) {
     const buttons = [];
+
+    // TODO: remove
       /*<button*/
         // className={ styles['dnt__tree-node-btn'] }
         // onClick={ (event) => {
@@ -114,7 +119,14 @@ function NotesList({
     }
 
     if (editMode) {
-      buttons.push(<Checkbox value={ node.id } inputProps={{ 'aria-label': `${node.id} checkbox` }} />);
+      // TODO Remove
+      // buttons.push(<Checkbox value={ node.id } inputProps={{ 'aria-label': `${node.id} checkbox` }} />);
+
+      if (editModeSelectedNodes.includes(node.id)) {
+        buttons.push(<CheckBoxIcon color="secondary" />);
+      } else {
+        buttons.push(<CheckBoxOutlineBlankIcon />);
+      }
     } else {
       if (node.type === nodeTypes.FOLDER) {
         buttons.push(<GoInFolderIcon />);

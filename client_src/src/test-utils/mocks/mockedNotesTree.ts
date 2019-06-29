@@ -11,7 +11,6 @@ export const mockedTree: TreeNodeT[] = [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
-    selected: false,
     expanded: true,
     children: [
       {
@@ -22,7 +21,6 @@ export const mockedTree: TreeNodeT[] = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        selected: false,
       },
       {
         title: 'note root0.children1',
@@ -32,7 +30,6 @@ export const mockedTree: TreeNodeT[] = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        selected: false,
       },
       {
         title: 'folder root0.children2',
@@ -42,7 +39,6 @@ export const mockedTree: TreeNodeT[] = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        selected: false,
         expanded: true,
         children: [
           {
@@ -53,7 +49,6 @@ export const mockedTree: TreeNodeT[] = [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            selected: false,
           },
           {
             title: 'note root0.children2.children1',
@@ -63,7 +58,6 @@ export const mockedTree: TreeNodeT[] = [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            selected: false,
           },
         ],
       },
@@ -75,7 +69,6 @@ export const mockedTree: TreeNodeT[] = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        selected: false,
         expanded: true,
         children: [],
       },
@@ -89,7 +82,6 @@ export const mockedTree: TreeNodeT[] = [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
-    selected: false,
   },
   {
     title: 'folder root2',
@@ -99,7 +91,6 @@ export const mockedTree: TreeNodeT[] = [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
-    selected: false,
     expanded: true,
     children: [],
   },

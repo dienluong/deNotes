@@ -31,9 +31,6 @@ function builder(privateClient: BaseClient) {
             'type': {
               'type': 'string',
             },
-            'selected': {
-              'type': 'boolean',
-            },
             'expanded': {
               'type': 'boolean',
             },

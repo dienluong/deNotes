@@ -17,7 +17,6 @@ const sampleTree: Array<TreeNodeT> = [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
-    selected: false,
     type: nodeTypes.FOLDER,
     expanded: true,
     children: [
@@ -28,7 +27,6 @@ const sampleTree: Array<TreeNodeT> = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        selected: false,
         type: nodeTypes.FOLDER,
         children: [
           {
@@ -38,7 +36,6 @@ const sampleTree: Array<TreeNodeT> = [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -48,7 +45,6 @@ const sampleTree: Array<TreeNodeT> = [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -58,7 +54,6 @@ const sampleTree: Array<TreeNodeT> = [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -68,7 +63,6 @@ const sampleTree: Array<TreeNodeT> = [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            selected: false,
             type: nodeTypes.ITEM,
           },
         ],
@@ -80,7 +74,6 @@ const sampleTree: Array<TreeNodeT> = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        selected: false,
         type: nodeTypes.FOLDER,
         children: [
           {
@@ -90,7 +83,6 @@ const sampleTree: Array<TreeNodeT> = [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -100,7 +92,6 @@ const sampleTree: Array<TreeNodeT> = [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -110,7 +101,6 @@ const sampleTree: Array<TreeNodeT> = [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            selected: false,
             type: nodeTypes.ITEM,
           },
         ],
@@ -122,7 +112,6 @@ const sampleTree: Array<TreeNodeT> = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        selected: false,
         type: nodeTypes.FOLDER,
         children: [
           {
@@ -132,7 +121,6 @@ const sampleTree: Array<TreeNodeT> = [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -142,7 +130,6 @@ const sampleTree: Array<TreeNodeT> = [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -152,7 +139,6 @@ const sampleTree: Array<TreeNodeT> = [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            selected: false,
             type: nodeTypes.ITEM,
           },
           {
@@ -162,7 +148,6 @@ const sampleTree: Array<TreeNodeT> = [
             get id() {
               return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
             },
-            selected: false,
             type: nodeTypes.ITEM,
           },
         ],
@@ -174,7 +159,6 @@ const sampleTree: Array<TreeNodeT> = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        selected: false,
         type: nodeTypes.ITEM,
       },
       {
@@ -184,7 +168,6 @@ const sampleTree: Array<TreeNodeT> = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        selected: false,
         type: nodeTypes.ITEM,
       },
       {
@@ -194,7 +177,6 @@ const sampleTree: Array<TreeNodeT> = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        selected: false,
         type: nodeTypes.ITEM,
       },
       {
@@ -204,7 +186,6 @@ const sampleTree: Array<TreeNodeT> = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        selected: false,
         type: nodeTypes.ITEM,
       },
       {
@@ -214,7 +195,6 @@ const sampleTree: Array<TreeNodeT> = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        selected: false,
         type: nodeTypes.ITEM,
       },
       {
@@ -224,7 +204,6 @@ const sampleTree: Array<TreeNodeT> = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        selected: false,
         type: nodeTypes.ITEM,
       },
       {
@@ -234,7 +213,6 @@ const sampleTree: Array<TreeNodeT> = [
         get id() {
           return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
         },
-        selected: false,
         type: nodeTypes.ITEM,
       },
     ],
@@ -246,7 +224,6 @@ const sampleTree: Array<TreeNodeT> = [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
-    selected: false,
     type: nodeTypes.FOLDER,
     children: [],
   },
@@ -257,7 +234,6 @@ const sampleTree: Array<TreeNodeT> = [
     get id() {
       return `${this.type}${_ID_DELIMITER}${this.uniqid}`;
     },
-    selected: false,
     type: nodeTypes.ITEM,
   },
 ];

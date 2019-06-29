@@ -163,24 +163,18 @@ function _toggleSelected({ notesTree, nodeId, path }: { notesTree: NotesTreeT, n
   });
 
   if (targetNodeInfo && targetNodeInfo.node && targetNodeInfo.node.id === nodeId) {
-    const targetNode = targetNodeInfo.node as TreeNodeT;
-    const modifiedNode: TreeNodeT = { ...targetNode, selected: !targetNode.selected };
-    let newTree : NotesTreeT['tree'] = notesTree.tree;
-    try {
-      newTree = changeNodeAtPath({
-        treeData: notesTree.tree,
-        path,
-        newNode: modifiedNode,
-        getNodeKey,
-        ignoreCollapsed: false,
-      }) as TreeNodeT[];
-    } catch(error) {
-      return notesTree;
+    const foundIdx = notesTree.editModeSelectedNodes.indexOf(nodeId);
+    let newListSelectedNodes;
+    if (foundIdx === -1) {
+      newListSelectedNodes = [...notesTree.editModeSelectedNodes, nodeId];
+    } else {
+      notesTree.editModeSelectedNodes.splice(foundIdx, 1);
+      newListSelectedNodes = [...notesTree.editModeSelectedNodes];
     }
 
     return {
       ...notesTree,
-      tree: newTree,
+      editModeSelectedNodes: newListSelectedNodes,
     };
   } else {
     return notesTree;
@@ -241,3 +235,4 @@ export const selectTreeId = (state: NotesTreeT) => state.id;
 export const selectDateModified = (state: NotesTreeT) => state.dateModified;
 export const selectDateCreated = (state: NotesTreeT) => state.dateCreated;
 export const selectEditMode = (state: NotesTreeT) => state.editMode;
+export const selectEditModeSelectedNodes = (state: NotesTreeT) => state.editModeSelectedNodes;

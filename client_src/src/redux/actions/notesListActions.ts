@@ -115,7 +115,7 @@ export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path:
       }
     }
 
-    // ---> Section below is for selection done outside of tree Edit Mode
+    /* >>>>> Section below is for selection done outside of tree Edit Mode <<<<< */
     // Immediately save currently opened note
     const currentEditorContent = rootReducer.selectEditorContent(getState());
     if (currentEditorContent.id) {
@@ -369,6 +369,7 @@ export function fetchNotesTreeThunkAction()
           tree: [],
           id: uuid(),
           editMode: false,
+          editModeSelectedNodes: [],
           dateCreated: now,
           dateModified: now,
         };

@@ -39,6 +39,7 @@ interface MapStatePropsT {
   activeNode: ActiveNodeT;
   rootViewOn: boolean;
   editMode: boolean;
+  editModeSelectedNodes: string[];
   currentFolderName: string;
 }
 
@@ -100,6 +101,7 @@ function mapStateToProps(state: AppStateT): MapStatePropsT {
     activeNode,
     rootViewOn,
     editMode: rootReducer.selectNotesTreeEditMode(state),
+    editModeSelectedNodes: rootReducer.selectNotesTreeEditModeSelectedNodes(state),
     currentFolderName: folderName,
   };
 }
