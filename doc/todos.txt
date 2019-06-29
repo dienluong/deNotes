@@ -92,4 +92,6 @@ Update/create tests for:
   x Editor.tsx
   x editorContentObserver.ts
   x Main.js
-  index.js
+  x index.js
+
+Review remoteStorage data modules for discrepancies.
