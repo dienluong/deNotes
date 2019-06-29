@@ -215,6 +215,7 @@ export default function notesTreeReducer(state: NotesTreeT = initialTree, action
         return {
           ...state,
           editMode: action.payload.value,
+          editModeSelectedNodes: [],
         };
       }
     case notesListActionTypes.EDIT_MODE_SELECT_NODE:
