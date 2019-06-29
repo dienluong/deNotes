@@ -156,8 +156,8 @@ function NotesList({
   return (
     <div className={ styles['dnt__notes-list'] }>
       <AppBar position="static" color="primary" className={ styles['dnt__notes-list-header'] }>
-        <MuiToolbar className={ rootViewOn ? styles['dnt__notes-list-muitoolbar--root'] : styles['dnt__notes-list-muitoolbar'] } disableGutters>
-          { !rootViewOn && (
+        <MuiToolbar className={ rootViewOn || editMode ? styles['dnt__notes-list-muitoolbar--centered'] : styles['dnt__notes-list-muitoolbar'] } disableGutters>
+          { !rootViewOn && !editMode && (
             <IconButton aria-label={ 'Go up a folder' } color="inherit" onClick={ backBtnHandler }>
               <GoOutFolderIcon />
             </IconButton>
@@ -165,7 +165,7 @@ function NotesList({
           <Typography inline variant={ size !== 'small' ? 'h5' : 'h6' } color="inherit">
             { currentFolderName || _DEFAULT_FOLDER_NAME }
           </Typography>
-          { !rootViewOn && (
+          { !rootViewOn && !editMode && (
             <IconButton aria-label={ 'Home' } color="inherit" onClick={ homeBtnHandler }>
               <HomeIcon />
             </IconButton>
