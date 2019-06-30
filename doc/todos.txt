@@ -94,4 +94,5 @@ Update/create tests for:
   x Main.js
   x index.js
 
+Remove unused navigatePathThunkAction
 Review remoteStorage data modules for discrepancies.
