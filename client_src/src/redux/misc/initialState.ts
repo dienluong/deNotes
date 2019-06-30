@@ -30,6 +30,9 @@ const initialState: AppStateT = {
     dateCreated: now,
     dateModified: now,
   },
+  // activeNode contains the ID of the current active node, and its path, in the tree;
+  // the active node can be an item (note) or a folder;
+  // if the active node is the root (with no child selected), then ID is constant NONE_SELECTED and path is [NONE_SELECTED]
   activeNode: {
     id: _rootNode.id,
     path: [_rootNode.id],
