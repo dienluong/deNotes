@@ -53,26 +53,26 @@ function _goUpAFolder({ currentActive }: { currentActive: ActiveNodeT })
   }
 }
 
-function _changeActiveNodeOnDelete({ currentActive, deletedNodeId }: { currentActive: ActiveNodeT, deletedNodeId: string })
+function _changeActiveNodeOnDelete({ currentActive, deletedNodeIds }: { currentActive: ActiveNodeT, deletedNodeIds: Array<TreeNodeT['id']> })
   : ActiveNodeT {
-  let returnedActiveNode: ActiveNodeT = currentActive;
-  // if deleted node is part of the active path, re-adjust the active node
-  const deletedNodeIdx = currentActive.path.lastIndexOf(deletedNodeId);
-  if (deletedNodeIdx >= 0) {
+  let newActive: ActiveNodeT = currentActive;
+  // if any deleted nodes is part of the active path, re-adjust the active node
+  let smallestFoundIdx = currentActive.path.findIndex(id => deletedNodeIds.includes(id));
+  if (smallestFoundIdx >= 0) {
       // Since deleted node is part of active path, truncate the path to find parent folder
-      const newActivePath: ActiveNodeT['path'] = [...(currentActive.path.slice(0, deletedNodeIdx))];
+      const newActivePath: ActiveNodeT['path'] = [...(currentActive.path.slice(0, smallestFoundIdx))];
       // If the deleted node was at the root, then use NONE_SELECTED as new active node.
       if (!newActivePath.length) {
         newActivePath[0] = NONE_SELECTED;
       }
-      returnedActiveNode = {
+      newActive = {
         ...currentActive,
         id: newActivePath[newActivePath.length - 1],
         path: newActivePath,
       };
   }
 
-  return returnedActiveNode;
+  return newActive;
 }
 
 /**
@@ -166,7 +166,7 @@ export default function activeNodeReducer(state: ActiveNodeT = initialActiveNode
       };
     }
     case notesListActionTypes.SWITCH_NODE_ON_DELETE: {
-      if (!action.payload.deletedNodeId) {
+      if (!Array.isArray(action.payload.deletedNodeIds) || !action.payload.deletedNodeIds.length) {
         return state;
       }
       return _changeActiveNodeOnDelete({

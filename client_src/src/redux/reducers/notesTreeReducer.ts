@@ -52,44 +52,54 @@ function _changeNodeTitle({ notesTree, title, node, now }: { notesTree: NotesTre
   }
 }
 
-function _deleteNode({ notesTree, nodeToDelete, now }: { notesTree: NotesTreeT, nodeToDelete: TreeNodeT, now: number })
+function _deleteNode({ notesTree, now }: { notesTree: NotesTreeT, now: number })
   : NotesTreeT {
-  const nodesFound: Array<{ node: TreeItem, path: (string|number)[], treeIndex: number }> = find({
-    getNodeKey,
-    treeData: notesTree.tree,
-    searchQuery: nodeToDelete.id,
-    searchMethod: ({ node: treeNode, searchQuery }) => searchQuery === treeNode.id,
-  }).matches;
-
-  // TODO Remove
-  // const parentFolderIdx: number | null = findDeepestFolder(activePath);
-  // let nodeToDeletePath: ActiveNodeT['path'];
-  // if (parentFolderIdx !== null) {
-  //   nodeToDeletePath = [...activePath.slice(0, parentFolderIdx + 1), nodeToDelete.id];
-  // } else {
-  //   return notesTree;
-  // }
-
-  if (nodesFound.length) {
-    let newTree: NotesTreeT['tree'] = notesTree.tree;
-    try {
-      newTree = removeNodeAtPath({
-        treeData: notesTree.tree,
-        path: nodesFound[0].path,
-        getNodeKey,
-        ignoreCollapsed: false,
-      }) as TreeNodeT[];
-    } catch (error) {
-      return notesTree;
-    }
-    return {
-      ...notesTree,
-      tree: newTree,
-      dateModified: now,
-    };
-  } else {
+  if (!notesTree.editModeSelectedNodes.length) {
     return notesTree;
   }
+
+  let changed = false;
+  let modifiedTree: NotesTreeT['tree'] = notesTree.tree;
+  const remainingSelectedNodes = notesTree.editModeSelectedNodes;
+
+  for (let count = remainingSelectedNodes.length; count; count -= 1) {
+    const idToDelete = remainingSelectedNodes.pop();
+    const nodesFound: Array<{ node: TreeItem, path: (string|number)[], treeIndex: number }> = find({
+      getNodeKey,
+      treeData: modifiedTree,
+      searchQuery: idToDelete,
+      searchMethod: ({ node: treeNode, searchQuery }) => searchQuery === treeNode.id,
+    }).matches;
+
+    // TODO Remove
+    // const parentFolderIdx: number | null = findDeepestFolder(activePath);
+    // let nodeToDeletePath: ActiveNodeT['path'];
+    // if (parentFolderIdx !== null) {
+    //   nodeToDeletePath = [...activePath.slice(0, parentFolderIdx + 1), nodeToDelete.id];
+    // } else {
+    //   return notesTree;
+    // }
+
+    if (nodesFound.length) {
+      try {
+        modifiedTree = removeNodeAtPath({
+          treeData: modifiedTree,
+          path: nodesFound[0].path,
+          getNodeKey,
+          ignoreCollapsed: false,
+        }) as TreeNodeT[];
+
+        changed = true;
+      } catch (error) {}
+    }
+  }
+
+  return {
+    ...notesTree,
+    tree: modifiedTree,
+    dateModified: changed ? now : notesTree.dateModified,
+    editModeSelectedNodes: remainingSelectedNodes,
+  };
 }
 
 function _changeTreeFolder({ notesTree, folder, activePath, now }: { notesTree: NotesTreeT, folder: TreeNodeT[], activePath: ActiveNodeT['path'], now: number })

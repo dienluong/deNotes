@@ -33,7 +33,7 @@ export type PropsT = {
   nodeTitleChangeHandler: (...args: any) => any,
   nodeClickHandler: (params: { id: TreeNodeT["id"], path: TreeNodePathT }) => unknown,
   nodeDoubleClickHandler: (params: { id: TreeNodeT["id"], path: TreeNodePathT }) => unknown,
-  deleteNodeBtnHandler: (params: { node: TreeNodeT, path: TreeNodePathT }) => unknown,
+  deleteNodeBtnHandler: () => unknown,
   backBtnHandler: (...args: any) => any,
   homeBtnHandler: (...args: any) => any,
   editBtnHandler: (...args: any) => any;
@@ -70,7 +70,7 @@ function NotesList({
     return ({
       title: (<NodeTitle node={ node } path={ path } onSubmit={ nodeTitleChangeHandler } />),
       className: (node.id === activeNode.id) ? `${styles['dnt__tree-node']} ${styles['dnt__tree-node--active']}` : styles['dnt__tree-node'],
-      buttons: _buildNodeButtons({ node, path }),
+      buttons: _buildNodeButtons({ node }),
       tabIndex: '0',
       'data-testid': node.id,
       onClick: () => nodeClickHandler({ id: node.id, path }),
@@ -98,7 +98,7 @@ function NotesList({
     }
   }
 
-  function _buildNodeButtons({ node, path }: { node: TreeNodeT, path: TreeNodePathT }) {
+  function _buildNodeButtons({ node }: { node: TreeNodeT }) {
     const buttons = [];
 
     // TODO: remove
@@ -186,7 +186,7 @@ function NotesList({
         <Collapse in={ editMode }>
           <AppBar position="static" color="secondary">
             <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
-              <IconButton aria-label={ 'Delete' } color="primary" onClick={ () => { console.log('DELETE CLICKED')} }>
+              <IconButton aria-label={ 'Delete' } color="primary" onClick={ deleteNodeBtnHandler }>
                 <Typography>DELETE</Typography>
               </IconButton>
               <IconButton aria-label={ 'Done' } color="primary" onClick={ editDoneBtnHandler }>

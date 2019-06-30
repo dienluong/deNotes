@@ -164,42 +164,44 @@ export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path:
 
 /**
  * ...
- * @param {Object} params
- * @param {Object} params.node
  */
-export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
+export function deleteNodeThunkAction()
   : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
-    let itemIds: Array<string> = [];
+    let itemUniqids: string[] = [];
+    const selectedNodeIds = rootReducer.selectNotesTreeEditModeSelectedNodes(getState());
 
-    // Collect the uniqid of all items to delete.
-    if (node.type === nodeTypes.ITEM) {
-      itemIds = [node.uniqid];
-    } else if (node.type === nodeTypes.FOLDER) {
-      if (node.children && node.children.length) {
-        itemIds = getDescendantItems({ node }).map(node => node.uniqid);
-      } else {
-        itemIds = [];
+    // Collect the uniqid of all items to be deleted
+    selectedNodeIds.forEach(id => {
+      const nodeInfo = translateNodeIdToInfo({ nodeId: id });
+      if (nodeInfo) {
+        if (nodeInfo.type === nodeTypes.ITEM) {
+          itemUniqids.push(nodeInfo.uniqid);
+        } else if (nodeInfo.type === nodeTypes.FOLDER) {
+          getDescendantItems({ nodeId: id, tree: rootReducer.selectNotesTreeTree(getState()) }).forEach(node => itemUniqids.push(node.uniqid));
+        }
       }
-    }
+    });
+
     // dispatch action to delete note(s) from storage
-    return dispatch(removeNoteThunkAction({ ids: itemIds }))
+    return dispatch(removeNoteThunkAction({ ids: itemUniqids }))
       .then((action: AnyAction) => {
         console.log(`Number of notes deleted: ${ action.payload.count }`); // TODO: remove
         // if delete from storage succeeded, then remove node from tree
         const retVal = dispatch({
           type: notesListActionTypes.DELETE_NODE,
           payload: {
-            nodeToDelete: node,
             now: Date.now(),
           },
         });
 
-        // If deleted node is part of the active path, then switch to a new active node
-        if (rootReducer.selectActiveNodePath(getState()).lastIndexOf(node.id) >= 0) {
-          dispatch(switchActiveNodeOnDeleteAction({ deletedNodeId: node.id }));
-          // TODO Load blank editor canvas
-        }
+        // If any deleted node is part of the active path, then switch to a new active node
+        dispatch({
+          type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
+          payload: {
+            deletedNodeIds: selectedNodeIds,
+          },
+        });
 
         return retVal;
       })
@@ -207,21 +209,6 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
         window.alert(`ERROR deleting saved note: ${ err.message }`);
         return err.action;
       });
-  };
-}
-
-/**
- * ...
- * @param {Object} params
- * @param {string} params.deletedNodeId
- */
-export function switchActiveNodeOnDeleteAction({ deletedNodeId }: { deletedNodeId: TreeNodeT['id'] })
-  : AnyAction {
-  return {
-    type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
-    payload: {
-      deletedNodeId: deletedNodeId,
-    },
   };
 }
 
