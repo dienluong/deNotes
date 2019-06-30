@@ -186,10 +186,10 @@ function NotesList({
         <Collapse in={ editMode }>
           <AppBar position="static" color="secondary">
             <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
-              <IconButton aria-label={ 'Delete' } color="primary" onClick={ deleteNodeBtnHandler }>
+              <IconButton aria-label={ 'Delete' } disabled={ !editModeSelectedNodes.length } onClick={ deleteNodeBtnHandler }>
                 <Typography>DELETE</Typography>
               </IconButton>
-              <IconButton aria-label={ 'Done' } color="primary" onClick={ editDoneBtnHandler }>
+              <IconButton aria-label={ 'Done' } onClick={ editDoneBtnHandler }>
                 <Typography>DONE</Typography>
               </IconButton>
             </MuiToolbar>
