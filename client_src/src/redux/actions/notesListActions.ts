@@ -380,32 +380,6 @@ export function fetchNotesTreeThunkAction()
   };
 }
 
-/**
- * ...
- * @param {Object} params
- * @param {number} params.idx
- */
-export function navigatePathThunkAction({ idx }: { idx: number })
-  : ThunkAction<AnyAction, AppStateT, any, AnyAction> {
-  // 1. Save current editor content
-  // 2. Switch folder
-  return (dispatch, getState) => {
-    // immediately save currently opened note
-    const currentContent = rootReducer.selectEditorContent(getState());
-    if (currentContent.id) {
-      _editorContentStorage.save(currentContent)
-        .catch((err: Error) => console.log(err)); // TODO: log error?
-    }
-
-    return dispatch({
-      type: notesListActionTypes.NAVIGATE_PATH,
-      payload: {
-        idx,
-      },
-    });
-  };
-}
-
 export function goUpAFolderAction(): AnyAction {
   return {
     type: notesListActionTypes.GO_UP_A_FOLDER,
