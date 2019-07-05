@@ -1,5 +1,5 @@
 import React from 'react';
-import unescape from 'lodash-es/unescape';
+import unescape from 'lodash/unescape';
 
 // Types
 type PropsT = {
