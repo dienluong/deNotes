@@ -8,7 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import HomeIcon from '@material-ui/icons/Home';
 import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import NewNoteIcon from '@material-ui/icons/NoteAdd';
-import GoOutFolderIcon from '@material-ui/icons/ArrowBackIos';
+import GoOutFolderIcon from '@material-ui/icons/ArrowBackIosOutlined';
 import Tree, { find } from 'react-sortable-tree';
 import { getNodeKey, collapseFolders } from '../../utils/treeUtils';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
@@ -49,6 +49,8 @@ it('should render header, tree and app bar properly in non-root-view mode', () =
   const props = {
     tree,
     size: 'small',
+    editMode: false,
+    editModeSelectedNodes: [],
     activeNode,
     rootViewOn: false,
     currentFolderName: 'TEST FOLDER NAME',
@@ -59,6 +61,8 @@ it('should render header, tree and app bar properly in non-root-view mode', () =
     deleteNodeBtnHandler: jest.fn(),
     backBtnHandler: jest.fn(),
     homeBtnHandler: jest.fn(),
+    editBtnHandler: jest.fn(),
+    editDoneBtnHandler: jest.fn(),
     toolbarHandlers: [jest.fn(), jest.fn()],
     getNodeKey,
   };
@@ -71,19 +75,22 @@ it('should render header, tree and app bar properly in non-root-view mode', () =
 
   wrapper = shallow(<NotesList { ...props } />);
   expect(wrapper).toMatchSnapshot();
-  expect(wrapper.find(AppBar).filter('.dnt__notes-list-header').exists()).toBe(true);
-  expect(wrapper.find('div.dnt__notes-list-appbar').exists()).toBe(true);
   const treeWrapper = wrapper.find(Tree);
   expect(treeWrapper.exists()).toBe(true);
   expect(treeWrapper.props()).toMatchObject(expectedTreeProps);
-  expect(wrapper.find(Typography).render().text()).toEqual(props.currentFolderName);
-  expect(wrapper.find(NewFolderIcon).exists()).toBe(true);
-  expect(wrapper.find(NewNoteIcon).exists()).toBe(true);
+  const headerWrapper = wrapper.find(AppBar).filter('.dnt__notes-list-header');
+  expect(headerWrapper.exists()).toBe(true);
+  expect(headerWrapper.find(Typography).render().text()).toEqual(props.currentFolderName);
+  const appbarWrapper = wrapper.find('div.dnt__notes-list-appbar');
+  expect(appbarWrapper.exists()).toBe(true);
+  expect(appbarWrapper.find(NewFolderIcon).exists()).toBe(true);
+  expect(appbarWrapper.find(NewNoteIcon).exists()).toBe(true);
+  expect(appbarWrapper.find(IconButton).filter('[aria-label="Edit"]').render().text()).toEqual('EDIT');
 
   // Asserts UI elements specific to non-root-view mode
-  expect(wrapper.find(MuiToolbar).first().hasClass('dnt__notes-list-muitoolbar')).toBe(true);
-  expect(wrapper.find(GoOutFolderIcon).exists()).toBe(true);
-  expect(wrapper.find(HomeIcon).exists()).toBe(true);
+  expect(headerWrapper.find(MuiToolbar).first().hasClass('dnt__notes-list-muitoolbar')).toBe(true);
+  expect(headerWrapper.find(GoOutFolderIcon).exists()).toBe(true);
+  expect(headerWrapper.find(HomeIcon).exists()).toBe(true);
 });
 
 it('should display only folder nodes and all direct child nodes of root, in root-view mode', () => {

@@ -18,7 +18,7 @@ exports[`should render header, tree and app bar properly in non-root-view mode 1
         color="inherit"
         onClick={[MockFunction]}
       >
-        <pure(ArrowBackIosIcon) />
+        <pure(ArrowBackIosOutlinedIcon) />
       </WithStyles(IconButton)>
       <WithStyles(Typography)
         color="inherit"
@@ -104,29 +104,72 @@ exports[`should render header, tree and app bar properly in non-root-view mode 1
   <div
     className="dnt__notes-list-appbar"
   >
-    <WithStyles(AppBar)
-      color="default"
-      position="static"
+    <WithStyles(Collapse)
+      in={false}
     >
-      <WithStyles(Toolbar)
-        className="dnt__notes-list-muitoolbar"
+      <WithStyles(AppBar)
+        color="secondary"
+        position="static"
       >
-        <WithStyles(IconButton)
-          aria-label="New Folder"
-          color="primary"
-          onClick={[MockFunction]}
+        <WithStyles(Toolbar)
+          className="dnt__notes-list-muitoolbar"
         >
-          <pure(CreateNewFolderIcon) />
-        </WithStyles(IconButton)>
-        <WithStyles(IconButton)
-          aria-label="New Note"
-          color="primary"
-          onClick={[MockFunction]}
+          <WithStyles(IconButton)
+            aria-label="Delete"
+            disabled={true}
+            onClick={[MockFunction]}
+          >
+            <WithStyles(Typography)>
+              DELETE
+            </WithStyles(Typography)>
+          </WithStyles(IconButton)>
+          <WithStyles(IconButton)
+            aria-label="Done"
+            onClick={[MockFunction]}
+          >
+            <WithStyles(Typography)>
+              DONE
+            </WithStyles(Typography)>
+          </WithStyles(IconButton)>
+        </WithStyles(Toolbar)>
+      </WithStyles(AppBar)>
+    </WithStyles(Collapse)>
+    <WithStyles(Collapse)
+      in={true}
+    >
+      <WithStyles(AppBar)
+        color="default"
+        position="static"
+      >
+        <WithStyles(Toolbar)
+          className="dnt__notes-list-muitoolbar"
         >
-          <pure(NoteAddIcon) />
-        </WithStyles(IconButton)>
-      </WithStyles(Toolbar)>
-    </WithStyles(AppBar)>
+          <WithStyles(IconButton)
+            aria-label="New Folder"
+            color="primary"
+            onClick={[MockFunction]}
+          >
+            <pure(CreateNewFolderIcon) />
+          </WithStyles(IconButton)>
+          <WithStyles(IconButton)
+            aria-label="Edit"
+            color="primary"
+            onClick={[MockFunction]}
+          >
+            <WithStyles(Typography)>
+              EDIT
+            </WithStyles(Typography)>
+          </WithStyles(IconButton)>
+          <WithStyles(IconButton)
+            aria-label="New Note"
+            color="primary"
+            onClick={[MockFunction]}
+          >
+            <pure(NoteAddIcon) />
+          </WithStyles(IconButton)>
+        </WithStyles(Toolbar)>
+      </WithStyles(AppBar)>
+    </WithStyles(Collapse)>
   </div>
 </div>
 `;
