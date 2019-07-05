@@ -100,18 +100,6 @@ function NotesList({
 
   function _buildNodeButtons({ node }: { node: TreeNodeT }) {
     const buttons = [];
-
-    // TODO: remove
-      /*<button*/
-        // className={ styles['dnt__tree-node-btn'] }
-        // onClick={ (event) => {
-        //   event.stopPropagation();
-        //   deleteNodeBtnHandler({ node, path });
-        // }}
-      // >
-      //   x
-      // </button>,
-
     if (node.type === nodeTypes.FOLDER) {
       if (Array.isArray(node.children) && node.children.length) {
         buttons.push(<Typography>{ node.children.length }</Typography>);
