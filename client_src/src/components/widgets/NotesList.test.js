@@ -75,18 +75,20 @@ it('should render header, tree and app bar properly in non-root-view mode', () =
 
   wrapper = shallow(<NotesList { ...props } />);
   expect(wrapper).toMatchSnapshot();
+
   const treeWrapper = wrapper.find(Tree);
   expect(treeWrapper.exists()).toBe(true);
   expect(treeWrapper.props()).toMatchObject(expectedTreeProps);
-  const headerWrapper = wrapper.find(AppBar).filter('.dnt__notes-list-header');
-  expect(headerWrapper.exists()).toBe(true);
-  expect(headerWrapper.find(Typography).render().text()).toEqual(props.currentFolderName);
+
   const appbarWrapper = wrapper.find('div.dnt__notes-list-appbar');
   expect(appbarWrapper.exists()).toBe(true);
   expect(appbarWrapper.find(NewFolderIcon).exists()).toBe(true);
   expect(appbarWrapper.find(NewNoteIcon).exists()).toBe(true);
   expect(appbarWrapper.find(IconButton).filter('[aria-label="Edit"]').render().text()).toEqual('EDIT');
 
+  const headerWrapper = wrapper.find(AppBar).filter('.dnt__notes-list-header');
+  expect(headerWrapper.exists()).toBe(true);
+  expect(headerWrapper.find(Typography).render().text()).toEqual(props.currentFolderName);
   // Asserts UI elements specific to non-root-view mode
   expect(headerWrapper.find(MuiToolbar).first().hasClass('dnt__notes-list-muitoolbar')).toBe(true);
   expect(headerWrapper.find(GoOutFolderIcon).exists()).toBe(true);
@@ -102,6 +104,8 @@ it('should display only folder nodes and all direct child nodes of root, in root
   const props = {
     tree: mockedTree,
     size: 'small',
+    editMode: false,
+    editModeSelectedNodes: [],
     activeNode,
     rootViewOn: true,
     currentFolderName: 'TEST FOLDER NAME',
@@ -112,6 +116,8 @@ it('should display only folder nodes and all direct child nodes of root, in root
     deleteNodeBtnHandler: jest.fn(),
     backBtnHandler: jest.fn(),
     homeBtnHandler: jest.fn(),
+    editBtnHandler: jest.fn(),
+    editDoneBtnHandler: jest.fn(),
     toolbarHandlers: [jest.fn(), jest.fn()],
     getNodeKey,
   };
@@ -119,9 +125,9 @@ it('should display only folder nodes and all direct child nodes of root, in root
   wrapper = shallow(<NotesList { ...props } />);
 
   // Asserts UI elements specific to root-view mode
-  expect(wrapper.find(MuiToolbar).filter('.dnt__notes-list-muitoolbar--root').exists()).toBe(true);
   expect(wrapper.find(GoOutFolderIcon).exists()).toBe(false);
   expect(wrapper.find(HomeIcon).exists()).toBe(false);
+  expect(wrapper.find(MuiToolbar).filter('.dnt__notes-list-muitoolbar--centered').exists()).toBe(true);
 
   const { container } = render(<NotesList { ...props }/>);
   const invisibleNodes = container.querySelectorAll('.dnt__tree-node--invisible');
@@ -135,7 +141,7 @@ it('should display only folder nodes and all direct child nodes of root, in root
 });
 
 it('should render all node titles of the received tree and highlight the active node', () => {
-  // active node is an ITEM, so active folder is its parent; thus, rootViewOn is set to false
+  // active node is an ITEM, so current folder is its parent; thus, rootViewOn is set to false
   const activeNode = {
     id: mockedTree[0].children[1].id,
     path: [mockedTree[0].children[1].id],
@@ -144,6 +150,8 @@ it('should render all node titles of the received tree and highlight the active 
   const props = {
     tree,
     size: 'medium',
+    editMode: false,
+    editModeSelectedNodes: [],
     activeNode,
     rootViewOn: false,
     currentFolderName: 'TEST FOLDER NAME',
@@ -154,6 +162,8 @@ it('should render all node titles of the received tree and highlight the active 
     deleteNodeBtnHandler: jest.fn(),
     backBtnHandler: jest.fn(),
     homeBtnHandler: jest.fn(),
+    editBtnHandler: jest.fn(),
+    editDoneBtnHandler: jest.fn(),
     toolbarHandlers: [jest.fn(), jest.fn()],
     getNodeKey,
   };
@@ -193,6 +203,8 @@ it('should invoke handler when tree node is clicked', () => {
   const props = {
     tree: mockedTree,
     size: 'medium',
+    editMode: false,
+    editModeSelectedNodes: [],
     activeNode,
     rootViewOn: true,
     currentFolderName: 'TEST FOLDER NAME',
@@ -203,6 +215,8 @@ it('should invoke handler when tree node is clicked', () => {
     deleteNodeBtnHandler: jest.fn(),
     backBtnHandler: jest.fn(),
     homeBtnHandler: jest.fn(),
+    editBtnHandler: jest.fn(),
+    editDoneBtnHandler: jest.fn(),
     toolbarHandlers: [jest.fn(), jest.fn()],
     getNodeKey,
   };
@@ -238,6 +252,8 @@ it('should invoke handler when double-click on node', () => {
   const props = {
     tree: mockedTree[0].children,
     size: 'medium',
+    editMode: false,
+    editModeSelectedNodes: [],
     activeNode,
     rootViewOn: false,
     currentFolderName: 'TEST FOLDER NAME',
@@ -248,6 +264,8 @@ it('should invoke handler when double-click on node', () => {
     deleteNodeBtnHandler: jest.fn(),
     backBtnHandler: jest.fn(),
     homeBtnHandler: jest.fn(),
+    editBtnHandler: jest.fn(),
+    editDoneBtnHandler: jest.fn(),
     toolbarHandlers: [jest.fn(), jest.fn()],
     getNodeKey,
   };
@@ -284,6 +302,8 @@ it('should invoke handler when buttons on toolbars are clicked', () => {
   const props = {
     tree,
     size: 'small',
+    editMode: false,
+    editModeSelectedNodes: [],
     activeNode,
     rootViewOn: false,
     currentFolderName: 'TEST FOLDER NAME',
@@ -294,6 +314,8 @@ it('should invoke handler when buttons on toolbars are clicked', () => {
     deleteNodeBtnHandler: jest.fn(),
     backBtnHandler: jest.fn(),
     homeBtnHandler: jest.fn(),
+    editBtnHandler: jest.fn(),
+    editDoneBtnHandler: jest.fn(),
     toolbarHandlers: [jest.fn(), jest.fn()],
     getNodeKey,
   };
@@ -314,6 +336,8 @@ it('should invoke handler when tree node delete button is clicked', () => {
   const props = {
     tree: mockedTree[0].children,
     size: 'medium',
+    editMode: false,
+    editModeSelectedNodes: [],
     activeNode,
     rootViewOn: false,
     currentFolderName: 'TEST FOLDER NAME',
@@ -324,6 +348,8 @@ it('should invoke handler when tree node delete button is clicked', () => {
     deleteNodeBtnHandler: jest.fn(),
     backBtnHandler: jest.fn(),
     homeBtnHandler: jest.fn(),
+    editBtnHandler: jest.fn(),
+    editDoneBtnHandler: jest.fn(),
     toolbarHandlers: [jest.fn(), jest.fn()],
     getNodeKey,
   };
@@ -356,6 +382,8 @@ it('should invoke handler on node title change', () => {
   const props = {
     tree: mockedTree[0].children,
     size: 'medium',
+    editMode: false,
+    editModeSelectedNodes: [],
     activeNode,
     rootViewOn: false,
     currentFolderName: 'TEST FOLDER NAME',
@@ -366,6 +394,8 @@ it('should invoke handler on node title change', () => {
     deleteNodeBtnHandler: jest.fn(),
     backBtnHandler: jest.fn(),
     homeBtnHandler: jest.fn(),
+    editBtnHandler: jest.fn(),
+    editDoneBtnHandler: jest.fn(),
     toolbarHandlers: [jest.fn(), jest.fn()],
     getNodeKey,
   };
