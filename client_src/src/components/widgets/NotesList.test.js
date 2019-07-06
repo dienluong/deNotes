@@ -12,7 +12,7 @@ import GoOutFolderIcon from '@material-ui/icons/ArrowBackIosOutlined';
 import Tree, { find } from 'react-sortable-tree';
 import { getNodeKey, collapseFolders } from '../../utils/treeUtils';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
-import { render, cleanup, fireEvent, within } from 'react-testing-library';
+import { render, cleanup, fireEvent } from 'react-testing-library';
 import 'jest-dom/extend-expect';
 import { createSerializer } from 'enzyme-to-json';
 
@@ -328,52 +328,6 @@ it('should invoke handler when buttons on toolbars are clicked', () => {
   props.toolbarHandlers.forEach(handler => expect(handler).toBeCalledTimes(1));
 });
 
-it('should invoke handler when tree node delete button is clicked', () => {
-  const activeNode = {
-    id: mockedTree[0].children[0].id,
-    path: [mockedTree[0].children[0].id],
-  };
-  const props = {
-    tree: mockedTree[0].children,
-    size: 'medium',
-    editMode: false,
-    editModeSelectedNodes: [],
-    activeNode,
-    rootViewOn: false,
-    currentFolderName: 'TEST FOLDER NAME',
-    treeChangeHandler: jest.fn(),
-    nodeTitleChangeHandler: jest.fn(),
-    nodeClickHandler: jest.fn(),
-    nodeDoubleClickHandler: jest.fn(),
-    deleteNodeBtnHandler: jest.fn(),
-    backBtnHandler: jest.fn(),
-    homeBtnHandler: jest.fn(),
-    editBtnHandler: jest.fn(),
-    editDoneBtnHandler: jest.fn(),
-    toolbarHandlers: [jest.fn(), jest.fn()],
-    getNodeKey,
-  };
-
-  const { getByTestId } = render(<NotesList { ...props }/>);
-
-  let nodeCounter = 0;
-  const test = jest.fn();
-  test.mockImplementation(node => {
-    nodeCounter += 1;
-    const renderedTreeNode = getByTestId(node.id);
-    const renderedTitles = within(renderedTreeNode).queryAllByValue(node.title);
-    expect(renderedTitles).toHaveLength(1);
-    const nodeDeleteButton = within(renderedTreeNode).getByText('x');
-
-    fireEvent.click(nodeDeleteButton);
-    expect(props.deleteNodeBtnHandler).lastCalledWith({ node: expect.any(Object), path: expect.any(Array) });
-    expect(props.deleteNodeBtnHandler).toBeCalledTimes(nodeCounter);
-  });
-
-  props.tree.forEach(test);
-  expect(test).toBeCalledTimes(props.tree.length);
-});
-
 it('should invoke handler on node title change', () => {
   const activeNode = {
     id: mockedTree[0].children[0].id,
@@ -419,4 +373,37 @@ it('should invoke handler on node title change', () => {
 
   props.tree.forEach(test);
   expect(test).toBeCalledTimes(props.tree.length);
+});
+
+it('should invoke handler when DELETE button is clicked and nodes are selected in Edit Mode', () => {
+  const activeNode = {
+    id: mockedTree[0].children[0].id,
+    path: [mockedTree[0].children[0].id],
+  };
+  const props = {
+    tree: mockedTree[0].children,
+    size: 'medium',
+    editMode: true,
+    editModeSelectedNodes: [mockedTree[0].children[1].id, mockedTree[0].children[2]],
+    activeNode,
+    rootViewOn: false,
+    currentFolderName: 'TEST FOLDER NAME',
+    treeChangeHandler: jest.fn(),
+    nodeTitleChangeHandler: jest.fn(),
+    nodeClickHandler: jest.fn(),
+    nodeDoubleClickHandler: jest.fn(),
+    deleteNodeBtnHandler: jest.fn(),
+    backBtnHandler: jest.fn(),
+    homeBtnHandler: jest.fn(),
+    editBtnHandler: jest.fn(),
+    editDoneBtnHandler: jest.fn(),
+    toolbarHandlers: [jest.fn(), jest.fn()],
+    getNodeKey,
+  };
+
+  const { queryByText } = render(<NotesList { ...props }/>);
+
+  const deleteBtn = queryByText('DELETE');
+  fireEvent.click(deleteBtn);
+  expect(props.deleteNodeBtnHandler).toBeCalledTimes(1);
 });
