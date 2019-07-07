@@ -9,6 +9,8 @@ import HomeIcon from '@material-ui/icons/Home';
 import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import NewNoteIcon from '@material-ui/icons/NoteAdd';
 import GoOutFolderIcon from '@material-ui/icons/ArrowBackIosOutlined';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import Tree, { find } from 'react-sortable-tree';
 import { getNodeKey, collapseFolders } from '../../utils/treeUtils';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
@@ -80,12 +82,14 @@ it('should render header, tree and app bar properly in non-root-view mode', () =
   expect(treeWrapper.exists()).toBe(true);
   expect(treeWrapper.props()).toMatchObject(expectedTreeProps);
 
+  // App bar should contain New Folder and New Note icons and EDIT button
   const appbarWrapper = wrapper.find('div.dnt__notes-list-appbar');
   expect(appbarWrapper.exists()).toBe(true);
   expect(appbarWrapper.find(NewFolderIcon).exists()).toBe(true);
   expect(appbarWrapper.find(NewNoteIcon).exists()).toBe(true);
   expect(appbarWrapper.find(IconButton).filter('[aria-label="Edit"]').render().text()).toEqual('EDIT');
 
+  // Header bar should contain current folder's name, Go Out Folder (aka Back) and Home icons
   const headerWrapper = wrapper.find(AppBar).filter('.dnt__notes-list-header');
   expect(headerWrapper.exists()).toBe(true);
   expect(headerWrapper.find(Typography).render().text()).toEqual(props.currentFolderName);
@@ -124,7 +128,7 @@ it('should display only folder nodes and all direct child nodes of root, in root
 
   wrapper = shallow(<NotesList { ...props } />);
 
-  // Asserts UI elements specific to root-view mode
+  // Asserts UI elements specific to root-view mode: Go Out Folder and Home icons should NOT be present
   expect(wrapper.find(GoOutFolderIcon).exists()).toBe(false);
   expect(wrapper.find(HomeIcon).exists()).toBe(false);
   expect(wrapper.find(MuiToolbar).filter('.dnt__notes-list-muitoolbar--centered').exists()).toBe(true);
@@ -375,6 +379,39 @@ it('should invoke handler on node title change', () => {
   expect(test).toBeCalledTimes(props.tree.length);
 });
 
+it('should invoke handler when EDIT button is clicked', () => {
+  const activeNode = {
+    id: mockedTree[0].children[0].id,
+    path: [mockedTree[0].children[0].id],
+  };
+  const props = {
+    tree: mockedTree[0].children,
+    size: 'medium',
+    editMode: false,
+    editModeSelectedNodes: [],
+    activeNode,
+    rootViewOn: false,
+    currentFolderName: 'TEST FOLDER NAME',
+    treeChangeHandler: jest.fn(),
+    nodeTitleChangeHandler: jest.fn(),
+    nodeClickHandler: jest.fn(),
+    nodeDoubleClickHandler: jest.fn(),
+    deleteNodeBtnHandler: jest.fn(),
+    backBtnHandler: jest.fn(),
+    homeBtnHandler: jest.fn(),
+    editBtnHandler: jest.fn(),
+    editDoneBtnHandler: jest.fn(),
+    toolbarHandlers: [jest.fn(), jest.fn()],
+    getNodeKey,
+  };
+
+  const { queryByText } = render(<NotesList { ...props }/>);
+
+  const editBtn = queryByText('EDIT');
+  fireEvent.click(editBtn);
+  expect(props.editBtnHandler).toBeCalledTimes(1);
+});
+
 it('should invoke handler when DELETE button is clicked and nodes are selected in Edit Mode', () => {
   const activeNode = {
     id: mockedTree[0].children[0].id,
@@ -384,7 +421,7 @@ it('should invoke handler when DELETE button is clicked and nodes are selected i
     tree: mockedTree[0].children,
     size: 'medium',
     editMode: true,
-    editModeSelectedNodes: [mockedTree[0].children[1].id, mockedTree[0].children[2]],
+    editModeSelectedNodes: [mockedTree[0].children[1].id, mockedTree[0].children[2].id],
     activeNode,
     rootViewOn: false,
     currentFolderName: 'TEST FOLDER NAME',
@@ -406,4 +443,90 @@ it('should invoke handler when DELETE button is clicked and nodes are selected i
   const deleteBtn = queryByText('DELETE');
   fireEvent.click(deleteBtn);
   expect(props.deleteNodeBtnHandler).toBeCalledTimes(1);
+});
+
+it('should invoke handler when DONE button is clicked in Edit Mode', () => {
+  const activeNode = {
+    id: mockedTree[0].children[0].id,
+    path: [mockedTree[0].children[0].id],
+  };
+  const props = {
+    tree: mockedTree[0].children,
+    size: 'medium',
+    editMode: true,
+    editModeSelectedNodes: [mockedTree[0].children[1].id, mockedTree[0].children[2].id],
+    activeNode,
+    rootViewOn: false,
+    currentFolderName: 'TEST FOLDER NAME',
+    treeChangeHandler: jest.fn(),
+    nodeTitleChangeHandler: jest.fn(),
+    nodeClickHandler: jest.fn(),
+    nodeDoubleClickHandler: jest.fn(),
+    deleteNodeBtnHandler: jest.fn(),
+    backBtnHandler: jest.fn(),
+    homeBtnHandler: jest.fn(),
+    editBtnHandler: jest.fn(),
+    editDoneBtnHandler: jest.fn(),
+    toolbarHandlers: [jest.fn(), jest.fn()],
+    getNodeKey,
+  };
+
+  const { queryByText } = render(<NotesList { ...props }/>);
+
+  const doneBtn = queryByText('DONE');
+  fireEvent.click(doneBtn);
+  expect(props.editDoneBtnHandler).toBeCalledTimes(1);
+});
+
+it('should render Edit Mode correctly, i.e. header bar w/o Back and Home icons and app bar with DELETE and DONE buttons', () => {
+  const activeNode = {
+    id: mockedTree[0].children[0].id,
+    path: [mockedTree[0].children[0].id],
+  };
+  const props = {
+    tree: mockedTree[0].children,
+    size: 'medium',
+    editMode: true,
+    editModeSelectedNodes: [mockedTree[0].children[1].id, mockedTree[0].children[2].id],
+    activeNode,
+    rootViewOn: false,
+    currentFolderName: 'TEST FOLDER NAME',
+    treeChangeHandler: jest.fn(),
+    nodeTitleChangeHandler: jest.fn(),
+    nodeClickHandler: jest.fn(),
+    nodeDoubleClickHandler: jest.fn(),
+    deleteNodeBtnHandler: jest.fn(),
+    backBtnHandler: jest.fn(),
+    homeBtnHandler: jest.fn(),
+    editBtnHandler: jest.fn(),
+    editDoneBtnHandler: jest.fn(),
+    toolbarHandlers: [jest.fn(), jest.fn()],
+    getNodeKey,
+  };
+
+  wrapper = shallow(<NotesList { ...props } />);
+  expect(wrapper).toMatchSnapshot();
+
+  const treeWrapper = wrapper.find(Tree);
+  expect(treeWrapper.exists()).toBe(true);
+  // Nodes selected in Edit Mode have its checkbox checked
+  // expect(treeWrapper.find(CheckBoxIcon).length).toEqual(props.editModeSelectedNodes.length);
+  // The remaining (non-selected) nodes have blank checkbox
+  // expect(treeWrapper.find(CheckBoxOutlineBlankIcon).length).toEqual(props.tree.length - props.editModeSelectedNodes.length);
+
+  // Bottom app bar should contain DELETE and DONE buttons
+  const appbarWrapper = wrapper.find('div.dnt__notes-list-appbar');
+  expect(appbarWrapper.exists()).toBe(true);
+  expect(appbarWrapper.find(IconButton).filter('[aria-label="Delete"]').render().text()).toEqual('DELETE');
+  expect(appbarWrapper.find(IconButton).filter('[aria-label="Done"]').render().text()).toEqual('DONE');
+  // expect(appbarWrapper.find(NewFolderIcon).exists()).toBe(false);
+  // expect(appbarWrapper.find(NewNoteIcon).exists()).toBe(false);
+
+  // Header bar should contain current folder's name but without Go Out Folder (aka Back) and Home icons
+  const headerWrapper = wrapper.find(AppBar).filter('.dnt__notes-list-header');
+  expect(headerWrapper.exists()).toBe(true);
+  expect(headerWrapper.find(MuiToolbar).first().hasClass('dnt__notes-list-muitoolbar--centered')).toBe(true);
+  expect(headerWrapper.find(Typography).render().text()).toEqual(props.currentFolderName);
+  // expect(headerWrapper.find(GoOutFolderIcon).exists()).toBe(false);
+  // expect(headerWrapper.find(HomeIcon).exists()).toBe(false);
 });
