@@ -87,7 +87,7 @@ x Remove unused navigatePathThunkAction
 
 Update/create tests for:
   x NotesList.tsx
-  NotesListDrawer.tsx
+  x NotesListDrawer.tsx
   NotesListContainer.tsx
   notesListActions.ts
   reducers/index.ts
