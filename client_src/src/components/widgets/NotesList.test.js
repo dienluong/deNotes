@@ -5,6 +5,7 @@ import AppBar from '@material-ui/core/AppBar';
 import MuiToolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+import Collapse from '@material-ui/core/Collapse';
 import HomeIcon from '@material-ui/icons/Home';
 import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import NewNoteIcon from '@material-ui/icons/NoteAdd';
@@ -478,7 +479,7 @@ it('should invoke handler when DONE button is clicked in Edit Mode', () => {
   expect(props.editDoneBtnHandler).toBeCalledTimes(1);
 });
 
-it('should render Edit Mode correctly, i.e. header bar w/o Back and Home icons and app bar with DELETE and DONE buttons', () => {
+it('should render Edit Mode correctly, i.e. header bar w/o Back and Home icons and Edit Mode appbar visible', () => {
   const activeNode = {
     id: mockedTree[0].children[0].id,
     path: [mockedTree[0].children[0].id],
@@ -514,19 +515,18 @@ it('should render Edit Mode correctly, i.e. header bar w/o Back and Home icons a
   // The remaining (non-selected) nodes have blank checkbox
   // expect(treeWrapper.find(CheckBoxOutlineBlankIcon).length).toEqual(props.tree.length - props.editModeSelectedNodes.length);
 
-  // Bottom app bar should contain DELETE and DONE buttons
-  const appbarWrapper = wrapper.find('div.dnt__notes-list-appbar');
-  expect(appbarWrapper.exists()).toBe(true);
-  expect(appbarWrapper.find(IconButton).filter('[aria-label="Delete"]').render().text()).toEqual('DELETE');
-  expect(appbarWrapper.find(IconButton).filter('[aria-label="Done"]').render().text()).toEqual('DONE');
-  // expect(appbarWrapper.find(NewFolderIcon).exists()).toBe(false);
-  // expect(appbarWrapper.find(NewNoteIcon).exists()).toBe(false);
+  // Edit Mode appbar should be visible (i.e. Collapse in=true)
+  const editAppbarWrapper = wrapper.find('div.dnt__notes-list-appbar').find(Collapse).filter('[in=true]').find(AppBar).filter('#dnt__notes-list-appbar--editmode');
+  expect(editAppbarWrapper.exists()).toBe(true);
+  // Default appbar should NOT be visible (i.e. Collapse in=false)
+  const defaultAppbarWrapper = wrapper.find('div.dnt__notes-list-appbar').find(Collapse).filter('[in=false]').find(AppBar).filter('#dnt__notes-list-appbar--defaultmode');
+  expect(defaultAppbarWrapper.exists()).toBe(true);
 
   // Header bar should contain current folder's name but without Go Out Folder (aka Back) and Home icons
   const headerWrapper = wrapper.find(AppBar).filter('.dnt__notes-list-header');
   expect(headerWrapper.exists()).toBe(true);
   expect(headerWrapper.find(MuiToolbar).first().hasClass('dnt__notes-list-muitoolbar--centered')).toBe(true);
   expect(headerWrapper.find(Typography).render().text()).toEqual(props.currentFolderName);
-  // expect(headerWrapper.find(GoOutFolderIcon).exists()).toBe(false);
-  // expect(headerWrapper.find(HomeIcon).exists()).toBe(false);
+  expect(headerWrapper.find(GoOutFolderIcon).exists()).toBe(false);
+  expect(headerWrapper.find(HomeIcon).exists()).toBe(false);
 });

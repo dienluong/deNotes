@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should render Edit Mode correctly, i.e. header bar w/o Back and Home icons and app bar with DELETE and DONE buttons 1`] = `
+exports[`should render Edit Mode correctly, i.e. header bar w/o Back and Home icons and Edit Mode appbar visible 1`] = `
 <div
   className="dnt__notes-list"
 >
@@ -95,6 +95,7 @@ exports[`should render Edit Mode correctly, i.e. header bar w/o Back and Home ic
     >
       <WithStyles(AppBar)
         color="secondary"
+        id="dnt__notes-list-appbar--editmode"
         position="static"
       >
         <WithStyles(Toolbar)
@@ -125,6 +126,7 @@ exports[`should render Edit Mode correctly, i.e. header bar w/o Back and Home ic
     >
       <WithStyles(AppBar)
         color="default"
+        id="dnt__notes-list-appbar--defaultmode"
         position="static"
       >
         <WithStyles(Toolbar)
@@ -269,6 +271,7 @@ exports[`should render header, tree and app bar properly in non-root-view mode 1
     >
       <WithStyles(AppBar)
         color="secondary"
+        id="dnt__notes-list-appbar--editmode"
         position="static"
       >
         <WithStyles(Toolbar)
@@ -299,6 +302,7 @@ exports[`should render header, tree and app bar properly in non-root-view mode 1
     >
       <WithStyles(AppBar)
         color="default"
+        id="dnt__notes-list-appbar--defaultmode"
         position="static"
       >
         <WithStyles(Toolbar)
