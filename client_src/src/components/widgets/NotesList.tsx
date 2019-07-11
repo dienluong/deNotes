@@ -12,8 +12,8 @@ import IconButton from '@material-ui/core/IconButton';
 import HomeIcon from '@material-ui/icons/Home';
 import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import NewNoteIcon from '@material-ui/icons/NoteAdd';
-import GoOutFolderIcon from '@material-ui/icons/ArrowBackIosOutlined';
-import GoInFolderIcon from '@material-ui/icons/ArrowForwardIosOutlined';
+import ExitFolderIcon from '@material-ui/icons/ArrowBackIosOutlined';
+import EnterFolderIcon from '@material-ui/icons/ArrowForwardIosOutlined';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import Collapse from '@material-ui/core/Collapse';
@@ -117,7 +117,7 @@ function NotesList({
       }
     } else {
       if (node.type === nodeTypes.FOLDER) {
-        buttons.push(<GoInFolderIcon />);
+        buttons.push(<EnterFolderIcon />);
       }
     }
 
@@ -147,7 +147,7 @@ function NotesList({
         <MuiToolbar className={ rootViewOn || editMode ? styles['dnt__notes-list-muitoolbar--centered'] : styles['dnt__notes-list-muitoolbar'] } disableGutters>
           { !rootViewOn && !editMode && (
             <IconButton aria-label={ 'Go up a folder' } color="inherit" onClick={ backBtnHandler }>
-              <GoOutFolderIcon />
+              <ExitFolderIcon />
             </IconButton>
           )}
           <Typography inline variant={ size !== 'small' ? 'h5' : 'h6' } color="inherit">

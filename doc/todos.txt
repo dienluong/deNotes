@@ -86,7 +86,7 @@ recycle bin
 x Remove unused navigatePathThunkAction
 
 Update/create tests for:
-  NotesList.tsx
+  x NotesList.tsx
   NotesListDrawer.tsx
   NotesListContainer.tsx
   notesListActions.ts
