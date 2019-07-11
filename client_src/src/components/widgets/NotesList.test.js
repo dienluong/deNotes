@@ -9,9 +9,7 @@ import Collapse from '@material-ui/core/Collapse';
 import HomeIcon from '@material-ui/icons/Home';
 import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import NewNoteIcon from '@material-ui/icons/NoteAdd';
-import GoOutFolderIcon from '@material-ui/icons/ArrowBackIosOutlined';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import ExitFolderIcon from '@material-ui/icons/ArrowBackIosOutlined';
 import Tree, { find } from 'react-sortable-tree';
 import { getNodeKey, collapseFolders } from '../../utils/treeUtils';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
@@ -96,7 +94,7 @@ it('should render header, tree and app bar properly in non-root-view mode', () =
   expect(headerWrapper.find(Typography).render().text()).toEqual(props.currentFolderName);
   // Asserts UI elements specific to non-root-view mode
   expect(headerWrapper.find(MuiToolbar).first().hasClass('dnt__notes-list-muitoolbar')).toBe(true);
-  expect(headerWrapper.find(GoOutFolderIcon).exists()).toBe(true);
+  expect(headerWrapper.find(ExitFolderIcon).exists()).toBe(true);
   expect(headerWrapper.find(HomeIcon).exists()).toBe(true);
 });
 
@@ -130,7 +128,7 @@ it('should display only folder nodes and all direct child nodes of root, in root
   wrapper = shallow(<NotesList { ...props } />);
 
   // Asserts UI elements specific to root-view mode: Go Out Folder and Home icons should NOT be present
-  expect(wrapper.find(GoOutFolderIcon).exists()).toBe(false);
+  expect(wrapper.find(ExitFolderIcon).exists()).toBe(false);
   expect(wrapper.find(HomeIcon).exists()).toBe(false);
   expect(wrapper.find(MuiToolbar).filter('.dnt__notes-list-muitoolbar--centered').exists()).toBe(true);
 
@@ -508,25 +506,19 @@ it('should render Edit Mode correctly, i.e. header bar w/o Back and Home icons a
   wrapper = shallow(<NotesList { ...props } />);
   expect(wrapper).toMatchSnapshot();
 
-  const treeWrapper = wrapper.find(Tree);
-  expect(treeWrapper.exists()).toBe(true);
-  // Nodes selected in Edit Mode have its checkbox checked
-  // expect(treeWrapper.find(CheckBoxIcon).length).toEqual(props.editModeSelectedNodes.length);
-  // The remaining (non-selected) nodes have blank checkbox
-  // expect(treeWrapper.find(CheckBoxOutlineBlankIcon).length).toEqual(props.tree.length - props.editModeSelectedNodes.length);
+  expect(wrapper.find(Tree).exists()).toBe(true);
 
   // Edit Mode appbar should be visible (i.e. Collapse in=true)
-  const editAppbarWrapper = wrapper.find('div.dnt__notes-list-appbar').find(Collapse).filter('[in=true]').find(AppBar).filter('#dnt__notes-list-appbar--editmode');
-  expect(editAppbarWrapper.exists()).toBe(true);
+  expect(wrapper.find('#dnt__notes-list-appbar--editmode').parent().find(Collapse).prop('in')).toBe(true);
+
   // Default appbar should NOT be visible (i.e. Collapse in=false)
-  const defaultAppbarWrapper = wrapper.find('div.dnt__notes-list-appbar').find(Collapse).filter('[in=false]').find(AppBar).filter('#dnt__notes-list-appbar--defaultmode');
-  expect(defaultAppbarWrapper.exists()).toBe(true);
+  expect(wrapper.find('#dnt__notes-list-appbar--defaultmode').parent().find(Collapse).prop('in')).toBe(false);
 
   // Header bar should contain current folder's name but without Go Out Folder (aka Back) and Home icons
   const headerWrapper = wrapper.find(AppBar).filter('.dnt__notes-list-header');
   expect(headerWrapper.exists()).toBe(true);
   expect(headerWrapper.find(MuiToolbar).first().hasClass('dnt__notes-list-muitoolbar--centered')).toBe(true);
   expect(headerWrapper.find(Typography).render().text()).toEqual(props.currentFolderName);
-  expect(headerWrapper.find(GoOutFolderIcon).exists()).toBe(false);
+  expect(headerWrapper.find(ExitFolderIcon).exists()).toBe(false);
   expect(headerWrapper.find(HomeIcon).exists()).toBe(false);
 });
