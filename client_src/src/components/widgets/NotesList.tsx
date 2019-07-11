@@ -172,7 +172,7 @@ function NotesList({
       />
       <div className={ styles['dnt__notes-list-appbar'] }>
         <Collapse in={ editMode }>
-          <AppBar position="static" color="secondary">
+          <AppBar position="static" color="secondary" id="dnt__notes-list-appbar--editmode" >
             <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
               <IconButton aria-label={ 'Delete' } disabled={ !editModeSelectedNodes.length } onClick={ deleteNodeBtnHandler }>
                 <Typography>DELETE</Typography>
@@ -184,7 +184,7 @@ function NotesList({
           </AppBar>
         </Collapse>
         <Collapse in={ !editMode }>
-          <AppBar position="static" color="default">
+          <AppBar position="static" color="default" id="dnt__notes-list-appbar--defaultmode" >
             <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
               <IconButton aria-label={ 'New Folder' } color="primary" onClick={ toolbarHandlers[0] }>
                 <NewFolderIcon />
