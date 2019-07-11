@@ -15,7 +15,7 @@ type PropsT = {
 
 function NotesListDrawer({ drawerOpen, drawerSide, size, handleDrawerToggle, drawerCloseHandler, ...otherProps }: PropsT & NotesListPropsT) {
 
-  function onCloseHandler() {
+  function _onCloseHandler() {
     drawerCloseHandler();
     handleDrawerToggle();
   }
@@ -26,7 +26,7 @@ function NotesListDrawer({ drawerOpen, drawerSide, size, handleDrawerToggle, dra
           variant="temporary"
           anchor={ drawerSide }
           open={ drawerOpen }
-          onClose={ onCloseHandler }
+          onClose={ _onCloseHandler }
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
           }}
