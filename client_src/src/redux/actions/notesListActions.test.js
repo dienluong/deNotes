@@ -35,7 +35,7 @@ describe('1. selectNodeThunkAction ', () => {
     mockedSave.mockClear();
   });
 
-  it('should 1) save content, 2) dispatch SELECT_NODE and 3) return Promise(action), when FOLDER node is selected', () => {
+  it('when in non-Edit Mode, should 1) save content, 2) dispatch SELECT_NODE and 3) return Promise(action), when FOLDER node is selected', () => {
     const mockedState = {
       ...initialState,
       notesTree: {
@@ -67,7 +67,8 @@ describe('1. selectNodeThunkAction ', () => {
 
     mockedSave.mockImplementation(() => Promise.resolve({}));
 
-    // Note: since the active folder is not the root folder, the path provided is not the absolute path to the selected item
+    // Note: since the active folder is not the root folder, the path provided is not the absolute path to the selected item;
+    // instead, it is the path relative to the current active folder.
     expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id: selectedFolderId, path: [selectedFolderId] }))).toMatchObject(expectedActions[0]);
     // expect content to be saved
     expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
@@ -117,7 +118,7 @@ describe('1. selectNodeThunkAction ', () => {
     expect(fetchEditorContentThunkAction).not.toBeCalled();
   });
 
-  it('should 1) save content, 2) dispatch SELECT_NODE, 3) fetch content and 4) return Promise(action), when ITEM node is selected', () => {
+  it('when in non-Edit Mode, should 1) save content, 2) dispatch SELECT_NODE and FETCH_EDITOR_CONTENT_SUCCESS and 3) fetch content, when ITEM node selected', () => {
     const mockedState = {
       ...initialState,
       notesTree: {
@@ -178,8 +179,9 @@ describe('1. selectNodeThunkAction ', () => {
     expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
     expect(fetchEditorContentThunkAction).lastCalledWith({ noteId: selectedItem.uniqid });
     expect(mockedStore.getActions()).toEqual(expectedActions);
+    mockedStore.clearActions();
 
-    // ---> test case where active node is not the root folder
+    // ---> test case where active folder is not the root folder
     mockedState.activeNode = {
       id: mockedTree[0].children[2].children[0].id,
       path: [mockedTree[0].id, mockedTree[0].children[2].id, mockedTree[0].children[2].children[0].id],
@@ -217,14 +219,15 @@ describe('1. selectNodeThunkAction ', () => {
     ];
 
 
-    // Note: since the active folder is not the root folder, the path provided is not the absolute path to the selected item
+    // Note: since the active folder is not the root folder, the path provided is not the absolute path to the selected item;
+    // instead, it is the path relative to the current active folder.
     expect(mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id: selectedItem.id, path: [selectedItem.id] }))).toMatchObject(expectedActions[0]);
     expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
     expect(fetchEditorContentThunkAction).lastCalledWith({ noteId: selectedItem.uniqid });
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 
-  it('should *not* fetch if note selected is already loaded', () => {
+  it('when in non-Edit Mode, should *not* fetch if note selected is already loaded', () => {
     // We select an ITEM node
     const itemToSelect = mockedTree[1];
     // To simulate note already loaded, create state with active node ID and editor content ID from the item selected in test
@@ -251,6 +254,84 @@ describe('1. selectNodeThunkAction ', () => {
 
     mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id: itemToSelect.id, path: [itemToSelect.id] }));
     expect(fetchEditorContentThunkAction).not.toBeCalled();
+  });
+
+  it('when in Edit Mode, dispatch EDIT_MODE_SELECT_NODE when node is selected', () => {
+    let mockedState = {
+      ...initialState,
+      notesTree: {
+        ...initialState.notesTree,
+        editMode: true,
+        editModeSelectedNodes: [],
+        tree: mockedTree,
+      },
+      activeNode: {
+        id: mockedTree[1].id,
+        path: [mockedTree[1].id],
+      },
+      editorContent: {
+        ...initialState.editorContent,
+        id: 111000222,
+        dateModified: 4321,
+        dateCreated: 1234,
+      },
+    };
+
+    // we select a node from the root folder
+    let selectedItem = mockedTree[0];
+    // create a mocked store that returns a state based on type of the last action
+    let mockedStore = mockStore(mockedState);
+    let expectedActions = [
+      {
+        type: notesListActionTypes.EDIT_MODE_SELECT_NODE,
+        payload: { nodeId: selectedItem.id, path: [selectedItem.id] },
+      },
+    ];
+
+    // Note: with root as the active folder, the path sent is the absolute path to the selected node
+    mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id: selectedItem.id, path: [selectedItem.id] }));
+    expect(mockedStore.getActions()).toEqual(expectedActions);
+    expect(fetchEditorContentThunkAction).not.toBeCalled();
+    expect(mockedSave).not.toBeCalled();
+    mockedStore.clearActions();
+
+    // ---> test case where active folder is NOT the root folder
+    mockedState = {
+      ...initialState,
+      notesTree: {
+        ...initialState.notesTree,
+        editMode: true,
+        editModeSelectedNodes: [],
+        tree: mockedTree,
+      },
+      activeNode: {
+        id: mockedTree[0].id,
+        path: [mockedTree[0].id],
+      },
+      editorContent: {
+        ...initialState.editorContent,
+        id: 111000222,
+        dateModified: 4321,
+        dateCreated: 1234,
+      },
+    };
+    // we select a node from the active folder (which is not the root folder)
+    selectedItem = mockedTree[0].children[2];
+    // create a mocked store that returns a state based on type of the last action
+    mockedStore = mockStore(mockedState);
+    expectedActions = [
+      {
+        type: notesListActionTypes.EDIT_MODE_SELECT_NODE,
+        payload: { nodeId: selectedItem.id, path: [mockedState.activeNode.id, selectedItem.id] },
+      },
+    ];
+
+    // Note: since the active folder is not the root folder, the path provided is not the absolute path to the selected item;
+    // instead, it is the path relative to the current active folder.
+    mockedStore.dispatch(moduleToTest.selectNodeThunkAction({ id: selectedItem.id, path: [selectedItem.id] }));
+    expect(mockedStore.getActions()).toEqual(expectedActions);
+    expect(fetchEditorContentThunkAction).not.toBeCalled();
+    expect(mockedSave).not.toBeCalled();
   });
 });
 
@@ -954,6 +1035,8 @@ describe('4. fetchNotesTreeThunkAction ', () => {
     const expectedDefaultTree = {
       id: expect.any(String),
       tree: [],
+      editMode: false,
+      editModeSelectedNodes: [],
       dateCreated: expectedDate,
       dateModified: expectedDate,
     };
@@ -1012,6 +1095,8 @@ describe('4. fetchNotesTreeThunkAction ', () => {
     const expectedDefaultTree = {
       id: expect.any(String),
       tree: [],
+      editMode: false,
+      editModeSelectedNodes: [],
       dateCreated: expectedDate,
       dateModified: expectedDate,
     };
@@ -1053,70 +1138,6 @@ describe('4. fetchNotesTreeThunkAction ', () => {
     // current editor content should be saved
     expect(mockedSave).lastCalledWith(mockedStore.getState().editorContent);
     expect(mockedLoad).lastCalledWith({ userId: expectedUserId });
-    expect(mockedStore.getActions()).toEqual(expectedActions);
-  });
-});
-
-/**
- * navigatePathThunkAction
- */
-describe('5. navigatePathThunkAction ', () => {
-  let mockedStore = mockStore({});
-  let mockedSave = jest.fn();
-
-  beforeEach(() => {
-    // inject mocked dependency
-    moduleToTest.use({ editorContentStorage: { save: mockedSave } });
-  });
-
-  afterEach(() => {
-    mockedStore.clearActions();
-    mockedSave.mockClear();
-  });
-
-  it('should save opened note and dispatch NAVIGATE_PATH action', () => {
-    // Select an active node
-    const selectedNode = mockedTree[0].children[2].children[1];
-    const selectedNodeInfo = find({
-      getNodeKey: treeUtils.getNodeKey,
-      treeData: mockedTree,
-      searchQuery: selectedNode.id,
-      searchMethod: ({ node, searchQuery }) => node.id === searchQuery,
-    }).matches[0];
-    // Create mocked store
-    const mockedEditorContent = {
-      ...initialState.editorContent,
-      id: 'ID of opened note',
-      dateModified: 111222,
-      dateCreated: 444555,
-    };
-    mockedStore = mockStore({
-      ...initialState,
-      editorContent: mockedEditorContent,
-      notesTree: {
-        ...initialState.notesTree,
-        tree: mockedTree,
-      },
-      activeNode: {
-        id: selectedNodeInfo.node.id,
-        path: selectedNodeInfo.path,
-      },
-    });
-    // Select an arbitrary path index to navigate to
-    const navPathIndex = 1;
-    const expectedActions = [
-      {
-        type: notesListActionTypes.NAVIGATE_PATH,
-        payload: {
-          idx: navPathIndex,
-        },
-
-      },
-    ];
-    mockedSave.mockImplementation(() => Promise.resolve('save success'));
-
-    expect(mockedStore.dispatch(moduleToTest.navigatePathThunkAction({ idx: navPathIndex }))).toMatchObject(expectedActions[0]);
-    expect(mockedSave).lastCalledWith(mockedEditorContent);
     expect(mockedStore.getActions()).toEqual(expectedActions);
   });
 });
