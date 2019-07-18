@@ -90,7 +90,7 @@ Update/create tests for:
   x NotesListDrawer.tsx
   x NotesListContainer.tsx
   x notesListActions.ts
-  reducers/index.ts
+  x reducers/index.ts
   notesTreeReducer.ts
   treeUtils.ts
   activeNodeReducer.ts

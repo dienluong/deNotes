@@ -90,7 +90,9 @@ function _deleteNode({ notesTree, now }: { notesTree: NotesTreeT, now: number })
         }) as TreeNodeT[];
 
         changed = true;
-      } catch (error) {}
+      } catch (error) {
+        //TODO: handle error
+      }
     }
   }
 
