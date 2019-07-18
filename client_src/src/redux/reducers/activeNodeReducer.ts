@@ -56,12 +56,11 @@ function _goUpAFolder({ currentActive }: { currentActive: ActiveNodeT })
 function _changeActiveNodeOnDelete({ currentActive, deletedNodeIds }: { currentActive: ActiveNodeT, deletedNodeIds: Array<TreeNodeT['id']> })
   : ActiveNodeT {
   let newActive: ActiveNodeT = currentActive;
-  // if any deleted nodes is part of the active path, re-adjust the active node
-  let smallestFoundIdx = currentActive.path.findIndex(id => deletedNodeIds.includes(id));
-  if (smallestFoundIdx >= 0) {
-      // Since deleted node is part of active path, truncate the path to find parent folder
-      const newActivePath: ActiveNodeT['path'] = [...(currentActive.path.slice(0, smallestFoundIdx))];
-      // If the deleted node was at the root, then use NONE_SELECTED as new active node.
+  // if any of deleted nodes is the active node, re-adjust the active node
+  if (deletedNodeIds.includes(currentActive.id)) {
+      // Since deleted node is the active node, truncate the path to find its parent folder
+      const newActivePath: ActiveNodeT['path'] = currentActive.path.slice(0, -1);
+      // If the deleted node was at the root, then set NONE_SELECTED as new active node.
       if (!newActivePath.length) {
         newActivePath[0] = NONE_SELECTED;
       }
