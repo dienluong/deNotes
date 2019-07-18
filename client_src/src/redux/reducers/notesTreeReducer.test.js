@@ -13,6 +13,8 @@ describe('notesTreeReducer ', () => {
     currentState = {
       id: 'my-current-state',
       tree: currentTree,
+      editMode: false,
+      editModeSelectedNodes: [],
       dateCreated: 1000,
       dateModified: 2000,
     };
@@ -24,8 +26,8 @@ describe('notesTreeReducer ', () => {
 
   it('should return current state if no payload received', () => {
     currentState = {
+      ...currentState,
       id: 'current tree ID',
-      tree: currentTree,
       dateCreated: 12340,
       dateModified: 56789,
     };
@@ -126,30 +128,40 @@ describe('notesTreeReducer ', () => {
     })).toBe(currentState);
   });
 
-  it('should, on DELETE_NODE, return a tree with the specified node removed.', () => {
+  it('should, on DELETE_NODE, return a tree with the specified nodes removed.', () => {
     const expectedDate = 300300;
-    // New tree is current tree but with one node removed
+    // New tree is current tree but with two nodes removed. (Using parse.stringify to make a copy of currentTree.)
     const expectedNewTree = JSON.parse(JSON.stringify(currentTree));
-    expectedNewTree.splice(0, 1);
+    // select first and last nodes for deletion; should work even if some IDs are missing from tree
+    const nodesToDelete = [(expectedNewTree.shift()).id, (expectedNewTree.pop()).id, 'non-existant ID'];
     const expectedNewState = {
       ...currentState,
+      editMode: true,
+      editModeSelectedNodes: [],
       tree: expectedNewTree,
       dateModified: expectedDate,
     };
 
-    expect(reducer(currentState, {
+    expect(reducer({
+      ...currentState,
+      editMode: true,
+      editModeSelectedNodes: nodesToDelete,
+    }, {
       type: notesListActionTypes.DELETE_NODE,
       payload: {
-        nodeToDelete: currentTree[0],
         now: expectedDate,
       },
     })).toEqual(expectedNewState);
 
-    // And should return current state if node to delete does not exist on tree
+    // And should return current state if no node selected for deletion
+    currentState = {
+      ...currentState,
+      editMode: true,
+      editModeSelectedNodes: [],
+    };
     expect(reducer(currentState, {
       type: notesListActionTypes.DELETE_NODE,
       payload: {
-        nodeToDelete: { id: 'non-existant' },
         now: expectedDate,
       },
     })).toBe(currentState);
@@ -264,4 +276,49 @@ describe('notesTreeReducer ', () => {
       },
     })).toBe(currentState);
   });
+
+  it('should, on SET_EDIT_MODE, return state with updated Edit Mode indicator', () => {
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SET_EDIT_MODE,
+      payload: {
+        value: true,
+      },
+    })).toEqual({
+      ...currentState,
+      editMode: true,
+      editModeSelectedNodes: [],
+    });
+
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SET_EDIT_MODE,
+      payload: {
+        value: false,
+      },
+    })).toBe(currentState);
+
+    currentState = {
+      ...currentState,
+      editMode: true,
+      editModeSelectedNodes: ['ID 1', 'ID 2'],
+    };
+
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SET_EDIT_MODE,
+      payload: {
+        value: true,
+      },
+    })).toBe(currentState);
+
+    expect(reducer(currentState, {
+      type: notesListActionTypes.SET_EDIT_MODE,
+      payload: {
+        value: false,
+      },
+    })).toEqual({
+      ...currentState,
+      editMode: false,
+      editModeSelectedNodes: [],
+    });
+  });
 });
+
