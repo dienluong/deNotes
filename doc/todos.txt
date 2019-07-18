@@ -93,7 +93,7 @@ Update/create tests for:
   x reducers/index.ts
   x notesTreeReducer.ts
   x treeUtils.ts
-  activeNodeReducer.ts
-  notesTreeStorage.ts
+  x activeNodeReducer.ts
+  x notesTreeStorage.ts
 
 Review remoteStorage data modules for discrepancies.
