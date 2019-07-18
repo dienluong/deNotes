@@ -320,5 +320,44 @@ describe('notesTreeReducer ', () => {
       editModeSelectedNodes: [],
     });
   });
+
+  it('should, on EDIT_MODE_SELECT_NODE, remove or add accordingly the given node ID from the list of selected nodes', () => {
+    const selectedNode = {
+      nodeId: mockedTree[0].children[2].children[0].id,
+      path: [mockedTree[0].id, mockedTree[0].children[2].id, mockedTree[0].children[2].children[0].id],
+    };
+
+    let action = {
+      type: notesListActionTypes.EDIT_MODE_SELECT_NODE,
+      payload: selectedNode,
+    };
+
+    // should add selected node ID to editModeSelectedNodes
+    expect(reducer(currentState, action)).toEqual({
+      ...currentState,
+      editModeSelectedNodes: [selectedNode.nodeId],
+    });
+
+    // should remove node ID from editModeSelectedNodes
+    expect(reducer({
+      ...currentState,
+      editMode: true,
+      editModeSelectedNodes: [selectedNode.nodeId],
+    }, action)).toEqual({
+      ...currentState,
+      editMode: true,
+      editModeSelectedNodes: [],
+    });
+
+    // returns current state if selected node does not exist in tree
+    action = {
+      ...action,
+      payload: {
+        nodeId: 'fake ID',
+        path: ['fake path', 'fake ID'],
+      },
+    };
+    expect(reducer(currentState, action)).toBe(currentState);
+  });
 });
 
