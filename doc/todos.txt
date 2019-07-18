@@ -91,8 +91,8 @@ Update/create tests for:
   x NotesListContainer.tsx
   x notesListActions.ts
   x reducers/index.ts
-  notesTreeReducer.ts
-  treeUtils.ts
+  x notesTreeReducer.ts
+  x treeUtils.ts
   activeNodeReducer.ts
   notesTreeStorage.ts
 
