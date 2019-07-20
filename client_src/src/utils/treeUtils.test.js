@@ -195,3 +195,25 @@ describe('4. collapseFolders', () => {
     expect.assertions(newTree.length);
   });
 });
+
+describe('5. getDescendants', () => {
+  it('returns an array of all descendants of given node, including itself', () => {
+    // expects the folder and its children to be returned
+    let expectedArray = [mockedTree[0].children[2], ...mockedTree[0].children[2].children];
+    expect(moduleToTest.getDescendants({ tree: mockedTree, nodeId: mockedTree[0].children[2].id })).toEqual(expectedArray);
+    // case where node is an ITEM, i.e. not a folder
+    expectedArray = [mockedTree[0].children[1]];
+    expect(moduleToTest.getDescendants({ tree: mockedTree, nodeId: mockedTree[0].children[1].id })).toEqual(expectedArray);
+    // case where folder is empty
+    expectedArray = [mockedTree[2]];
+    expect(moduleToTest.getDescendants({ tree: mockedTree, nodeId: mockedTree[2].id })).toEqual(expectedArray);
+  });
+
+  it('returns an empty array if invalid parameter was given', () => {
+    expect(moduleToTest.getDescendants({ tree: mockedTree, nodeId: '' })).toEqual([]);
+    expect(moduleToTest.getDescendants({ tree: mockedTree, nodeId: 'does not exist' })).toEqual([]);
+    expect(moduleToTest.getDescendants({ tree: mockedTree, nodeId: 2 })).toEqual([]);
+    expect(moduleToTest.getDescendants({ tree: [], nodeId: mockedTree[0].id })).toEqual([]);
+    expect(moduleToTest.getDescendants({ tree: 'not a tree', nodeId: mockedTree[0].id })).toEqual([]);
+  });
+});

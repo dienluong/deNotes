@@ -172,7 +172,7 @@ describe('2. save', () => {
   });
 });
 
-describe('3. remove', async() => {
+describe('3. remove', () => {
   it('should return an Error in rejected Promise if invoked with no dependency injected beforehand', async() => {
     const userId = 'some-user-id';
     const ids = ['id1', 'id2'];

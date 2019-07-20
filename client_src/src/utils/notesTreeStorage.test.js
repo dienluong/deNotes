@@ -128,9 +128,11 @@ describe('2. load', () => {
     const mockedLoad = jest.fn().mockImplementation(() => Promise.resolve(notesTree));
     moduleToTest.inject({ load: mockedLoad });
 
-    await expect(moduleToTest.load({ id, userId })).resolves.toMatchObject({
+    await expect(moduleToTest.load({ id, userId })).resolves.toEqual({
       ...notesTree,
       tree: [{ id: 'a-node-id' }],
+      editMode: false,
+      editModeSelectedNodes: [],
       dateCreated: expectedCreatedTimeStamp,
       dateModified: expectedModifiedTimeStamp,
     });

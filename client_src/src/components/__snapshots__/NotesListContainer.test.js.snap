@@ -13,7 +13,17 @@ exports[`renders NotesListDrawer correctly with prop values taken from redux sto
   backBtnHandler={[Function]}
   currentFolderName="folder root0"
   deleteNodeBtnHandler={[Function]}
+  drawerCloseHandler={[Function]}
   dummyProp="dummy"
+  editBtnHandler={[Function]}
+  editDoneBtnHandler={[Function]}
+  editMode={true}
+  editModeSelectedNodes={
+    Array [
+      "selected_id1",
+      "selected_id2",
+    ]
+  }
   getNodeKey={[Function]}
   homeBtnHandler={[Function]}
   nodeClickHandler={[Function]}

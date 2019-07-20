@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should render header, tree and app bar properly in non-root-view mode 1`] = `
+exports[`should render Edit Mode correctly, i.e. header bar w/o Back and Home icons and Edit Mode appbar visible 1`] = `
 <div
   className="dnt__notes-list"
 >
@@ -10,33 +10,19 @@ exports[`should render header, tree and app bar properly in non-root-view mode 1
     position="static"
   >
     <WithStyles(Toolbar)
-      className="dnt__notes-list-muitoolbar"
+      className="dnt__notes-list-muitoolbar--centered"
       disableGutters={true}
     >
-      <WithStyles(IconButton)
-        aria-label="Go up a folder"
-        color="inherit"
-        onClick={[MockFunction]}
-      >
-        <pure(ArrowBackIosIcon) />
-      </WithStyles(IconButton)>
       <WithStyles(Typography)
         color="inherit"
         inline={true}
-        variant="h6"
+        variant="h5"
       >
         TEST FOLDER NAME
       </WithStyles(Typography)>
-      <WithStyles(IconButton)
-        aria-label="Home"
-        color="inherit"
-        onClick={[MockFunction]}
-      >
-        <pure(HomeIcon) />
-      </WithStyles(IconButton)>
     </WithStyles(Toolbar)>
   </WithStyles(AppBar)>
-  <DragDropContext(ReactSortableTree)
+  <DragDropContext(SortableTreeWithoutDndContext)
     className="tree dnt__tree"
     generateNodeProps={[Function]}
     getNodeKey={[Function]}
@@ -104,29 +90,250 @@ exports[`should render header, tree and app bar properly in non-root-view mode 1
   <div
     className="dnt__notes-list-appbar"
   >
-    <WithStyles(AppBar)
-      color="default"
-      position="static"
+    <WithStyles(Collapse)
+      in={true}
     >
-      <WithStyles(Toolbar)
-        className="dnt__notes-list-muitoolbar"
+      <WithStyles(AppBar)
+        color="secondary"
+        id="dnt__notes-list-appbar--editmode"
+        position="static"
       >
-        <WithStyles(IconButton)
-          aria-label="New Folder"
-          color="primary"
-          onClick={[MockFunction]}
+        <WithStyles(Toolbar)
+          className="dnt__notes-list-muitoolbar"
         >
-          <pure(CreateNewFolderIcon) />
-        </WithStyles(IconButton)>
-        <WithStyles(IconButton)
-          aria-label="New Note"
-          color="primary"
-          onClick={[MockFunction]}
+          <WithStyles(IconButton)
+            aria-label="Delete"
+            disabled={false}
+            onClick={[MockFunction]}
+          >
+            <WithStyles(Typography)>
+              DELETE
+            </WithStyles(Typography)>
+          </WithStyles(IconButton)>
+          <WithStyles(IconButton)
+            aria-label="Done"
+            onClick={[MockFunction]}
+          >
+            <WithStyles(Typography)>
+              DONE
+            </WithStyles(Typography)>
+          </WithStyles(IconButton)>
+        </WithStyles(Toolbar)>
+      </WithStyles(AppBar)>
+    </WithStyles(Collapse)>
+    <WithStyles(Collapse)
+      in={false}
+    >
+      <WithStyles(AppBar)
+        color="default"
+        id="dnt__notes-list-appbar--defaultmode"
+        position="static"
+      >
+        <WithStyles(Toolbar)
+          className="dnt__notes-list-muitoolbar"
         >
-          <pure(NoteAddIcon) />
-        </WithStyles(IconButton)>
-      </WithStyles(Toolbar)>
-    </WithStyles(AppBar)>
+          <WithStyles(IconButton)
+            aria-label="New Folder"
+            color="primary"
+            onClick={[MockFunction]}
+          >
+            <pure(CreateNewFolderIcon) />
+          </WithStyles(IconButton)>
+          <WithStyles(IconButton)
+            aria-label="Edit"
+            color="primary"
+            onClick={[MockFunction]}
+          >
+            <WithStyles(Typography)>
+              EDIT
+            </WithStyles(Typography)>
+          </WithStyles(IconButton)>
+          <WithStyles(IconButton)
+            aria-label="New Note"
+            color="primary"
+            onClick={[MockFunction]}
+          >
+            <pure(NoteAddIcon) />
+          </WithStyles(IconButton)>
+        </WithStyles(Toolbar)>
+      </WithStyles(AppBar)>
+    </WithStyles(Collapse)>
+  </div>
+</div>
+`;
+
+exports[`should render header, tree and app bar properly in non-root-view mode 1`] = `
+<div
+  className="dnt__notes-list"
+>
+  <WithStyles(AppBar)
+    className="dnt__notes-list-header"
+    color="primary"
+    position="static"
+  >
+    <WithStyles(Toolbar)
+      className="dnt__notes-list-muitoolbar"
+      disableGutters={true}
+    >
+      <WithStyles(IconButton)
+        aria-label="Go up a folder"
+        color="inherit"
+        onClick={[MockFunction]}
+      >
+        <pure(ArrowBackIosOutlinedIcon) />
+      </WithStyles(IconButton)>
+      <WithStyles(Typography)
+        color="inherit"
+        inline={true}
+        variant="h6"
+      >
+        TEST FOLDER NAME
+      </WithStyles(Typography)>
+      <WithStyles(IconButton)
+        aria-label="Home"
+        color="inherit"
+        onClick={[MockFunction]}
+      >
+        <pure(HomeIcon) />
+      </WithStyles(IconButton)>
+    </WithStyles(Toolbar)>
+  </WithStyles(AppBar)>
+  <DragDropContext(SortableTreeWithoutDndContext)
+    className="tree dnt__tree"
+    generateNodeProps={[Function]}
+    getNodeKey={[Function]}
+    onChange={[MockFunction]}
+    rowHeight={62}
+    theme={
+      Object {
+        "nodeContentRenderer": [Function],
+        "scaffoldBlockPxWidth": 20,
+        "treeNodeRenderer": [Function],
+      }
+    }
+    treeData={
+      Array [
+        Object {
+          "id": "ITEM_NODE|^|2",
+          "subtitle": "",
+          "title": "note root0.children0",
+          "type": "ITEM_NODE",
+          "uniqid": "2",
+        },
+        Object {
+          "id": "ITEM_NODE|^|3",
+          "subtitle": "",
+          "title": "note root0.children1",
+          "type": "ITEM_NODE",
+          "uniqid": "3",
+        },
+        Object {
+          "children": Array [
+            Object {
+              "id": "ITEM_NODE|^|5",
+              "subtitle": "",
+              "title": "note root0.children2.children0",
+              "type": "ITEM_NODE",
+              "uniqid": "5",
+            },
+            Object {
+              "id": "ITEM_NODE|^|6",
+              "subtitle": "",
+              "title": "note root0.children2.children1",
+              "type": "ITEM_NODE",
+              "uniqid": "6",
+            },
+          ],
+          "expanded": false,
+          "id": "FOLDER_NODE|^|4",
+          "subtitle": "",
+          "title": "folder root0.children2",
+          "type": "FOLDER_NODE",
+          "uniqid": "4",
+        },
+        Object {
+          "children": Array [],
+          "expanded": false,
+          "id": "FOLDER_NODE|^|7",
+          "subtitle": "",
+          "title": "folder root0.children3",
+          "type": "FOLDER_NODE",
+          "uniqid": "7",
+        },
+      ]
+    }
+  />
+  <div
+    className="dnt__notes-list-appbar"
+  >
+    <WithStyles(Collapse)
+      in={false}
+    >
+      <WithStyles(AppBar)
+        color="secondary"
+        id="dnt__notes-list-appbar--editmode"
+        position="static"
+      >
+        <WithStyles(Toolbar)
+          className="dnt__notes-list-muitoolbar"
+        >
+          <WithStyles(IconButton)
+            aria-label="Delete"
+            disabled={true}
+            onClick={[MockFunction]}
+          >
+            <WithStyles(Typography)>
+              DELETE
+            </WithStyles(Typography)>
+          </WithStyles(IconButton)>
+          <WithStyles(IconButton)
+            aria-label="Done"
+            onClick={[MockFunction]}
+          >
+            <WithStyles(Typography)>
+              DONE
+            </WithStyles(Typography)>
+          </WithStyles(IconButton)>
+        </WithStyles(Toolbar)>
+      </WithStyles(AppBar)>
+    </WithStyles(Collapse)>
+    <WithStyles(Collapse)
+      in={true}
+    >
+      <WithStyles(AppBar)
+        color="default"
+        id="dnt__notes-list-appbar--defaultmode"
+        position="static"
+      >
+        <WithStyles(Toolbar)
+          className="dnt__notes-list-muitoolbar"
+        >
+          <WithStyles(IconButton)
+            aria-label="New Folder"
+            color="primary"
+            onClick={[MockFunction]}
+          >
+            <pure(CreateNewFolderIcon) />
+          </WithStyles(IconButton)>
+          <WithStyles(IconButton)
+            aria-label="Edit"
+            color="primary"
+            onClick={[MockFunction]}
+          >
+            <WithStyles(Typography)>
+              EDIT
+            </WithStyles(Typography)>
+          </WithStyles(IconButton)>
+          <WithStyles(IconButton)
+            aria-label="New Note"
+            color="primary"
+            onClick={[MockFunction]}
+          >
+            <pure(NoteAddIcon) />
+          </WithStyles(IconButton)>
+        </WithStyles(Toolbar)>
+      </WithStyles(AppBar)>
+    </WithStyles(Collapse)>
   </div>
 </div>
 `;

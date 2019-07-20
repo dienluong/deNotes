@@ -81,14 +81,7 @@ export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path:
         }
       };
     }
-    // Immediately save currently opened note
-    const currentEditorContent = rootReducer.selectEditorContent(getState());
-    if (currentEditorContent.id) {
-      _editorContentStorage.save(currentEditorContent)
-        .catch((err: Error) => { console.log(err); }); // TODO: log error?
-    }
 
-    let returnVal;
     const parentIdx = findDeepestFolder(rootReducer.selectActiveNodePath(getState()));
     if (parentIdx === null) {
       return {
@@ -98,8 +91,40 @@ export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path:
         },
       };
     }
+
+    // If selection was done during tree Edit Mode
+    if (rootReducer.selectNotesTreeEditMode(getState())) {
+      if (parentIdx === -1) {
+        // If at root folder, then use received path because that path is the absolute path to the selected node
+        return dispatch({
+          type: notesListActionTypes.EDIT_MODE_SELECT_NODE,
+          payload: {
+            nodeId: id,
+            path,
+          },
+        });
+      } else {
+        // If not at root, then path received is only partial. So construct absolute path to selected node w/ the current active path.
+        return dispatch({
+          type: notesListActionTypes.EDIT_MODE_SELECT_NODE,
+          payload: {
+            nodeId: id,
+            path: [...rootReducer.selectActiveNodePath(getState()).slice(0, parentIdx + 1), id],
+          },
+        });
+      }
+    }
+
+    /* >>>>> Section below is for selection done outside of tree Edit Mode <<<<< */
+    // Immediately save currently opened note
+    const currentEditorContent = rootReducer.selectEditorContent(getState());
+    if (currentEditorContent.id) {
+      _editorContentStorage.save(currentEditorContent)
+        .catch((err: Error) => { console.log(err); }); // TODO: log error?
+    }
+
+    let returnVal;
     // If at root folder, then use received path because that path is the absolute path to the selected node
-    // If not at root, then construct the path to the selected node from the current active path.
     if (parentIdx === -1) {
       returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
@@ -109,6 +134,7 @@ export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path:
         },
       });
     } else {
+      // If not at root, then path received is only partial. So construct absolute path to selected node w/ the current active path.
       returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
         payload: {
@@ -138,42 +164,44 @@ export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path:
 
 /**
  * ...
- * @param {Object} params
- * @param {Object} params.node
  */
-export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
+export function deleteNodeThunkAction()
   : ThunkAction<Promise<AnyAction>, AppStateT, any, AnyAction> {
   return (dispatch, getState) => {
-    let itemIds: Array<string> = [];
+    let itemUniqids: string[] = [];
+    const selectedNodeIds = rootReducer.selectNotesTreeEditModeSelectedNodes(getState());
 
-    // Collect the uniqid of all items to delete.
-    if (node.type === nodeTypes.ITEM) {
-      itemIds = [node.uniqid];
-    } else if (node.type === nodeTypes.FOLDER) {
-      if (node.children && node.children.length) {
-        itemIds = getDescendantItems({ node }).map(node => node.uniqid);
-      } else {
-        itemIds = [];
+    // Collect the uniqid of all items to be deleted
+    selectedNodeIds.forEach(id => {
+      const nodeInfo = translateNodeIdToInfo({ nodeId: id });
+      if (nodeInfo) {
+        if (nodeInfo.type === nodeTypes.ITEM) {
+          itemUniqids.push(nodeInfo.uniqid);
+        } else if (nodeInfo.type === nodeTypes.FOLDER) {
+          getDescendantItems({ nodeId: id, tree: rootReducer.selectNotesTreeTree(getState()) }).forEach(node => itemUniqids.push(node.uniqid));
+        }
       }
-    }
+    });
+
     // dispatch action to delete note(s) from storage
-    return dispatch(removeNoteThunkAction({ ids: itemIds }))
+    return dispatch(removeNoteThunkAction({ ids: itemUniqids }))
       .then((action: AnyAction) => {
         console.log(`Number of notes deleted: ${ action.payload.count }`); // TODO: remove
         // if delete from storage succeeded, then remove node from tree
         const retVal = dispatch({
           type: notesListActionTypes.DELETE_NODE,
           payload: {
-            nodeToDelete: node,
             now: Date.now(),
           },
         });
 
-        // If deleted node is part of the active path, then switch to a new active node
-        if (rootReducer.selectActiveNodePath(getState()).lastIndexOf(node.id) >= 0) {
-          dispatch(switchActiveNodeOnDeleteAction({ deletedNodeId: node.id }));
-          // TODO Load blank editor canvas
-        }
+        // If any deleted node is part of the active path, then switch to a new active node
+        dispatch({
+          type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
+          payload: {
+            deletedNodeIds: selectedNodeIds,
+          },
+        });
 
         return retVal;
       })
@@ -181,21 +209,6 @@ export function deleteNodeThunkAction({ node }: { node: TreeNodeT })
         window.alert(`ERROR deleting saved note: ${ err.message }`);
         return err.action;
       });
-  };
-}
-
-/**
- * ...
- * @param {Object} params
- * @param {string} params.deletedNodeId
- */
-export function switchActiveNodeOnDeleteAction({ deletedNodeId }: { deletedNodeId: TreeNodeT['id'] })
-  : AnyAction {
-  return {
-    type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
-    payload: {
-      deletedNodeId: deletedNodeId,
-    },
   };
 }
 
@@ -342,6 +355,8 @@ export function fetchNotesTreeThunkAction()
         const defaultNotesTree: NotesTreeT = {
           tree: [],
           id: uuid(),
+          editMode: false,
+          editModeSelectedNodes: [],
           dateCreated: now,
           dateModified: now,
         };
@@ -365,32 +380,6 @@ export function fetchNotesTreeThunkAction()
   };
 }
 
-/**
- * ...
- * @param {Object} params
- * @param {number} params.idx
- */
-export function navigatePathThunkAction({ idx }: { idx: number })
-  : ThunkAction<AnyAction, AppStateT, any, AnyAction> {
-  // 1. Save current editor content
-  // 2. Switch folder
-  return (dispatch, getState) => {
-    // immediately save currently opened note
-    const currentContent = rootReducer.selectEditorContent(getState());
-    if (currentContent.id) {
-      _editorContentStorage.save(currentContent)
-        .catch((err: Error) => console.log(err)); // TODO: log error?
-    }
-
-    return dispatch({
-      type: notesListActionTypes.NAVIGATE_PATH,
-      payload: {
-        idx,
-      },
-    });
-  };
-}
-
 export function goUpAFolderAction(): AnyAction {
   return {
     type: notesListActionTypes.GO_UP_A_FOLDER,
@@ -403,6 +392,27 @@ export function goToRootAction(): AnyAction {
     type: notesListActionTypes.GO_TO_ROOT,
     payload: {},
   };
+}
+
+export function enterEditModeAction(): AnyAction {
+  return {
+    type: notesListActionTypes.SET_EDIT_MODE,
+    payload: { value: true },
+  }
+}
+
+export function exitEditModeAction(): AnyAction {
+  return {
+    type: notesListActionTypes.SET_EDIT_MODE,
+    payload: { value: false },
+  }
+}
+
+export function drawerCloseAction(): AnyAction {
+  return {
+    type: notesListActionTypes.SET_EDIT_MODE,
+    payload: { value: false },
+  }
 }
 
 /**

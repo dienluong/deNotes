@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './NodeTitle.module.css';
-import escape from 'lodash-es/escape';
-import unescape from 'lodash-es/unescape';
+import escape from 'lodash/escape';
+import unescape from 'lodash/unescape';
 
 // Types
 import { FormEvent } from 'react';

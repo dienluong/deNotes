@@ -2,7 +2,7 @@ import { nodeTypes } from '../../utils/appCONSTANTS';
 
 const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 
-export const mockedTree = [
+export const mockedTree: TreeNodeT[] = [
   {
     title: 'folder root0',
     subtitle: '',

@@ -9,17 +9,24 @@ type PropsT = {
   drawerOpen: boolean,
   drawerSide: 'left' | 'right',
   size: 'small' | 'medium',
-  handleDrawerToggle: () => void,
+  handleDrawerToggle: () => unknown,
+  drawerCloseHandler: () => unknown,
 }
 
-function NotesListDrawer({ drawerOpen, drawerSide, size, handleDrawerToggle, ...otherProps }: PropsT & NotesListPropsT) {
+function NotesListDrawer({ drawerOpen, drawerSide, size, handleDrawerToggle, drawerCloseHandler, ...otherProps }: PropsT & NotesListPropsT) {
+
+  function _onCloseHandler() {
+    drawerCloseHandler();
+    handleDrawerToggle();
+  }
+
   return (
     <React.Fragment>
         <Drawer
           variant="temporary"
           anchor={ drawerSide }
           open={ drawerOpen }
-          onClose={ handleDrawerToggle }
+          onClose={ _onCloseHandler }
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
           }}
@@ -27,7 +34,7 @@ function NotesListDrawer({ drawerOpen, drawerSide, size, handleDrawerToggle, ...
             paper: size !== 'small' ? styles['dnt__notes-list-drawer-paper'] : styles['dnt__notes-list-drawer-paper--small'],
           }}
         >
-          <NotesList { ...{size, ...otherProps} } />
+          <NotesList size={ size } { ...otherProps } />
         </Drawer>
     </React.Fragment>
   );

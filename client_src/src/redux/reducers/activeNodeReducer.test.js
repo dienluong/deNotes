@@ -205,28 +205,14 @@ describe('activeNodeReducer ', () => {
     }));
   });
 
-  it('should switch to parent folder on SWITCH_NODE_ON_DELETE action, if deleted node is the active node or is part of its path.', () => {
-    const currentState = {
+  it('should switch to parent folder on SWITCH_NODE_ON_DELETE action, if a deleted node is the active node.', () => {
+    let currentState = {
       id: 'active1',
       path: ['segment0', 'segment1', 'segment2', 'active1'],
     };
 
-    // Delete one of current active node's parents
     let payload = {
-      deletedNodeId: currentState.path[1],
-    };
-
-    expect(reducer(currentState, {
-      type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
-      payload,
-    })).toEqual({
-      id: currentState.path[0],
-      path: [currentState.path[0]],
-    });
-
-    // Delete active node itself
-    payload = {
-      deletedNodeId: currentState.id,
+      deletedNodeIds: ['deleted node #1', 'yet another deleted node #2', currentState.id],
     };
 
     expect(reducer(currentState, {
@@ -237,11 +223,16 @@ describe('activeNodeReducer ', () => {
       path: [...currentState.path.slice(0, -1)],
     });
 
-    // Deleting the parent folder at the root
+    // Setting child in root folder as active node
+    currentState = {
+      id: 'active1',
+      path: ['active1'],
+    };
     payload = {
-      deletedNodeId: currentState.path[0],
+      deletedNodeIds: [currentState.id],
     };
 
+    // Deleting active node in root folder results in NONE_SELECTED to indicate no node in root is selected
     expect(reducer(currentState, {
       type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
       payload,
@@ -250,68 +241,13 @@ describe('activeNodeReducer ', () => {
       path: [NONE_SELECTED],
     });
 
-
-    // If deleted node is not on current active path, no change to active path, nor active ID
+    // If deleted node is not current active node, return current state
     payload = {
-      deletedNodeId: 'not-currently-active',
+      deletedNodeIds: ['not-currently-active'],
     };
-
     expect(reducer(currentState, {
       type: notesListActionTypes.SWITCH_NODE_ON_DELETE,
       payload,
     })).toBe(currentState);
   });
-
-/*
-  it('should switch active node to first child in folder on SWITCH_NODE_ON_TREE_FOLDER_CHANGE action', () => {
-    const currentState = {
-      id: 'current-active-id',
-      path: ['seg0', 'seg1', 'seg2', 'current-active-id'],
-    };
-    let newFolder = [{ id: 'child0' }, { id: 'child1' }, { id: 'child2' }];
-
-    expect(reducer(currentState, {
-      type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
-      payload: {
-        folder: newFolder,
-      },
-    })).toEqual({
-      id: newFolder[0].id,
-      path: [...currentState.path.slice(0, -1), newFolder[0].id],
-    });
-
-    // If no child in folder, then NONE_SELECTED as active ID
-    newFolder = [];
-    expect(reducer(currentState, {
-      type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
-      payload: {
-        folder: newFolder,
-      },
-    })).toEqual({
-      id: NONE_SELECTED,
-      path: [...currentState.path.slice(0, -1), NONE_SELECTED],
-    });
-    // should also work if no current active node selected
-    currentState.id = NONE_SELECTED;
-    currentState.path = [NONE_SELECTED];
-    expect(reducer(currentState, {
-      type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
-      payload: {
-        folder: newFolder,
-      },
-    })).toEqual({
-      id: NONE_SELECTED,
-      path: [...currentState.path.slice(0, -1), NONE_SELECTED],
-    });
-
-    // If current active node is still in folder after folder change, it remains the active node
-    newFolder = [{ id: currentState.id }, { id: 'some-other-child-id' }, { id: 'another-child-id' }];
-    expect(reducer(currentState, {
-      type: notesListActionTypes.SWITCH_NODE_ON_TREE_FOLDER_CHANGE,
-      payload: {
-        folder: newFolder,
-      },
-    })).toBe(currentState);
-  });
-*/
 });

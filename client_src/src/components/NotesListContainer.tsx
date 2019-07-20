@@ -6,6 +6,9 @@ import {
   selectNodeThunkAction,
   goToRootAction,
   goUpAFolderAction,
+  enterEditModeAction,
+  exitEditModeAction,
+  drawerCloseAction,
   changeNotesFolderThunkAction,
   changeNodeTitleAction,
   deleteNodeThunkAction,
@@ -26,12 +29,17 @@ interface MapDispatchPropsT {
   deleteNodeBtnHandler: (params: any) => Promise<AnyAction>;
   backBtnHandler: () => AnyAction;
   homeBtnHandler: () => AnyAction;
+  editBtnHandler: () => AnyAction;
+  editDoneBtnHandler: () => AnyAction;
+  drawerCloseHandler: () => AnyAction;
   toolbarHandlers: Array<() => AnyAction>;
 }
 interface MapStatePropsT {
   tree: TreeNodeT[];
   activeNode: ActiveNodeT;
   rootViewOn: boolean;
+  editMode: boolean;
+  editModeSelectedNodes: string[];
   currentFolderName: string;
 }
 
@@ -66,6 +74,9 @@ function mapStateToProps(state: AppStateT): MapStatePropsT {
   }
   // TODO: Remove ABOVE
 
+  // TODO: REMOVE
+  console.log('++++++++++++++ EDIT MODE: ', rootReducer.selectNotesTreeEditMode(state));
+
   const activeNode = rootReducer.selectActiveNode(state);
   // Get the siblings of the current active node (including itself). The children will be passed as prop to the component
   const parentIdx = findDeepestFolder(activeNode.path);
@@ -89,6 +100,8 @@ function mapStateToProps(state: AppStateT): MapStatePropsT {
     tree: children,
     activeNode,
     rootViewOn,
+    editMode: rootReducer.selectNotesTreeEditMode(state),
+    editModeSelectedNodes: rootReducer.selectNotesTreeEditModeSelectedNodes(state),
     currentFolderName: folderName,
   };
 }
@@ -123,16 +136,23 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
     homeBtnHandler() {
       return dispatch(goToRootAction());
     },
+    editBtnHandler() {
+      return dispatch(enterEditModeAction());
+    },
+    editDoneBtnHandler() {
+      return dispatch(exitEditModeAction());
+    },
+    drawerCloseHandler() {
+      return dispatch(drawerCloseAction());
+    },
     nodeClickHandler({ id = '', path = [] }) {
       return dispatch(selectNodeThunkAction({ id, path }));
     },
     nodeDoubleClickHandler({ id, path }) {
       return dispatch(selectNodeThunkAction({ id, path }))
     },
-    deleteNodeBtnHandler({ node, path }) {
-      // We are not using the path received from the NotesList component because that path is not for the entire tree;
-      // remember that NotesList only receives and renders a given leaf of the whole tree.
-      return dispatch(deleteNodeThunkAction({ node }));
+    deleteNodeBtnHandler() {
+      return dispatch(deleteNodeThunkAction());
     },
     toolbarHandlers,
   };

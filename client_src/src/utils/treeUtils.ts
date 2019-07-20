@@ -3,7 +3,7 @@ import { find, getFlatDataFromTree } from 'react-sortable-tree';
 import { nodeTypes } from './appCONSTANTS';
 
 // Types
-import { GetNodeKeyFunction, NodeData } from 'react-sortable-tree';
+import { GetNodeKeyFunction, NodeData, TreeItem } from 'react-sortable-tree';
 
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|^|';
 const DEFAULT_TITLES = {
@@ -230,30 +230,48 @@ export function collapseFolders({ tree }: { tree: TreeNodeT[] })
 
 /**
  * Returns an array of all the node's descendants.
- * @param node {Object}
+ * @param {Object} params
+ * @param {Object} params.nodeId
+ * @param {Object} params.tree
  * @return {Object[]}
  */
-export function getDescendants({ node }: { node: TreeNodeT })
+export function getDescendants({ nodeId, tree }: { nodeId: TreeNodeT['id'], tree: TreeNodeT[] })
   : TreeNodeT[] {
-  if (!node || typeof node !== 'object') {
+  if (!nodeId || typeof nodeId !== 'string' || !Array.isArray(tree) || !tree.length) {
     return [];
   }
 
-  return getFlatDataFromTree({ treeData: [node], getNodeKey, ignoreCollapsed: false }).map((data) => data.node) as TreeNodeT[];
+  const nodesFound: Array<{ node: TreeItem, path: (string|number)[], treeIndex: number }> = find({
+    getNodeKey,
+    treeData: tree,
+    searchQuery: nodeId,
+    searchMethod: ({ node: treeNode, searchQuery }) => searchQuery === treeNode.id,
+  }).matches;
+
+  if (!nodesFound.length) {
+    return [];
+  }
+
+  if (nodesFound[0].node.children && nodesFound[0].node.children.length) {
+    return getFlatDataFromTree({ treeData: [nodesFound[0].node], getNodeKey, ignoreCollapsed: false }).map(data => data.node) as TreeNodeT[];
+  } else {
+    return [nodesFound[0].node] as TreeNodeT[];
+  }
 }
 
 /**
  *
  * @param {Object} params
- * @param {Object} params.node
+ * @param {Object} params.nodeId
+ * @param {Object} params.tree
  * @return {Array}
  */
-export function getDescendantItems({ node }: { node: TreeNodeT })
+export function getDescendantItems({ nodeId, tree }: { nodeId: TreeNodeT['id'], tree: TreeNodeT[] })
   : TreeNodeT[] {
-  return getDescendants({ node }).filter(descendant => descendant.type === nodeTypes.ITEM);
+  return getDescendants({ nodeId, tree }).filter(descendant => descendant.type === nodeTypes.ITEM);
 }
 
-export function getDescendantFolders({ node }: { node: TreeNodeT })
+export function getDescendantFolders({ nodeId, tree }: { nodeId: TreeNodeT['id'], tree: TreeNodeT[] })
   : TreeNodeT[] {
-  return getDescendants({ node }).filter(descendant => descendant.type === nodeTypes.FOLDER);
+  return getDescendants({ nodeId, tree }).filter(descendant => descendant.type === nodeTypes.FOLDER);
 }

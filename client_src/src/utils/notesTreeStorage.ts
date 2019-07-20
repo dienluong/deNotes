@@ -72,7 +72,14 @@ export function load({ id = '', userId = '' }: { id: string, userId: string })
       const tree = typeof notesTree.tree === 'string' ? JSON.parse(notesTree.tree) : notesTree.tree;
       const dateCreated = new Date(notesTree.dateCreated).getTime();
       const dateModified = new Date(notesTree.dateModified).getTime();
-      return { ...notesTree, tree, dateCreated, dateModified };
+      return {
+        ...notesTree,
+        tree,
+        dateCreated,
+        dateModified,
+        editMode: false,
+        editModeSelectedNodes: [],
+      };
     } else {
       const message = `Unrecognized data fetched. ID: ${id}`;
       return Promise.reject(new Error(message));

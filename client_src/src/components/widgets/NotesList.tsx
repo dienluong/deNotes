@@ -12,8 +12,11 @@ import IconButton from '@material-ui/core/IconButton';
 import HomeIcon from '@material-ui/icons/Home';
 import NewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import NewNoteIcon from '@material-ui/icons/NoteAdd';
-import GoOutFolderIcon from '@material-ui/icons/ArrowBackIos';
-import GoInFolderIcon from '@material-ui/icons/ArrowForwardIos';
+import ExitFolderIcon from '@material-ui/icons/ArrowBackIosOutlined';
+import EnterFolderIcon from '@material-ui/icons/ArrowForwardIosOutlined';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import Collapse from '@material-ui/core/Collapse';
 
 // Types
 import { TreeItem } from 'react-sortable-tree';
@@ -21,6 +24,8 @@ import { nodeTypes } from '../../utils/appCONSTANTS';
 export type PropsT = {
   tree: TreeNodeT[],
   size: 'small' | 'medium',
+  editMode: boolean,
+  editModeSelectedNodes: string[],
   activeNode: ActiveNodeT,
   rootViewOn: boolean,
   currentFolderName: string,
@@ -28,9 +33,11 @@ export type PropsT = {
   nodeTitleChangeHandler: (...args: any) => any,
   nodeClickHandler: (params: { id: TreeNodeT["id"], path: TreeNodePathT }) => unknown,
   nodeDoubleClickHandler: (params: { id: TreeNodeT["id"], path: TreeNodePathT }) => unknown,
-  deleteNodeBtnHandler: (params: { node: TreeNodeT, path: TreeNodePathT }) => unknown,
+  deleteNodeBtnHandler: () => unknown,
   backBtnHandler: (...args: any) => any,
   homeBtnHandler: (...args: any) => any,
+  editBtnHandler: (...args: any) => any;
+  editDoneBtnHandler: (...args: any) => any;
   toolbarHandlers: Array<(...args: any) => any>,
   getNodeKey: (...args: any) => any,
 };
@@ -42,6 +49,8 @@ const _DEFAULT_ROW_HEIGHT = 62;
 function NotesList({
   tree,
   size,
+  editMode,
+  editModeSelectedNodes,
   activeNode,
   rootViewOn,
   currentFolderName,
@@ -52,6 +61,8 @@ function NotesList({
   deleteNodeBtnHandler,
   backBtnHandler,
   homeBtnHandler,
+  editBtnHandler,
+  editDoneBtnHandler,
   toolbarHandlers,
   getNodeKey,
 }: PropsT) {
@@ -59,7 +70,7 @@ function NotesList({
     return ({
       title: (<NodeTitle node={ node } path={ path } onSubmit={ nodeTitleChangeHandler } />),
       className: (node.id === activeNode.id) ? `${styles['dnt__tree-node']} ${styles['dnt__tree-node--active']}` : styles['dnt__tree-node'],
-      buttons: _buildNodeButtons({ node, path }),
+      buttons: _buildNodeButtons({ node }),
       tabIndex: '0',
       'data-testid': node.id,
       onClick: () => nodeClickHandler({ id: node.id, path }),
@@ -87,23 +98,26 @@ function NotesList({
     }
   }
 
-  function _buildNodeButtons({ node, path }: { node: TreeNodeT, path: TreeNodePathT }) {
-    const buttons = [
-      <button
-        className={ styles['dnt__tree-node-btn'] }
-        onClick={ (event) => {
-          event.stopPropagation();
-          deleteNodeBtnHandler({ node, path });
-        }}
-      >
-        x
-      </button>,
-    ];
+  function _buildNodeButtons({ node }: { node: TreeNodeT }) {
+    const buttons = [];
+    if (node.type === nodeTypes.FOLDER) {
+      if (Array.isArray(node.children) && node.children.length) {
+        buttons.push(<Typography>{ node.children.length }</Typography>);
+      }
+    }
 
-    if (Array.isArray(node.children)) {
-      buttons.unshift(<GoInFolderIcon />);
-      if (node.children.length) {
-        buttons.unshift(<span>{ node.children.length }</span>);
+    if (editMode) {
+      // TODO Remove
+      // buttons.push(<Checkbox value={ node.id } inputProps={{ 'aria-label': `${node.id} checkbox` }} />);
+
+      if (editModeSelectedNodes.includes(node.id)) {
+        buttons.push(<CheckBoxIcon color="secondary" />);
+      } else {
+        buttons.push(<CheckBoxOutlineBlankIcon />);
+      }
+    } else {
+      if (node.type === nodeTypes.FOLDER) {
+        buttons.push(<EnterFolderIcon />);
       }
     }
 
@@ -130,16 +144,16 @@ function NotesList({
   return (
     <div className={ styles['dnt__notes-list'] }>
       <AppBar position="static" color="primary" className={ styles['dnt__notes-list-header'] }>
-        <MuiToolbar className={ rootViewOn ? styles['dnt__notes-list-muitoolbar--root'] : styles['dnt__notes-list-muitoolbar'] } disableGutters>
-          { !rootViewOn && (
+        <MuiToolbar className={ rootViewOn || editMode ? styles['dnt__notes-list-muitoolbar--centered'] : styles['dnt__notes-list-muitoolbar'] } disableGutters>
+          { !rootViewOn && !editMode && (
             <IconButton aria-label={ 'Go up a folder' } color="inherit" onClick={ backBtnHandler }>
-              <GoOutFolderIcon />
+              <ExitFolderIcon />
             </IconButton>
           )}
           <Typography inline variant={ size !== 'small' ? 'h5' : 'h6' } color="inherit">
             { currentFolderName || _DEFAULT_FOLDER_NAME }
           </Typography>
-          { !rootViewOn && (
+          { !rootViewOn && !editMode && (
             <IconButton aria-label={ 'Home' } color="inherit" onClick={ homeBtnHandler }>
               <HomeIcon />
             </IconButton>
@@ -157,16 +171,33 @@ function NotesList({
         rowHeight={ rowHeight }
       />
       <div className={ styles['dnt__notes-list-appbar'] }>
-        <AppBar position="static" color="default">
-          <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
-            <IconButton aria-label={ 'New Folder' } color="primary" onClick={ toolbarHandlers[0] }>
-              <NewFolderIcon />
-            </IconButton>
-            <IconButton aria-label={ 'New Note' } color="primary" onClick={ toolbarHandlers[1] }>
-              <NewNoteIcon />
-            </IconButton>
-          </MuiToolbar>
-        </AppBar>
+        <Collapse in={ editMode }>
+          <AppBar position="static" color="secondary" id="dnt__notes-list-appbar--editmode" >
+            <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
+              <IconButton aria-label={ 'Delete' } disabled={ !editModeSelectedNodes.length } onClick={ deleteNodeBtnHandler }>
+                <Typography>DELETE</Typography>
+              </IconButton>
+              <IconButton aria-label={ 'Done' } onClick={ editDoneBtnHandler }>
+                <Typography>DONE</Typography>
+              </IconButton>
+            </MuiToolbar>
+          </AppBar>
+        </Collapse>
+        <Collapse in={ !editMode }>
+          <AppBar position="static" color="default" id="dnt__notes-list-appbar--defaultmode" >
+            <MuiToolbar className={ styles['dnt__notes-list-muitoolbar'] }>
+              <IconButton aria-label={ 'New Folder' } color="primary" onClick={ toolbarHandlers[0] }>
+                <NewFolderIcon />
+              </IconButton>
+              <IconButton aria-label={ 'Edit' } color="primary" onClick={ editBtnHandler }>
+                <Typography>EDIT</Typography>
+              </IconButton>
+              <IconButton aria-label={ 'New Note' } color="primary" onClick={ toolbarHandlers[1] }>
+                <NewNoteIcon />
+              </IconButton>
+            </MuiToolbar>
+          </AppBar>
+        </Collapse>
       </div>
     </div>
   );

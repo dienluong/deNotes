@@ -25,9 +25,11 @@ afterEach(() => {
 });
 
 it('renders NotesListDrawer correctly with prop values taken from redux store, including merge props', () => {
-  const mockedNotesTree = {
+  let mockedNotesTree = {
     id: '1234',
     tree: mockedTree,
+    editMode: true,
+    editModeSelectedNodes: ['selected_id1', 'selected_id2'],
     dateCreated: 1111,
     dateModified: 2222,
   };
@@ -43,10 +45,12 @@ it('renders NotesListDrawer correctly with prop values taken from redux store, i
 
   // ---> test case where active folder is not root
   let expectedProps = {
-    tree: mockedNotesTree.tree[0].children,
+    tree: mockedInitialState.notesTree.tree[0].children,
     activeNode: { ...mockedInitialState.activeNode },
     rootViewOn: false,
-    currentFolderName: mockedTree[0].title,
+    editMode: mockedInitialState.notesTree.editMode,
+    editModeSelectedNodes: mockedInitialState.notesTree.editModeSelectedNodes,
+    currentFolderName: mockedInitialState.notesTree.tree[0].title,
     treeChangeHandler: expect.any(Function),
     nodeTitleChangeHandler: expect.any(Function),
     nodeClickHandler: expect.any(Function),
@@ -54,6 +58,9 @@ it('renders NotesListDrawer correctly with prop values taken from redux store, i
     deleteNodeBtnHandler: expect.any(Function),
     backBtnHandler: expect.any(Function),
     homeBtnHandler: expect.any(Function),
+    editBtnHandler: expect.any(Function),
+    editDoneBtnHandler: expect.any(Function),
+    drawerCloseHandler: expect.any(Function),
     toolbarHandlers: expect.any(Array),
   };
 
@@ -75,6 +82,15 @@ it('renders NotesListDrawer correctly with prop values taken from redux store, i
 
   // ---> test case where active folder is root
   // Note: In the case below, the active node is an ITEM node (as opposed to a FOLDER) of the root, so the active folder is root itself.
+  mockedNotesTree = {
+    id: '2345',
+    tree: mockedTree,
+    editMode: false,
+    editModeSelectedNodes: [],
+    dateCreated: 3333,
+    dateModified: 4444,
+  };
+
   mockedInitialState = {
     ...initialState,
     notesTree: mockedNotesTree,
@@ -86,11 +102,23 @@ it('renders NotesListDrawer correctly with prop values taken from redux store, i
   store = createMockStore([thunk])(mockedInitialState);
 
   expectedProps = {
-    tree: mockedNotesTree.tree,
+    tree: mockedInitialState.notesTree.tree,
     activeNode: { ...mockedInitialState.activeNode },
     rootViewOn: true,
+    editMode: mockedInitialState.notesTree.editMode,
+    editModeSelectedNodes: mockedInitialState.notesTree.editModeSelectedNodes,
     currentFolderName: DEFAULT_ROOT_FOLDER_NAME,
-    getNodeKey,
+    treeChangeHandler: expect.any(Function),
+    nodeTitleChangeHandler: expect.any(Function),
+    nodeClickHandler: expect.any(Function),
+    nodeDoubleClickHandler: expect.any(Function),
+    deleteNodeBtnHandler: expect.any(Function),
+    backBtnHandler: expect.any(Function),
+    homeBtnHandler: expect.any(Function),
+    editBtnHandler: expect.any(Function),
+    editDoneBtnHandler: expect.any(Function),
+    drawerCloseHandler: expect.any(Function),
+    toolbarHandlers: expect.any(Array),
   };
 
   wrapper = shallow(<Provider store={ store }><NotesListContainer dummyProp={ expectedMergeProps.dummyProp }/></Provider>)

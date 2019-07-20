@@ -83,13 +83,17 @@ Upon creation of new note, auto select editor body.
 Retry save or load on failure
 recycle bin
 
+x Remove unused navigatePathThunkAction
+
 Update/create tests for:
-  x DrawerButton.tsx
+  x NotesList.tsx
   x NotesListDrawer.tsx
   x NotesListContainer.tsx
-  x NotesList.tsx
-  x NodeTitle.tsx
-  x Editor.tsx
-  x editorContentObserver.ts
-  x Main.js
-  index.js
+  x notesListActions.ts
+  x reducers/index.ts
+  x notesTreeReducer.ts
+  x treeUtils.ts
+  x activeNodeReducer.ts
+  x notesTreeStorage.ts
+
+Review remoteStorage data modules for discrepancies.

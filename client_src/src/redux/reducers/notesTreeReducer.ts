@@ -24,9 +24,6 @@ function _changeNodeTitle({ notesTree, title, node, now }: { notesTree: NotesTre
   }).matches;
 
   if (nodesFound.length) {
-    // Cannot use _createNode for creating a new node (with a new ID) as it is breaking the tree.
-    // This is because react-sortable-tree treats it as a new standalone node due to new ID (not reusing the ID of the old node)
-    // So using { ...node, title } to keep the ID intact and only change the title
     const modifiedNode: TreeNodeT = { ...node, title };
     let newTree : NotesTreeT['tree'] = notesTree.tree;
     try {
@@ -55,44 +52,56 @@ function _changeNodeTitle({ notesTree, title, node, now }: { notesTree: NotesTre
   }
 }
 
-function _deleteNode({ notesTree, nodeToDelete, now }: { notesTree: NotesTreeT, nodeToDelete: TreeNodeT, now: number })
+function _deleteNode({ notesTree, now }: { notesTree: NotesTreeT, now: number })
   : NotesTreeT {
-  const nodesFound: Array<{ node: TreeItem, path: (string|number)[], treeIndex: number }> = find({
-    getNodeKey,
-    treeData: notesTree.tree,
-    searchQuery: nodeToDelete.id,
-    searchMethod: ({ node: treeNode, searchQuery }) => searchQuery === treeNode.id,
-  }).matches;
-
-  // TODO Remove
-  // const parentFolderIdx: number | null = findDeepestFolder(activePath);
-  // let nodeToDeletePath: ActiveNodeT['path'];
-  // if (parentFolderIdx !== null) {
-  //   nodeToDeletePath = [...activePath.slice(0, parentFolderIdx + 1), nodeToDelete.id];
-  // } else {
-  //   return notesTree;
-  // }
-
-  if (nodesFound.length) {
-    let newTree: NotesTreeT['tree'] = notesTree.tree;
-    try {
-      newTree = removeNodeAtPath({
-        treeData: notesTree.tree,
-        path: nodesFound[0].path,
-        getNodeKey,
-        ignoreCollapsed: false,
-      }) as TreeNodeT[];
-    } catch (error) {
-      return notesTree;
-    }
-    return {
-      ...notesTree,
-      tree: newTree,
-      dateModified: now,
-    };
-  } else {
+  if (!notesTree.editModeSelectedNodes.length) {
     return notesTree;
   }
+
+  let changed = false;
+  let modifiedTree: NotesTreeT['tree'] = notesTree.tree;
+  const remainingSelectedNodes = notesTree.editModeSelectedNodes;
+
+  for (let count = remainingSelectedNodes.length; count; count -= 1) {
+    const idToDelete = remainingSelectedNodes.pop();
+    const nodesFound: Array<{ node: TreeItem, path: (string|number)[], treeIndex: number }> = find({
+      getNodeKey,
+      treeData: modifiedTree,
+      searchQuery: idToDelete,
+      searchMethod: ({ node: treeNode, searchQuery }) => searchQuery === treeNode.id,
+    }).matches;
+
+    // TODO Remove
+    // const parentFolderIdx: number | null = findDeepestFolder(activePath);
+    // let nodeToDeletePath: ActiveNodeT['path'];
+    // if (parentFolderIdx !== null) {
+    //   nodeToDeletePath = [...activePath.slice(0, parentFolderIdx + 1), nodeToDelete.id];
+    // } else {
+    //   return notesTree;
+    // }
+
+    if (nodesFound.length) {
+      try {
+        modifiedTree = removeNodeAtPath({
+          treeData: modifiedTree,
+          path: nodesFound[0].path,
+          getNodeKey,
+          ignoreCollapsed: false,
+        }) as TreeNodeT[];
+
+        changed = true;
+      } catch (error) {
+        //TODO: handle error
+      }
+    }
+  }
+
+  return {
+    ...notesTree,
+    tree: modifiedTree,
+    dateModified: changed ? now : notesTree.dateModified,
+    editModeSelectedNodes: remainingSelectedNodes,
+  };
 }
 
 function _changeTreeFolder({ notesTree, folder, activePath, now }: { notesTree: NotesTreeT, folder: TreeNodeT[], activePath: ActiveNodeT['path'], now: number })
@@ -147,6 +156,43 @@ function _changeTreeFolder({ notesTree, folder, activePath, now }: { notesTree: 
   }
 }
 
+function _toggleSelected({ notesTree, nodeId, path }: { notesTree: NotesTreeT, nodeId: TreeNodeT['id'], path: TreeNodePathT })
+  : NotesTreeT {
+
+  // TODO: Remove
+  // const nodesFound: Array<{ node: TreeItem, path: (string|number)[], treeIndex: number }> = find({
+  //   getNodeKey,
+  //   treeData: notesTree.tree,
+  //   searchQuery: nodeId,
+  //   searchMethod: ({ node: treeNode, searchQuery }) => searchQuery === treeNode.id,
+  // }).matches;
+
+  const targetNodeInfo = getNodeAtPath({
+    getNodeKey,
+    treeData: notesTree.tree,
+    path,
+    ignoreCollapsed: false,
+  });
+
+  if (targetNodeInfo && targetNodeInfo.node && targetNodeInfo.node.id === nodeId) {
+    const foundIdx = notesTree.editModeSelectedNodes.indexOf(nodeId);
+    let newListSelectedNodes;
+    if (foundIdx === -1) {
+      newListSelectedNodes = [...notesTree.editModeSelectedNodes, nodeId];
+    } else {
+      notesTree.editModeSelectedNodes.splice(foundIdx, 1);
+      newListSelectedNodes = [...notesTree.editModeSelectedNodes];
+    }
+
+    return {
+      ...notesTree,
+      editModeSelectedNodes: newListSelectedNodes,
+    };
+  } else {
+    return notesTree;
+  }
+}
+
 export default function notesTreeReducer(state: NotesTreeT = initialTree, action: AnyAction)
   : NotesTreeT {
   if (!action.payload) {
@@ -174,6 +220,21 @@ export default function notesTreeReducer(state: NotesTreeT = initialTree, action
         notesTree: state,
         ...action.payload,
       });
+    case notesListActionTypes.SET_EDIT_MODE:
+      if (action.payload.value === state.editMode) {
+        return state;
+      } else {
+        return {
+          ...state,
+          editMode: action.payload.value,
+          editModeSelectedNodes: [],
+        };
+      }
+    case notesListActionTypes.EDIT_MODE_SELECT_NODE:
+      return _toggleSelected({
+        notesTree: state,
+        ...action.payload,
+      });
     default:
       if (process.env.REACT_APP_DEBUG) {
         console.log(`Current notesTree: ${JSON.stringify(state)}`);
@@ -186,3 +247,5 @@ export const selectTree = (state: NotesTreeT) => state.tree;
 export const selectTreeId = (state: NotesTreeT) => state.id;
 export const selectDateModified = (state: NotesTreeT) => state.dateModified;
 export const selectDateCreated = (state: NotesTreeT) => state.dateCreated;
+export const selectEditMode = (state: NotesTreeT) => state.editMode;
+export const selectEditModeSelectedNodes = (state: NotesTreeT) => state.editModeSelectedNodes;
