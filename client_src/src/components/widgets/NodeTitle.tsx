@@ -36,6 +36,7 @@ function NodeTitle({ node, path, onSubmit: submitHandler }: PropsT<TreeNodeT, an
         type="text"
         defaultValue={ unescape(node.title) }
         onBlur={ submit }
+        onClick={ event => event.stopPropagation() }
       />
     </form>
   );
