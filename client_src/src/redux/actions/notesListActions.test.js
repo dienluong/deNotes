@@ -6,7 +6,7 @@ import thunk from 'redux-thunk';
 import setupMockStore from 'redux-mock-store';
 import initialState from '../misc/initialState';
 jest.mock('./editorActions');
-import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
+import { newContentAction, fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { mockedContent } from '../../test-utils/mocks/mockedEditorContent';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
 import { find } from 'react-sortable-tree';
@@ -433,6 +433,7 @@ describe('3. addAndSelectNodeThunkAction ', () => {
     global.Date = RealDate;
     mockedStore.clearActions();
     mockedSave.mockClear();
+    newContentAction.mockClear();
   });
 
   it('should save current editor content, create new node and dispatch ADD_NODE, if new node is FOLDER', () => {
@@ -667,15 +668,23 @@ describe('3. addAndSelectNodeThunkAction ', () => {
     ];
 
     mockedSave.mockImplementation(() => Promise.resolve('Saved'));
+    newContentAction.mockImplementation(() => ({
+      type: editorActionTypes.NEW_EDITOR_CONTENT,
+      payload: {
+        newEditorContent: expectedNewEditorContent,
+      },
+    }));
     const createNodeSpy = jest.spyOn(treeUtils, 'createNode');
     createNodeSpy.mockImplementation(() => newNode);
 
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
     expect(mockedSave).lastCalledWith(editorContent);
+    expect(newContentAction).lastCalledWith({ editorContent: expectedNewEditorContent });
     expect(createNodeSpy).lastCalledWith({ type: kind });
     expect(mockedStore.getActions()).toEqual(expectedAction);
     mockedSave.mockClear();
     createNodeSpy.mockClear();
+    newContentAction.mockClear();
     mockedStore.clearActions();
 
     // ---> Test case where active node is FOLDER in root
@@ -716,9 +725,11 @@ describe('3. addAndSelectNodeThunkAction ', () => {
 
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
     expect(mockedSave).lastCalledWith(editorContent);
+    expect(newContentAction).lastCalledWith({ editorContent: expectedNewEditorContent });
     expect(createNodeSpy).lastCalledWith({ type: kind });
     expect(mockedStore.getActions()).toEqual(expectedAction);
     mockedSave.mockClear();
+    newContentAction.mockClear();
     createNodeSpy.mockClear();
     mockedStore.clearActions();
 
@@ -760,9 +771,11 @@ describe('3. addAndSelectNodeThunkAction ', () => {
 
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
     expect(mockedSave).lastCalledWith(editorContent);
+    expect(newContentAction).lastCalledWith({ editorContent: expectedNewEditorContent });
     expect(createNodeSpy).lastCalledWith({ type: kind });
     expect(mockedStore.getActions()).toEqual(expectedAction);
     mockedSave.mockClear();
+    newContentAction.mockClear();
     createNodeSpy.mockClear();
     mockedStore.clearActions();
 
@@ -804,9 +817,11 @@ describe('3. addAndSelectNodeThunkAction ', () => {
 
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
     expect(mockedSave).lastCalledWith(editorContent);
+    expect(newContentAction).lastCalledWith({ editorContent: expectedNewEditorContent });
     expect(createNodeSpy).lastCalledWith({ type: kind });
     expect(mockedStore.getActions()).toEqual(expectedAction);
     mockedSave.mockClear();
+    newContentAction.mockClear();
     createNodeSpy.mockClear();
     mockedStore.clearActions();
 

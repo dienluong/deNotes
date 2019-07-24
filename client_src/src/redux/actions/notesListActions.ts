@@ -1,7 +1,7 @@
 import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
-import editorActionTypes from './constants/editorActionConstants';
-import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
+import modalActionTypes from './constants/modalActionConstants';
+import { newContentAction, fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
 import { translateNodeIdToInfo, getDescendantItems, createNode, findDeepestFolder } from '../../utils/treeUtils';
 import * as rootReducer from '../reducers';
 import initialState from '../misc/initialState';
@@ -229,6 +229,16 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
         .catch((err: Error) => console.log(err)); // TODO: log error?
     }
 
+    // dispatch({
+    //   type: modalActionTypes.SHOW_MODAL,
+    //   payload: {
+    //     modalType: 'RenameDialog',
+    //     modalProps: {
+    //       currentName: 'New'
+    //     }
+    //   },
+    // });
+
     const newNode: TreeNodeT = createNode({ type: kind });
     let parentPath: ActiveNodeT['path'];
     let parentKey: TreeNodeT['id'];
@@ -275,12 +285,7 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
           readOnly: false,
         };
 
-      dispatch({
-        type: editorActionTypes.NEW_EDITOR_CONTENT,
-        payload: {
-          newEditorContent,
-        }
-      })
+      dispatch(newContentAction({ editorContent: newEditorContent }));
     }
 
     return returnVal;
