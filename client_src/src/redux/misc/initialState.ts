@@ -46,6 +46,10 @@ const initialState: AppStateT = {
     dateModified: epoch,
     readOnly: true,
   },
+  modalInfo: {
+    type: '',
+    props: {},
+  }
 };
 
 export default initialState;

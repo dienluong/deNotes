@@ -229,15 +229,15 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
         .catch((err: Error) => console.log(err)); // TODO: log error?
     }
 
-    // dispatch({
-    //   type: modalActionTypes.SHOW_MODAL,
-    //   payload: {
-    //     modalType: 'RenameDialog',
-    //     modalProps: {
-    //       currentName: 'New'
-    //     }
-    //   },
-    // });
+    dispatch({
+      type: modalActionTypes.SHOW_MODAL,
+      payload: {
+        type: 'RenameDialog',
+        props: {
+          currentName: 'New'
+        }
+      },
+    });
 
     const newNode: TreeNodeT = createNode({ type: kind });
     let parentPath: ActiveNodeT['path'];

@@ -2,11 +2,12 @@ import activeNode, * as fromActiveNode from './activeNodeReducer';
 import notesTree, * as fromNotesTree from './notesTreeReducer';
 import editorContent, * as fromEditorContent from './editorContentReducer';
 import userInfo, * as fromUserInfo from './userInfoReducer';
+import modalInfo, * as fromModalInfo from './modalInfoReducer';
 import reducedReducer from './reducedReducer';
 import { combineReducers } from 'redux';
 import reduceReducers from 'reduce-reducers';
 
-const mainReducer = combineReducers({ userInfo, notesTree, activeNode, editorContent });
+const mainReducer = combineReducers({ userInfo, notesTree, activeNode, editorContent, modalInfo });
 const rootReducer = reduceReducers(mainReducer, reducedReducer);
 
 export default rootReducer;
@@ -20,3 +21,5 @@ export const selectActiveNodeId = (state: AppStateT) => fromActiveNode.selectId(
 export const selectEditorContent = (state: AppStateT) => state.editorContent;
 export const selectEditorContentId = (state: AppStateT) => fromEditorContent.selectId(state.editorContent);
 export const selectUserInfoId = (state: AppStateT) => fromUserInfo.selectId(state.userInfo);
+export const selectModalInfoType = (state: AppStateT) => fromModalInfo.selectType(state.modalInfo);
+export const selectModalInfoProps = (state: AppStateT) => fromModalInfo.selectProps(state.modalInfo);
