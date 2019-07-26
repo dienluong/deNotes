@@ -1,7 +1,8 @@
 import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
-import modalActionTypes from './constants/modalActionConstants';
+import { MODAL_TYPES } from '../../components/ModalManager';
 import { newContentAction, fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
+import { showModalAction } from './modalActions';
 import { translateNodeIdToInfo, getDescendantItems, createNode, findDeepestFolder } from '../../utils/treeUtils';
 import * as rootReducer from '../reducers';
 import initialState from '../misc/initialState';
@@ -229,15 +230,12 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
         .catch((err: Error) => console.log(err)); // TODO: log error?
     }
 
-    dispatch({
-      type: modalActionTypes.SHOW_MODAL,
-      payload: {
-        type: 'RenameDialog',
-        props: {
-          currentName: 'New'
-        }
+    dispatch(showModalAction({
+      type: MODAL_TYPES.RENAME_NODE,
+      props: {
+        currentName: 'New'
       },
-    });
+    }));
 
     const newNode: TreeNodeT = createNode({ type: kind });
     let parentPath: ActiveNodeT['path'];
