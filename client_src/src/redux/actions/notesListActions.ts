@@ -230,10 +230,22 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
         .catch((err: Error) => console.log(err)); // TODO: log error?
     }
 
+    let typeName;
+    switch (kind) {
+      case nodeTypes.FOLDER:
+        typeName = 'Folder';
+        break;
+      case nodeTypes.ITEM:
+        typeName = 'Note';
+        break;
+      default:
+        typeName = 'Item';
+    }
     dispatch(showModalAction({
       type: MODAL_TYPES.RENAME_NODE,
       props: {
-        currentName: 'New'
+        nodeType: kind,
+        currentName: `New ${typeName}`,
       },
     }));
 
