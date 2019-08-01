@@ -230,31 +230,7 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
         .catch((err: Error) => console.log(err)); // TODO: log error?
     }
 
-    let newNodeName = '';
-    let typeName;
-    switch (kind) {
-      case nodeTypes.FOLDER:
-        typeName = 'Folder';
-        break;
-      case nodeTypes.ITEM:
-        typeName = 'Note';
-        break;
-      default:
-        typeName = 'Item';
-    }
-    dispatch(showModalAction({
-      type: MODAL_TYPES.RENAME_NODE,
-      props: {
-        nodeType: kind,
-        currentName: `New ${typeName}`,
-        onCloseHandler: ({ value }) => {
-          newNodeName = value;
-          dispatch(hideModalAction());
-        },
-      },
-    }));
-
-    const newNode: TreeNodeT = createNode({ title: newNodeName, type: kind });
+    const newNode: TreeNodeT = createNode({ type: kind });
     let parentPath: ActiveNodeT['path'];
     let parentKey: TreeNodeT['id'];
 
@@ -277,6 +253,19 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
         now,
       },
     });
+
+    dispatch(showModalAction({
+      type: MODAL_TYPES.RENAME_NODE,
+      props: {
+        nodeType: kind,
+        currentName: newNode.title,
+        onSubmitHandler: ({ name }: { name: string }) => {
+          dispatch(hideModalAction());
+          dispatch(changeNodeTitleAction({ title: name, node: newNode }))
+        },
+      },
+    }));
+
 
     const newNodeInfo = translateNodeIdToInfo({ nodeId: newNode.id });
     // Only change active node and editor content if newly added node is of type ITEM (i.e. a note), as opposed to a FOLDER.
