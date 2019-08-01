@@ -3,12 +3,7 @@ import modalActionTypes from './constants/modalActionConstants';
 // Types
 import { AnyAction } from 'redux';
 
-type showModalPropsT = {
-  nodeType: NodeTypeT,
-  currentName: string,
-  onCloseHandler: ({ value }: { value: string }) => unknown;
-}
-export function showModalAction({ type, props }: { type: string, props: showModalPropsT }): AnyAction {
+export function showModalAction({ type, props }: { type: string, props: Object }): AnyAction {
   return {
     type: modalActionTypes.SHOW_MODAL,
     payload: {
