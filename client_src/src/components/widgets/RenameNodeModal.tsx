@@ -11,25 +11,31 @@ import { FormEvent, ChangeEvent } from 'react';
 type PropsT = {
   nodeType: NodeTypeT,
   currentName: string,
-  onCloseHandler: ({ value }: { value: string }) => unknown;
+  onCloseHandler: () => unknown;
+  onSubmitHandler: ({ name }: { name: string }) => unknown;
 };
 
-export default function RenameNodeModal({ nodeType, currentName, onCloseHandler }: PropsT) {
+export default function RenameNodeModal({ currentName, onCloseHandler, onSubmitHandler }: PropsT) {
   const [open, setOpen] = React.useState(true);
   let textFieldValue = '';
 
   function handleClose() {
     setOpen(false);
-    // TODO: Trim whitespaces
-    onCloseHandler({ value: textFieldValue });
+    if (typeof onCloseHandler === 'function') {
+      onCloseHandler();
+    }
   }
 
   function handleChange(event: ChangeEvent<HTMLInputElement> ) {
     textFieldValue = event.target.value;
   }
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  function submit(event: FormEvent<HTMLElement>) {
     handleClose();
+    // TODO: Trim whitespaces
+    if (typeof onSubmitHandler === 'function') {
+      onSubmitHandler({ name: textFieldValue });
+    }
     event.preventDefault();
   }
 
@@ -58,7 +64,7 @@ export default function RenameNodeModal({ nodeType, currentName, onCloseHandler 
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={ handleClose } color="primary">
+          <Button onClick={ submit } color="primary">
             OK
           </Button>
           <Button onClick={ handleClose } color="primary">
