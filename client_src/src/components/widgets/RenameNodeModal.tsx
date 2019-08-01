@@ -7,48 +7,62 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 // Types
+import { FormEvent, ChangeEvent } from 'react';
 type PropsT = {
   nodeType: NodeTypeT,
   currentName: string,
+  onCloseHandler: ({ value }: { value: string }) => unknown;
 };
 
-export default function RenameNodeModal({ currentName }: PropsT) {
-  const [open, setOpen] = React.useState(false);
-
-  function handleClickOpen() {
-    setOpen(true);
-  }
+export default function RenameNodeModal({ nodeType, currentName, onCloseHandler }: PropsT) {
+  const [open, setOpen] = React.useState(true);
+  let textFieldValue = '';
 
   function handleClose() {
     setOpen(false);
+    // TODO: Trim whitespaces
+    onCloseHandler({ value: textFieldValue });
+  }
+
+  function handleChange(event: ChangeEvent<HTMLInputElement> ) {
+    textFieldValue = event.target.value;
+  }
+
+  function submit(event: FormEvent<HTMLFormElement>) {
+    handleClose();
+    event.preventDefault();
   }
 
   return (
     <div>
       <Dialog
-        open={open}
-        onClose={handleClose}
+        open={ open }
+        onClose={ handleClose }
         aria-labelledby="rename-node-dialog-title"
       >
         <DialogTitle id="rename-node-dialog-title">{ `Rename ${currentName}` }</DialogTitle>
         <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="New Name"
-            type="text"
-            required
-            fullWidth
-            defaultValue={ currentName }
-          />
+          <form onSubmit={ submit } noValidate autoComplete="off">
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="New Name"
+              type="text"
+              required
+              fullWidth
+              variant="outlined"
+              defaultValue={ currentName }
+              onChange={ handleChange }
+            />
+          </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
+          <Button onClick={ handleClose } color="primary">
+            OK
           </Button>
-          <Button onClick={handleClose} color="primary">
-            Subscribe
+          <Button onClick={ handleClose } color="primary">
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>
