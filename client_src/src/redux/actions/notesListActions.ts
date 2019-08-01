@@ -2,7 +2,7 @@ import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
 import { MODAL_TYPES } from '../../components/ModalManager';
 import { newContentAction, fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
-import { showModalAction } from './modalActions';
+import { showModalAction, hideModalAction } from './modalActions';
 import { translateNodeIdToInfo, getDescendantItems, createNode, findDeepestFolder } from '../../utils/treeUtils';
 import * as rootReducer from '../reducers';
 import initialState from '../misc/initialState';
@@ -230,6 +230,7 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
         .catch((err: Error) => console.log(err)); // TODO: log error?
     }
 
+    let newNodeName = '';
     let typeName;
     switch (kind) {
       case nodeTypes.FOLDER:
@@ -246,10 +247,14 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
       props: {
         nodeType: kind,
         currentName: `New ${typeName}`,
+        onCloseHandler: ({ value }) => {
+          newNodeName = value;
+          dispatch(hideModalAction());
+        },
       },
     }));
 
-    const newNode: TreeNodeT = createNode({ type: kind });
+    const newNode: TreeNodeT = createNode({ title: newNodeName, type: kind });
     let parentPath: ActiveNodeT['path'];
     let parentKey: TreeNodeT['id'];
 
