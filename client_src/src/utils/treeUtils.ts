@@ -55,7 +55,7 @@ export function equals(obj1: { [key: string]: any }, obj2: { [key: string]: any 
  * @param {string} title
  * @param {string} subtitle
  * @typedef {("ITEM" | "FOLDER")} NodeType
- * @param {NodeType} type
+ * @param {NodeTypeT} type
  * @return {*}
  */
 export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().toLocaleString(), type = nodeTypes.ITEM }
@@ -64,7 +64,7 @@ export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().
   // TODO: remove subtitle = uuid
   const id: string = uuid();
   const newNode: TreeNodeT = {
-    title,
+    title: title || DEFAULT_TITLES.NOTE,
     subtitle: id,
     type,
     uniqid: id,
