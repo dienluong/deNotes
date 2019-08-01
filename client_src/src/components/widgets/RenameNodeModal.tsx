@@ -8,7 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 // Types
 import { FormEvent, ChangeEvent } from 'react';
-type PropsT = {
+export type PropsT = {
   nodeType: NodeTypeT,
   currentName: string,
   onCloseHandler: () => unknown;
