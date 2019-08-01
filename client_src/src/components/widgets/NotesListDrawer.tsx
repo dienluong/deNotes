@@ -1,5 +1,6 @@
 import React from 'react';
 import Drawer from '@material-ui/core/Drawer';
+import ModalManager from '../ModalManager';
 import NotesList from './NotesList';
 import styles from './NotesListDrawer.module.css';
 
@@ -36,6 +37,7 @@ function NotesListDrawer({ drawerOpen, drawerSide, size, handleDrawerToggle, dra
       >
         <NotesList size={ size } { ...otherProps } />
       </Drawer>
+      <ModalManager />
     </React.Fragment>
   );
 }
