@@ -11,6 +11,7 @@ import { NONE_SELECTED, nodeTypes } from '../../utils/appCONSTANTS';
 // Types
 import { AnyAction } from 'redux';
 import { ThunkAction } from 'redux-thunk';
+import { PropsT as RenameNodeModalPropsT } from '../../components/widgets/RenameNodeModal';
 
 // TODO: remove
 // import { save as saveEditorContent } from '../../reactive/editorContentObserver';
@@ -254,16 +255,19 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
       },
     });
 
+    const modalProps: RenameNodeModalPropsT = {
+      nodeType: kind,
+      currentName: newNode.title,
+      onCloseHandler: () => dispatch(hideModalAction()),
+      onSubmitHandler: ({ name }: { name: string }) => {
+        dispatch(hideModalAction());
+        dispatch(changeNodeTitleAction({ title: name || newNode.title, node: newNode }))
+      },
+    };
+
     dispatch(showModalAction({
       type: MODAL_TYPES.RENAME_NODE,
-      props: {
-        nodeType: kind,
-        currentName: newNode.title,
-        onSubmitHandler: ({ name }: { name: string }) => {
-          dispatch(hideModalAction());
-          dispatch(changeNodeTitleAction({ title: name, node: newNode }))
-        },
-      },
+      props: modalProps,
     }));
 
 
