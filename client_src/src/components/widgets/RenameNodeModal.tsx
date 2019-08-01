@@ -46,14 +46,14 @@ export default function RenameNodeModal({ currentName, onCloseHandler, onSubmitH
         onClose={ handleClose }
         aria-labelledby="rename-node-dialog-title"
       >
-        <DialogTitle id="rename-node-dialog-title">{ `Rename ${currentName}` }</DialogTitle>
+        <DialogTitle id="rename-node-dialog-title">{ `Enter Name for ${currentName}` }</DialogTitle>
         <DialogContent>
           <form onSubmit={ submit } noValidate autoComplete="off">
             <TextField
               autoFocus
               margin="dense"
               id="name"
-              label="New Name"
+              label="Name"
               type="text"
               required
               fullWidth
@@ -64,11 +64,11 @@ export default function RenameNodeModal({ currentName, onCloseHandler, onSubmitH
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={ submit } color="primary">
-            OK
-          </Button>
           <Button onClick={ handleClose } color="primary">
             Cancel
+          </Button>
+          <Button onClick={ submit } color="primary">
+            OK
           </Button>
         </DialogActions>
       </Dialog>
