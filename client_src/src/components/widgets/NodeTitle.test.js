@@ -93,3 +93,23 @@ it('does not call handler function, if value did not change', () => {
   expect(props.onSubmit).not.toBeCalled();
 });
 
+it('does not propagate click event', () => {
+  const props = {
+    node: {
+      title: 'test-node',
+      id: 'test-node-id',
+      type: nodeTypes.FOLDER,
+      expanded: true,
+      children: [],
+    },
+    path: ['step1', 'step2'],
+    onSubmit: jest.fn(),
+  };
+
+  const onClickHandler = jest.fn();
+  const { container } = render(<div onClick={ onClickHandler }><NodeTitle {...props} /></div>);
+  const inputEl = container.getElementsByTagName('input')[0];
+  fireEvent.click(inputEl);
+
+  expect(onClickHandler).not.toBeCalled();
+});
