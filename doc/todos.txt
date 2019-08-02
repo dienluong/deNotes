@@ -86,16 +86,16 @@ recycle bin
 x Remove unused navigatePathThunkAction
 
 Update/create tests for:
-  NotesList.tsx
-  NodeTitle.tsx
-  editorActions.ts
+  x NotesList.tsx
+  x NodeTitle.tsx
+  x editorActions.ts
   notesListActions.ts
-  index.ts
+  x index.ts
   modalInfoReducer.ts
   modalActions.ts
   RenameNodeModal.tsx
   ModalManager.tsx
-  treeUtils.ts
-  NotesListDrawer.tsx
+  x treeUtils.ts
+  x NotesListDrawer.tsx
 
 Review remoteStorage data modules for discrepancies.
