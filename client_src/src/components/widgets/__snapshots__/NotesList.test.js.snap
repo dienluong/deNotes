@@ -16,6 +16,11 @@ exports[`should render Edit Mode correctly, i.e. header bar w/o Back and Home ic
       <WithStyles(Typography)
         color="inherit"
         inline={true}
+        style={
+          Object {
+            "cursor": "default",
+          }
+        }
         variant="h5"
       >
         TEST FOLDER NAME
@@ -185,6 +190,11 @@ exports[`should render header, tree and app bar properly in non-root-view mode 1
       <WithStyles(Typography)
         color="inherit"
         inline={true}
+        style={
+          Object {
+            "cursor": "default",
+          }
+        }
         variant="h6"
       >
         TEST FOLDER NAME
