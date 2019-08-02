@@ -6,7 +6,7 @@ import { nodeTypes } from './appCONSTANTS';
 import { GetNodeKeyFunction, NodeData, TreeItem } from 'react-sortable-tree';
 
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|^|';
-const DEFAULT_TITLES = {
+export const DEFAULT_TITLES = {
   FOLDER: 'New Folder',
   NOTE: 'New Note',
 };
