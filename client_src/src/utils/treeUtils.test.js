@@ -217,3 +217,20 @@ describe('5. getDescendants', () => {
     expect(moduleToTest.getDescendants({ tree: 'not a tree', nodeId: mockedTree[0].id })).toEqual([]);
   });
 });
+
+describe('6. createNode', () => {
+  it('creates a FOLDER node with provided title', () => {
+    const customTitle = 'a great folder';
+    const newNode = moduleToTest.createNode({ title: customTitle, type: nodeTypes.FOLDER });
+    expect(newNode).toMatchObject({ title: customTitle, type: nodeTypes.FOLDER, children: [], expanded: true });
+  });
+  it('creates a FOLDER node with default title if none provided', () => {
+    const newNode = moduleToTest.createNode({ type: nodeTypes.FOLDER });
+    expect(newNode).toMatchObject({ title: moduleToTest.DEFAULT_TITLES.FOLDER, type: nodeTypes.FOLDER, children: [], expanded: true });
+  });
+  it('creates a node with default title if empty string provided as title', () => {
+    const newNode = moduleToTest.createNode({ title: '' });
+    expect(newNode).toMatchObject({ title: moduleToTest.DEFAULT_TITLES.NOTE, type: nodeTypes.ITEM });
+    expect(newNode).not.toMatchObject({ expanded: true, children: [] });
+  });
+});
