@@ -60,6 +60,7 @@ export default function RenameNodeModal({ currentName, onCloseHandler, onSubmitH
               variant="outlined"
               defaultValue={ currentName }
               onChange={ handleChange }
+              onFocus={ (e: React.FocusEvent<HTMLInputElement>) => e.target.select() }
             />
           </form>
         </DialogContent>
