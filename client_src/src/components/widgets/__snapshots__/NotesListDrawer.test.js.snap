@@ -24,5 +24,6 @@ exports[`should render drawer using material-ui Drawer w/ proper props and pass 
       size="small"
     />
   </WithStyles(Drawer)>
+  <Connect(ModalManager) />
 </Fragment>
 `;
