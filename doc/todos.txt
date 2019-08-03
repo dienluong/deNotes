@@ -89,10 +89,10 @@ Update/create tests for:
   x NotesList.tsx
   x NodeTitle.tsx
   x editorActions.ts
-  notesListActions.ts
+  x notesListActions.ts
   x index.ts
   modalInfoReducer.ts
-  modalActions.ts
+  x modalActions.ts
   RenameNodeModal.tsx
   ModalManager.tsx
   x treeUtils.ts
