@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders nothing if give invalid modal type 1`] = `""`;
+
+exports[`renders specified modal correctly with prop values taken from redux store 1`] = `
+<RenameNodeModal
+  prop1="abcdef"
+  prop2={123456}
+  prop3={
+    Array [
+      1,
+      "A",
+      false,
+    ]
+  }
+/>
+`;
