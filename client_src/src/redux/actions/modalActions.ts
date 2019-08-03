@@ -1,9 +1,12 @@
 import modalActionTypes from './constants/modalActionConstants';
 
 // Types
-import { AnyAction } from 'redux';
+import { Action, AnyAction } from 'redux';
+export interface ModalActionT extends Action {
+  payload: ModalInfoT
+}
 
-export function showModalAction({ type, props }: { type: string, props: Object }): AnyAction {
+export function showModalAction({ type, props }: { type: string, props: Object }): ModalActionT {
   return {
     type: modalActionTypes.SHOW_MODAL,
     payload: {
