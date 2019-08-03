@@ -1,12 +1,16 @@
 const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 import notesListActionTypes from './constants/notesListActionConstants';
 import editorActionTypes from './constants/editorActionConstants';
+import modalActionTypes from './constants/modalActionConstants';
+import { MODAL_TYPES } from '../../components/ModalManager';
 import * as moduleToTest from './notesListActions';
 import thunk from 'redux-thunk';
 import setupMockStore from 'redux-mock-store';
 import initialState from '../misc/initialState';
 jest.mock('./editorActions');
 import { newContentAction, fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
+jest.mock('./modalActions');
+import { showModalAction } from './modalActions';
 import { mockedContent } from '../../test-utils/mocks/mockedEditorContent';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
 import { find } from 'react-sortable-tree';
@@ -434,9 +438,10 @@ describe('3. addAndSelectNodeThunkAction ', () => {
     mockedStore.clearActions();
     mockedSave.mockClear();
     newContentAction.mockClear();
+    showModalAction.mockClear();
   });
 
-  it('should save current editor content, create new node and dispatch ADD_NODE, if new node is FOLDER', () => {
+  it('should save current editor content, create new node and dispatch ADD_NODE and SHOW_MODAL, if new node is FOLDER', () => {
     const kind = nodeTypes.FOLDER;
     const uniqid = '99887766';
     const newNode = {
@@ -484,18 +489,33 @@ describe('3. addAndSelectNodeThunkAction ', () => {
           now: expectedDate,
         },
       },
+      {
+        type: modalActionTypes.SHOW_MODAL,
+        payload: {
+          modalType: 'test_modal_type',
+          modalProps: {
+            prop1: 'abc',
+            prop2: 123,
+          },
+        },
+      },
     ];
 
     mockedSave.mockImplementation(() => Promise.resolve('Saved'));
     const createNodeSpy = jest.spyOn(treeUtils, 'createNode');
     createNodeSpy.mockImplementation(() => newNode);
+    showModalAction.mockImplementation(() => expectedAction[1]);
 
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
     expect(mockedSave).lastCalledWith(editorContent);
     expect(createNodeSpy).lastCalledWith({ type: kind });
+    expect(showModalAction).lastCalledWith({
+      type: MODAL_TYPES.RENAME_NODE,
+      props: expect.objectContaining({ nodeType: kind, currentName: newNode.title }) });
     expect(mockedStore.getActions()).toEqual(expectedAction);
     mockedSave.mockClear();
     createNodeSpy.mockClear();
+    showModalAction.mockClear();
     mockedStore.clearActions();
 
     // ---> Test case where active node is FOLDER
@@ -519,14 +539,29 @@ describe('3. addAndSelectNodeThunkAction ', () => {
           now: expectedDate,
         },
       },
+      {
+        type: modalActionTypes.SHOW_MODAL,
+        payload: {
+          modalType: 'test_modal_type2',
+          modalProps: {
+            prop1: 'abcd',
+            prop2: 1234,
+          },
+        },
+      },
     ];
+    showModalAction.mockImplementation(() => expectedAction[1]);
 
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
     expect(mockedSave).lastCalledWith(editorContent);
     expect(createNodeSpy).lastCalledWith({ type: kind });
+    expect(showModalAction).lastCalledWith({
+      type: MODAL_TYPES.RENAME_NODE,
+      props: expect.objectContaining({ nodeType: kind, currentName: newNode.title }) });
     expect(mockedStore.getActions()).toEqual(expectedAction);
     mockedSave.mockClear();
     createNodeSpy.mockClear();
+    showModalAction.mockClear();
     mockedStore.clearActions();
 
     // ---> Test case where active node is an ITEM
@@ -550,14 +585,29 @@ describe('3. addAndSelectNodeThunkAction ', () => {
           now: expectedDate,
         },
       },
+      {
+        type: modalActionTypes.SHOW_MODAL,
+        payload: {
+          modalType: 'test_modal_type3',
+          modalProps: {
+            prop1: 'abcde',
+            prop2: 12345,
+          },
+        },
+      },
     ];
+    showModalAction.mockImplementation(() => expectedAction[1]);
 
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
     expect(mockedSave).lastCalledWith(editorContent);
     expect(createNodeSpy).lastCalledWith({ type: kind });
+    expect(showModalAction).lastCalledWith({
+      type: MODAL_TYPES.RENAME_NODE,
+      props: expect.objectContaining({ nodeType: kind, currentName: newNode.title }) });
     expect(mockedStore.getActions()).toEqual(expectedAction);
     mockedSave.mockClear();
     createNodeSpy.mockClear();
+    showModalAction.mockClear();
     mockedStore.clearActions();
 
     // ---> Test case where active node is an ITEM in root
@@ -581,20 +631,35 @@ describe('3. addAndSelectNodeThunkAction ', () => {
           now: expectedDate,
         },
       },
+      {
+        type: modalActionTypes.SHOW_MODAL,
+        payload: {
+          modalType: 'test_modal_type4',
+          modalProps: {
+            prop1: 'abcdef',
+            prop2: 123456,
+          },
+        },
+      },
     ];
+    showModalAction.mockImplementation(() => expectedAction[1]);
 
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
     expect(mockedSave).lastCalledWith(editorContent);
     expect(createNodeSpy).lastCalledWith({ type: kind });
+    expect(showModalAction).lastCalledWith({
+      type: MODAL_TYPES.RENAME_NODE,
+      props: expect.objectContaining({ nodeType: kind, currentName: newNode.title }) });
     expect(mockedStore.getActions()).toEqual(expectedAction);
     mockedSave.mockClear();
     createNodeSpy.mockClear();
+    showModalAction.mockClear();
     mockedStore.clearActions();
 
     createNodeSpy.mockRestore();
   });
 
-  it('should save current editor content, create new node, dispatch ADD_NODE, SELECT_NODE and NEW_EDITOR_CONTENT, if new node is ITEM', () => {
+  it('should save current editor content, create new node, dispatch ADD_NODE, SHOW_MODAL, SELECT_NODE and NEW_EDITOR_CONTENT, if new node is ITEM', () => {
     const kind = nodeTypes.ITEM;
     const uniqid = '11223344';
     const newNode = {
@@ -653,6 +718,16 @@ describe('3. addAndSelectNodeThunkAction ', () => {
         },
       },
       {
+        type: modalActionTypes.SHOW_MODAL,
+        payload: {
+          modalType: 'test_modal_typeA',
+          modalProps: {
+            prop1: 123,
+            prop2: 'abc',
+          },
+        },
+      },
+      {
         type: notesListActionTypes.SELECT_NODE,
         payload: {
           nodeId: newNode.id,
@@ -676,15 +751,20 @@ describe('3. addAndSelectNodeThunkAction ', () => {
     }));
     const createNodeSpy = jest.spyOn(treeUtils, 'createNode');
     createNodeSpy.mockImplementation(() => newNode);
+    showModalAction.mockImplementation(() => expectedAction[1]);
 
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
     expect(mockedSave).lastCalledWith(editorContent);
     expect(newContentAction).lastCalledWith({ editorContent: expectedNewEditorContent });
     expect(createNodeSpy).lastCalledWith({ type: kind });
+    expect(showModalAction).lastCalledWith({
+      type: MODAL_TYPES.RENAME_NODE,
+      props: expect.objectContaining({ nodeType: kind, currentName: newNode.title }) });
     expect(mockedStore.getActions()).toEqual(expectedAction);
     mockedSave.mockClear();
     createNodeSpy.mockClear();
     newContentAction.mockClear();
+    showModalAction.mockClear();
     mockedStore.clearActions();
 
     // ---> Test case where active node is FOLDER in root
@@ -709,6 +789,16 @@ describe('3. addAndSelectNodeThunkAction ', () => {
         },
       },
       {
+        type: modalActionTypes.SHOW_MODAL,
+        payload: {
+          modalType: 'test_modal_typeB',
+          modalProps: {
+            prop1: 1234,
+            prop2: 'abcd',
+          },
+        },
+      },
+      {
         type: notesListActionTypes.SELECT_NODE,
         payload: {
           nodeId: newNode.id,
@@ -722,14 +812,19 @@ describe('3. addAndSelectNodeThunkAction ', () => {
         },
       },
     ];
+    showModalAction.mockImplementation(() => expectedAction[1]);
 
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
     expect(mockedSave).lastCalledWith(editorContent);
     expect(newContentAction).lastCalledWith({ editorContent: expectedNewEditorContent });
     expect(createNodeSpy).lastCalledWith({ type: kind });
+    expect(showModalAction).lastCalledWith({
+      type: MODAL_TYPES.RENAME_NODE,
+      props: expect.objectContaining({ nodeType: kind, currentName: newNode.title }) });
     expect(mockedStore.getActions()).toEqual(expectedAction);
     mockedSave.mockClear();
     newContentAction.mockClear();
+    showModalAction.mockClear();
     createNodeSpy.mockClear();
     mockedStore.clearActions();
 
@@ -755,6 +850,16 @@ describe('3. addAndSelectNodeThunkAction ', () => {
         },
       },
       {
+        type: modalActionTypes.SHOW_MODAL,
+        payload: {
+          modalType: 'test_modal_typeC',
+          modalProps: {
+            prop1: 12345,
+            prop2: 'abcde',
+          },
+        },
+      },
+      {
         type: notesListActionTypes.SELECT_NODE,
         payload: {
           nodeId: newNode.id,
@@ -768,14 +873,19 @@ describe('3. addAndSelectNodeThunkAction ', () => {
         },
       },
     ];
+    showModalAction.mockImplementation(() => expectedAction[1]);
 
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
     expect(mockedSave).lastCalledWith(editorContent);
     expect(newContentAction).lastCalledWith({ editorContent: expectedNewEditorContent });
     expect(createNodeSpy).lastCalledWith({ type: kind });
+    expect(showModalAction).lastCalledWith({
+      type: MODAL_TYPES.RENAME_NODE,
+      props: expect.objectContaining({ nodeType: kind, currentName: newNode.title }) });
     expect(mockedStore.getActions()).toEqual(expectedAction);
     mockedSave.mockClear();
     newContentAction.mockClear();
+    showModalAction.mockClear();
     createNodeSpy.mockClear();
     mockedStore.clearActions();
 
@@ -801,6 +911,16 @@ describe('3. addAndSelectNodeThunkAction ', () => {
         },
       },
       {
+        type: modalActionTypes.SHOW_MODAL,
+        payload: {
+          modalType: 'test_modal_typeD',
+          modalProps: {
+            prop1: 123456,
+            prop2: 'abcdef',
+          },
+        },
+      },
+      {
         type: notesListActionTypes.SELECT_NODE,
         payload: {
           nodeId: newNode.id,
@@ -814,14 +934,19 @@ describe('3. addAndSelectNodeThunkAction ', () => {
         },
       },
     ];
+    showModalAction.mockImplementation(() => expectedAction[1]);
 
     expect(mockedStore.dispatch(moduleToTest.addAndSelectNodeThunkAction({ kind }))).toMatchObject(expectedAction[0]);
     expect(mockedSave).lastCalledWith(editorContent);
     expect(newContentAction).lastCalledWith({ editorContent: expectedNewEditorContent });
     expect(createNodeSpy).lastCalledWith({ type: kind });
+    expect(showModalAction).lastCalledWith({
+      type: MODAL_TYPES.RENAME_NODE,
+      props: expect.objectContaining({ nodeType: kind, currentName: newNode.title }) });
     expect(mockedStore.getActions()).toEqual(expectedAction);
     mockedSave.mockClear();
     newContentAction.mockClear();
+    showModalAction.mockClear();
     createNodeSpy.mockClear();
     mockedStore.clearActions();
 
