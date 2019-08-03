@@ -91,7 +91,7 @@ Update/create tests for:
   x editorActions.ts
   x notesListActions.ts
   x index.ts
-  modalInfoReducer.ts
+  x modalInfoReducer.ts
   x modalActions.ts
   RenameNodeModal.tsx
   ModalManager.tsx
