@@ -93,8 +93,8 @@ Update/create tests for:
   x index.ts
   x modalInfoReducer.ts
   x modalActions.ts
-  RenameNodeModal.tsx
-  ModalManager.tsx
+  x RenameNodeModal.tsx
+  x ModalManager.tsx
   x treeUtils.ts
   x NotesListDrawer.tsx
 
