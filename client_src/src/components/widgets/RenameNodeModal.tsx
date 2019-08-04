@@ -65,10 +65,10 @@ export default function RenameNodeModal({ currentName, onCloseHandler, onSubmitH
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={ handleClose } color="primary">
+          <Button aria-label={ 'Cancel Rename Dialog' } onClick={ handleClose } color="primary">
             Cancel
           </Button>
-          <Button onClick={ submit } color="primary">
+          <Button aria-label={ 'OK Rename Dialog' } onClick={ submit } color="primary">
             OK
           </Button>
         </DialogActions>
