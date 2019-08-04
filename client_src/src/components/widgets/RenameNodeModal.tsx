@@ -17,7 +17,7 @@ export type PropsT = {
 
 export default function RenameNodeModal({ currentName, onCloseHandler, onSubmitHandler }: PropsT) {
   const [open, setOpen] = React.useState(true);
-  let textFieldValue = '';
+  let textFieldValue = currentName;
 
   function handleClose() {
     setOpen(false);
