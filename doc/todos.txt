@@ -76,16 +76,17 @@ How to handle offline mode?  Do we let user create/modify notes offline and stor
 Active node should be the persistent across sessions.
 Clean up, refactor client's index.js
 Should adopt convention for thunk return value:  1) a Promise resolving to an action obj in the successful case or 2) a Promise rejected with an Error obj.
-Upon deleting a note, switch active node to previous note in folder; if no note in folder, switch to folder and disable editor
+x Upon deleting a note, switch active node to previous note in folder; if no note in folder, switch to folder and disable editor
   -> OR: switch to previous active node.
 Upon creation of new note, auto select editor body.
 ? Deselecting note with empty content deletes the note.
 Retry save or load on failure
 recycle bin
+Review remoteStorage data modules for discrepancies.
 
 x Remove unused navigatePathThunkAction
 
-Update/create tests for:
+x Update/create tests for:
   x NotesList.tsx
   x NodeTitle.tsx
   x editorActions.ts
@@ -98,4 +99,3 @@ Update/create tests for:
   x treeUtils.ts
   x NotesListDrawer.tsx
 
-Review remoteStorage data modules for discrepancies.
