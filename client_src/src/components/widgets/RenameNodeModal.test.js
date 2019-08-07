@@ -4,7 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import { nodeTypes } from '../../utils/appCONSTANTS';
 import { createSerializer } from 'enzyme-to-json';
-
+import { render, cleanup, fireEvent } from 'react-testing-library';
 // Configure Enzyme
 import { configure, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
@@ -18,6 +18,8 @@ afterEach(() => {
   if (typeof wrapper.unmount === 'function') {
     wrapper.unmount();
   }
+
+  cleanup();
 });
 
 it('renders MUI Dialog and TextField containing current name', () => {
@@ -85,4 +87,22 @@ it('calls provided close and submit handlers', () => {
   expect(props.onSubmitHandler).lastCalledWith({ name: props.currentName });
   // Submit event also closes the Dialog modal
   expect(props.onCloseHandler).toBeCalledTimes(1);
+});
+
+it('returns the newly entered name on submit', () => {
+  const props = {
+    nodeType: nodeTypes.ITEM,
+    currentName: 'current test node name',
+    onCloseHandler: jest.fn(),
+    onSubmitHandler: jest.fn(),
+  };
+
+  const newName = 'this is a new name';
+
+  const { getByValue, getByText } = render(<RenameNodeModal { ...props } />);
+  const textInput = getByValue(props.currentName);
+  const okButton = getByText('OK');
+  fireEvent.change(textInput, { target: { value: newName } });
+  fireEvent.click(okButton);
+  expect(props.onSubmitHandler).lastCalledWith({ name: newName });
 });
