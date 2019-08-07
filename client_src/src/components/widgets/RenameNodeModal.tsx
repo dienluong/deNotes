@@ -32,9 +32,8 @@ export default function RenameNodeModal({ currentName, onCloseHandler, onSubmitH
 
   function submit(event: FormEvent<HTMLElement>) {
     handleClose();
-    // TODO: Trim whitespaces
     if (typeof onSubmitHandler === 'function') {
-      onSubmitHandler({ name: textFieldValue });
+      onSubmitHandler({ name: textFieldValue.trim() });
     }
     event.preventDefault();
   }
