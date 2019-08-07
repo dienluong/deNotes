@@ -32,6 +32,10 @@ export default function editorContentReducer(state: EditorContentT = initialCont
     case notesListActionTypes.CHANGE_NODE_TITLE:
       // if the changed title belongs to the opened note
       if (action.payload.node && (state.id === action.payload.node.uniqid)) {
+        if (state.title === action.payload.title) {
+          return state;
+        }
+
         return {
           ...state,
           title: action.payload.title,

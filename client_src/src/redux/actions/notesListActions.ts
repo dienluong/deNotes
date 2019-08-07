@@ -466,6 +466,10 @@ export function changeNotesFolderThunkAction({ folder }: { folder: TreeNodeT[] }
  */
 export function changeNodeTitleAction({ title, node }: { title: string, node: TreeNodeT })
   : AnyAction {
+  if (!title.trim()) {
+    title = node.title;
+  }
+
   return {
     type: notesListActionTypes.CHANGE_NODE_TITLE,
     payload: {

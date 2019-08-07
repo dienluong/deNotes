@@ -12,7 +12,7 @@ const initialTree = baseState.notesTree;
 
 function _changeNodeTitle({ notesTree, title, node, now }: { notesTree: NotesTreeT, title: string, node: TreeNodeT, now: number })
   : NotesTreeT {
-  if (!node || (typeof node !== "object") || Array.isArray(node)) {
+  if (!node || (typeof node !== "object") || Array.isArray(node) || node.title === title) {
     return notesTree;
   }
 
