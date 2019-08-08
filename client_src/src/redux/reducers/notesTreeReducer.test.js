@@ -126,6 +126,16 @@ describe('notesTreeReducer ', () => {
         node: { id: 'not in tree ID' },
       },
     })).toBe(currentState);
+
+    // if new title same as current, return current state
+    expect(reducer(currentState, {
+      type: notesListActionTypes.CHANGE_NODE_TITLE,
+      payload: {
+        title: currentTree[0].children[1].title,
+        node: currentTree[0].children[1],
+        now: expectedDate,
+      },
+    })).toBe(currentState);
   });
 
   it('should, on DELETE_NODE, return a tree with the specified nodes removed.', () => {
