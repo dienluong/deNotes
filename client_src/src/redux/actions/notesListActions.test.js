@@ -1160,7 +1160,7 @@ describe('4. fetchNotesTreeThunkAction ', () => {
 /**
  * changeNotesFolderThunkAction
  */
-describe('6. changeNotesFolderThunkAction ', () => {
+describe('5. changeNotesFolderThunkAction ', () => {
   const RealDate = global.Date;
   let mockedStore = mockStore({});
   let mockedSave = jest.fn();
@@ -1252,5 +1252,36 @@ describe('6. changeNotesFolderThunkAction ', () => {
     expect(mockedStore.dispatch(moduleToTest.changeNotesFolderThunkAction({ folder: newFolder }))).toMatchObject(expectedActions[0]);
     expect(mockedSave).lastCalledWith(mockedEditorContent);
     expect(mockedStore.getActions()).toEqual(expectedActions);
+  });
+});
+
+/**
+ * changeNodeTitleAction
+ */
+describe('6. changeNodeTitleAction ', () => {
+  it('should use current Node title if received title contains only spaces or is empty string', () => {
+    const node = {
+      title: 'current title',
+      subtitle: 'current subtitle',
+      uniqid: 'xyzabc',
+      id: '123def',
+      type: nodeTypes.ITEM,
+    };
+
+    expect(moduleToTest.changeNodeTitleAction({ title: '', node })).toMatchObject({
+      type: notesListActionTypes.CHANGE_NODE_TITLE,
+      payload: {
+        title: node.title,
+        node,
+      },
+    });
+
+    expect(moduleToTest.changeNodeTitleAction({ title: '    ', node })).toMatchObject({
+      type: notesListActionTypes.CHANGE_NODE_TITLE,
+      payload: {
+        title: node.title,
+        node,
+      },
+    });
   });
 });
