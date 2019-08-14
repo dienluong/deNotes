@@ -69,7 +69,7 @@ function NotesList({
 }: PropsT) {
   function buildNodeProps({ node, path }: { node: TreeNodeT, path: TreeNodePathT }) {
     return ({
-      title: (editMode ? <NodeTitle node={ node } path={ path } onSubmit={ nodeTitleChangeHandler } /> : <Typography>{ unescape(node.title) }</Typography>),
+      title: (editMode ? <NodeTitle node={ node } path={ path } onSubmit={ nodeTitleChangeHandler } /> : <Typography className={ styles['dnt__tree-node-title'] }>{ unescape(node.title) }</Typography>),
       className: (node.id === activeNode.id) ? `${styles['dnt__tree-node']} ${styles['dnt__tree-node--active']}` : styles['dnt__tree-node'],
       style: { cursor: 'auto' },
       buttons: _buildNodeButtons({ node }),

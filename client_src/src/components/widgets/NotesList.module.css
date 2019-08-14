@@ -59,3 +59,10 @@
 .dnt__tree-node-btn {
   vertical-align: middle;
 }
+
+.dnt__tree-node-title {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
