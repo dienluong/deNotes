@@ -15,5 +15,5 @@
 
 .dnt__node-title:focus {
   background-color: rgba(230, 230, 230, 1);
-  outline: 1px solid rgba(200, 200, 200, 1);
+  outline: 1px solid orange;
 }
