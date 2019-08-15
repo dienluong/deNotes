@@ -23,6 +23,13 @@
   /*direction: rtl;*/
 }
 
+.dnt__notes-list-header-folder-name {
+  cursor: default;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .dnt__tree {
   flex-grow : 1;
   background-color: white;

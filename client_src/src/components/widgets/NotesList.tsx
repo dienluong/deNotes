@@ -152,7 +152,7 @@ function NotesList({
               <ExitFolderIcon />
             </IconButton>
           )}
-          <Typography inline variant={ size !== 'small' ? 'h5' : 'h6' } color="inherit" style={{ cursor: 'default' }}>
+          <Typography className={ styles['dnt__notes-list-header-folder-name'] } inline variant={ size !== 'small' ? 'h6' : 'subtitle1' } color="inherit">
             { unescape(currentFolderName || _DEFAULT_FOLDER_NAME) }
           </Typography>
           { !rootViewOn && !editMode && (
