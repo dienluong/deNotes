@@ -24,6 +24,7 @@
 }
 
 .dnt__notes-list-header-folder-name {
+  padding: 0 0.8em;
   cursor: default;
   white-space: nowrap;
   overflow: hidden;
