@@ -10,6 +10,7 @@ class MobileThemeTreeNodeRenderer extends Component {
     this.bound = {
       handleMouseOver: this.handleMouseOver.bind(this),
       handleMouseLeave: this.handleMouseLeave.bind(this),
+      handleFocus: this.handleFocus.bind(this),
     };
   }
 
@@ -20,6 +21,10 @@ class MobileThemeTreeNodeRenderer extends Component {
   }
 
   handleMouseLeave() {
+    this.setState({ highlight: false });
+  }
+
+  handleFocus() {
     this.setState({ highlight: false });
   }
 
@@ -54,7 +59,7 @@ class MobileThemeTreeNodeRenderer extends Component {
     }
 
     return connectDropTarget(
-      <div {...otherProps} onMouseOver={this.bound.handleMouseOver} onMouseLeave={this.bound.handleMouseLeave} onFocus={ () => {} }
+      <div {...otherProps} onMouseOver={this.bound.handleMouseOver} onMouseLeave={this.bound.handleMouseLeave} onFocus={this.bound.handleFocus}
         className={styles.node + (this.state.highlight ? ` ${styles.highlight}` : '') + (dropType ? ` ${styles[dropType]}` : '')}
       >
         <div
