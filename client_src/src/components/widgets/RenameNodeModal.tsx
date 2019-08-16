@@ -54,7 +54,6 @@ export default function RenameNodeModal({ currentName, onCloseHandler, onSubmitH
               id="name"
               label="Name"
               type="text"
-              required
               fullWidth
               variant="outlined"
               defaultValue={ currentName }
