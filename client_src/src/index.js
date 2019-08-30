@@ -25,8 +25,6 @@ import * as editorContentStorage from './utils/editorContentStorage';
 import { save as saveToStorage, load as loadFromStorage, remove as deleteFromStorage } from './utils/offlineStorage';
 
 const userId = process.env.REACT_APP_USER_ID;
-// TODO: replace hardcoded value
-// const noteId = '218013d0-ad79-11e8-bfc8-79a6754f355a';
 const activeId = 'item|^|218013d0-ad79-11e8-bfc8-79a6754f355a';
 // TODO: Restrict Devtools in dev-only?
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -99,8 +97,6 @@ store.dispatch(fetchNotesTreeThunkAction())
     }
   })
   .catch(err => window.alert(err.message));
-// store.dispatch(fetchEditorContentThunkAction({ noteId }))
-//   .catch(err => window.alert(err.message));
 
 // Build Reactive Parts
 const notesTree$ = Observable.from(store).pluck('notesTree').auditTime(1000);

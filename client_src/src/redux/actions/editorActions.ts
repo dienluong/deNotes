@@ -15,9 +15,6 @@ interface UnprivilegedEditor {
   getContents(index?: number, length?: number): DeltaStatic;
 }
 
-// TODO: Remove
-// import { load as loadContentFromStorage, remove as removeContentFromStorage } from '../../utils/editorContentStorage';
-
 let _editorContentStorage: StorageT = {
   save: () => Promise.reject(new Error('Not implemented.')),
   load: () => Promise.reject(new Error('Not implemented.')),
@@ -84,8 +81,6 @@ export function fetchEditorContentThunkAction({ noteId }: { noteId: string })
       type: editorActionTypes.FETCH_EDITOR_CONTENT,
       payload: { id: noteId },
     });
-    // TODO: replace hardcoded noteId value
-    // id = '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e';
     return _editorContentStorage.load({ userId, id: noteId })
       .then(fetched => {
         const editorContent = {
@@ -175,4 +170,3 @@ export function removeNoteThunkAction({ ids }: { ids: string[] })
   };
 }
 
-// TODO: validate arguments on action creators

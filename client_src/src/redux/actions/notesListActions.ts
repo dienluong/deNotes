@@ -13,10 +13,6 @@ import { AnyAction } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import { PropsT as RenameNodeModalPropsT } from '../../components/widgets/RenameNodeModal';
 
-// TODO: remove
-// import { save as saveEditorContent } from '../../reactive/editorContentObserver';
-// import { load as loadNotesTreeFromStorage } from '../../utils/notesTreeStorage';
-
 let _notesTreeStorage: StorageT = {
   save: () => Promise.reject(new Error('Not implemented.')),
   load: () => Promise.reject(new Error('Not implemented.')),

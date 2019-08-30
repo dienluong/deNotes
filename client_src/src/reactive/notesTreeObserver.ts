@@ -25,6 +25,7 @@ export default ({ user, storage }: { user: string, storage: StorageT })
       return _storage.save({ userId: _user, notesTree })
         .then(responseObj => {
           observer.lastSavedDate = mostRecentDate;
+          // TODO Remove
           console.log(`$$$$$$$$$$$$$$$ Tree saved!!!\n${JSON.stringify(responseObj, null, 2)}`);
           return responseObj;
         })
@@ -33,12 +34,10 @@ export default ({ user, storage }: { user: string, storage: StorageT })
           return Promise.reject(err);
         });// TODO: Failed save should retry.
     } else {
+      // TODO Remove
       console.log('############### Tree did not change. Skip saving.');
       return Promise.resolve(false);
     }
-    // TODO: remove
-    // console.log('************* Tree *************\n');
-    // console.log(JSON.stringify(tree, null, 4));
   };
 
   observer.lastSavedDate = Date.now();

@@ -109,9 +109,6 @@ function NotesList({
     }
 
     if (editMode) {
-      // TODO Remove
-      // buttons.push(<Checkbox value={ node.id } inputProps={{ 'aria-label': `${node.id} checkbox` }} />);
-
       if (editModeSelectedNodes.includes(node.id)) {
         buttons.push(<CheckBoxIcon color="secondary" />);
       } else {

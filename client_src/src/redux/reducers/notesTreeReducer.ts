@@ -38,10 +38,6 @@ function _changeNodeTitle({ notesTree, title, node, now }: { notesTree: NotesTre
       return notesTree;
     }
 
-    // TODO: remove
-    console.log(`>>>>> Submitted title: ${ title } ; node.type: ${ node.type } ;`);
-    console.log('-->Tree changed on node title change\n');
-
     return {
       ...notesTree,
       tree: newTree,
@@ -70,15 +66,6 @@ function _deleteNode({ notesTree, now }: { notesTree: NotesTreeT, now: number })
       searchQuery: idToDelete,
       searchMethod: ({ node: treeNode, searchQuery }) => searchQuery === treeNode.id,
     }).matches;
-
-    // TODO Remove
-    // const parentFolderIdx: number | null = findDeepestFolder(activePath);
-    // let nodeToDeletePath: ActiveNodeT['path'];
-    // if (parentFolderIdx !== null) {
-    //   nodeToDeletePath = [...activePath.slice(0, parentFolderIdx + 1), nodeToDelete.id];
-    // } else {
-    //   return notesTree;
-    // }
 
     if (nodesFound.length) {
       try {
@@ -158,15 +145,6 @@ function _changeTreeFolder({ notesTree, folder, activePath, now }: { notesTree: 
 
 function _toggleSelected({ notesTree, nodeId, path }: { notesTree: NotesTreeT, nodeId: TreeNodeT['id'], path: TreeNodePathT })
   : NotesTreeT {
-
-  // TODO: Remove
-  // const nodesFound: Array<{ node: TreeItem, path: (string|number)[], treeIndex: number }> = find({
-  //   getNodeKey,
-  //   treeData: notesTree.tree,
-  //   searchQuery: nodeId,
-  //   searchMethod: ({ node: treeNode, searchQuery }) => searchQuery === treeNode.id,
-  // }).matches;
-
   const targetNodeInfo = getNodeAtPath({
     getNodeKey,
     treeData: notesTree.tree,
