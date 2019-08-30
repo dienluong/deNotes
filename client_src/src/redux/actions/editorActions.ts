@@ -41,6 +41,19 @@ export function use({ editorContentStorage }: { editorContentStorage: StorageT }
 }
 
 /**
+ * @param editorContent
+ */
+export function newContentAction({ editorContent }: { editorContent: EditorContentT })
+  : AnyAction {
+  return {
+    type: editorActionTypes.NEW_EDITOR_CONTENT,
+    payload: {
+      newEditorContent: editorContent,
+    },
+  };
+}
+
+/**
  * @param editor
  * @param content
  * @return {{type: string, payload: {newContent: {delta: Delta, content: *, dateModified: number}}}}

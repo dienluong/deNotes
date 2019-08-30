@@ -5,6 +5,7 @@ import { collapseFolders } from '../../utils/treeUtils';
 import mobileTheme from '../../tree-theme';
 import 'react-sortable-tree/style.css';
 import styles from './NotesList.module.css';
+import unescape from 'lodash/unescape';
 import AppBar from '@material-ui/core/AppBar';
 import MuiToolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -68,8 +69,9 @@ function NotesList({
 }: PropsT) {
   function buildNodeProps({ node, path }: { node: TreeNodeT, path: TreeNodePathT }) {
     return ({
-      title: (<NodeTitle node={ node } path={ path } onSubmit={ nodeTitleChangeHandler } />),
+      title: (editMode ? <NodeTitle node={ node } path={ path } onSubmit={ nodeTitleChangeHandler } /> : <Typography className={ styles['dnt__tree-node-title'] }>{ unescape(node.title) }</Typography>),
       className: (node.id === activeNode.id) ? `${styles['dnt__tree-node']} ${styles['dnt__tree-node--active']}` : styles['dnt__tree-node'],
+      style: { cursor: 'auto' },
       buttons: _buildNodeButtons({ node }),
       tabIndex: '0',
       'data-testid': node.id,
@@ -150,8 +152,8 @@ function NotesList({
               <ExitFolderIcon />
             </IconButton>
           )}
-          <Typography inline variant={ size !== 'small' ? 'h5' : 'h6' } color="inherit">
-            { currentFolderName || _DEFAULT_FOLDER_NAME }
+          <Typography className={ styles['dnt__notes-list-header-folder-name'] } inline variant={ size !== 'small' ? 'h6' : 'subtitle1' } color="inherit">
+            { unescape(currentFolderName || _DEFAULT_FOLDER_NAME) }
           </Typography>
           { !rootViewOn && !editMode && (
             <IconButton aria-label={ 'Home' } color="inherit" onClick={ homeBtnHandler }>

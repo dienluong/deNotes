@@ -14,9 +14,10 @@ exports[`should render Edit Mode correctly, i.e. header bar w/o Back and Home ic
       disableGutters={true}
     >
       <WithStyles(Typography)
+        className="dnt__notes-list-header-folder-name"
         color="inherit"
         inline={true}
-        variant="h5"
+        variant="h6"
       >
         TEST FOLDER NAME
       </WithStyles(Typography)>
@@ -183,9 +184,10 @@ exports[`should render header, tree and app bar properly in non-root-view mode 1
         <pure(ArrowBackIosOutlinedIcon) />
       </WithStyles(IconButton)>
       <WithStyles(Typography)
+        className="dnt__notes-list-header-folder-name"
         color="inherit"
         inline={true}
-        variant="h6"
+        variant="subtitle1"
       >
         TEST FOLDER NAME
       </WithStyles(Typography)>

@@ -23,6 +23,14 @@
   /*direction: rtl;*/
 }
 
+.dnt__notes-list-header-folder-name {
+  padding: 0 0.8em;
+  cursor: default;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .dnt__tree {
   flex-grow : 1;
   background-color: white;
@@ -58,4 +66,11 @@
 
 .dnt__tree-node-btn {
   vertical-align: middle;
+}
+
+.dnt__tree-node-title {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

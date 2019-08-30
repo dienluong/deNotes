@@ -1,7 +1,8 @@
 import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
-import editorActionTypes from './constants/editorActionConstants';
-import { fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
+import { MODAL_TYPES } from '../../components/ModalManager';
+import { newContentAction, fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
+import { showModalAction, hideModalAction } from './modalActions';
 import { translateNodeIdToInfo, getDescendantItems, createNode, findDeepestFolder } from '../../utils/treeUtils';
 import * as rootReducer from '../reducers';
 import initialState from '../misc/initialState';
@@ -10,6 +11,7 @@ import { NONE_SELECTED, nodeTypes } from '../../utils/appCONSTANTS';
 // Types
 import { AnyAction } from 'redux';
 import { ThunkAction } from 'redux-thunk';
+import { PropsT as RenameNodeModalPropsT } from '../../components/widgets/RenameNodeModal';
 
 // TODO: remove
 // import { save as saveEditorContent } from '../../reactive/editorContentObserver';
@@ -253,6 +255,22 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
       },
     });
 
+    const modalProps: RenameNodeModalPropsT = {
+      nodeType: kind,
+      currentName: newNode.title,
+      onCloseHandler: () => dispatch(hideModalAction()),
+      onSubmitHandler: ({ name }: { name: string }) => {
+        dispatch(hideModalAction());
+        dispatch(changeNodeTitleAction({ title: name || newNode.title, node: newNode }))
+      },
+    };
+
+    dispatch(showModalAction({
+      type: MODAL_TYPES.RENAME_NODE,
+      props: modalProps,
+    }));
+
+
     const newNodeInfo = translateNodeIdToInfo({ nodeId: newNode.id });
     // Only change active node and editor content if newly added node is of type ITEM (i.e. a note), as opposed to a FOLDER.
     if (newNodeInfo && newNodeInfo.type === nodeTypes.ITEM) {
@@ -275,12 +293,7 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
           readOnly: false,
         };
 
-      dispatch({
-        type: editorActionTypes.NEW_EDITOR_CONTENT,
-        payload: {
-          newEditorContent,
-        }
-      })
+      dispatch(newContentAction({ editorContent: newEditorContent }));
     }
 
     return returnVal;
@@ -453,6 +466,10 @@ export function changeNotesFolderThunkAction({ folder }: { folder: TreeNodeT[] }
  */
 export function changeNodeTitleAction({ title, node }: { title: string, node: TreeNodeT })
   : AnyAction {
+  if (!title.trim()) {
+    title = node.title;
+  }
+
   return {
     type: notesListActionTypes.CHANGE_NODE_TITLE,
     payload: {

@@ -17,6 +17,7 @@ function NodeTitle({ node, path, onSubmit: submitHandler }: PropsT<TreeNodeT, an
     // but event.currentTarget is *not* <input>, but rather <form>, if the event was onSubmit
     const inputEl = event.currentTarget.matches('input') ? event.currentTarget : event.currentTarget.getElementsByTagName('input')[0];
     if (inputEl instanceof HTMLInputElement) {
+      inputEl.blur();
       const escapedInput = escape(inputEl.value);
       if (escapedInput !== inputEl.defaultValue) {
         submitHandler({
@@ -36,6 +37,8 @@ function NodeTitle({ node, path, onSubmit: submitHandler }: PropsT<TreeNodeT, an
         type="text"
         defaultValue={ unescape(node.title) }
         onBlur={ submit }
+        onClick={ event => event.stopPropagation() }
+        onDoubleClick={ event => event.stopPropagation() }
       />
     </form>
   );

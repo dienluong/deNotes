@@ -119,6 +119,16 @@ describe('editorContentReducer ', () => {
         now: 111222,
       },
     })).toBe(currentState);
+
+    // Returns current state if new title is same as current title
+    expect(reducer(currentState, {
+      type: notesListActionTypes.CHANGE_NODE_TITLE,
+      payload: {
+        title: currentState.title,
+        node: { uniqid: 'a-different-id' },
+        now: 998877,
+      },
+    })).toBe(currentState);
   });
 
   it('should, on REMOVE_NOTE_SUCCESS, return initial state, i.e. blank content and read-only, if delete IDs matches ID of current state', () => {

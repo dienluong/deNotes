@@ -171,9 +171,9 @@ it('should render all node titles of the received tree and highlight the active 
     getNodeKey,
   };
 
-  const { container, queryAllByValue } = render(<NotesList { ...props }/>);
-  const renderedInputs = Array.from(container.getElementsByTagName('input'));
-  const renderedTitles = renderedInputs.map(input => input.value);
+  const { container, queryAllByText } = render(<NotesList { ...props }/>);
+  const renderedParagraphs = Array.from(container.getElementsByTagName('p'));
+  const renderedTitles = renderedParagraphs.map(p => p.textContent);
 
   const test = jest.fn();
   test.mockImplementation(node => {
@@ -181,9 +181,9 @@ it('should render all node titles of the received tree and highlight the active 
       const highlightedNodes = container.getElementsByClassName(notesListStyles['dnt__tree-node--active']);
       // should expect only one highlighted node
       expect(highlightedNodes.length).toEqual(1);
-      expect(highlightedNodes[0].querySelector('input').value).toEqual(node.title);
+      expect(highlightedNodes[0].querySelector('p').textContent).toEqual(node.title);
     }
-    expect(queryAllByValue(node.title)).toHaveLength(1);
+    expect(queryAllByText(node.title)).toHaveLength(1);
     expect(renderedTitles.includes(node.title)).toBe(true);
   });
 
@@ -227,7 +227,7 @@ it('should invoke handler when tree node is clicked', () => {
   const { container } = render(<NotesList { ...props }/>);
   const renderedTreeNodeElements = [...container.getElementsByClassName(notesListStyles['dnt__tree-node'])];
   renderedTreeNodeElements.forEach(element => {
-    const elementTitle = element.getElementsByTagName('input')[0].value;
+    const elementTitle = element.querySelector('p').textContent;
     const correspondingNode = find({
       treeData: props.tree,
       getNodeKey,
@@ -276,7 +276,7 @@ it('should invoke handler when double-click on node', () => {
   const { container } = render(<NotesList { ...props }/>);
   const renderedTreeNodeElements = [...container.getElementsByClassName(notesListStyles['dnt__tree-node'])];
   renderedTreeNodeElements.forEach(element => {
-    const elementTitle = element.getElementsByTagName('input')[0].value;
+    const elementTitle = element.querySelector('p').textContent;
     const correspondingNode = find({
       treeData: props.tree,
       getNodeKey,
@@ -331,7 +331,7 @@ it('should invoke handler when buttons on toolbars are clicked', () => {
   props.toolbarHandlers.forEach(handler => expect(handler).toBeCalledTimes(1));
 });
 
-it('should invoke handler on node title change', () => {
+it('should invoke handler when EDIT button is clicked', () => {
   const activeNode = {
     id: mockedTree[0].children[0].id,
     path: [mockedTree[0].children[0].id],
@@ -340,6 +340,39 @@ it('should invoke handler on node title change', () => {
     tree: mockedTree[0].children,
     size: 'medium',
     editMode: false,
+    editModeSelectedNodes: [],
+    activeNode,
+    rootViewOn: false,
+    currentFolderName: 'TEST FOLDER NAME',
+    treeChangeHandler: jest.fn(),
+    nodeTitleChangeHandler: jest.fn(),
+    nodeClickHandler: jest.fn(),
+    nodeDoubleClickHandler: jest.fn(),
+    deleteNodeBtnHandler: jest.fn(),
+    backBtnHandler: jest.fn(),
+    homeBtnHandler: jest.fn(),
+    editBtnHandler: jest.fn(),
+    editDoneBtnHandler: jest.fn(),
+    toolbarHandlers: [jest.fn(), jest.fn()],
+    getNodeKey,
+  };
+
+  const { queryByText } = render(<NotesList { ...props }/>);
+
+  const editBtn = queryByText('EDIT');
+  fireEvent.click(editBtn);
+  expect(props.editBtnHandler).toBeCalledTimes(1);
+});
+
+it('should invoke handler on node title change in Edit Mode', () => {
+  const activeNode = {
+    id: mockedTree[0].children[0].id,
+    path: [mockedTree[0].children[0].id],
+  };
+  const props = {
+    tree: mockedTree[0].children,
+    size: 'medium',
+    editMode: true,
     editModeSelectedNodes: [],
     activeNode,
     rootViewOn: false,
@@ -376,39 +409,6 @@ it('should invoke handler on node title change', () => {
 
   props.tree.forEach(test);
   expect(test).toBeCalledTimes(props.tree.length);
-});
-
-it('should invoke handler when EDIT button is clicked', () => {
-  const activeNode = {
-    id: mockedTree[0].children[0].id,
-    path: [mockedTree[0].children[0].id],
-  };
-  const props = {
-    tree: mockedTree[0].children,
-    size: 'medium',
-    editMode: false,
-    editModeSelectedNodes: [],
-    activeNode,
-    rootViewOn: false,
-    currentFolderName: 'TEST FOLDER NAME',
-    treeChangeHandler: jest.fn(),
-    nodeTitleChangeHandler: jest.fn(),
-    nodeClickHandler: jest.fn(),
-    nodeDoubleClickHandler: jest.fn(),
-    deleteNodeBtnHandler: jest.fn(),
-    backBtnHandler: jest.fn(),
-    homeBtnHandler: jest.fn(),
-    editBtnHandler: jest.fn(),
-    editDoneBtnHandler: jest.fn(),
-    toolbarHandlers: [jest.fn(), jest.fn()],
-    getNodeKey,
-  };
-
-  const { queryByText } = render(<NotesList { ...props }/>);
-
-  const editBtn = queryByText('EDIT');
-  fireEvent.click(editBtn);
-  expect(props.editBtnHandler).toBeCalledTimes(1);
 });
 
 it('should invoke handler when DELETE button is clicked and nodes are selected in Edit Mode', () => {

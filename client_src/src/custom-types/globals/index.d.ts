@@ -23,6 +23,7 @@ declare global {
     notesTree: NotesTreeT;
     activeNode: ActiveNodeT;
     editorContent: EditorContentT;
+    modalInfo: ModalInfoT;
   }
 
   interface UserInfoT {
@@ -67,5 +68,10 @@ declare global {
 
   interface ActionError extends Error {
     action: AnyAction;
+  }
+
+  interface ModalInfoT {
+    type: string;
+    props: Object;
   }
 }

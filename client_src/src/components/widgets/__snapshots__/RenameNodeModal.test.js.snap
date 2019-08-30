@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders MUI Dialog and TextField containing current name 1`] = `
+<div>
+  <WithStyles(Dialog)
+    aria-labelledby="rename-node-dialog-title"
+    onClose={[Function]}
+    open={true}
+  >
+    <WithStyles(DialogTitle)
+      id="rename-node-dialog-title"
+    >
+      Enter Name for current test node name
+    </WithStyles(DialogTitle)>
+    <WithStyles(DialogContent)>
+      <form
+        autoComplete="off"
+        noValidate={true}
+        onSubmit={[Function]}
+      >
+        <TextField
+          autoFocus={true}
+          defaultValue="current test node name"
+          fullWidth={true}
+          id="name"
+          label="Name"
+          margin="dense"
+          onChange={[Function]}
+          onFocus={[Function]}
+          required={false}
+          select={false}
+          type="text"
+          variant="outlined"
+        />
+      </form>
+    </WithStyles(DialogContent)>
+    <WithStyles(DialogActions)>
+      <WithStyles(Button)
+        aria-label="Cancel Rename Dialog"
+        color="primary"
+        onClick={[Function]}
+      >
+        Cancel
+      </WithStyles(Button)>
+      <WithStyles(Button)
+        aria-label="OK Rename Dialog"
+        color="primary"
+        onClick={[Function]}
+      >
+        OK
+      </WithStyles(Button)>
+    </WithStyles(DialogActions)>
+  </WithStyles(Dialog)>
+</div>
+`;
