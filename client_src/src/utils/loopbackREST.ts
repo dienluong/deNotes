@@ -104,19 +104,3 @@ export function remove({ collectionName = '', ids = '' }: { collectionName: stri
   });
 }
 
-// TODO: remove
-// export function removeMultiple({ collectionName = '', ids = [] }) {
-//   if (!collectionName) {
-//     return Promise.reject(new Error('Delete aborted: invalid collection name.'));
-//   }
-//   const idFilter = Array.isArray(ids) && ids.length ? `?ids=${encodeURIComponent(JSON.stringify(ids))}` : '?ids=[]';
-//   return fetch(
-//     `${process.env.REACT_APP_SERVER_URL}/api/${collectionName}/multidelete${idFilter}`,
-//     {
-//       method: 'DELETE',
-//       headers: {
-//         'Accept': 'application/json',
-//       },
-//     },
-//   );
-// }

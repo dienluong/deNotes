@@ -3,10 +3,6 @@ import { createSelector } from 'reselect';
 import { getNodeKey, findDeepestFolder } from '../../utils/treeUtils';
 import { selectNotesTreeTree, selectActiveNodePath } from '../reducers';
 
-// TODO: remove
-// const selectNotesTree = (state) => state.notesTree;
-// const selectActiveNodePath = (state) => state.activeNode.path;
-
 /**
  * For each note ID in path, return the corresponding title.
  * @param {Object[]} notesTree

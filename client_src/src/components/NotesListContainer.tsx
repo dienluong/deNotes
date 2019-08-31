@@ -74,9 +74,6 @@ function mapStateToProps(state: AppStateT): MapStatePropsT {
   }
   // TODO: Remove ABOVE
 
-  // TODO: REMOVE
-  console.log('++++++++++++++ EDIT MODE: ', rootReducer.selectNotesTreeEditMode(state));
-
   const activeNode = rootReducer.selectActiveNode(state);
   // Get the siblings of the current active node (including itself). The children will be passed as prop to the component
   const parentIdx = findDeepestFolder(activeNode.path);

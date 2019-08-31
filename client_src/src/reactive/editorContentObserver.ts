@@ -9,8 +9,6 @@ let _lastContentId: string|null = null;
 
 export function inject({ user, storage }: { user: string, storage: StorageT})
   : void {
-  // TODO: remove
-  // _user = typeof user === 'string' ? user : _user;
   _user = user;
   // @ts-ignore
   _storage = storage && typeof storage === 'object' && Object.keys(_storage).every(key => ((key in storage) && (typeof storage[key] === 'function')))
@@ -30,9 +28,8 @@ export function save(editorContent: EditorContentT)
   if (editorContent.dateCreated > _lastSavedDate || (editorContent.id === _lastContentId && editorContent.dateModified > _lastSavedDate && editorContent.title)) {
     retValue = _storage.save({ userId: _user, editorContent })
       .then(responseObj => {
-        // TODO: remove
-        // console.log(editorContent.dateCreated, editorContent.dateModified, _lastSavedDate, _lastContentId, editorContent.id);
         _lastSavedDate = editorContent.dateModified > editorContent.dateCreated ? editorContent.dateModified : editorContent.dateCreated;
+        // TODO Remove
         console.log(`$$$$$$$$$$$$$$$ Content saved!!!\n${JSON.stringify(responseObj, null, 2)}`);
         return responseObj;
       })
@@ -41,6 +38,7 @@ export function save(editorContent: EditorContentT)
         return Promise.reject(err);
       });// TODO: Failed save should retry
   } else {
+    // TODO Remove
     console.log('############### Content did not change. Skip saving.');
     retValue = Promise.resolve(false);
   }

@@ -38,11 +38,6 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction> )
   };
 }
 
-// TODO: remove
-// function mergeProps(stateProps, dispatchProps, ownProps) {
-//   return Object.assign({}, ownProps, stateProps, dispatchProps);
-// }
-
 // Note: ownProps is automatically forwarded to the wrapped component
 const EditorContainer = connect(mapStateToProps, mapDispatchToProps)(Editor);
 export default EditorContainer;

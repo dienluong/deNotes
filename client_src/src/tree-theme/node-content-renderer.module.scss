@@ -223,45 +223,6 @@ $hover-padding: 2px;
   display: inline-block;
 }
 
-// TODO Remove
-//.collapseButton,
-//.expandButton {
-//  appearance: none;
-//  background: none;
-//  border: none;
-//  position: absolute;
-//  width: 16px;
-//  height: 16px;
-//  top: 50%;
-//  padding-left: 120px;
-//  cursor: pointer;
-//  z-index: 1000;
-//  transform: translate(-50%, -50%);
-//  &:focus {outline:0;}
-//}
-//
-//.collapseButton {
-//  &:before {
-//    content: "\25bc";
-//  }
-//}
-//
-//.expandButton {
-//  &:before {
-//    content:"\25b6";
-//  }
-//}
-
-/**
- * Line for under a node with children
- */
-// TODO Remove
-//.lineChildren {
-//  height: 100%;
-//  display: inline-block;
-//  position: absolute;
-//}
-
 .contentContainer {
   width: 75%;
 }

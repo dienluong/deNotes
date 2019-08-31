@@ -41,7 +41,7 @@ declare global {
 
   interface TreeNodeT {
     title: string;
-    subtitle: string;
+    subtitle?: string;
     uniqid: string;
     id: string;
     type: NodeTypeT;

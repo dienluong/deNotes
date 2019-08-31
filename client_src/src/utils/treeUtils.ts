@@ -61,11 +61,11 @@ export function equals(obj1: { [key: string]: any }, obj2: { [key: string]: any 
 export function createNode({ title = DEFAULT_TITLES.NOTE, subtitle = new Date().toLocaleString(), type = nodeTypes.ITEM }
   : { title?: string, subtitle?: string, type?: NodeTypeT })
   : TreeNodeT {
-  // TODO: remove subtitle = uuid
   const id: string = uuid();
   const newNode: TreeNodeT = {
     title: title || DEFAULT_TITLES.NOTE,
-    subtitle: id,
+    // Optionally: include a subtitle
+    // subtitle: id,
     type,
     uniqid: id,
     get id() {
@@ -188,7 +188,6 @@ export function translatePathToInfo({ notesTree = [], path = [], kind = 'type' }
  * @param tree {Object[]}
  * @returns {*}
  */
-// TODO To remove
 // https://stackoverflow.com/questions/41312228/filter-nested-tree-object-without-losing-structure
 export function trimTree(tree: TreeNodeT[])
   : object[] {
