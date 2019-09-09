@@ -12,10 +12,9 @@ type PropsT<N,P> = {
 };
 
 function NodeTitle({ node, path, onSubmit: submitHandler }: PropsT<TreeNodeT, any>) {
+  const inputRef = React.createRef<HTMLInputElement>();
   function submit(event: FormEvent<HTMLElement>) {
-    // event.currentTarget is <input> if the event was onBlur
-    // but event.currentTarget is *not* <input>, but rather <form>, if the event was onSubmit
-    const inputEl = event.currentTarget.matches('input') ? event.currentTarget : event.currentTarget.getElementsByTagName('input')[0];
+    const inputEl = inputRef.current;
     if (inputEl instanceof HTMLInputElement) {
       inputEl.blur();
       const escapedInput = escape(inputEl.value);
@@ -33,6 +32,7 @@ function NodeTitle({ node, path, onSubmit: submitHandler }: PropsT<TreeNodeT, an
   return (
     <form onSubmit={ submit } >
       <input
+        ref={ inputRef }
         className={ styles['dnt__node-title'] }
         type="text"
         defaultValue={ unescape(node.title) }
