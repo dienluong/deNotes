@@ -419,6 +419,7 @@ exports[`render correctly with proper component and props 1`] = `
           <a
             class="ql-preview"
             href="about:blank"
+            rel="noopener noreferrer"
             target="_blank"
           />
           <input
