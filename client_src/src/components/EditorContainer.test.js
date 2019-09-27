@@ -5,7 +5,7 @@ import Delta from 'quill-delta';
 import createMockStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { render, cleanup } from 'react-testing-library';
+import { render, cleanup } from '@testing-library/react';
 import 'jest-dom/extend-expect';
 import initialState from '../redux/misc/initialState';
 import { MutationObserver } from '../test-utils/MutationObserver';

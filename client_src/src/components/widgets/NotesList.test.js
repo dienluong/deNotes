@@ -13,7 +13,7 @@ import ExitFolderIcon from '@material-ui/icons/ArrowBackIosOutlined';
 import Tree, { find } from 'react-sortable-tree';
 import { getNodeKey, collapseFolders } from '../../utils/treeUtils';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
-import { render, cleanup, fireEvent } from 'react-testing-library';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import 'jest-dom/extend-expect';
 import { createSerializer } from 'enzyme-to-json';
 
@@ -390,13 +390,13 @@ it('should invoke handler on node title change in Edit Mode', () => {
     getNodeKey,
   };
 
-  const { queryAllByValue } = render(<NotesList { ...props }/>);
+  const { queryAllByDisplayValue } = render(<NotesList { ...props }/>);
 
   let nodeCounter = 0;
   const test = jest.fn();
   test.mockImplementation(node => {
     const newTitle = 'new test title';
-    const renderedInputs = queryAllByValue(node.title);
+    const renderedInputs = queryAllByDisplayValue(node.title);
     expect(renderedInputs).toHaveLength(1);
     const renderedTitle = renderedInputs[0];
 

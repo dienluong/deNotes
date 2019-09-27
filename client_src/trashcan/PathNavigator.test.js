@@ -1,6 +1,6 @@
 import PathNavigator from './PathNavigator';
 import React from 'react';
-import { render, cleanup, fireEvent } from 'react-testing-library';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import 'jest-dom/extend-expect';
 import styles from './PathNavigator.module.css';
 

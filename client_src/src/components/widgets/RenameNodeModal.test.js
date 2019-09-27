@@ -4,7 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import { nodeTypes } from '../../utils/appCONSTANTS';
 import { createSerializer } from 'enzyme-to-json';
-import { render, cleanup, fireEvent } from 'react-testing-library';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 // Configure Enzyme
 import { configure, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
@@ -99,8 +99,8 @@ it('returns the newly entered name on submit', () => {
 
   const newName = 'this is a new name';
 
-  const { getByValue, getByText } = render(<RenameNodeModal { ...props } />);
-  const textInput = getByValue(props.currentName);
+  const { getByDisplayValue, getByText } = render(<RenameNodeModal { ...props } />);
+  const textInput = getByDisplayValue(props.currentName);
   const okButton = getByText('OK');
   fireEvent.change(textInput, { target: { value: newName } });
   fireEvent.click(okButton);
