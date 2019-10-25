@@ -53,7 +53,7 @@ export function load({ id = '', userId = '' }: { id: string, userId: string })
   }).then((content: any) => {
     const propList = ['id', 'title', 'body', 'delta', 'dateCreated', 'dateModified'];
     if (content && (typeof content.hasOwnProperty === 'function') && propList.every(prop => content.hasOwnProperty(prop))) {
-      // Note: We convert the retreived dates to milliseconds since Unix epoch.
+      // Note: We convert the retrieved dates to milliseconds since Unix epoch.
       return {
         id,
         title: content.title,

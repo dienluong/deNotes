@@ -11,7 +11,7 @@ const clientMixin = function clientMixin(moduleName: string) {
       const path = `${ownerId}/${id}`;
       return this.storeObject(moduleName, path, dataObj)
         .catch(err => {
-          // remoteStorageJS storeObject()'s Promise rejects to a ValicationError
+          // remoteStorageJS storeObject()'s Promise rejects to a ValidationError
           // ValidationError is poorly documented.  It is an object that includes an "error" property, which is an Error object.
           return Promise.reject(err.error);
         });
