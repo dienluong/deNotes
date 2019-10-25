@@ -15,7 +15,7 @@ function builder(privateClient: BaseClient) {
       'title': {
         'type': 'string',
       },
-      'content': {
+      'body': {
         'type': 'string',
       },
       'delta': {
@@ -34,6 +34,9 @@ function builder(privateClient: BaseClient) {
       },
       'dateModified': {
         'type': 'integer',
+      },
+      'ownerId': {
+        'type': 'string',
       },
       'readOnly': {
         'type': 'boolean',
