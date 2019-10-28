@@ -1,4 +1,4 @@
-import * as moduleToTest from './editorContentStorage';
+import * as moduleToTest from './editorContentDataStore';
 
 describe('1. load', () => {
   it('should return an Error in rejected Promise if invoked with no dependency injected beforehand', async() => {

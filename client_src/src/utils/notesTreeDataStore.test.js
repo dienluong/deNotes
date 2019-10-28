@@ -1,4 +1,4 @@
-import * as moduleToTest from './notesTreeStorage';
+import * as moduleToTest from './notesTreeDataStore';
 
 describe('1. save', () => {
   it('should return an Error in rejected Promise if invoked with no dependency injected beforehand', async() => {

@@ -19,8 +19,8 @@ import 'rxjs/add/operator/pluck';
 import 'rxjs/add/operator/auditTime';
 import notesTreeObserver from './reactive/notesTreeObserver';
 import * as editorContentObserver from './reactive/editorContentObserver';
-import * as notesTreeStorage from './utils/notesTreeStorage';
-import * as editorContentStorage from './utils/editorContentStorage';
+import * as notesTreeDataStore from './utils/notesTreeDataStore';
+import * as editorContentDataStore from './utils/editorContentDataStore';
 // import { save as loopbackSave, load as loopbackLoad, remove as loopbackDelete } from './utils/loopbackREST';
 import { save as saveToStorage, load as loadFromStorage, remove as deleteFromStorage } from './utils/offlineStorage';
 
@@ -30,23 +30,23 @@ const activeId = 'item|^|218013d0-ad79-11e8-bfc8-79a6754f355a';
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
 
-notesTreeStorage.inject({ save: saveToStorage, load: loadFromStorage });
-editorContentStorage.inject({ save: saveToStorage, load: loadFromStorage, remove: deleteFromStorage });
+notesTreeDataStore.inject({ save: saveToStorage, load: loadFromStorage });
+editorContentDataStore.inject({ save: saveToStorage, load: loadFromStorage, remove: deleteFromStorage });
 
 // Create observer for saving notes tree
-const myNotesTreeObserver = notesTreeObserver({ user: userId, storage: notesTreeStorage });
+const myNotesTreeObserver = notesTreeObserver({ user: userId, storage: notesTreeDataStore });
 
 // Inject dependencies into notesListActions
 // We are using the observers (instead of the storage's save()) as the save functions to make use of their extra logics
 notesListActionsInject({
   notesTreeStorage: {
     save: myNotesTreeObserver,
-    load: notesTreeStorage.load,
+    load: notesTreeDataStore.load,
   },
   editorContentStorage: {
     save: editorContentObserver.save,
-    load: editorContentStorage.load,
-    remove: editorContentStorage.remove,
+    load: editorContentDataStore.load,
+    remove: editorContentDataStore.remove,
   },
 });
 
@@ -54,8 +54,8 @@ notesListActionsInject({
 editorActionsInject({
   editorContentStorage: {
     save: editorContentObserver.save,
-    load: editorContentStorage.load,
-    remove: editorContentStorage.remove,
+    load: editorContentDataStore.load,
+    remove: editorContentDataStore.remove,
   },
 });
 
@@ -101,8 +101,8 @@ store.dispatch(fetchNotesTreeThunkAction())
 // Build Reactive Parts
 const notesTree$ = Observable.from(store).pluck('notesTree').auditTime(1000);
 const editorContent$ = Observable.from(store).pluck('editorContent').auditTime(1000);
-// const myEditorContentObserver = editorContentObserver({ user: userId, storage: editorContentStorage });
-editorContentObserver.inject({ user: userId, storage: editorContentStorage });
+// const myEditorContentObserver = editorContentObserver({ user: userId, storage: editorContentDataStore });
+editorContentObserver.inject({ user: userId, storage: editorContentDataStore });
 notesTree$.subscribe(myNotesTreeObserver);
 editorContent$.subscribe(editorContentObserver.save);
 
