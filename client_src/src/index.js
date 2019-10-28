@@ -33,11 +33,13 @@ const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)))
 notesTreeDataStore.inject({ save: saveToStorage, load: loadFromStorage });
 editorContentDataStore.inject({ save: saveToStorage, load: loadFromStorage, remove: deleteFromStorage });
 
-// Create observer for saving notes tree
+// Preparing observers
 const myNotesTreeObserver = notesTreeObserver({ user: userId, storage: notesTreeDataStore });
+// const myEditorContentObserver = editorContentObserver({ user: userId, storage: editorContentDataStore });
+editorContentObserver.inject({ user: userId, storage: editorContentDataStore });
 
 // Inject dependencies into notesListActions
-// We are using the observers (instead of the storage's save()) as the save functions to make use of their extra logics
+// Using the observers' save function (instead of the storage's save function directly) to make use of its extra logic
 notesListActionsInject({
   notesTreeStorage: {
     save: myNotesTreeObserver,
@@ -101,8 +103,6 @@ store.dispatch(fetchNotesTreeThunkAction())
 // Build Reactive Parts
 const notesTree$ = Observable.from(store).pluck('notesTree').auditTime(1000);
 const editorContent$ = Observable.from(store).pluck('editorContent').auditTime(1000);
-// const myEditorContentObserver = editorContentObserver({ user: userId, storage: editorContentDataStore });
-editorContentObserver.inject({ user: userId, storage: editorContentDataStore });
 notesTree$.subscribe(myNotesTreeObserver);
 editorContent$.subscribe(editorContentObserver.save);
 

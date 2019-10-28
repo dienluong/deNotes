@@ -1,3 +1,4 @@
+// Types
 interface ObserverT {
   (notesTree: NotesTreeT): Promise<any>;
   lastSavedDate: number;
