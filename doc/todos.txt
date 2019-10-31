@@ -89,7 +89,7 @@ window.onbeforeunload = function() {
 }
 Retry save or load on failure
 recycle bin
-Review remoteStorage data modules for discrepancies.
+x Review remoteStorage data modules for discrepancies.
 
 Revisit QuillJs bug
     https://github.com/quilljs/quill/issues/1940
