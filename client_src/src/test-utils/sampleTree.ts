@@ -1,5 +1,5 @@
 import uuid from 'uuid/v1';
-import { nodeTypes } from '../utils/appCONSTANTS';
+import { nodeTypes, DEFAULT_ID_DELIMITER } from '../utils/appCONSTANTS';
 
 function randomDateString(start: Date, end: Date) {
   return new Date(start.getTime() +
@@ -8,7 +8,7 @@ function randomDateString(start: Date, end: Date) {
 
 const start = new Date(2018, 5, 1);
 const end = new Date();
-const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
+const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || DEFAULT_ID_DELIMITER;
 const sampleTree: Array<TreeNodeT> = [
   {
     title: 'react-ui-tree',

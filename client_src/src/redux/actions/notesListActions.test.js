@@ -1,4 +1,3 @@
-const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
 import notesListActionTypes from './constants/notesListActionConstants';
 import editorActionTypes from './constants/editorActionConstants';
 import modalActionTypes from './constants/modalActionConstants';
@@ -15,8 +14,9 @@ import { mockedContent } from '../../test-utils/mocks/mockedEditorContent';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
 import { find } from 'react-sortable-tree';
 import * as treeUtils from '../../utils/treeUtils';
-import { NONE_SELECTED, nodeTypes } from '../../utils/appCONSTANTS';
+import { NONE_SELECTED, nodeTypes, DEFAULT_ID_DELIMITER } from '../../utils/appCONSTANTS';
 
+const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || DEFAULT_ID_DELIMITER;
 const mockStore = setupMockStore([thunk]);
 
 /**

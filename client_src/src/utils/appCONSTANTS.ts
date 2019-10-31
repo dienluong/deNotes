@@ -9,3 +9,4 @@ export const nodeTypes: Readonly<nodeTypesInt> = {
 };
 
 export const NONE_SELECTED: Readonly<string> = '<NO_NODE_SELECTED>';
+export const DEFAULT_ID_DELIMITER: Readonly<string> = '|^|';

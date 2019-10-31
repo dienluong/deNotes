@@ -1,6 +1,6 @@
 import * as moduleToTest from './treeUtils';
-import { NONE_SELECTED, nodeTypes } from '../utils/appCONSTANTS';
-const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|^|';
+import { NONE_SELECTED, nodeTypes, DEFAULT_ID_DELIMITER } from '../utils/appCONSTANTS';
+const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || DEFAULT_ID_DELIMITER;
 import { mockedTree } from '../test-utils/mocks/mockedNotesTree';
 
 describe('1. equals()', () => {

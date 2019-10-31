@@ -1,11 +1,11 @@
 import uuid from 'uuid/v4';
 import { find, getFlatDataFromTree } from 'react-sortable-tree';
-import { nodeTypes } from './appCONSTANTS';
+import { nodeTypes, DEFAULT_ID_DELIMITER } from './appCONSTANTS';
 
 // Types
 import { GetNodeKeyFunction, NodeData, TreeItem } from 'react-sortable-tree';
 
-const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|^|';
+const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || DEFAULT_ID_DELIMITER;
 export const DEFAULT_TITLES = {
   FOLDER: 'New Folder',
   NOTE: 'New Note',

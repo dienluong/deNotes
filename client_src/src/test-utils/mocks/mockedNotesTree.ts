@@ -1,6 +1,6 @@
-import { nodeTypes } from '../../utils/appCONSTANTS';
+import { nodeTypes, DEFAULT_ID_DELIMITER } from '../../utils/appCONSTANTS';
 
-const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER;
+const _ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || DEFAULT_ID_DELIMITER;
 
 export const mockedTree: TreeNodeT[] = [
   {

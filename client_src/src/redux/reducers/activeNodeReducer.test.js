@@ -1,8 +1,8 @@
 import reducer from './activeNodeReducer';
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import initialState from '../misc/initialState';
-import { NONE_SELECTED, nodeTypes } from '../../utils/appCONSTANTS';
-const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || '|^|';
+import { NONE_SELECTED, nodeTypes, DEFAULT_ID_DELIMITER } from '../../utils/appCONSTANTS';
+const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || DEFAULT_ID_DELIMITER;
 
 describe('activeNodeReducer ', () => {
   it('should return initial state by default', () => {
