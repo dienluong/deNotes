@@ -3,7 +3,7 @@ import notesDataModule from './remoteStorageJs/notesDataModule';
 import treesDataModule from './remoteStorageJs/treesDataModule';
 
 const _privateStorageCollection = new Map();
-let _offlineStorage;
+let storage = null;
 let _save: Function = () => Promise.reject(new Error('Not ready'));
 let _load: Function = () => Promise.reject(new Error('Not ready'));
 let _remove: Function = () => Promise.reject(new Error('Not ready'));
@@ -52,16 +52,16 @@ function _produceMethods() {
 }
 
 try {
-  _offlineStorage = create({} as any);
-  _offlineStorage.addModule(notesDataModule);
-  _offlineStorage.addModule(treesDataModule);
-  _offlineStorage.access.claim(notesDataModule.name, 'rw');
-  _offlineStorage.access.claim(treesDataModule.name, 'rw');
-  _offlineStorage.caching.enable(`/${notesDataModule.name}/`);
-  _offlineStorage.caching.enable(`/${treesDataModule.name}/`);
+  storage = create({} as any);
+  storage.addModule(notesDataModule);
+  storage.addModule(treesDataModule);
+  storage.access.claim(notesDataModule.name, 'rw');
+  storage.access.claim(treesDataModule.name, 'rw');
+  storage.caching.enable(`/${notesDataModule.name}/`);
+  storage.caching.enable(`/${treesDataModule.name}/`);
 
-  _privateStorageCollection.set(notesDataModule.name, _offlineStorage[notesDataModule.name].privateContent());
-  _privateStorageCollection.set(treesDataModule.name, _offlineStorage[treesDataModule.name].privateContent());
+  _privateStorageCollection.set(notesDataModule.name, storage[notesDataModule.name].privateContent());
+  _privateStorageCollection.set(treesDataModule.name, storage[treesDataModule.name].privateContent());
 } catch (err) {
   window.alert('Local storage not available. ' + err);
   console.error(err);
@@ -100,3 +100,4 @@ export function remove(paramsObj: object) {
     });
 }
 
+export default { save, load, remove, storage };
