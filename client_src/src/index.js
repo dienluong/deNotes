@@ -22,7 +22,11 @@ import * as editorContentObserver from './reactive/editorContentObserver';
 import * as notesTreeDataStore from './utils/notesTreeDataStore';
 import * as editorContentDataStore from './utils/editorContentDataStore';
 // import { save as loopbackSave, load as loopbackLoad, remove as loopbackDelete } from './utils/loopbackREST';
-import { save as saveToStorage, load as loadFromStorage, remove as deleteFromStorage } from './utils/offlineStorage';
+import localStorage from './utils/offlineStorage';
+import cloudStorage from './utils/cloudStorage';
+
+const widget = cloudStorage({ baseStorage: localStorage.storage });
+widget.attach('widget');
 
 const userId = process.env.REACT_APP_USER_ID;
 const activeId = 'item|^|218013d0-ad79-11e8-bfc8-79a6754f355a';
@@ -30,8 +34,8 @@ const activeId = 'item|^|218013d0-ad79-11e8-bfc8-79a6754f355a';
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
 
-notesTreeDataStore.inject({ save: saveToStorage, load: loadFromStorage });
-editorContentDataStore.inject({ save: saveToStorage, load: loadFromStorage, remove: deleteFromStorage });
+notesTreeDataStore.inject({ save: localStorage.save, load: localStorage.load });
+editorContentDataStore.inject({ save: localStorage.save, load: localStorage.load, remove: localStorage.remove });
 
 // Preparing observers
 const myNotesTreeObserver = notesTreeObserver({ user: userId, storage: notesTreeDataStore });
