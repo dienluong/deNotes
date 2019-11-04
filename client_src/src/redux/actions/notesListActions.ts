@@ -1,4 +1,3 @@
-import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
 import { MODAL_TYPES } from '../../components/ModalManager';
 import { newContentAction, fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
