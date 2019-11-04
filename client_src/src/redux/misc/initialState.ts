@@ -23,7 +23,7 @@ const initialState: AppStateT = {
     id: 'default-user',
   },
   notesTree: {
-    id: uuid(),
+    id: 'default',
     tree: [_rootNode],
     editMode: false,
     editModeSelectedNodes: [],

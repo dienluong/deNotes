@@ -363,7 +363,7 @@ export function fetchNotesTreeThunkAction()
         // Default tree is empty
         const defaultNotesTree: NotesTreeT = {
           tree: [],
-          id: uuid(),
+          id: 'default',
           editMode: false,
           editModeSelectedNodes: [],
           dateCreated: now,
