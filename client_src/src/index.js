@@ -23,10 +23,7 @@ import * as notesTreeDataStore from './utils/notesTreeDataStore';
 import * as editorContentDataStore from './utils/editorContentDataStore';
 // import { save as loopbackSave, load as loopbackLoad, remove as loopbackDelete } from './utils/loopbackREST';
 import localStorage from './utils/offlineStorage';
-import cloudStorage from './utils/cloudStorage';
-
-const widget = cloudStorage({ baseStorage: localStorage.storage });
-widget.attach('widget');
+import { connect } from './utils/cloudStorage';
 
 const userId = process.env.REACT_APP_USER_ID;
 const activeId = 'item|^|218013d0-ad79-11e8-bfc8-79a6754f355a';
@@ -68,43 +65,49 @@ editorActionsInject({
 // TODO: adjust user ID to logged in user
 store.dispatch(setUserAction({ user: { id: userId } }));
 
+const remoteStorage = connect({ storage: localStorage.storage });
+remoteStorage.widget.attach('widget');
 // Fetch asynchronously
-store.dispatch(fetchNotesTreeThunkAction())
-  .then((action) => {
-    if (action.type !== notesListActionTypes.FETCH_NOTES_TREE_SUCCESS) {
-      return;
-    }
-    // TODO: Node selected should be from last session, not hardcoded.
-    const tree = selectNotesTreeTree(store.getState());
-    // TODO: remove
-    console.log('TREE------->', tree);
-    // Once tree loaded, select a node.
-    const matches = find({
-      getNodeKey,
-      treeData: tree,
-      searchQuery: activeId,
-      searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
-    }).matches;
-
-    if (matches.length) {
-      store.dispatch(selectNodeThunkAction({ id: activeId, path: matches[0].path }));
-    }
-    else {
-      if (tree.length) {
-        const matches = find({
-          getNodeKey,
-          treeData: tree,
-          searchQuery: tree[0].id,
-          searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
-        }).matches;
-
-        store.dispatch(selectNodeThunkAction({ id: tree[0].id, path: matches[0].path }));
-      } else {
-        store.dispatch(selectNodeThunkAction({ id: NONE_SELECTED, path: [NONE_SELECTED] }));
+remoteStorage.storage.on('sync-done', function onSyncDone() {
+  store.dispatch(fetchNotesTreeThunkAction())
+    .then((action) => {
+      if (action.type !== notesListActionTypes.FETCH_NOTES_TREE_SUCCESS) {
+        return;
       }
-    }
-  })
-  .catch(err => window.alert(err.message));
+      // TODO: Node selected should be from last session, not hardcoded.
+      const tree = selectNotesTreeTree(store.getState());
+      // TODO: remove
+      console.log('TREE------->', tree);
+      // Once tree loaded, select a node.
+      const matches = find({
+        getNodeKey,
+        treeData: tree,
+        searchQuery: activeId,
+        searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
+      }).matches;
+
+      if (matches.length) {
+        store.dispatch(selectNodeThunkAction({ id: activeId, path: matches[0].path }));
+      }
+      else {
+        if (tree.length) {
+          const matches = find({
+            getNodeKey,
+            treeData: tree,
+            searchQuery: tree[0].id,
+            searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
+          }).matches;
+
+          store.dispatch(selectNodeThunkAction({ id: tree[0].id, path: matches[0].path }));
+        } else {
+          store.dispatch(selectNodeThunkAction({ id: NONE_SELECTED, path: [NONE_SELECTED] }));
+        }
+      }
+    })
+    .catch(err => window.alert(err.message));
+
+  remoteStorage.storage.off('sync-done', onSyncDone);
+});
 
 // Build Reactive Parts
 const notesTree$ = Observable.from(store).pluck('notesTree').auditTime(1000);
