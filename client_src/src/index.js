@@ -76,6 +76,8 @@ store.dispatch(fetchNotesTreeThunkAction())
     }
     // TODO: Node selected should be from last session, not hardcoded.
     const tree = selectNotesTreeTree(store.getState());
+    // TODO: remove
+    console.log('TREE------->', tree);
     // Once tree loaded, select a node.
     const matches = find({
       getNodeKey,
