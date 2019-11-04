@@ -40,23 +40,23 @@ function fetchNotesTree() {
         getNodeKey,
         treeData: tree,
         searchQuery: activeId,
-        searchMethod: ({node, searchQuery}) => searchQuery === node.id,
+        searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
       }).matches;
 
       if (matches.length) {
-        store.dispatch(selectNodeThunkAction({id: activeId, path: matches[0].path}));
+        store.dispatch(selectNodeThunkAction({ id: activeId, path: matches[0].path }));
       } else {
         if (tree.length) {
           const matches = find({
             getNodeKey,
             treeData: tree,
             searchQuery: tree[0].id,
-            searchMethod: ({node, searchQuery}) => searchQuery === node.id,
+            searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
           }).matches;
 
-          store.dispatch(selectNodeThunkAction({id: tree[0].id, path: matches[0].path}));
+          store.dispatch(selectNodeThunkAction({ id: tree[0].id, path: matches[0].path }));
         } else {
-          store.dispatch(selectNodeThunkAction({id: NONE_SELECTED, path: [NONE_SELECTED]}));
+          store.dispatch(selectNodeThunkAction({ id: NONE_SELECTED, path: [NONE_SELECTED] }));
         }
       }
     })
