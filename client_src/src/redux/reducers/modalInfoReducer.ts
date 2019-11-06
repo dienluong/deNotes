@@ -2,11 +2,11 @@ import modalActionTypes from '../actions/constants/modalActionConstants';
 import baseState from '../misc/initialState';
 
 // Types
-import { ModalActionT } from '../actions/modalActions';
+import { AnyAction } from 'redux';
 
 const initialState: ModalInfoT = baseState.modalInfo;
 
-export default function modalInfoReducer(state: ModalInfoT = initialState, action: ModalActionT)
+export default function modalInfoReducer(state: ModalInfoT = initialState, action: AnyAction)
   : ModalInfoT {
   if (!action.payload) {
     action.type = '';
