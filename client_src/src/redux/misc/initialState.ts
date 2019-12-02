@@ -49,7 +49,10 @@ const initialState: AppStateT = {
   modalInfo: {
     type: '',
     props: {},
-  }
+  },
+  connectionInfo: {
+    loggedIn: false,
+  },
 };
 
 export default initialState;
