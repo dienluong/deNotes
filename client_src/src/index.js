@@ -10,10 +10,11 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import rootReducer, { selectNotesTreeTree } from './redux/reducers';
+import notesListActionTypes from './redux/actions/constants/notesListActionConstants';
 import { use as notesListActionsInject, fetchNotesTreeThunkAction, selectNodeThunkAction } from './redux/actions/notesListActions';
 import { use as editorActionsInject } from './redux/actions/editorActions';
 import { setUserAction } from './redux/actions/accountActions';
-import notesListActionTypes from './redux/actions/constants/notesListActionConstants';
+import { setLoggedInAction, setLoggedOutAction } from './redux/actions/connectionInfoActions';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/pluck';
 import 'rxjs/add/operator/auditTime';
@@ -108,10 +109,14 @@ remoteStorage.widget.attach('widget');
 // Fetch asynchronously
 remoteStorage.storage.on('sync-done', function onSyncDone() {
   fetchNotesTree();
+  store.dispatch(setLoggedInAction());
   remoteStorage.storage.off('sync-done', onSyncDone);
 });
 
-remoteStorage.storage.on('disconnected', fetchNotesTree);
+remoteStorage.storage.on('disconnected', function onStorageDisconnect() {
+  fetchNotesTree();
+  store.dispatch(setLoggedOutAction());
+});
 
 // Build Reactive Parts
 const notesTree$ = Observable.from(store).pluck('notesTree').auditTime(1000);
