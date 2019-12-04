@@ -4,7 +4,7 @@ import EditorContainer from './EditorContainer';
 import NotesListContainer from './NotesListContainer';
 import Paper from '@material-ui/core/Paper';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
-import DrawerButton from './widgets/DrawerButton';
+import DrawerButtonContainer from './DrawerButtonContainer';
 
 const editorParams = {
   options: { placeholder: 'Welcome to deNotes! v0.02' },
@@ -39,7 +39,7 @@ function Main() {
       <nav className={ styles['dnt__main-nav'] }>
         <NotesListContainer drawerOpen={ drawerOpen } drawerSide={ 'left' } size={ drawerSize } handleDrawerToggle={ handleDrawerToggle } />
       </nav>
-      <DrawerButton className={ styles['dnt__main-nav-btn'] } size={ drawerButtonSize } visible={ !drawerOpen } clickHandler={ handleDrawerToggle } />
+      <DrawerButtonContainer className={ styles['dnt__main-nav-btn'] } size={ drawerButtonSize } visible={ !drawerOpen } clickHandler={ handleDrawerToggle } />
     </div>
     // </React.StrictMode>
   );
