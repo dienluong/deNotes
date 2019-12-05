@@ -1,4 +1,4 @@
-import connectionInfoActionTypes from '../actions/constants/connectionInfoConstants';
+import connectionInfoActionTypes from '../actions/constants/connectionInfoActionConstants';
 import baseState from '../misc/initialState';
 
 // Types

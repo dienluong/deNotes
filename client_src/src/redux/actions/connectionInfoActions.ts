@@ -1,4 +1,4 @@
-import connectionInfoActionTypes from './constants/connectionInfoConstants';
+import connectionInfoActionTypes from './constants/connectionInfoActionConstants';
 
 // Types
 import { Action } from 'redux';
