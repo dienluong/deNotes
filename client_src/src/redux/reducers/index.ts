@@ -21,6 +21,12 @@ export const selectActiveNodePath = (state: AppStateT) => fromActiveNode.selectP
 export const selectActiveNodeId = (state: AppStateT) => fromActiveNode.selectId(state.activeNode);
 export const selectEditorContent = (state: AppStateT) => state.editorContent;
 export const selectEditorContentId = (state: AppStateT) => fromEditorContent.selectId(state.editorContent);
+export const selectEditorContentTitle = (state: AppStateT) => fromEditorContent.selectTitle(state.editorContent);
+export const selectEditorContentContent = (state: AppStateT) => fromEditorContent.selectContent(state.editorContent);
+export const selectEditorContentDelta = (state: AppStateT) => fromEditorContent.selectDelta(state.editorContent);
+export const selectEditorContentDateCreated = (state: AppStateT) => fromEditorContent.selectDateCreated(state.editorContent);
+export const selectEditorContentDateModified = (state: AppStateT) => fromEditorContent.selectDateModified(state.editorContent);
+export const selectEditorContentReadOnly = (state: AppStateT) => fromEditorContent.selectReadOnly(state.editorContent);
 export const selectUserInfoId = (state: AppStateT) => fromUserInfo.selectId(state.userInfo);
 export const selectModalInfoType = (state: AppStateT) => fromModalInfo.selectType(state.modalInfo);
 export const selectModalInfoProps = (state: AppStateT) => fromModalInfo.selectProps(state.modalInfo);

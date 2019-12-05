@@ -62,3 +62,9 @@ export default function editorContentReducer(state: EditorContentT = initialCont
 }
 
 export const selectId = (state: EditorContentT) => state.id;
+export const selectTitle = (state: EditorContentT) => state.title;
+export const selectContent = (state: EditorContentT) => state.content;
+export const selectDelta = (state: EditorContentT) => state.delta;
+export const selectDateCreated = (state: EditorContentT) => state.dateCreated;
+export const selectDateModified = (state: EditorContentT) => state.dateModified;
+export const selectReadOnly = (state: EditorContentT) => state.readOnly;
