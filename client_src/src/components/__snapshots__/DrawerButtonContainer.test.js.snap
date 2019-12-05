@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders DrawerButton with "visible" prop set to false because loggedIn is false 1`] = `
+<div>
+  <div
+    class="someClassName"
+  />
+</div>
+`;
+
+exports[`renders DrawerButton with "visible" prop taking the passed value because loggedIn is true 1`] = `
+<div>
+  <div
+    class="someClassName"
+  >
+    <button
+      aria-label="notes list drawer"
+      class="MuiButtonBase-root-11 MuiFab-root-1 MuiFab-primary-3 MuiFab-sizeMedium-10"
+      style="transform: scale(1); webkit-transition: transform 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: transform 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+      tabindex="0"
+      type="button"
+    >
+      <span
+        class="MuiFab-label-2"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root-14"
+          focusable="false"
+          role="presentation"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M0 0h24v24H0z"
+            fill="none"
+          />
+          <path
+            d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"
+          />
+        </svg>
+      </span>
+      <span
+        class="MuiTouchRipple-root-23"
+      />
+    </button>
+  </div>
+</div>
+`;
