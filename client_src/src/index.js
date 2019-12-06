@@ -114,8 +114,8 @@ remoteStorage.storage.on('sync-done', function onSyncDone() {
 });
 
 remoteStorage.storage.on('disconnected', function onStorageDisconnect() {
-  fetchNotesTree();
   store.dispatch(setLoggedOutAction());
+  fetchNotesTree();
 });
 
 // Build Reactive Parts

@@ -1,10 +1,13 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
+import connectionInfoActionTypes from '../actions/constants/connectionInfoActionConstants';
 import { addNodeUnderParent } from 'react-sortable-tree';
 import { getNodeKey } from '../../utils/treeUtils';
-import initialState from '../misc/initialState';
+import baseState from '../misc/initialState';
 
 // Types
 import { AnyAction } from "redux";
+
+const initialState: AppStateT = { ...baseState };
 
 /**
  * Create new node, switch to it and set editor content to blank page. The new node is added to the folder of the current active node.
@@ -65,6 +68,8 @@ export default function reducedReducer(state: AppStateT = initialState, action: 
         state,
         ...action.payload,
       });
+    case connectionInfoActionTypes.LOGGED_OUT:
+      return initialState;
     default:
       if (process.env.REACT_APP_DEBUG) {
         console.log(`Current state tree: ${JSON.stringify(state)}`);
