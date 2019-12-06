@@ -4,7 +4,7 @@ import baseState from '../misc/initialState';
 // Types
 import { AnyAction } from 'redux';
 
-const initialState: ModalInfoT = baseState.modalInfo;
+const initialState: ModalInfoT = { ...baseState.modalInfo };
 
 export default function modalInfoReducer(state: ModalInfoT = initialState, action: AnyAction)
   : ModalInfoT {

@@ -6,7 +6,7 @@ import { NONE_SELECTED } from '../../utils/appCONSTANTS';
 // Types
 import { AnyAction } from 'redux';
 
-const initialActiveNode = baseState.activeNode;
+const initialActiveNode: ActiveNodeT = { ...baseState.activeNode };
 
 /**
  * Sets the active ID to the newly selected node along the active path. The active path is truncated accordingly.

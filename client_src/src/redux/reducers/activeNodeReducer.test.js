@@ -6,7 +6,7 @@ const ID_DELIMITER = process.env.REACT_APP_ID_DELIMITER || DEFAULT_ID_DELIMITER;
 
 describe('activeNodeReducer ', () => {
   it('should return initial state by default', () => {
-    expect(reducer(undefined, {})).toBe(initialState.activeNode);
+    expect(reducer(undefined, {})).toEqual(initialState.activeNode);
   });
 
   it('should return current state if no payload', () => {

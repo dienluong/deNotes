@@ -8,7 +8,7 @@ import { nodeTypes } from '../../utils/appCONSTANTS';
 import { AnyAction } from 'redux';
 import { TreeItem } from 'react-sortable-tree';
 
-const initialTree = baseState.notesTree;
+const initialTree: NotesTreeT = { ...baseState.notesTree };
 
 function _changeNodeTitle({ notesTree, title, node, now }: { notesTree: NotesTreeT, title: string, node: TreeNodeT, now: number })
   : NotesTreeT {

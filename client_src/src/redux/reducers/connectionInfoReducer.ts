@@ -4,7 +4,7 @@ import baseState from '../misc/initialState';
 // Types
 import { ConnectionInfoActionT } from '../actions/connectionInfoActions';
 
-const initialState: ConnectionInfoT = baseState.connectionInfo;
+const initialState: ConnectionInfoT = { ...baseState.connectionInfo };
 
 export default function connectionInfoReducer(state: ConnectionInfoT = initialState, action: ConnectionInfoActionT)
   : ConnectionInfoT {

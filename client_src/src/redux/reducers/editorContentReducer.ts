@@ -5,7 +5,7 @@ import baseState from '../misc/initialState';
 // Types
 import { AnyAction } from 'redux';
 
-const initialContent: EditorContentT = baseState.editorContent;
+const initialContent: EditorContentT = { ...baseState.editorContent };
 
 export default function editorContentReducer(state: EditorContentT = initialContent, action: AnyAction)
   : EditorContentT {
