@@ -1,8 +1,7 @@
 import reducer from './reducedReducer';
+import connectionInfoActionTypes from '../actions/constants/connectionInfoActionConstants';
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
 import initialState from '../misc/initialState';
-jest.mock('uuid/v4');
-import uuid from 'uuid/v4';
 import { NONE_SELECTED } from '../../utils/appCONSTANTS';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
 
@@ -30,6 +29,19 @@ describe('reducedReducer', () => {
     readOnly: false,
   };
 
+  const userInfo = {
+    id: 'test_user',
+  };
+
+  const modalInfo = {
+    type: '',
+    props: {},
+  };
+
+  const connectionInfo = {
+    loggedIn: true,
+  };
+
   let currentState;
 
   beforeEach(() => {
@@ -38,10 +50,10 @@ describe('reducedReducer', () => {
       notesTree,
       activeNode,
       editorContent,
+      userInfo,
+      modalInfo,
+      connectionInfo,
     };
-  });
-  afterEach(() => {
-    uuid.mockClear();
   });
 
   it('should return the initial state by default', () => {
@@ -52,4 +64,7 @@ describe('reducedReducer', () => {
     expect(reducer(currentState, { type: notesListActionTypes.ADD_NODE })).toBe(currentState);
   });
 
+  it('should return initial state (i.e. reset state) on LOGGED_OUT', () => {
+    expect(reducer(currentState, { type: connectionInfoActionTypes.LOGGED_OUT, payload: { loggedIn: false } })).toEqual(initialState);
+  });
 });
