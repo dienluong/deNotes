@@ -13,10 +13,10 @@ const options = {
 
 export function connect({ storage }: { storage: RemoteStorageT  }) {
   if (storage) {
-    const widget = new Widget(storage, options);
     storage.setApiKeys({
       dropbox: process.env.REACT_APP_DROPBOX_APPKEY,
     });
+    const widget = new Widget(storage, options);
     return {
       storage,
       widget,
