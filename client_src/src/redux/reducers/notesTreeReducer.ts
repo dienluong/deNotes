@@ -1,5 +1,5 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
-import { changeNodeAtPath, removeNodeAtPath, find, getNodeAtPath } from 'react-sortable-tree';
+import { addNodeUnderParent, changeNodeAtPath, removeNodeAtPath, find, getNodeAtPath } from 'react-sortable-tree';
 import { getNodeKey, findDeepestFolder } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
 import { nodeTypes } from '../../utils/appCONSTANTS';
@@ -9,6 +9,48 @@ import { AnyAction } from 'redux';
 import { TreeItem } from 'react-sortable-tree';
 
 const initialTree: NotesTreeT = { ...baseState.notesTree };
+
+/**
+ * Create new node. The new node is added to the current folder.
+ * @param notesTree {NotesTreeT}
+ * @param newNode {TreeNodeT}
+ * @param parentKey {string} ID for the current folder. If empty string, new node will be added to root folder.
+ * @param now {number} Timestamp
+ * @returns {NotesTreeT}
+ * @private
+ */
+function _addAndSelectNewNode({ notesTree, newNode, parentKey, now }: { notesTree: NotesTreeT, newNode: TreeNodeT, parentKey: string, now: number })
+  : NotesTreeT {
+  let newTreeData: NotesTreeT['tree'];
+
+  if (typeof parentKey !== 'string') {
+    return notesTree;
+  }
+
+  // Explicitly set parent key to undefined instead of null due to how addNodeUnderParent() is annotated in TypeScript
+  // A parentKey of undefined (or null) tells addNodeUnderParent() to put new node in root of tree
+  const _parentKey = !parentKey ? undefined : parentKey;
+
+  try {
+    newTreeData = addNodeUnderParent({
+      treeData: notesTree.tree,
+      newNode,
+      parentKey: _parentKey,
+      getNodeKey,
+      expandParent: true,
+      ignoreCollapsed: false,
+    }).treeData as TreeNodeT[];
+  } catch(error) {
+    // if adding of node failed, return state unchanged
+    return notesTree;
+  }
+
+  return {
+    ...notesTree,
+    tree: newTreeData,
+    dateModified: now,
+  };
+}
 
 function _changeNodeTitle({ notesTree, title, node, now }: { notesTree: NotesTreeT, title: string, node: TreeNodeT, now: number })
   : NotesTreeT {
@@ -178,6 +220,11 @@ export default function notesTreeReducer(state: NotesTreeT = initialTree, action
   }
   console.log(`REDUCER: '${action.type}'`);
   switch (action.type) {
+    case notesListActionTypes.ADD_NODE:
+      return _addAndSelectNewNode({
+        notesTree: state,
+        ...action.payload,
+      });
     case notesListActionTypes.CHANGE_NOTES_TREE:
       return {
         ...state,

@@ -3,6 +3,9 @@ import notesListActionTypes from '../actions/constants/notesListActionConstants'
 import initialState from '../misc/initialState';
 import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
+import { createNode } from '../../utils/treeUtils';
+jest.mock('uuid/v4');
+import uuid from 'uuid/v4';
 
 describe('notesTreeReducer ', () => {
   let currentTree, currentState;
@@ -33,6 +36,116 @@ describe('notesTreeReducer ', () => {
     };
     expect(reducer(currentState, { type: notesListActionTypes.CHANGE_NOTES_TREE })).toBe(currentState);
   });
+
+  describe('on ADD_NODE', () => {
+    afterEach(() => {
+      uuid.mockClear();
+    });
+
+    // on ADD_NODE...
+    it('should return new tree w/ ITEM node added to location specified by parentKey', () => {
+      let expectedDate = 40404;
+      let newNodeKind = nodeTypes.ITEM;
+      const uniqid = 'newly-created-node-uniqid';
+      const currentTree = currentState.tree;
+
+      // Case 1 ---> test case where parent key is ID of a FOLDER
+      let parentKey = currentTree[0].children[3].id;
+
+      // Mock the uuid implementation to return a predictable ID we can verify with the assertion.
+      uuid.mockImplementation(() => uniqid);
+      let newNode = createNode({ type: newNodeKind });
+      uuid.mockClear();
+
+      // Build expected new tree -- new node expected to be added at location given by parent key
+      let expectedNewTree = JSON.parse(JSON.stringify(currentTree));
+      expectedNewTree[0].children[3].children.push(newNode);
+      expectedNewTree[0].children[3].expanded = true;
+
+      let expectedNotesTree = {
+        ...currentState,
+        tree: expectedNewTree,
+        dateModified: expectedDate,
+      };
+
+      expect(reducer(currentState, {
+        type: notesListActionTypes.ADD_NODE,
+        payload: {
+          newNode,
+          parentKey,
+          now: expectedDate,
+        },
+      })).toEqual(expectedNotesTree);
+
+      // Case 2 ---> test case where parentKey is empty string -- new node expected to be added at root
+      parentKey = '';
+      // Build the expected new tree
+      expectedNewTree = JSON.parse(JSON.stringify(currentTree));
+      expectedNewTree.push(newNode);
+
+      expectedDate = 753753;
+      expectedNotesTree = {
+        ...currentState,
+        tree: expectedNewTree,
+        dateModified: expectedDate,
+      };
+
+      expect(reducer(currentState, {
+        type: notesListActionTypes.ADD_NODE,
+        payload: {
+          newNode,
+          parentKey,
+          now: expectedDate,
+        },
+      })).toEqual(expectedNotesTree);
+    });
+
+    // on ADD_NODE...
+    it('should return current state if parentKey is invalid', () => {
+      let newNodeKind = nodeTypes.ITEM;
+      const uniqid = 'newly-created-node-uniqid';
+
+      // Mock the uuid implementation to return a predictable ID we can verify with the assertion.
+      uuid.mockImplementation(() => uniqid);
+      let newNode = createNode({ type: newNodeKind });
+      uuid.mockClear();
+
+      // ---> test case where parentKey is undefined
+      let parentKey = undefined;
+
+      expect(reducer(currentState, {
+        type: notesListActionTypes.ADD_NODE,
+        payload: {
+          newNode,
+          parentKey,
+          now: 123456,
+        },
+      })).toBe(currentState);
+
+      // ---> test case where parentKey is null
+      parentKey = null;
+      expect(reducer(currentState, {
+        type: notesListActionTypes.ADD_NODE,
+        payload: {
+          newNode,
+          parentKey,
+          now: 24680,
+        },
+      })).toBe(currentState);
+
+      // ---> test case where parentKey is not a string
+      parentKey = 10;
+      expect(reducer(currentState, {
+        type: notesListActionTypes.ADD_NODE,
+        payload: {
+          newNode,
+          parentKey,
+          now: 369,
+        },
+      })).toBe(currentState);
+    });
+  });
+  // END: on ADD_NODE
 
   it('should return the received tree on CHANGE_NOTES_TREE', () => {
     const newTree = [
