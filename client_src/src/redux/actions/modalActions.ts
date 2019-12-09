@@ -6,7 +6,8 @@ export interface ModalActionT extends Action {
   payload: ModalInfoT
 }
 
-export function showModalAction({ type, props }: { type: string, props: Object }): ModalActionT {
+export function showModalAction({ type, props }: { type: string, props: Object })
+  : ModalActionT {
   return {
     type: modalActionTypes.SHOW_MODAL,
     payload: {
@@ -16,7 +17,8 @@ export function showModalAction({ type, props }: { type: string, props: Object }
   };
 }
 
-export function hideModalAction(): AnyAction {
+export function hideModalAction()
+  : AnyAction {
   return {
     type: modalActionTypes.HIDE_MODAL,
     payload: {},

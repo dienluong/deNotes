@@ -1,4 +1,3 @@
-import uuid from 'uuid/v4';
 import notesListActionTypes from './constants/notesListActionConstants';
 import { MODAL_TYPES } from '../../components/ModalManager';
 import { newContentAction, fetchEditorContentThunkAction, removeNoteThunkAction } from './editorActions';
@@ -363,7 +362,7 @@ export function fetchNotesTreeThunkAction()
         // Default tree is empty
         const defaultNotesTree: NotesTreeT = {
           tree: [],
-          id: uuid(),
+          id: 'default',
           editMode: false,
           editModeSelectedNodes: [],
           dateCreated: now,

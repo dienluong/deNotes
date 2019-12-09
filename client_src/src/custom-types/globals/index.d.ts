@@ -24,6 +24,7 @@ declare global {
     activeNode: ActiveNodeT;
     editorContent: EditorContentT;
     modalInfo: ModalInfoT;
+    connectionInfo: ConnectionInfoT;
   }
 
   interface UserInfoT {
@@ -73,5 +74,9 @@ declare global {
   interface ModalInfoT {
     type: string;
     props: Object;
+  }
+
+  interface ConnectionInfoT {
+    loggedIn: boolean;
   }
 }

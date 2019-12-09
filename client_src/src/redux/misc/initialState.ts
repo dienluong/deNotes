@@ -23,7 +23,7 @@ const initialState: AppStateT = {
     id: 'default-user',
   },
   notesTree: {
-    id: uuid(),
+    id: 'default',
     tree: [_rootNode],
     editMode: false,
     editModeSelectedNodes: [],
@@ -49,7 +49,10 @@ const initialState: AppStateT = {
   modalInfo: {
     type: '',
     props: {},
-  }
+  },
+  connectionInfo: {
+    loggedIn: false,
+  },
 };
 
 export default initialState;

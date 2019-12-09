@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import Editor from './widgets/Editor';
 import { changeContentAction } from '../redux/actions/editorActions';
+import * as rootReducer from '../redux/reducers';
 
 // Types
 import { ThunkDispatch } from 'redux-thunk';
@@ -20,13 +21,13 @@ interface DispatchProps {
 
 function mapStateToProps(state: AppStateT) {
   return {
-    id: state.editorContent.id,
-    title: state.editorContent.title,
-    delta: state.editorContent.delta,
-    content: state.editorContent.content,
-    dateCreated: state.editorContent.dateCreated,
-    dateModified: state.editorContent.dateModified,
-    readOnly: state.editorContent.readOnly,
+    id: rootReducer.selectEditorContentId(state),
+    title: rootReducer.selectEditorContentTitle(state),
+    delta: rootReducer.selectEditorContentDelta(state),
+    content: rootReducer.selectEditorContentContent(state),
+    dateCreated: rootReducer.selectEditorContentDateCreated(state),
+    dateModified: rootReducer.selectEditorContentDateModified(state),
+    readOnly: rootReducer.selectEditorContentReadOnly(state),
   };
 }
 

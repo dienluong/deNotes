@@ -10,10 +10,11 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import rootReducer, { selectNotesTreeTree } from './redux/reducers';
+import notesListActionTypes from './redux/actions/constants/notesListActionConstants';
 import { use as notesListActionsInject, fetchNotesTreeThunkAction, selectNodeThunkAction } from './redux/actions/notesListActions';
 import { use as editorActionsInject } from './redux/actions/editorActions';
 import { setUserAction } from './redux/actions/accountActions';
-import notesListActionTypes from './redux/actions/constants/notesListActionConstants';
+import { setLoggedInAction, setLoggedOutAction } from './redux/actions/connectionInfoActions';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/pluck';
 import 'rxjs/add/operator/auditTime';
@@ -22,7 +23,46 @@ import * as editorContentObserver from './reactive/editorContentObserver';
 import * as notesTreeDataStore from './utils/notesTreeDataStore';
 import * as editorContentDataStore from './utils/editorContentDataStore';
 // import { save as loopbackSave, load as loopbackLoad, remove as loopbackDelete } from './utils/loopbackREST';
-import { save as saveToStorage, load as loadFromStorage, remove as deleteFromStorage } from './utils/offlineStorage';
+import localStorage from './utils/offlineStorage';
+import { connect } from './utils/cloudStorage';
+
+function fetchNotesTree() {
+  store.dispatch(fetchNotesTreeThunkAction())
+    .then((action) => {
+      if (action.type !== notesListActionTypes.FETCH_NOTES_TREE_SUCCESS) {
+        return;
+      }
+      // TODO: Node selected should be from last session, not hardcoded.
+      const tree = selectNotesTreeTree(store.getState());
+      // TODO: remove
+      console.log('TREE------->', tree);
+      // Once tree loaded, select a node.
+      const matches = find({
+        getNodeKey,
+        treeData: tree,
+        searchQuery: activeId,
+        searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
+      }).matches;
+
+      if (matches.length) {
+        store.dispatch(selectNodeThunkAction({ id: activeId, path: matches[0].path }));
+      } else {
+        if (tree.length) {
+          const matches = find({
+            getNodeKey,
+            treeData: tree,
+            searchQuery: tree[0].id,
+            searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
+          }).matches;
+
+          store.dispatch(selectNodeThunkAction({ id: tree[0].id, path: matches[0].path }));
+        } else {
+          store.dispatch(selectNodeThunkAction({ id: NONE_SELECTED, path: [NONE_SELECTED] }));
+        }
+      }
+    })
+    .catch(err => window.alert(err.message));
+}
 
 const userId = process.env.REACT_APP_USER_ID;
 const activeId = 'item|^|218013d0-ad79-11e8-bfc8-79a6754f355a';
@@ -30,8 +70,8 @@ const activeId = 'item|^|218013d0-ad79-11e8-bfc8-79a6754f355a';
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
 
-notesTreeDataStore.inject({ save: saveToStorage, load: loadFromStorage });
-editorContentDataStore.inject({ save: saveToStorage, load: loadFromStorage, remove: deleteFromStorage });
+notesTreeDataStore.inject({ save: localStorage.save, load: localStorage.load });
+editorContentDataStore.inject({ save: localStorage.save, load: localStorage.load, remove: localStorage.remove });
 
 // Preparing observers
 const myNotesTreeObserver = notesTreeObserver({ user: userId, storage: notesTreeDataStore });
@@ -64,41 +104,19 @@ editorActionsInject({
 // TODO: adjust user ID to logged in user
 store.dispatch(setUserAction({ user: { id: userId } }));
 
+const remoteStorage = connect({ storage: localStorage.storage });
+remoteStorage.widget.attach('widget');
 // Fetch asynchronously
-store.dispatch(fetchNotesTreeThunkAction())
-  .then((action) => {
-    if (action.type !== notesListActionTypes.FETCH_NOTES_TREE_SUCCESS) {
-      return;
-    }
-    // TODO: Node selected should be from last session, not hardcoded.
-    const tree = selectNotesTreeTree(store.getState());
-    // Once tree loaded, select a node.
-    const matches = find({
-      getNodeKey,
-      treeData: tree,
-      searchQuery: activeId,
-      searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
-    }).matches;
+remoteStorage.storage.on('sync-done', function onSyncDone() {
+  fetchNotesTree();
+  store.dispatch(setLoggedInAction());
+  remoteStorage.storage.off('sync-done', onSyncDone);
+});
 
-    if (matches.length) {
-      store.dispatch(selectNodeThunkAction({ id: activeId, path: matches[0].path }));
-    }
-    else {
-      if (tree.length) {
-        const matches = find({
-          getNodeKey,
-          treeData: tree,
-          searchQuery: tree[0].id,
-          searchMethod: ({ node, searchQuery }) => searchQuery === node.id,
-        }).matches;
-
-        store.dispatch(selectNodeThunkAction({ id: tree[0].id, path: matches[0].path }));
-      } else {
-        store.dispatch(selectNodeThunkAction({ id: NONE_SELECTED, path: [NONE_SELECTED] }));
-      }
-    }
-  })
-  .catch(err => window.alert(err.message));
+remoteStorage.storage.on('disconnected', function onStorageDisconnect() {
+  store.dispatch(setLoggedOutAction());
+  fetchNotesTree();
+});
 
 // Build Reactive Parts
 const notesTree$ = Observable.from(store).pluck('notesTree').auditTime(1000);

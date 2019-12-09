@@ -5,7 +5,7 @@ import { equals } from '../../utils/treeUtils';
 // Types
 import { AnyAction } from 'redux';
 
-const initialUser = baseState.userInfo;
+const initialUser: UserInfoT = { ...baseState.userInfo };
 
 // function _equals(currentUser, newUser) {
 //   const currentKeys = Object.keys(currentUser);

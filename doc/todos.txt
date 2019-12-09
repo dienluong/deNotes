@@ -96,7 +96,9 @@ Revisit QuillJs bug
     https://github.com/zenoamaro/react-quill/issues/309
 
 How to handle error (promises) from Observers?
-How to handle offline mode?  Do we let user create/modify notes offline and store them locally? How do we reconciliate the local data with the remote data once connection is back?
+x How to handle offline mode?  Do we let user create/modify notes offline and store them locally? How do we reconciliate the local data with the remote data once connection is back?
+  -> User must be logged in -- cannot use app without logging in.  remotestorageJs takes care of the syncing when network connection is re-established.
+
 Should adopt convention for thunk return value:  1) a Promise resolving to an action obj in the successful case or 2) a Promise rejected with an Error obj.
 
 ? Deselecting note with empty content deletes the note.

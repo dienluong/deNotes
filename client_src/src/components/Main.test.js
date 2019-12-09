@@ -2,7 +2,7 @@ import React from 'react';
 import Main from './Main';
 import EditorContainer from './EditorContainer';
 import NotesListContainer from './NotesListContainer';
-import DrawerButton from './widgets/DrawerButton';
+import DrawerButtonContainer from './DrawerButtonContainer';
 import Fab from '@material-ui/core/Fab';
 jest.mock('@material-ui/core/useMediaQuery');
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
@@ -33,13 +33,13 @@ afterEach(() => {
   }
 });
 
-it('renders Main correctly using EditorContainer, NotesListContainer and DrawerButton', () => {
+it('renders Main correctly using EditorContainer, NotesListContainer and DrawerButtonContainer', () => {
   let store = createMockStore([thunk])(initialState);
   wrapper = shallow(<Provider store={ store }><Main /></Provider>).dive({ context: { store } });
   expect(wrapper).toMatchSnapshot();
   expect(wrapper.find(EditorContainer).exists()).toBe(true);
   expect(wrapper.find(NotesListContainer).exists()).toBe(true);
-  expect(wrapper.find(DrawerButton).exists()).toBe(true);
+  expect(wrapper.find(DrawerButtonContainer).exists()).toBe(true);
 });
 
 it('sets size to medium and disables minimalist style for width larger than 600px', () => {
@@ -50,7 +50,7 @@ it('sets size to medium and disables minimalist style for width larger than 600p
   wrapper = shallow(<Provider store={ store }><Main /></Provider>).dive({ context: { store } });
   expect(wrapper.find(EditorContainer).prop('minimalist')).toBe(false);
   expect(wrapper.find(NotesListContainer).prop('size')).toBe('medium');
-  expect(wrapper.find(DrawerButton).prop('size')).toBe('medium');
+  expect(wrapper.find(DrawerButtonContainer).prop('size')).toBe('medium');
 });
 
 it('sets size to small and enables minimalist style when max width is 600px', () => {
@@ -61,15 +61,17 @@ it('sets size to small and enables minimalist style when max width is 600px', ()
   wrapper = shallow(<Provider store={ store }><Main /></Provider>).dive({ context: { store } });
   expect(wrapper.find(EditorContainer).prop('minimalist')).toBe(true);
   expect(wrapper.find(NotesListContainer).prop('size')).toBe('small');
-  expect(wrapper.find(DrawerButton).prop('size')).toBe('small');
+  expect(wrapper.find(DrawerButtonContainer).prop('size')).toBe('small');
 });
 
 it('opens drawer when drawer button clicked', () => {
-  let store = createMockStore([thunk])(initialState);
+  // Must be logged in for button to be visible
+  const connectionInfo = { loggedIn: true };
+  let store = createMockStore([thunk])({ ...initialState, ...connectionInfo });
   wrapper = shallow(<Provider store={ store }><Main /></Provider>).dive({ context: { store } });
   expect(wrapper.find(NotesListContainer).prop('drawerOpen')).toBe(false);
-  expect(wrapper.find(DrawerButton).prop('visible')).toBe(true);
-  wrapper.find(DrawerButton).dive().find(Fab).simulate('click');
+  expect(wrapper.find(DrawerButtonContainer).prop('visible')).toBe(true);
+  wrapper.find(DrawerButtonContainer).dive().dive().find(Fab).simulate('click');
   expect(wrapper.find(NotesListContainer).prop('drawerOpen')).toBe(true);
-  expect(wrapper.find(DrawerButton).prop('visible')).toBe(false);
+  expect(wrapper.find(DrawerButtonContainer).prop('visible')).toBe(false);
 });

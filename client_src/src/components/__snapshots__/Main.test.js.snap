@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders Main correctly using EditorContainer, NotesListContainer and DrawerButton 1`] = `
+exports[`renders Main correctly using EditorContainer, NotesListContainer and DrawerButtonContainer 1`] = `
 <div
   className="dnt__main-root"
 >
@@ -30,7 +30,7 @@ exports[`renders Main correctly using EditorContainer, NotesListContainer and Dr
       size="medium"
     />
   </nav>
-  <DrawerButton
+  <Connect(DrawerButton)
     className="dnt__main-nav-btn"
     clickHandler={[Function]}
     size="medium"

@@ -5,7 +5,7 @@ import baseState from '../misc/initialState';
 // Types
 import { AnyAction } from 'redux';
 
-const initialContent: EditorContentT = baseState.editorContent;
+const initialContent: EditorContentT = { ...baseState.editorContent };
 
 export default function editorContentReducer(state: EditorContentT = initialContent, action: AnyAction)
   : EditorContentT {
@@ -62,3 +62,9 @@ export default function editorContentReducer(state: EditorContentT = initialCont
 }
 
 export const selectId = (state: EditorContentT) => state.id;
+export const selectTitle = (state: EditorContentT) => state.title;
+export const selectContent = (state: EditorContentT) => state.content;
+export const selectDelta = (state: EditorContentT) => state.delta;
+export const selectDateCreated = (state: EditorContentT) => state.dateCreated;
+export const selectDateModified = (state: EditorContentT) => state.dateModified;
+export const selectReadOnly = (state: EditorContentT) => state.readOnly;
