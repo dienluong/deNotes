@@ -10,11 +10,11 @@ import { AnyAction } from "redux";
 const initialState: AppStateT = { ...baseState };
 
 /**
- * Create new node, switch to it and set editor content to blank page. The new node is added to the folder of the current active node.
+ * Create new node. The new node is added to the current folder.
  * @param state {AppStateT}
  * @param newNode {TreeNodeT}
- * @param parentKey {string} If empty string, new node will be added to root folder.
- * @param now {number}
+ * @param parentKey {string} ID for the current folder. If empty string, new node will be added to root folder.
+ * @param now {number} Timestamp
  * @returns {{notesTree: *, activeNode: {id: *, path: Array}}}
  * @private
  */
