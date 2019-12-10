@@ -1,4 +1,5 @@
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
+import drawerButtonActionTypes from '../actions/constants/drawerButtonActionConstants';
 import { addNodeUnderParent, changeNodeAtPath, removeNodeAtPath, find, getNodeAtPath } from 'react-sortable-tree';
 import { getNodeKey, findDeepestFolder } from '../../utils/treeUtils';
 import baseState from '../misc/initialState';
@@ -260,6 +261,17 @@ export default function notesTreeReducer(state: NotesTreeT = initialTree, action
         notesTree: state,
         ...action.payload,
       });
+    case drawerButtonActionTypes.CLICK:
+      return {
+        ...state,
+        visible: !state.visible,
+      };
+    case notesListActionTypes.CLOSE_LIST:
+      return {
+        ...state,
+        editMode: false,
+        visible: false,
+      };
     default:
       if (process.env.REACT_APP_DEBUG) {
         console.log(`Current notesTree: ${JSON.stringify(state)}`);
@@ -272,5 +284,6 @@ export const selectTree = (state: NotesTreeT) => state.tree;
 export const selectTreeId = (state: NotesTreeT) => state.id;
 export const selectDateModified = (state: NotesTreeT) => state.dateModified;
 export const selectDateCreated = (state: NotesTreeT) => state.dateCreated;
+export const selectVisible = (state: NotesTreeT) => state.visible;
 export const selectEditMode = (state: NotesTreeT) => state.editMode;
 export const selectEditModeSelectedNodes = (state: NotesTreeT) => state.editModeSelectedNodes;

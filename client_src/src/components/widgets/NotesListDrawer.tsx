@@ -10,24 +10,17 @@ type PropsT = {
   drawerOpen: boolean,
   drawerSide: 'left' | 'right',
   size: 'small' | 'medium',
-  handleDrawerToggle: () => unknown,
   drawerCloseHandler: () => unknown,
 }
 
-function NotesListDrawer({ drawerOpen, drawerSide, size, handleDrawerToggle, drawerCloseHandler, ...otherProps }: PropsT & NotesListPropsT) {
-
-  function _onCloseHandler() {
-    drawerCloseHandler();
-    handleDrawerToggle();
-  }
-
+function NotesListDrawer({ drawerOpen, drawerSide, size, drawerCloseHandler, ...otherProps }: PropsT & NotesListPropsT) {
   return (
     <React.Fragment>
       <Drawer
         variant="temporary"
         anchor={ drawerSide }
         open={ drawerOpen }
-        onClose={ _onCloseHandler }
+        onClose={ drawerCloseHandler }
         ModalProps={{
           keepMounted: true, // Better open performance on mobile.
         }}
