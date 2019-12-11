@@ -264,7 +264,7 @@ export default function notesTreeReducer(state: NotesTreeT = initialTree, action
     case drawerButtonActionTypes.CLICK:
       return {
         ...state,
-        visible: !state.visible,
+        visible: true,
       };
     case notesListActionTypes.CLOSE_LIST:
       return {

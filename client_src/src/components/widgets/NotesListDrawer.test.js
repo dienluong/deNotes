@@ -20,7 +20,6 @@ afterEach(() => {
 });
 
 it('should render drawer using material-ui Drawer w/ proper props and pass remaining props to NotesList', () => {
-  const handleDrawerToggle = jest.fn();
   const drawerCloseHandler = jest.fn();
   const notesListProp1 = 'dummy-prop';
   const notesListProp2 = 1234;
@@ -28,7 +27,6 @@ it('should render drawer using material-ui Drawer w/ proper props and pass remai
     drawerOpen: false,
     drawerSide: 'right',
     size: 'small',
-    handleDrawerToggle,
     drawerCloseHandler,
     notesListProp1,
     notesListProp2,
@@ -36,6 +34,7 @@ it('should render drawer using material-ui Drawer w/ proper props and pass remai
   const expectedDrawerProps = {
     anchor: props.drawerSide,
     open: props.drawerOpen,
+    onClose: drawerCloseHandler,
   };
   const expectedNotesListProps = {
     notesListProp1,
@@ -53,7 +52,6 @@ it('should render drawer using material-ui Drawer w/ proper props and pass remai
 });
 
 it('should call expected handlers on close event', () => {
-  const handleDrawerToggle = jest.fn();
   const drawerCloseHandler = jest.fn();
   const notesListProp1 = 'dummy-prop';
   const notesListProp2 = 1234;
@@ -61,7 +59,6 @@ it('should call expected handlers on close event', () => {
     drawerOpen: false,
     drawerSide: 'right',
     size: 'small',
-    handleDrawerToggle,
     drawerCloseHandler,
     notesListProp1,
     notesListProp2,
@@ -70,8 +67,6 @@ it('should call expected handlers on close event', () => {
   const drawerWrapper = shallow(<NotesListDrawer { ...props } />).find(Drawer);
   expect(drawerWrapper.exists()).toBe(true);
   const onCloseHandler = drawerWrapper.prop('onClose');
-  expect(onCloseHandler).toBeInstanceOf(Function);
   onCloseHandler();
-  expect(handleDrawerToggle).toBeCalledTimes(1);
   expect(drawerCloseHandler).toBeCalledTimes(1);
 });

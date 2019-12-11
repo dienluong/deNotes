@@ -28,6 +28,7 @@ it('renders NotesListDrawer correctly with prop values taken from redux store, i
   let mockedNotesTree = {
     id: '1234',
     tree: mockedTree,
+    visible: true,
     editMode: true,
     editModeSelectedNodes: ['selected_id1', 'selected_id2'],
     dateCreated: 1111,
@@ -40,6 +41,9 @@ it('renders NotesListDrawer correctly with prop values taken from redux store, i
       id: mockedNotesTree.tree[0].id,
       path: [mockedNotesTree.tree[0].id],
     },
+    connectionInfo: {
+      loggedIn: true,
+    },
   };
   let store = createMockStore([thunk])(mockedInitialState);
 
@@ -47,6 +51,7 @@ it('renders NotesListDrawer correctly with prop values taken from redux store, i
   let expectedProps = {
     tree: mockedInitialState.notesTree.tree[0].children,
     activeNode: { ...mockedInitialState.activeNode },
+    drawerOpen: true,
     rootViewOn: false,
     editMode: mockedInitialState.notesTree.editMode,
     editModeSelectedNodes: mockedInitialState.notesTree.editModeSelectedNodes,
@@ -85,6 +90,7 @@ it('renders NotesListDrawer correctly with prop values taken from redux store, i
   mockedNotesTree = {
     id: '2345',
     tree: mockedTree,
+    visible: true,
     editMode: false,
     editModeSelectedNodes: [],
     dateCreated: 3333,
@@ -98,12 +104,16 @@ it('renders NotesListDrawer correctly with prop values taken from redux store, i
       id: mockedNotesTree.tree[1].id,
       path: [mockedNotesTree.tree[1].id],
     },
+    connectionInfo: {
+      loggedIn: true,
+    },
   };
   store = createMockStore([thunk])(mockedInitialState);
 
   expectedProps = {
     tree: mockedInitialState.notesTree.tree,
     activeNode: { ...mockedInitialState.activeNode },
+    drawerOpen: true,
     rootViewOn: true,
     editMode: mockedInitialState.notesTree.editMode,
     editModeSelectedNodes: mockedInitialState.notesTree.editModeSelectedNodes,
