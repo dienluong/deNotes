@@ -12,10 +12,6 @@ const editorParams = {
 };
 
 function Main() {
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
-  function handleDrawerToggle() {
-    setDrawerOpen(!drawerOpen);
-  }
   const smallMedia = useMediaQuery('(max-width:600px)');
   let drawerButtonSize, drawerSize;
   if (smallMedia) {
@@ -37,9 +33,9 @@ function Main() {
         </Paper>
       </main>
       <nav className={ styles['dnt__main-nav'] }>
-        <NotesListContainer drawerOpen={ drawerOpen } drawerSide={ 'left' } size={ drawerSize } handleDrawerToggle={ handleDrawerToggle } />
+        <NotesListContainer drawerSide={ 'left' } size={ drawerSize } />
       </nav>
-      <DrawerButtonContainer className={ styles['dnt__main-nav-btn'] } size={ drawerButtonSize } visible={ !drawerOpen } clickHandler={ handleDrawerToggle } />
+      <DrawerButtonContainer className={ styles['dnt__main-nav-btn'] } size={ drawerButtonSize } />
     </div>
     // </React.StrictMode>
   );

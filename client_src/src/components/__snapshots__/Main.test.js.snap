@@ -24,17 +24,13 @@ exports[`renders Main correctly using EditorContainer, NotesListContainer and Dr
     className="dnt__main-nav"
   >
     <Connect(NotesListDrawer)
-      drawerOpen={false}
       drawerSide="left"
-      handleDrawerToggle={[Function]}
       size="medium"
     />
   </nav>
   <Connect(DrawerButton)
     className="dnt__main-nav-btn"
-    clickHandler={[Function]}
     size="medium"
-    visible={true}
   />
 </div>
 `;

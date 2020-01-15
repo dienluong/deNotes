@@ -14,7 +14,7 @@ exports[`should render drawer using material-ui Drawer w/ proper props and pass 
         "paper": "dnt__notes-list-drawer-paper--small",
       }
     }
-    onClose={[Function]}
+    onClose={[MockFunction]}
     open={false}
     variant="temporary"
   >

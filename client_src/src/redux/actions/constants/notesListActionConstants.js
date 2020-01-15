@@ -21,6 +21,7 @@ const notesListActionTypes = {
   FETCH_NOTES_TREE_FAILURE: 'FETCH_NOTES_TREE_FAILURE',
   SET_EDIT_MODE: 'SET_EDIT_MODE',
   EDIT_MODE_SELECT_NODE: 'EDIT_MODE_SELECT_NODE',
+  CLOSE_LIST: 'CLOSE_LIST',
 };
 
 export default notesListActionTypes;

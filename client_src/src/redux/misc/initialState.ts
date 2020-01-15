@@ -10,6 +10,7 @@ const initialState: AppStateT = {
   notesTree: {
     id: 'default',
     tree: [],
+    visible: false,
     editMode: false,
     editModeSelectedNodes: [],
     dateCreated: now,

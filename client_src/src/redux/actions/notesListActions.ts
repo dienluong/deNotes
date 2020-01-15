@@ -131,7 +131,7 @@ export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path:
         },
       });
     } else {
-      // If not at root, then path received is only partial. So construct absolute path to selected node w/ the current active path.
+      // If not at root, then path received is only partial. So construct absolute path to selected node by using the current active path.
       returnVal = dispatch({
         type: notesListActionTypes.SELECT_NODE,
         payload: {
@@ -141,7 +141,7 @@ export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path:
       });
     }
 
-    // If new active node is an ITEM (note) and if its content is not already open, then fetch its content
+    // If new active node is an ITEM (note) and if its content is not already open, then fetch its content and close the notes list
     const activeNodeInfo = translateNodeIdToInfo({ nodeId: rootReducer.selectActiveNodeId(getState()) });
     if ( activeNodeInfo && activeNodeInfo.type === nodeTypes.ITEM) {
       const uniqid = activeNodeInfo.uniqid;
@@ -153,6 +153,8 @@ export function selectNodeThunkAction({ id, path }: { id: TreeNodeT['id'], path:
             return err.action;
           }); // TODO: adjust error handling.
       }
+
+      dispatch(closeListAction());
     }
 
     return returnVal;
@@ -279,6 +281,7 @@ export function addAndSelectNodeThunkAction({ kind }: { kind: NodeTypeT })
         },
       });
 
+      // TODO set editor content in reducer on newContentAction
       const newEditorContent = {
           ...initialState.editorContent,
           id: newNode.uniqid,
@@ -359,10 +362,12 @@ export function fetchNotesTreeThunkAction()
           payload: { error },
         });
         const now = Date.now();
+        // TODO: set default tree in reducer for action FETCH_NOTES_TREE_FAILURE!
         // Default tree is empty
         const defaultNotesTree: NotesTreeT = {
           tree: [],
           id: 'default',
+          visible: true,
           editMode: false,
           editModeSelectedNodes: [],
           dateCreated: now,
@@ -416,10 +421,10 @@ export function exitEditModeAction(): AnyAction {
   }
 }
 
-export function drawerCloseAction(): AnyAction {
+export function closeListAction(): AnyAction {
   return {
-    type: notesListActionTypes.SET_EDIT_MODE,
-    payload: { value: false },
+    type: notesListActionTypes.CLOSE_LIST,
+    payload: {},
   }
 }
 

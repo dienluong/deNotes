@@ -122,7 +122,8 @@ describe('1. selectNodeThunkAction ', () => {
     expect(fetchEditorContentThunkAction).not.toBeCalled();
   });
 
-  it('when in non-Edit Mode, should 1) save content, 2) dispatch SELECT_NODE and FETCH_EDITOR_CONTENT_SUCCESS and 3) fetch content, when ITEM node selected', () => {
+  it('when in non-Edit Mode, should 1) save content, 2) dispatch SELECT_NODE and FETCH_EDITOR_CONTENT_SUCCESS, 3) fetch content and 4) close list, when ITEM node selected', () => {
+    // TEST CASE ---> where active folder is root
     const mockedState = {
       ...initialState,
       notesTree: {
@@ -170,6 +171,10 @@ describe('1. selectNodeThunkAction ', () => {
         type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
         payload: { editorContent: mockedContent },
       },
+      {
+        type: notesListActionTypes.CLOSE_LIST,
+        payload: {},
+      },
     ];
 
     mockedSave.mockImplementation(() => Promise.resolve({}));
@@ -185,7 +190,7 @@ describe('1. selectNodeThunkAction ', () => {
     expect(mockedStore.getActions()).toEqual(expectedActions);
     mockedStore.clearActions();
 
-    // ---> test case where active folder is not the root folder
+    // TEST CASE ---> where active folder is not the root folder
     mockedState.activeNode = {
       id: mockedTree[0].children[2].children[0].id,
       path: [mockedTree[0].id, mockedTree[0].children[2].id, mockedTree[0].children[2].children[0].id],
@@ -219,6 +224,10 @@ describe('1. selectNodeThunkAction ', () => {
       {
         type: editorActionTypes.FETCH_EDITOR_CONTENT_SUCCESS,
         payload: { editorContent: mockedContent },
+      },
+      {
+        type: notesListActionTypes.CLOSE_LIST,
+        payload: {},
       },
     ];
 
@@ -1048,8 +1057,9 @@ describe('4. fetchNotesTreeThunkAction ', () => {
       }
     };
     const expectedDefaultTree = {
-      id: expect.any(String),
+      id: 'default',
       tree: [],
+      visible: true,
       editMode: false,
       editModeSelectedNodes: [],
       dateCreated: expectedDate,
@@ -1108,8 +1118,9 @@ describe('4. fetchNotesTreeThunkAction ', () => {
       }
     };
     const expectedDefaultTree = {
-      id: expect.any(String),
+      id: 'default',
       tree: [],
+      visible: true,
       editMode: false,
       editModeSelectedNodes: [],
       dateCreated: expectedDate,

@@ -8,7 +8,7 @@ import {
   goUpAFolderAction,
   enterEditModeAction,
   exitEditModeAction,
-  drawerCloseAction,
+  closeListAction,
   changeNotesFolderThunkAction,
   changeNodeTitleAction,
   deleteNodeThunkAction,
@@ -37,6 +37,7 @@ interface MapDispatchPropsT {
 interface MapStatePropsT {
   tree: TreeNodeT[];
   activeNode: ActiveNodeT;
+  drawerOpen: boolean;
   rootViewOn: boolean;
   editMode: boolean;
   editModeSelectedNodes: string[];
@@ -96,6 +97,7 @@ function mapStateToProps(state: AppStateT): MapStatePropsT {
   return {
     tree: children,
     activeNode,
+    drawerOpen: rootReducer.selectConnectionInfoLoggedIn(state) && rootReducer.selectNotesTreeVisible(state),
     rootViewOn,
     editMode: rootReducer.selectNotesTreeEditMode(state),
     editModeSelectedNodes: rootReducer.selectNotesTreeEditModeSelectedNodes(state),
@@ -140,7 +142,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<AppStateT, any, AnyAction>):
       return dispatch(exitEditModeAction());
     },
     drawerCloseHandler() {
-      return dispatch(drawerCloseAction());
+      return dispatch(closeListAction());
     },
     nodeClickHandler({ id = '', path = [] }) {
       return dispatch(selectNodeThunkAction({ id, path }));

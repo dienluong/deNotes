@@ -1,5 +1,6 @@
 import reducer from './notesTreeReducer';
 import notesListActionTypes from '../actions/constants/notesListActionConstants';
+import drawerButtonActionTypes from '../actions/constants/drawerButtonActionConstants';
 import initialState from '../misc/initialState';
 import { nodeTypes, NONE_SELECTED } from '../../utils/appCONSTANTS';
 import { mockedTree } from '../../test-utils/mocks/mockedNotesTree';
@@ -481,6 +482,31 @@ describe('notesTreeReducer ', () => {
       },
     };
     expect(reducer(currentState, action)).toBe(currentState);
+  });
+
+  it('should, on drawer button CLICK, return state with visible set to true', () => {
+    const action = {
+      type: drawerButtonActionTypes.CLICK,
+      payload: {},
+    };
+    const expectedNewState = {
+      ...currentState,
+      visible: true,
+    };
+    expect(reducer({ ...currentState, visible: false }, action)).toEqual(expectedNewState);
+  });
+
+  it('should, on CLOSE_LIST, return state with visible and editMode set to false', () => {
+    const action = {
+      type: notesListActionTypes.CLOSE_LIST,
+      payload: {},
+    };
+    const expectedNewState = {
+      ...currentState,
+      visible: false,
+      editMode: false,
+    };
+    expect(reducer({ ...currentState, visible: true, editMode: true }, action)).toEqual(expectedNewState);
   });
 });
 
